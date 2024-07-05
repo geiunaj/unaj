@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE `Option` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `field_id` BIGINT NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `field_id` INTEGER NOT NULL,
     `label` VARCHAR(255) NOT NULL,
     `value` VARCHAR(255) NOT NULL,
     `created_at` DATETIME(3) NOT NULL,
@@ -13,8 +13,8 @@ CREATE TABLE `Option` (
 
 -- CreateTable
 CREATE TABLE `Field` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `form_id` BIGINT NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `form_id` INTEGER NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `placeholder` VARCHAR(255) NOT NULL,
     `required` BOOLEAN NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE `Field` (
 
 -- CreateTable
 CREATE TABLE `Form` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `description` VARCHAR(255) NULL,
     `created_at` DATETIME(3) NOT NULL,
@@ -40,10 +40,10 @@ CREATE TABLE `Form` (
 
 -- CreateTable
 CREATE TABLE `Response` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `form_id` BIGINT NOT NULL,
-    `field_id` BIGINT NOT NULL,
-    `user_id` BIGINT NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `form_id` INTEGER NOT NULL,
+    `field_id` INTEGER NOT NULL,
+    `user_id` INTEGER NOT NULL,
     `value` VARCHAR(255) NOT NULL,
     `created_at` DATETIME(3) NOT NULL,
     `updated_at` DATETIME(3) NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE `Sede` (
 CREATE TABLE `Access` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `type_user_id` INTEGER NOT NULL,
-    `forms_id` BIGINT NOT NULL,
+    `forms_id` INTEGER NOT NULL,
 
     INDEX `Access_type_user_id_idx`(`type_user_id`),
     INDEX `Access_forms_id_idx`(`forms_id`),
@@ -85,13 +85,14 @@ CREATE TABLE `TypeUser` (
 
 -- CreateTable
 CREATE TABLE `User` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
-    `email` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
     `telefono` VARCHAR(45) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `type_user_id` INTEGER NOT NULL,
 
+    UNIQUE INDEX `User_email_key`(`email`),
     INDEX `User_type_user_id_idx`(`type_user_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

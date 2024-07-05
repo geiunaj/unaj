@@ -8,8 +8,8 @@ generator client {
 }
 
 model Option {
-  id         BigInt    @id @default(autoincrement())
-  field_id   BigInt
+  id         Int    @id @default(autoincrement())
+  field_id   Int
   label      String    @db.VarChar(255)
   value      String    @db.VarChar(255)
   created_at DateTime
@@ -20,8 +20,8 @@ model Option {
 }
 
 model Field {
-  id            BigInt      @id @default(autoincrement())
-  form_id       BigInt
+  id            Int      @id @default(autoincrement())
+  form_id       Int
   name          String      @db.VarChar(255)
   placeholder   String      @db.VarChar(255)
   required      Boolean     @db.TinyInt
@@ -37,7 +37,7 @@ model Field {
 }
 
 model Form {
-  id          BigInt      @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String      @db.VarChar(255)
   description String?     @db.VarChar(255)
   created_at  DateTime
@@ -49,10 +49,10 @@ model Form {
 }
 
 model Response {
-  id         BigInt    @id @default(autoincrement())
-  form_id    BigInt
-  field_id   BigInt
-  user_id    BigInt
+  id         Int    @id @default(autoincrement())
+  form_id    Int
+  field_id   Int
+  user_id    Int
   value      String    @db.VarChar(255)
   created_at DateTime
   updated_at DateTime
@@ -77,7 +77,7 @@ model Sede {
 model Access {
   id           Int        @id @default(autoincrement())
   type_user_id Int
-  forms_id     BigInt
+  forms_id     Int
   type_user    TypeUser   @relation(fields: [type_user_id], references: [id])
   form         Form       @relation(fields: [forms_id], references: [id])
 
@@ -93,9 +93,9 @@ model TypeUser {
 }
 
 model User {
-  id           BigInt      @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   name         String      @db.VarChar(255)
-  email        String      @db.VarChar(255)
+  email        String      @unique
   telefono     String      @db.VarChar(45)
   password     String      @db.VarChar(255)
   type_user_id Int
