@@ -1,11 +1,14 @@
 import { FormCombustion } from "@/components/combustion/components/FormCombustion";
 import LoginPage from "./auth/login/page";
+import { FormPapel } from "@/components/papelOficce/FormPapelOficce";
 
 export default function Home() {
   return (
     <>
-    {/* <LoginPage/> */}
-    <FormCombustion />
+      {/* <LoginPage/> */}
+      {/* <FormCombustion /> */}
+      {/* <FormFertilizantes /> */}
+      <FormPapel />
     </>
   );
 }
