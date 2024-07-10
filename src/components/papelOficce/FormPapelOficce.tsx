@@ -61,14 +61,14 @@ export function FormPapel() {
 
   return (
     <div className="flex items-center justify-center">
-      <div className="p-3">
+      {/* <div className="p-2"> */}
         <div className="flex flex-col items-center justify-center">
-          <h2 className="text-2xl text-blue-800 font-bold mb-2 uppercase">
+          <h2 className="text-2xl text-gray-800 font-bold mb-2 uppercase">
             Consumo Papel
           </h2>
 
           <Form {...form}>
-            <form className="w-full flex flex-col gap-3 pt-3 ">
+            <form className="w-full flex flex-col gap-3 pt-2 ">
               {/* Sede */}
               <FormField
                 name="sede"
@@ -174,81 +174,83 @@ export function FormPapel() {
                   )}
                 />
               </div>
-              {/* is_recycled */}
-              <FormField
-                control={form.control}
-                name="is_recycled"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>¿Es reciclado?</FormLabel>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* percentage_recycled */}
-              {isRecycled && (
+
+              <div className="flex items-center space-x-4">
                 <FormField
                   control={form.control}
-                  name="percentage_recycled"
+                  name="is_recycled"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Porcentaje reciclado</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                          placeholder="Porcentaje reciclado [%]"
-                          {...field}
+                      <FormLabel className="inline-block">
+                        ¿Es reciclado?
+                      </FormLabel>
+                      <FormControl className="inline-block ml-2">
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
                         />
                       </FormControl>
+                      {isRecycled && (
+                        <FormField
+                          control={form.control}
+                          name="percentage_recycled"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  className="w-full p-2 rounded mt-1 focus:outline-none focus-visible:ring-offset-0"
+                                  placeholder="Porcentaje reciclado [%]"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
-              {/* is_certified */}
-              <FormField
-                control={form.control}
-                name="is_certified"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>¿Es certificado?</FormLabel>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* name_certified */}
-              {isCertified && (
                 <FormField
                   control={form.control}
-                  name="name_certified"
+                  name="is_certified"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nombre del certificado</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                          placeholder="Nombre del certificado"
-                          {...field}
+                      <FormLabel className="inline-block">
+                        ¿Es certificado?
+                      </FormLabel>
+                      <FormControl className="inline-block ml-2">
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
                         />
                       </FormControl>
+                      {isCertified && (
+                        <FormField
+                          control={form.control}
+                          name="name_certified"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  className="w-full p-2 rounded mt-1 focus:outline-none focus-visible:ring-offset-0"
+                                  placeholder="Nombre del certificado"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
+              </div>
+
               {/* Comentario */}
               <FormField
                 control={form.control}
@@ -267,11 +269,13 @@ export function FormPapel() {
                   </FormItem>
                 )}
               />
-              <div className="flex gap-3 w-full ">
+              <div className="flex gap-3 w-full pt-2">
                 <Button type="submit" className="w-full bg-blue-900">
                   Guardar
                 </Button>
-                <Button type="button" className="w-full bg-blue-900">
+                <Button type="button" className="w-full" 
+                variant="secondary"
+                >
                   Cancelar
                 </Button>
               </div>
@@ -279,6 +283,6 @@ export function FormPapel() {
           </Form>
         </div>
       </div>
-    </div>
+    // </div>
   );
 }
