@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import SessionWrapper from "@/components/SessionWrapper/SessionWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,18 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <div className="flex flex-col h-screen">
-          {/* <Header></Header> */}
-          <div className="flex h-full">
-            {/* <Sidebar className="w-1/4"></Sidebar> */}
-            <div className="w-3/4 border-4 border-gray-200 flex justify-center items-center">
-              {children}
-            </div>
-          </div>
-        </div>
-      </body>
-    </html>
+    <SessionWrapper>
+      <html lang="en">
+        <body className={inter.className}>{children}</body>
+      </html>
+    </SessionWrapper>
   );
 }
