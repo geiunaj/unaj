@@ -17,7 +17,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         <div className="">
           <Header />
         </div>
-        <div className="flex-auto p-4">{children}</div>
+        <div className="flex-auto m-4 bg-white rounded-xl shadow">{children}</div>
       </div>
     </div>
   ) : (
