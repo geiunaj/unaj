@@ -21,7 +21,7 @@ export default function Sidebar() {
   return (
     <>
       <div className="flex flex-col items-center p-4">
-        <div className="flex justify-center mb-4 ">
+        <div className="flex justify-center mb-6 pt-4 ">
           <img src={logo} alt="Logo" className="w-[140px] h-auto" />
         </div>
         <div className="flex flex-col gap-4 w-full pt-4">
@@ -32,9 +32,25 @@ export default function Sidebar() {
               <Button
                 size="sm"
                 variant="default"
-                className="h-9 py-2 w-full justify-start"
+                className="h-12 py-2 w-full bg-blue-800 justify-start"
               >
-                <p className="ml-3 text-sm">Huella de carbono</p>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                  <path d="M9 10h6" />
+                  <path d="M12 13V7" />
+                  <path d="M9 17h6" />
+                </svg>
+                <p className="ml-3 text-sm">Registros</p>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -58,30 +74,6 @@ export default function Sidebar() {
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div>
-            <p className="text-base pl-3 font-medium">Calculos</p>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-9 px-4 py-2 w-full justify-start"
-            >
-              <p className="ml-3 text-sm">Formulario 1</p>
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-9 px-4 py-2 w-full justify-start"
-            >
-              <p className="ml-3 text-sm">Formulario 2</p>
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-9 px-4 py-2 w-full justify-start"
-            >
-              <p className="ml-3 text-sm">Formulario 3</p>
-            </Button>
-          </div>
         </div>
       </div>
     </>

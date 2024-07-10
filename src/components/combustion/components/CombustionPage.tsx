@@ -31,11 +31,11 @@ export default function CombustionPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
-    <div className="w-full max-w-[1440px] h-full p-6 m-auto rounded-2xl">
+    <div className="w-full max-w-[1250px] h-full p-6 m-auto bg-white  rounded-xl shadow">
       <div className="flex flex-row justify-between items-center mb-6">
-        <div className="text-gray-600 font-Manrope">
-          <h1 className="text-2xl font-bold">COMBUSTION ESTACIONARIA</h1>
-          <h2 className="text-lg">Huella de carbono</h2>
+        <div className="font-Manrope">
+          <h1 className="text-xl text-gray-800 font-bold">COMBUSTION ESTACIONARIA</h1>
+          <h2 className="text-base text-gray-500">Huella de carbono</h2>
         </div>
         <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <AlertDialogTrigger asChild>
