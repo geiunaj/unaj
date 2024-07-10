@@ -32,7 +32,7 @@ export default function Sidebar() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="default"
-                className="w-full bg-blue-800 justify-start"
+                className="w-full justify-start"
               >
                 <FileText className="mr-2 h-4 w-4" />
                 <p className="ml-3 text-sm">Registros</p>
