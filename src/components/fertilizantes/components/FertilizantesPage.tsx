@@ -6,7 +6,6 @@ import {
   AlertDialogHeader,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -25,10 +24,11 @@ import {
 import { Pencil1Icon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { SelectItem } from "@radix-ui/react-select";
 import { useState } from "react";
-import { FormCombustion } from "./FormCombustion";
+import { FormFertilizantes } from "./FormFertilizantes";
+import { Button } from "@/components/ui/button";
 // import { X } from "lucide-react";
 
-export default function CombustionPage() {
+export default function FerlizantePage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
@@ -36,13 +36,13 @@ export default function CombustionPage() {
       <div className="flex flex-row justify-between items-center mb-6">
         <div className="font-Manrope">
           <h1 className="text-xl text-gray-800 font-bold">
-            COMBUSTION ESTACIONARIA
+            FERTILIZANTES
           </h1>
           <h2 className="text-base text-gray-500">Huella de carbono</h2>
         </div>
         <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <AlertDialogTrigger asChild>
-            <Button variant="default" className="bg-blue-800 text-white">
+            <Button variant="default" className="bg-blue-800 text-white h-10 py-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -80,7 +80,7 @@ export default function CombustionPage() {
                 </svg>
               </AlertDialogCancel>
             </AlertDialogHeader>
-            <FormCombustion />
+            <FormFertilizantes/>
           </AlertDialogContent>
         </AlertDialog>
       </div>

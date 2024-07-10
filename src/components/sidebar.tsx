@@ -17,6 +17,9 @@ export default function Sidebar() {
     navigate.push("/combustible");
   };
 
+  const handleFertilizante = () => {
+    navigate.push("/fertilizante");
+  };
   const logo = "/img/logoUNAJ.png";
   return (
     <>
@@ -58,15 +61,16 @@ export default function Sidebar() {
               side="right"
               sideOffset={5}
             >
-              <DropdownMenuRadioGroup
-                className="font-Manrope"
-                onClick={handleCombustion}
-              >
-                <DropdownMenuItem className="flex  items-center w-full">
+              <DropdownMenuRadioGroup className="font-Manrope">
+                <DropdownMenuItem
+                  className="flex  items-center w-full"
+                  onClick={handleCombustion}
+                >
                   Combustion
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex  items-center w-full">
-                  Refrigerantes
+                <DropdownMenuItem className="flex  items-center w-full"
+                onClick={handleFertilizante}>
+                  Fertilizantes
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex  items-center w-full">
                   Refrigerantes

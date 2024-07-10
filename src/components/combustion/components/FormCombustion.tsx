@@ -56,7 +56,7 @@ export function FormCombustion() {
   return (
     <div className="flex items-center justify-center">
         <div className="flex flex-col items-center justify-center">
-          <h2 className="text-2xl text-blue-800 font-bold mb-2 uppercase">
+          <h2 className="text-2xl text-gray-800 font-bold uppercase">
             COMBUSTION ESTACIONARIA
           </h2>
           <p className="text-xs  text-gray-500">
@@ -74,7 +74,7 @@ export function FormCombustion() {
                 name="sede"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem  className="pt-2">
                     <FormLabel>Sede</FormLabel>
                     <Select>
                       <FormControl className="w-full">
@@ -183,7 +183,7 @@ export function FormCombustion() {
                   </FormItem>
                 )}
               />
-              <div className="flex gap-3">
+              <div className="flex gap-3 p-2">
                 {/* Consumption_month */}
                 <FormField
                   control={form.control}

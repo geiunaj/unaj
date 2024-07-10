@@ -22,9 +22,9 @@ import {
 } from "@/components/ui/select";
 import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
-import { Button } from "../ui/button";
-import { Switch } from "../ui/switch";
-import { Label } from "../ui/label";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const Ferilizer = z.object({
   type_fertilizer: z.string(),
@@ -51,10 +51,9 @@ export function FormFertilizantes() {
   });
 
   return (
-    <div className="flex items-center justify-center w-[500px]">
-      <div className="p-8">
+    <div className="flex items-center justify-center">
         <div className="flex flex-col items-center justify-center">
-          <h2 className="text-2xl text-blue-800 font-bold mb-2 uppercase">
+          <h2 className="text-2xl text-blue-900 font-bold mb-2 uppercase">
             Consumo Fertilizantes
           </h2>
           <p className="text-xs  text-gray-500">
@@ -159,11 +158,11 @@ export function FormFertilizantes() {
                   name="nitrogen_percentage"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Porcentaje de Nitrogeno</FormLabel>
+                      <FormLabel>% Nitrogeno</FormLabel>
                       <FormControl>
                         <Input
                           className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                          placeholder="Porcentaje de Nitrogeno %"
+                          placeholder= "% Nitrogen"
                           {...field}
                         />
                       </FormControl>
@@ -171,7 +170,7 @@ export function FormFertilizantes() {
                     </FormItem>
                   )}
                 />
-              </div>
+              </div>  
               {/* is_datasheet */}
               <div className="flex items-center space-x-2">
                 <Switch
@@ -211,6 +210,5 @@ export function FormFertilizantes() {
           </Form>
         </div>
       </div>
-    </div>
   );
 }
