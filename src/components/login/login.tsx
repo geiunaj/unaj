@@ -116,7 +116,7 @@ export default function LoginPage() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="w-full bg-blue-900">
                     Iniciar Sesión
                   </Button>
                 </form>

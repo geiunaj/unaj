@@ -54,16 +54,14 @@ export function FormCombustion() {
   };
 
   return (
-    <div className="flex items-center justify-center w-[500px]">
-      <div className="p-8">
+    <div className="flex items-center justify-center">
         <div className="flex flex-col items-center justify-center">
           <h2 className="text-2xl text-blue-800 font-bold mb-2 uppercase">
             COMBUSTION ESTACIONARIA
           </h2>
           <p className="text-xs  text-gray-500">
-            Indicar el consumo de combustible de equipos estacionarios (grupo
-            electrógeno, caldera, entre otros). Incluir balones usados en
-            calefacción
+            Indicar el consumo de combustible de equipos estacionarios,
+            incluir balones usados en calefacción
           </p>
 
           <Form {...form}>
@@ -97,7 +95,6 @@ export function FormCombustion() {
                   </FormItem>
                 )}
               />
-
               {/* Tipo de equipo */}
               <FormField
                 name="type_equipment"
@@ -143,6 +140,7 @@ export function FormCombustion() {
                   </FormItem>
                 )}
               />
+
               {/* Month */}
               <FormField
                 control={form.control}
@@ -223,10 +221,10 @@ export function FormCombustion() {
                 />
               </div>
               <div className="flex  gap-3 w-full ">
-                <Button type="submit" className="w-full bg-blue-900">
+                <Button type="submit" className="w-full bg-blue-800" >
                   Guardar
                 </Button>
-                <Button type="submit" className="w-full  bg-blue-900">
+                <Button type="submit" className="w-full" variant="secondary">
                   Cancelar
                 </Button>
               </div>
@@ -234,6 +232,5 @@ export function FormCombustion() {
           </Form>
         </div>
       </div>
-    </div>
   );
 }
