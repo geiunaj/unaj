@@ -221,7 +221,7 @@ export function FormCombustion() {
                 />
               </div>
               <div className="flex  gap-3 w-full ">
-                <Button type="submit" className="w-full bg-blue-800" >
+                <Button type="submit" className="w-full " >
                   Guardar
                 </Button>
                 <Button type="submit" className="w-full" variant="secondary">

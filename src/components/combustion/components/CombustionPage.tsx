@@ -32,7 +32,7 @@ export default function CombustionPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
-    <div className="w-full max-w-[1250px] h-full p-6 m-auto bg-white  rounded-xl shadow">
+    <div className="w-full max-w-[1250px] h-full">
       <div className="flex flex-row justify-between items-center mb-6">
         <div className="font-Manrope">
           <h1 className="text-xl text-gray-800 font-bold">
@@ -42,22 +42,7 @@ export default function CombustionPage() {
         </div>
         <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <AlertDialogTrigger asChild>
-            <Button variant="default" className="bg-blue-800 text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                className="mr-2"
-              >
-                <path d="M5 12h14" />
-                <path d="M12 5v14" />
-              </svg>
+            <Button variant="default" className=" text-white">
               Registrar
             </Button>
           </AlertDialogTrigger>
