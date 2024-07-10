@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
 const authOptions = {
   providers: [
@@ -11,7 +11,7 @@ const authOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials, req): Promise<any> {
         if (!credentials?.email || !credentials.password) {
           throw new Error("Email and password are required");
         }

@@ -48,9 +48,11 @@ export function FormCombustion() {
     },
   });
 
-  const submit = async (values: z.infer<typeof Combustion>) => {
-    console.log(values);
+  // SUBMIT PREVENT DEFAULT
+  const onSubmit = (data: z.infer<typeof Combustion>) => {
+    console.log(data);
   };
+
   return (
     <div className="flex items-center justify-center w-[500px]">
       <div className="p-8">
@@ -65,7 +67,10 @@ export function FormCombustion() {
           </p>
 
           <Form {...form}>
-            <form className="w-full flex flex-col gap-3 pt-3 ">
+            <form
+              className="w-full flex flex-col gap-3 pt-3"
+              onSubmit={form.handleSubmit(onSubmit)}
+            >
               {/* Sede */}
               <FormField
                 name="sede"

@@ -8,13 +8,13 @@ generator client {
 }
 
 model Option {
-  id         Int    @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   field_id   Int
-  label      String    @db.VarChar(255)
-  value      String    @db.VarChar(255)
+  label      String   @db.VarChar(255)
+  value      String   @db.VarChar(255)
   created_at DateTime
   updated_at DateTime
-  field      Field     @relation("fieldsToOptions", fields: [field_id], references: [id])
+  field      Field    @relation("fieldsToOptions", fields: [field_id], references: [id])
 
   @@index([field_id])
 }
@@ -22,64 +22,40 @@ model Option {
 model Field {
   id            Int      @id @default(autoincrement())
   form_id       Int
-  name          String      @db.VarChar(255)
-  placeholder   String      @db.VarChar(255)
-  required      Boolean     @db.TinyInt
-  is_calculated Boolean     @db.TinyInt
-  formula       String?     @db.VarChar(255)
+  name          String   @db.VarChar(255)
+  placeholder   String   @db.VarChar(255)
+  required      Boolean  @db.TinyInt
+  is_calculated Boolean  @db.TinyInt
+  formula       String?  @db.VarChar(255)
   created_at    DateTime
   updated_at    DateTime
-  form          Form        @relation("fieldsToForms", fields: [form_id], references: [id])
-  options       Option[]    @relation("fieldsToOptions")
-  responses     Response[]  @relation("fieldsToResponses")
+  form          Form     @relation("fieldsToForms", fields: [form_id], references: [id])
+  options       Option[] @relation("fieldsToOptions")
 
   @@index([form_id])
 }
 
 model Form {
   id          Int      @id @default(autoincrement())
-  name        String      @db.VarChar(255)
-  description String?     @db.VarChar(255)
+  name        String   @db.VarChar(255)
+  description String?  @db.VarChar(255)
   created_at  DateTime
   updated_at  DateTime
-  fields      Field[]     @relation("fieldsToForms")
-  responses   Response[]  @relation("formsToResponses")
+  fields      Field[]  @relation("fieldsToForms")
   access      Access[]
-
-}
-
-model Response {
-  id         Int    @id @default(autoincrement())
-  form_id    Int
-  field_id   Int
-  user_id    Int
-  value      String    @db.VarChar(255)
-  created_at DateTime
-  updated_at DateTime
-  sede_id    Int
-  form       Form      @relation("formsToResponses", fields: [form_id], references: [id])
-  field      Field     @relation("fieldsToResponses", fields: [field_id], references: [id])
-  user       User      @relation("usersToResponses", fields: [user_id], references: [id])
-  sede       Sede      @relation("sedesToResponses", fields: [sede_id], references: [id])
-
-  @@index([form_id])
-  @@index([field_id])
-  @@index([user_id])
-  @@index([sede_id])
 }
 
 model Sede {
-  id        Int        @id @default(autoincrement())
-  name      String     @db.VarChar(45)
-  responses Response[] @relation("sedesToResponses")
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(45)
 }
 
 model Access {
-  id           Int        @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   type_user_id Int
   forms_id     Int
-  type_user    TypeUser   @relation(fields: [type_user_id], references: [id])
-  form         Form       @relation(fields: [forms_id], references: [id])
+  type_user    TypeUser @relation(fields: [type_user_id], references: [id])
+  form         Form     @relation(fields: [forms_id], references: [id])
 
   @@index([type_user_id])
   @@index([forms_id])
@@ -94,13 +70,50 @@ model TypeUser {
 
 model User {
   id           Int      @id @default(autoincrement())
-  name         String      @db.VarChar(255)
-  email        String      @unique
-  telefono     String      @db.VarChar(45)
-  password     String      @db.VarChar(255)
+  name         String   @db.VarChar(255)
+  email        String   @unique
+  telefono     String   @db.VarChar(45)
+  password     String   @db.VarChar(255)
   type_user_id Int
-  responses    Response[]  @relation("usersToResponses")
-  type_user    TypeUser    @relation(fields: [type_user_id], references: [id])
+  type_user    TypeUser @relation(fields: [type_user_id], references: [id])
 
   @@index([type_user_id])
+}
+
+model tipoCombustible {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @db.VarChar(45)
+  abreviatura String   @db.VarChar(45)
+  unidad      String   @db.VarChar(45)
+  created_at  DateTime
+  updated_at  DateTime
+}
+
+model Mes {
+  id         Int      @id @default(autoincrement())
+  nombre     String   @db.VarChar(45)
+  created_at DateTime
+  updated_at DateTime
+}
+
+model Anio {
+  id         Int      @id @default(autoincrement())
+  nombre     String   @db.VarChar(45)
+  created_at DateTime
+  updated_at DateTime
+}
+
+model Combustible {
+  id                 Int    @id @default(autoincrement())
+  nombre             String @db.VarChar(45)
+  tipo               String @db.VarChar(45)
+  tipoEquipo         String @db.VarChar(45)
+  consumo            Float  @db.Float
+  tipoCombustible_id Int
+  mes_id             Int
+  anio_id            Int
+  sede_id            Int
+
+  created_at DateTime
+  updated_at DateTime
 }
