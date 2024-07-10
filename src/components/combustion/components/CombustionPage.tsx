@@ -26,7 +26,7 @@ import { Pencil1Icon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { SelectItem } from "@radix-ui/react-select";
 import { useState } from "react";
 import { FormCombustion } from "./FormCombustion";
-import { Cross2Icon } from "@radix-ui/react-icons";
+import { X } from "lucide-react";
 
 export default function CombustionPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -47,7 +47,7 @@ export default function CombustionPage() {
           <AlertDialogContent className="max-w-md border-2">
             <AlertDialogHeader className="flex flex-row justify-between">
               <AlertDialogCancel className="absolute right-0 top-0 bg-transparent hover:bg-transparent border-none shadow-none">
-                <Cross2Icon/>
+                <X />
               </AlertDialogCancel>
             </AlertDialogHeader>
             <FormCombustion />
