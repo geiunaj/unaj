@@ -73,7 +73,7 @@ export default function PapelPage() {
       <div className="rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="border">
               <TableHead className="text-sm font-bold text-center ">
                 SEDE
               </TableHead>

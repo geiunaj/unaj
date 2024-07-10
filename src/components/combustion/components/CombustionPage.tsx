@@ -89,7 +89,7 @@ export default function CombustionPage() {
       <div className="rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="border">
               <TableHead className=" font-Manrope text-sm font-bold text-center">
                 SEDE
               </TableHead>
