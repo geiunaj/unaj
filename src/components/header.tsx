@@ -12,8 +12,8 @@ export default function Header() {
     // </div>
     <div className="flex items-center justify-end space-x-5 p-2">
       <div className="flex flex-col justify-end items-end">
-        <h1 className="text-lg font-medium">Admin User</h1>
-        <p className="text-sm text-gray-400">adminuser@example.com</p>
+        <h1 className="font-medium">Admin User</h1>
+        <p className="text-xs text-gray-400">adminuser@example.com</p>
       </div>
       <Avatar>
         <AvatarFallback>NC</AvatarFallback>

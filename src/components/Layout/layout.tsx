@@ -10,16 +10,14 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 
   return session ? (
     <div className="flex h-screen">
-      <div className=" border h-full w-64">
+      <div className="border-e h-full w-64">
         <Sidebar />
       </div>
-      <div className="flex flex-col flex-auto w-full">
-        <div className="border-b">
+      <div className="flex flex-col flex-auto w-full  bg-muted/40">
+        <div className="">
           <Header />
         </div>
-        <div className="flex-auto p-4">
-          {children}
-        </div>
+        <div className="flex-auto p-4">{children}</div>
       </div>
     </div>
   ) : (
