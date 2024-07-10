@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { FileText } from "lucide-react";
 
 export default function Sidebar() {
   const navigate = useRouter();
@@ -30,26 +31,10 @@ export default function Sidebar() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                size="sm"
                 variant="default"
-                className="h-12 py-2 w-full bg-blue-800 justify-start"
+                className="w-full bg-blue-800 justify-start"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-                  <path d="M9 10h6" />
-                  <path d="M12 13V7" />
-                  <path d="M9 17h6" />
-                </svg>
+                <FileText className="mr-2 h-4 w-4" />
                 <p className="ml-3 text-sm">Registros</p>
               </Button>
             </DropdownMenuTrigger>
