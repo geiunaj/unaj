@@ -22,17 +22,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pencil1Icon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { Pencil1Icon } from "@radix-ui/react-icons";
 import { SelectItem } from "@radix-ui/react-select";
 import { useState } from "react";
 import { FormCombustion } from "./FormCombustion";
 // import { X } from "lucide-react";
+import { Plus } from 'lucide-react';
+
 
 export default function CombustionPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
-    <div className="w-full max-w-[1250px] h-full">
+    <div className="w-full max-w-[1150px] h-full ">
       <div className="flex flex-row justify-between items-center mb-6">
         <div className="font-Manrope">
           <h1 className="text-xl text-gray-800 font-bold">
@@ -43,6 +45,7 @@ export default function CombustionPage() {
         <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <AlertDialogTrigger asChild>
             <Button variant="default" className=" text-white">
+              <Plus/>
               Registrar
             </Button>
           </AlertDialogTrigger>
@@ -87,7 +90,7 @@ export default function CombustionPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className=" font-Manrope text-sm font-bold text-center">
                 SEDE
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">

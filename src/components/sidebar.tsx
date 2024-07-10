@@ -21,6 +21,14 @@ export default function Sidebar() {
   const handleFertilizante = () => {
     navigate.push("/fertilizante");
   };
+
+  const handleConsElectricidad = () => {
+    navigate.push("/electricidad");
+  }
+
+  const handleConsPapel = () => {
+    navigate.push("/papel");
+  }
   const logo = "/img/logoUNAJ.png";
   return (
     <>
@@ -35,7 +43,7 @@ export default function Sidebar() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="default"
-                className="w-full justify-start"
+                className="w-full justify-start h-10"
               >
                 <FileText className="mr-2 h-4 w-4" />
                 <p className="ml-3 text-sm">Registros</p>
@@ -56,6 +64,14 @@ export default function Sidebar() {
                 <DropdownMenuItem className="flex  items-center w-full"
                 onClick={handleFertilizante}>
                   Fertilizantes
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex  items-center w-full"
+                onClick={handleConsElectricidad}>
+                  Electricidad
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex  items-center w-full"
+                onClick={handleConsPapel}>
+                  Papel
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex  items-center w-full">
                   Refrigerantes

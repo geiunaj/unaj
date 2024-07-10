@@ -62,7 +62,7 @@ export function FormPapel() {
   return (
     <div className="flex items-center justify-center">
       <div className="p-3">
-        <div className="flex flex-col items-center justify-center w-[500px]">
+        <div className="flex flex-col items-center justify-center">
           <h2 className="text-2xl text-blue-800 font-bold mb-2 uppercase">
             Consumo Papel
           </h2>

@@ -27,10 +27,10 @@ import { SelectItem } from "@radix-ui/react-select";
 import { useState } from "react";
 import { X } from "lucide-react";
 import { Plus } from 'lucide-react';
-import { FormFertilizantes } from "./FormFertilizantes";
+import { FormElectricidad } from "./FromElectricidad";
 
 
-export default function CombustionPage() {
+export default function ElectricidaPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
@@ -38,7 +38,7 @@ export default function CombustionPage() {
       <div className="flex flex-row justify-between items-center mb-6">
         <div className="font-Manrope">
           <h1 className="text-xl text-gray-800 font-bold">
-            FERTILIZANTES
+            CONSUMO DE ELECTRICIDAD
           </h1>
           <h2 className="text-base text-gray-500">Huella de carbono</h2>
         </div>
@@ -55,7 +55,7 @@ export default function CombustionPage() {
                 <X className="h-6 w-6" />
               </AlertDialogCancel>
             </AlertDialogHeader>
-            <FormFertilizantes />
+            <FormElectricidad />
           </AlertDialogContent>
         </AlertDialog>
       </div>
@@ -81,21 +81,14 @@ export default function CombustionPage() {
                 SEDE
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
-                TIPO DE FERTILIZANTE
+                MES
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
-                FERTILIZANTE
+                AÑO
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
-                CNT. DE FERTILIZANTE
-              </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
-                % DE NITROGENO
-              </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
-                FICHA TECNICA
-
-              </TableHead>
+                CONSUMO DE MES
+              </TableHead>              
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 ACCIONES
               </TableHead>
@@ -103,7 +96,6 @@ export default function CombustionPage() {
           </TableHeader>
           <TableBody>
             <TableRow className="text-center">
-              <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>

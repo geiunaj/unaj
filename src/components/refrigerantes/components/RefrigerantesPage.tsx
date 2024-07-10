@@ -27,7 +27,6 @@ import { SelectItem } from "@radix-ui/react-select";
 import { useState } from "react";
 import { X } from "lucide-react";
 import { Plus } from 'lucide-react';
-import { FormFertilizantes } from "./FormFertilizantes";
 
 
 export default function CombustionPage() {
@@ -55,7 +54,7 @@ export default function CombustionPage() {
                 <X className="h-6 w-6" />
               </AlertDialogCancel>
             </AlertDialogHeader>
-            <FormFertilizantes />
+            {/* <FormFertilizantes /> */}
           </AlertDialogContent>
         </AlertDialog>
       </div>

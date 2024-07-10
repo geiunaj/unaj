@@ -53,10 +53,10 @@ export function FormFertilizantes() {
   return (
     <div className="flex items-center justify-center">
         <div className="flex flex-col items-center justify-center">
-          <h2 className="text-2xl text-blue-900 font-bold mb-2 uppercase">
+          <h2 className="text-2xl text-gray-800 font-bold mb-2 uppercase text-center">
             Consumo Fertilizantes
           </h2>
-          <p className="text-xs  text-gray-500">
+          <p className="text-xs  text-gray-500 text-center">
             Indicar el consumo de fertilizantes por tipo y enviar su ficha
             técnica (considerar aquellos usados en prácticas agronómicas y/o
             mantenimiento de áreas verdes).
@@ -198,11 +198,12 @@ export function FormFertilizantes() {
                   </FormItem>
                 )}
               />
-              <div className="flex  gap-3 w-full ">
+              <div className="flex  gap-3 w-full pt-4">
                 <Button type="submit" className="w-full bg-blue-900">
                   Guardar
                 </Button>
-                <Button type="submit" className="w-full  bg-blue-900">
+                <Button type="submit" className="w-full"
+                variant="secondary">
                   Cancelar
                 </Button>
               </div>
