@@ -125,7 +125,6 @@ async function main() {
   for (let i = 0; i < 100; i++) {
     await prisma.combustible.create({
       data: {
-        nombre: faker.lorem.word(),
         tipo: faker.helpers.arrayElement(["estacionario", "movil"]),
         tipoEquipo: faker.lorem.word(),
         consumo: faker.number.float({ min: 0, max: 100 }),

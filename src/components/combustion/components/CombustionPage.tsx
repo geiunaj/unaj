@@ -3,7 +3,9 @@ import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogHeader,
+  AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
@@ -32,6 +34,15 @@ import { useCombustionStore } from "../lib/combustion.store";
 import { CombustionCollection } from "../services/combustion.interface";
 import { useSedeStore } from "@/components/sede/lib/sede.store";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function CombustionPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -42,23 +53,31 @@ export default function CombustionPage() {
     "desc"
   );
 
+  const formulario = "estacionario";
+
   useEffect(() => {
-    loadCombustion({ sedeId: Number(selectedSede) }); // Llama a loadCombustion cuando el componente se monta
+    loadCombustion({ tipo: formulario, sedeId: Number(selectedSede) }); // Llama a loadCombustion cuando el componente se monta
     loadSedes();
   }, [loadCombustion, loadSedes]); // Dependencia vacía para solo llamar una vez al montar
 
   const handleSedeChange = (value: string) => {
     setSelectedSede(value);
-    loadCombustion({ sedeId: Number(value) });
+    loadCombustion({ tipo: formulario, sedeId: Number(value) });
   };
 
   const handleToggleConsumoSort = () => {
     setConsumoDirection(consumoDirection === "asc" ? "desc" : "asc");
     loadCombustion({
+      tipo: formulario,
       sedeId: Number(selectedSede),
       sort: "consumo",
       direction: consumoDirection,
     });
+  };
+
+  const handleClose = () => {
+    setIsDialogOpen(false);
+    loadCombustion({ tipo: formulario, sedeId: Number(selectedSede) });
   };
 
   if (!combustion) {
@@ -94,22 +113,25 @@ export default function CombustionPage() {
               </SelectContent>
             </Select>
           </div>
-          <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <AlertDialogTrigger asChild>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
               <Button variant="default" className=" text-white">
                 <Plus />
                 Registrar
               </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent className="max-w-lg border-2">
-              <AlertDialogHeader className="flex flex-row justify-between">
-                <AlertDialogCancel className="absolute right-0 top-0 bg-transparent hover:bg-transparent border-none shadow-none">
-                  <X />
-                </AlertDialogCancel>
-              </AlertDialogHeader>
-              <FormCombustion />
-            </AlertDialogContent>
-          </AlertDialog>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg border-2">
+              <DialogHeader className="">
+                <DialogTitle>Combustión Estacionaria</DialogTitle>
+                <DialogDescription>
+                  Indicar el consumo de combustible de equipos estacionarios,
+                  incluir balones usados en calefacción
+                </DialogDescription>
+                <DialogClose></DialogClose>
+              </DialogHeader>
+              <FormCombustion onClose={handleClose} />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

@@ -1,10 +1,9 @@
-export interface AddFromProps {
+export interface CreateCombustionProps {
   onClose: () => void;
 }
 
 export interface CombustionCollection {
   id: number;
-  nombre: string;
   tipo: string;
   tipoEquipo: string;
   consumo: number;
@@ -16,12 +15,11 @@ export interface CombustionCollection {
 }
 
 export interface CombustionRequest {
-  nombre: string;
   tipo: string;
   tipoEquipo: string;
   consumo: number;
-  tipoCombustibleId: number;
-  mesId: number;
-  anioId: number;
-  sedeId: number;
+  sede_id: number;
+  tipoCombustible_id: number;
+  mes_id: number;
+  anio_id: number;
 }

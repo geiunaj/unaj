@@ -109,7 +109,6 @@ model Anio {
 
 model Combustible {
   id                 Int    @id @default(autoincrement())
-  nombre             String @db.VarChar(45)
   tipo               String @db.VarChar(45)
   tipoEquipo         String @db.VarChar(45)
   consumo            Float  @db.Float

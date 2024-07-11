@@ -1,5 +1,8 @@
 import api from "../../../../config/api";
-import { CombustionCollection } from "./combustion.interface";
+import {
+  CombustionCollection,
+  CombustionRequest,
+} from "./combustion.interface";
 import { AxiosRequestConfig } from "axios";
 
 export async function getCombustion(
@@ -10,7 +13,7 @@ export async function getCombustion(
 ): Promise<CombustionCollection[]> {
   const config: AxiosRequestConfig = {
     params: {
-      tipo: tipo,
+      tipo,
       sedeId,
       sort,
       direction,
@@ -20,5 +23,10 @@ export async function getCombustion(
     "/api/combustion",
     config
   );
+  return data;
+}
+
+export async function createCombustion(body: CombustionRequest) {
+  const { data } = await api.post("/api/combustion", body);
   return data;
 }

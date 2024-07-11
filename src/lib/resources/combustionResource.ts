@@ -31,7 +31,6 @@ type Sede = {
 
 type Combustible = {
   id: number;
-  nombre: string;
   tipo: string;
   tipoEquipo: string;
   consumo: number;

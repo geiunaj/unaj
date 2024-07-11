@@ -114,7 +114,6 @@ CREATE TABLE `Anio` (
 -- CreateTable
 CREATE TABLE `Combustible` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(45) NOT NULL,
     `tipo` VARCHAR(45) NOT NULL,
     `tipoEquipo` VARCHAR(45) NOT NULL,
     `consumo` FLOAT NOT NULL,

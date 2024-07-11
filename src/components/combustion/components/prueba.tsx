@@ -19,7 +19,6 @@ const CombustionTable: React.FC = () => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Nombre</th>
             <th>Tipo</th>
             <th>Consumo</th>
             {/* Agrega más encabezados si es necesario */}
@@ -29,7 +28,6 @@ const CombustionTable: React.FC = () => {
           {combustion.map((item) => (
             <tr key={item.id}>
               <td>{item.id}</td>
-              <td>{item.nombre}</td>
               <td>{item.tipo}</td>
               <td>{item.consumo}</td>
               {/* Agrega más celdas si es necesario */}
