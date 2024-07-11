@@ -127,6 +127,45 @@ CREATE TABLE `Combustible` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `TipoFertilizante` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `clase` VARCHAR(45) NOT NULL,
+    `nombre` VARCHAR(45) NOT NULL,
+    `porcentajeNitrogeno` FLOAT NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Documento` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(255) NOT NULL,
+    `contenido` LONGBLOB NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Fertilizante` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `tipoFertilizante_id` INTEGER NOT NULL,
+    `cantidad` FLOAT NOT NULL,
+    `is_ficha` BOOLEAN NOT NULL DEFAULT false,
+    `ficha_id` INTEGER NULL,
+    `sede_id` INTEGER NULL,
+    `anio_id` INTEGER NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `Fertilizante_ficha_id_key`(`ficha_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `Option` ADD CONSTRAINT `Option_field_id_fkey` FOREIGN KEY (`field_id`) REFERENCES `Field`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -153,3 +192,15 @@ ALTER TABLE `Combustible` ADD CONSTRAINT `Combustible_anio_id_fkey` FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE `Combustible` ADD CONSTRAINT `Combustible_sede_id_fkey` FOREIGN KEY (`sede_id`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Fertilizante` ADD CONSTRAINT `Fertilizante_tipoFertilizante_id_fkey` FOREIGN KEY (`tipoFertilizante_id`) REFERENCES `TipoFertilizante`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Fertilizante` ADD CONSTRAINT `Fertilizante_ficha_id_fkey` FOREIGN KEY (`ficha_id`) REFERENCES `Documento`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Fertilizante` ADD CONSTRAINT `Fertilizante_sede_id_fkey` FOREIGN KEY (`sede_id`) REFERENCES `Sede`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Fertilizante` ADD CONSTRAINT `Fertilizante_anio_id_fkey` FOREIGN KEY (`anio_id`) REFERENCES `Anio`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
