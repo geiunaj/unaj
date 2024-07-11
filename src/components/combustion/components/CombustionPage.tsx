@@ -11,6 +11,7 @@ import {
   Select,
   SelectContent,
   SelectGroup,
+  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -23,81 +24,116 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { SelectItem } from "@radix-ui/react-select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormCombustion } from "./FormCombustion";
-// import { X } from "lucide-react";
-import { Plus } from 'lucide-react';
-
+import { X } from "lucide-react";
+import { ChevronsUpDown, Plus } from "lucide-react";
+import { useCombustionStore } from "../lib/combustion.store";
+import { CombustionCollection } from "../services/combustion.interface";
+import { useSedeStore } from "@/components/sede/lib/sede.store";
+import { Badge } from "@/components/ui/badge";
 
 export default function CombustionPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { combustion, loadCombustion } = useCombustionStore();
+  const { sedes, loadSedes } = useSedeStore();
+  const [selectedSede, setSelectedSede] = useState<string>("1");
+  const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
+    "desc"
+  );
+
+  useEffect(() => {
+    loadCombustion({ sedeId: Number(selectedSede) }); // Llama a loadCombustion cuando el componente se monta
+    loadSedes();
+  }, [loadCombustion, loadSedes]); // Dependencia vacía para solo llamar una vez al montar
+
+  const handleSedeChange = (value: string) => {
+    setSelectedSede(value);
+    loadCombustion({ sedeId: Number(value) });
+  };
+
+  const handleToggleConsumoSort = () => {
+    setConsumoDirection(consumoDirection === "asc" ? "desc" : "asc");
+    loadCombustion({
+      sedeId: Number(selectedSede),
+      sort: "consumo",
+      direction: consumoDirection,
+    });
+  };
+
+  if (!combustion) {
+    return <p>Cargando...</p>;
+  }
 
   return (
     <div className="w-full max-w-[1150px] h-full ">
-      <div className="flex flex-row justify-between items-center mb-6">
+      <div className="flex flex-row justify-between items-start mb-6">
         <div className="font-Manrope">
           <h1 className="text-xl text-gray-800 font-bold">
             COMBUSTION ESTACIONARIA
           </h1>
           <h2 className="text-base text-gray-500">Huella de carbono</h2>
         </div>
-        <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <AlertDialogTrigger asChild>
-            <Button variant="default" className=" text-white">
-              <Plus/>
-              Registrar
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="max-w-md border-2">
-            <AlertDialogHeader className="flex flex-row justify-between">
-              <AlertDialogCancel className="absolute right-0 top-0 bg-transparent hover:bg-transparent border-none shadow-none">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M18 6 6 18" />
-                  <path d="m6 6 12 12" />
-                </svg>
-              </AlertDialogCancel>
-            </AlertDialogHeader>
-            <FormCombustion />
-          </AlertDialogContent>
-        </AlertDialog>
+        <div className="flex justify-end gap-5">
+          <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
+            <Select
+              onValueChange={(value) => handleSedeChange(value)}
+              defaultValue={selectedSede}
+            >
+              <SelectTrigger className="rounded-sm h-10 w-80 focus:outline-none focus-visible:ring-0">
+                <SelectValue placeholder="Selecciona la Sede" />
+              </SelectTrigger>
+              <SelectContent className="border-none">
+                <SelectGroup>
+                  {sedes.map((sede) => (
+                    <SelectItem key={sede.id} value={sede.id.toString()}>
+                      {sede.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <AlertDialogTrigger asChild>
+              <Button variant="default" className=" text-white">
+                <Plus />
+                Registrar
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="max-w-lg border-2">
+              <AlertDialogHeader className="flex flex-row justify-between">
+                <AlertDialogCancel className="absolute right-0 top-0 bg-transparent hover:bg-transparent border-none shadow-none">
+                  <X />
+                </AlertDialogCancel>
+              </AlertDialogHeader>
+              <FormCombustion />
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
-      <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
-        <Select>
-          <SelectTrigger className="rounded-sm h-10 w-80 focus:outline-none focus-visible:ring-0">
-            <SelectValue placeholder="Selecciona la Sede" />
-          </SelectTrigger>
-          <SelectContent className="border-none">
-            <SelectGroup>
-              <SelectItem value="1">Sede 1</SelectItem>
-              <SelectItem value="2">Sede 2</SelectItem>
-              <SelectItem value="3">Sede 3</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
+
       <div className="rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="border">
-              <TableHead className=" font-Manrope text-sm font-bold text-center">
+            <TableRow>
+              {/* <TableHead className=" font-Manrope text-sm font-bold text-center">
                 SEDE
-              </TableHead>
+              </TableHead> */}
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 TIPO DE EQUIPO
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 TIPO DE GAS
+              </TableHead>
+              <TableHead className="font-Manrope text-sm font-bold text-center">
+                <Button
+                  variant="ghost"
+                  onClick={() => handleToggleConsumoSort()}
+                >
+                  CONSUMO
+                  <ChevronsUpDown className="ml-2 h-3 w-3" />
+                </Button>
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 UNIDAD
@@ -114,22 +150,27 @@ export default function CombustionPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow className="text-center">
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell className="flex space-x-4 justify-center items-center bg-transparent ">
-                <Button
-                  size="icon"
-                  className="bg-transparent hover:bg-transparent text-blue-700 border"
-                >
-                  <Pencil1Icon className="h-4 text-blue-700" />
-                </Button>
-              </TableCell>
-            </TableRow>
+            {combustion.map((item: CombustionCollection) => (
+              <TableRow key={item.id} className="text-center">
+                {/* <TableCell>{item.sede}</TableCell> */}
+                <TableCell>{item.tipoEquipo}</TableCell>
+                <TableCell>{item.tipoCombustible}</TableCell>
+                <TableCell>
+                  <Badge variant="default">{item.consumo}</Badge>
+                </TableCell>
+                <TableCell>{item.unidad}</TableCell>
+                <TableCell>{item.mes}</TableCell>
+                <TableCell>{item.anio}</TableCell>
+                <TableCell className="flex space-x-4 justify-center items-center bg-transparent ">
+                  <Button
+                    size="icon"
+                    className="bg-transparent hover:bg-transparent text-blue-700 border"
+                  >
+                    <Pencil1Icon className="h-4 text-blue-700" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>

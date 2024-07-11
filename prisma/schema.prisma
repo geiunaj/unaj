@@ -45,11 +45,6 @@ model Form {
   access      Access[]
 }
 
-model Sede {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(45)
-}
-
 model Access {
   id           Int      @id @default(autoincrement())
   type_user_id Int
@@ -80,27 +75,36 @@ model User {
   @@index([type_user_id])
 }
 
+model Sede {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(45)
+  combustibles Combustible[]
+}
+
 model tipoCombustible {
-  id          Int      @id @default(autoincrement())
-  nombre      String   @db.VarChar(45)
-  abreviatura String   @db.VarChar(45)
-  unidad      String   @db.VarChar(45)
-  created_at  DateTime
-  updated_at  DateTime
+  id           Int           @id @default(autoincrement())
+  nombre       String        @db.VarChar(45)
+  abreviatura  String        @db.VarChar(45)
+  unidad       String        @db.VarChar(45)
+  created_at   DateTime
+  updated_at   DateTime
+  combustibles Combustible[]
 }
 
 model Mes {
-  id         Int      @id @default(autoincrement())
-  nombre     String   @db.VarChar(45)
-  created_at DateTime
-  updated_at DateTime
+  id           Int           @id @default(autoincrement())
+  nombre       String        @db.VarChar(45)
+  created_at   DateTime
+  updated_at   DateTime
+  combustibles Combustible[]
 }
 
 model Anio {
-  id         Int      @id @default(autoincrement())
-  nombre     String   @db.VarChar(45)
-  created_at DateTime
-  updated_at DateTime
+  id           Int           @id @default(autoincrement())
+  nombre       String        @db.VarChar(45)
+  created_at   DateTime
+  updated_at   DateTime
+  combustibles Combustible[]
 }
 
 model Combustible {
@@ -116,4 +120,9 @@ model Combustible {
 
   created_at DateTime
   updated_at DateTime
+
+  tipoCombustible tipoCombustible? @relation(fields: [tipoCombustible_id], references: [id])
+  mes             Mes?             @relation(fields: [mes_id], references: [id])
+  anio            Anio?            @relation(fields: [anio_id], references: [id])
+  sede            Sede?            @relation(fields: [sede_id], references: [id])
 }

@@ -27,10 +27,10 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         <Sidebar />
       </div>
       <div className="flex flex-col flex-auto w-full bg-muted/40">
-        <div className="">
+        <div className="h-14">
           <Header />
         </div>
-        <div className="flex-auto m-4 flex justify-center items-center p-6 bg-white rounded-xl shadow">
+        <div className="flex-auto m-4 flex justify-center items-center p-6 bg-white rounded-xl shadow h-[calc(100vh - 56px)] overflow-y-auto">
           {children}
         </div>
       </div>

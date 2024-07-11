@@ -39,14 +39,6 @@ CREATE TABLE `Form` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Sede` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(45) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `Access` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `type_user_id` INTEGER NOT NULL,
@@ -76,6 +68,14 @@ CREATE TABLE `User` (
 
     UNIQUE INDEX `User_email_key`(`email`),
     INDEX `User_type_user_id_idx`(`type_user_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Sede` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(45) NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -142,3 +142,15 @@ ALTER TABLE `Access` ADD CONSTRAINT `Access_forms_id_fkey` FOREIGN KEY (`forms_i
 
 -- AddForeignKey
 ALTER TABLE `User` ADD CONSTRAINT `User_type_user_id_fkey` FOREIGN KEY (`type_user_id`) REFERENCES `TypeUser`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Combustible` ADD CONSTRAINT `Combustible_tipoCombustible_id_fkey` FOREIGN KEY (`tipoCombustible_id`) REFERENCES `tipoCombustible`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Combustible` ADD CONSTRAINT `Combustible_mes_id_fkey` FOREIGN KEY (`mes_id`) REFERENCES `Mes`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Combustible` ADD CONSTRAINT `Combustible_anio_id_fkey` FOREIGN KEY (`anio_id`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Combustible` ADD CONSTRAINT `Combustible_sede_id_fkey` FOREIGN KEY (`sede_id`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
