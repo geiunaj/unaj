@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { SelectItem } from "@radix-ui/react-select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronsUpDown, Plus } from "lucide-react";
 import { FormFertilizantes } from "./FormFertilizantes";
 import { useSedeStore } from "@/components/sede/lib/sede.store";
@@ -37,27 +37,32 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useFertilizanteStore } from "../lib/fertilizante.store";
+import { Badge } from "@/components/ui/badge";
+import { fertilizanteCollection } from "../services/fertilizante.interface";
 
-export default function CombustionPage() {
+export default function FertilizantePage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedSede, setSelectedSede] = useState<string>("1");
   const { sedes, loadSedes } = useSedeStore();
-  const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
+  const { fertilizante, loadFertilizante } = useFertilizanteStore();
+  const [selectedSede, setSelectedSede] = useState<string>("1");
+  const [cantidadDirection, setCantidadDirection] = useState<"asc" | "desc">(
     "desc"
   );
 
+
+  useEffect(() => {
+    loadFertilizante({ sedeId: Number(selectedSede) });
+    loadSedes();
+  }, [loadFertilizante, loadSedes]);
+
   const handleSedeChange = (value: string) => {
     setSelectedSede(value);
-    // loadCombustion({ tipo: formulario, sedeId: Number(value) });
-  };
-
-  const handleClose = () => {
-    setIsDialogOpen(false);
-    // loadCombustion({ tipo: formulario, sedeId: Number(selectedSede) });
+    loadFertilizante({ sedeId: Number(value) });
   };
 
   const handleToggleCantidadSort = () => {
-    setConsumoDirection(consumoDirection === "asc" ? "desc" : "asc");
+    setCantidadDirection(cantidadDirection === "asc" ? "desc" : "asc");
     // loadCombustion({
     //   tipo: formulario,
     //   sedeId: Number(selectedSede),
@@ -65,6 +70,15 @@ export default function CombustionPage() {
     //   direction: consumoDirection,
     // });
   };
+
+  const handleClose = () => {
+    setIsDialogOpen(false);
+    loadFertilizante({ sedeId: Number(selectedSede) });
+  
+  };
+
+  if (!fertilizante) return 
+  <p>Cargando...</p>;
 
   return (
     <div className="w-full max-w-[1150px] h-full ">
@@ -75,7 +89,7 @@ export default function CombustionPage() {
         </div>
         <div className="flex justify-end gap-5">
           <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end0">
-            <Select
+          <Select
               onValueChange={(value) => handleSedeChange(value)}
               defaultValue={selectedSede}
             >
@@ -110,7 +124,7 @@ export default function CombustionPage() {
                 </DialogDescription>
                 <DialogClose></DialogClose>
               </DialogHeader>
-              <FormFertilizantes onClose={handleClose} />
+              <FormFertilizantes onClose={handleClose}/>
             </DialogContent>
           </Dialog>
         </div>
@@ -145,11 +159,42 @@ export default function CombustionPage() {
                 FICHA TECNICA
               </TableHead>
               <TableHead className="text-sm font-bold text-center">
+                AÑO
+              </TableHead>
+              <TableHead className="text-sm font-bold text-center">
                 ACCIONES
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
+          {fertilizante.map((item:fertilizanteCollection ) => (
+              <TableRow key={item.id} className="text-center">
+                <TableCell>{item.clase}</TableCell>
+                <TableCell>{item.tipoFertilizante}</TableCell>
+                <TableCell>{item.cantidad}</TableCell>
+                <TableCell>{item.porcentajeNitrogeno}</TableCell>
+                <TableCell>
+                  {item.is_ficha ? (
+                    <Badge>SI</Badge>
+                  ) : (
+                    <Badge>NO</Badge>
+                  )}
+                </TableCell>
+                <TableCell>{item.anio}</TableCell>
+                <TableCell className="flex space-x-4 justify-center items-center bg-transparent ">
+                  <Button
+                    size="icon"
+                    className="bg-transparent hover:bg-transparent text-blue-700 border"
+                  >
+                    <Pencil1Icon className="h-4 text-blue-700" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+
+          </TableBody>
+
+          {/* <TableBody>
             <TableRow className="text-center">
               <TableCell></TableCell>
               <TableCell></TableCell>
@@ -166,7 +211,7 @@ export default function CombustionPage() {
                 </Button>
               </TableCell>
             </TableRow>
-          </TableBody>
+          </TableBody> */}
         </Table>
       </div>
     </div>

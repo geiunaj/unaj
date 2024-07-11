@@ -67,23 +67,23 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
     loadTiposFertilizante();
   }, [loadSedes, loadTiposFertilizante]);
 
-  const onSubmit = async (data: z.infer<typeof Ferilizer>) => {
-    const fertilizanteRequest: FertilizanteRequest = {
-      fertilizanteTipo: data.tipo_fertilizante,
-      fertilizante: data.nombre_fertilizante,
-      cantidadFertilizante: data.cantidad,
-      porcentajeN: data.nitrogen_percentage,
-      is_ficha: data.is_ficha,
-      ficha: data.fichatecnica,
-      sede_id: Number(data.sede),
-    };
-    console.log(fertilizanteRequest);
-    await createFertilizante(fertilizanteRequest);
-    onClose();
-  };
+  // const onSubmit = async (data: z.infer<typeof Ferilizer>) => {
+  //   const fertilizanteRequest: FertilizanteRequest = {
+  //     // fertilizanteTipo: data.tipo_fertilizante,
+  //     // fertilizante: data.nombre_fertilizante,
+  //     // cantidadFertilizante: data.cantidad,
+  //     // porcentajeN: data.nitrogen_percentage,
+  //     is_ficha: data.is_ficha,
+  //     // ficha: data.fichatecnica,
+  //     sede_id: Number(data.sede),
+  //   };
+  //   console.log(fertilizanteRequest);
+  //   await createFertilizante(fertilizanteRequest);
+  //   onClose();
+  // };
   
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center w-full">
       <div className="flex flex-col items-center justify-center">
         <Form {...form}>
           <form
@@ -164,7 +164,6 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
               )}
             />
 
-            <div className="flex gap-4">
               {/* cantidad */}
               <FormField
                 control={form.control}
@@ -183,7 +182,7 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
                   </FormItem>
                 )}
               />
-              {/* Nitrogen Percentage */}
+              {/* Nitrogen Percentage
               <FormField
                 control={form.control}
                 name="nitrogen_percentage"
@@ -200,8 +199,7 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
-            </div>
+              /> */}
 
             {/* is_ficha */}
             <FormField
