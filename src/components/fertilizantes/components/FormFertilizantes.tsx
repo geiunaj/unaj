@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,112 +20,162 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import {
+  CreateFertilizanteProps,
+  FertilizanteRequest,
+} from "../services/fertilizante.interface";
+import { useSedeStore } from "@/components/sede/lib/sede.store";
+import { useTipoFertilizante } from "@/components/tipoFertilizante/lib/tipoFertilizante.store";
+import { useFertilizanteStore } from "../lib/fertilizante.store";
 
 const Ferilizer = z.object({
-  type_fertilizer: z.string(),
-  name_fertilizer: z.string(),
-  amount: z.number(),
+  tipo_fertilizante: z.string().min(1, "Seleccione un tipo de fertilizante"),
+  nombre_fertilizante: z.string().min(1, "Ingrese un nombre de fertilizante"),
+  cantidad: z.number(),
   nitrogen_percentage: z.number(),
-  is_datasheet: z.boolean(),
-  datasheet: z.string().optional(), // Permite que el campo sea opcional
-  sede: z.string(),
+  is_ficha: z.boolean(),
+  fichatecnica: z.string().optional(), // Permite que el campo sea opcional
+  sede: z.string().min(1, "Seleccione una sede"),
 });
 
-export function FormFertilizantes() {
+export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
+  const { sedes, loadSedes } = useSedeStore();
+  const { tiposFertilizante, loadTiposFertilizante } = useTipoFertilizante();
+  const { createFertilizante } = useFertilizanteStore();
+
   const form = useForm<z.infer<typeof Ferilizer>>({
     resolver: zodResolver(Ferilizer),
     defaultValues: {
-      name_fertilizer: "",
-      type_fertilizer: "",
-      amount: 0,
+      nombre_fertilizante: "",
+      tipo_fertilizante: "",
+      cantidad: 0,
       nitrogen_percentage: 0,
-      is_datasheet: false,
-      datasheet: "",
+      is_ficha: false,
+      fichatecnica: "",
       sede: "",
     },
   });
 
+  const { watch } = form;
+  const isFicha = watch("is_ficha");
+
+  useEffect(() => {
+    loadSedes();
+    loadTiposFertilizante();
+  }, [loadSedes, loadTiposFertilizante]);
+
+  const onSubmit = async (data: z.infer<typeof Ferilizer>) => {
+    const fertilizanteRequest: FertilizanteRequest = {
+      fertilizanteTipo: data.tipo_fertilizante,
+      fertilizante: data.nombre_fertilizante,
+      cantidadFertilizante: data.cantidad,
+      porcentajeN: data.nitrogen_percentage,
+      is_ficha: data.is_ficha,
+      ficha: data.fichatecnica,
+      sede_id: Number(data.sede),
+    };
+    console.log(fertilizanteRequest);
+    await createFertilizante(fertilizanteRequest);
+    onClose();
+  };
+  
   return (
     <div className="flex items-center justify-center">
-        <div className="flex flex-col items-center justify-center">
-          <h2 className="text-2xl text-gray-800 font-bold mb-2 uppercase text-center">
-            Consumo Fertilizantes
-          </h2>
-          <p className="text-xs  text-gray-500 text-center">
-            Indicar el consumo de fertilizantes por tipo y enviar su ficha
-            técnica (considerar aquellos usados en prácticas agronómicas y/o
-            mantenimiento de áreas verdes).
-          </p>
+      <div className="flex flex-col items-center justify-center">
+        <Form {...form}>
+          <form
+            className="w-full flex flex-col gap-2"
+            // onSubmit={form.handleSubmit(onSubmit)}
+          >
+            {/* Sede */}
+            <FormField
+              name="sede"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="pt-2">
+                  <FormLabel>Sede</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl className="w-full">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleciona tu sede" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        {sedes.map((sede) => (
+                          <SelectItem key={sede.id} value={sede.id.toString()}>
+                            {sede.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
 
-          <Form {...form}>
-            <form className="w-full flex flex-col gap-3 pt-3 ">
-              {/* Sede */}
-              <FormField
-                name="sede"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Sede</FormLabel>
-                    <Select>
-                      <FormControl className="w-full">
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleciona tu sede" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Sede 1">
-                          Sede La Capilla (Administrativo)
-                        </SelectItem>
-                        <SelectItem value="Sede 2">
-                          Sede La Capilla (SAcadémico)
-                        </SelectItem>
-                        <SelectItem value="Sede 3">Sede Ayabacas</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
-              {/* Tipo de Fertilizante */}
-              <FormField
-                name="type_fertilizer"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo de Fertilizante</FormLabel>
-                    <Select>
-                      <FormControl className="w-full">
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleciona el tipo de Fertilizante" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Sede 1">
-                          Fertilizantes Sinteticos
-                        </SelectItem>
-                        <SelectItem value="Sede 2">
-                          Fertilizantes Organicos
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
+            {/* Tipo de Fertilizante */}
+            <FormField
+              name="tipo_fertilizante"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="pt-2">
+                  <FormLabel>Tipo de Fertilizante</FormLabel>
+                  <Select>
+                    <FormControl className="w-full">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Tipo de Fertilizante" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Sede 1">
+                        Fertilizantes Sinteticos
+                      </SelectItem>
+                      <SelectItem value="Sede 2">
+                        Fertilizantes Organicos
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
 
-              {/* Name */}
+            {/* Name */}
+            <FormField
+              control={form.control}
+              name="nombre_fertilizante"
+              render={({ field }) => (
+                <FormItem className="pt-2">
+                  <FormLabel>Nombre del Fertilizante</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex gap-4">
+              {/* cantidad */}
               <FormField
                 control={form.control}
-                name="name_fertilizer"
+                name="cantidad"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nombre del Fertilizante</FormLabel>
+                  <FormItem className="pt-2 w-1/2">
+                    <FormLabel>Cantida de fertilizante</FormLabel>
                     <FormControl>
                       <Input
                         className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                        placeholder="Cantidad Kg/año"
                         {...field}
                       />
                     </FormControl>
@@ -133,64 +183,17 @@ export function FormFertilizantes() {
                   </FormItem>
                 )}
               />
-              <div className="flex gap-5">
-                {/* amount */}
-                <FormField
-                  control={form.control}
-                  name="amount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Cantida de fertilizante</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                          placeholder="Cantidad Kg/año"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {/* Nitrogen Percentage */}
-                <FormField
-                  control={form.control}
-                  name="nitrogen_percentage"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>% Nitrogeno</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                          placeholder= "% Nitrogen"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>  
-              {/* is_datasheet */}
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="airplane-mode"
-                  className="data-[state=checked]:bg-blue-900 data-[state=unchecked]:bg-gray-400"
-                />
-                <Label htmlFor="airplane-mode">Cuenta con Ficha tecnica</Label>
-              </div>
-              {/* datasheet */}
+              {/* Nitrogen Percentage */}
               <FormField
                 control={form.control}
-                name="datasheet"
+                name="nitrogen_percentage"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ficha Tecnica</FormLabel>
+                  <FormItem className="pt-2">
+                    <FormLabel>% Nitrogeno</FormLabel>
                     <FormControl>
                       <Input
                         className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                        placeholder="Ficha tecnica"
-                        type="file"
+                        placeholder="% Nitrogeno"
                         {...field}
                       />
                     </FormControl>
@@ -198,18 +201,55 @@ export function FormFertilizantes() {
                   </FormItem>
                 )}
               />
-              <div className="flex  gap-3 w-full pt-4">
-                <Button type="submit" className="w-full bg-blue-900">
-                  Guardar
-                </Button>
-                <Button type="submit" className="w-full"
-                variant="secondary">
-                  Cancelar
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </div>
+            </div>
+
+            {/* is_ficha */}
+            <FormField
+              control={form.control}
+              name="is_ficha"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="inline-block">
+                    ¿Cuenta con ficha tecnica?
+                  </FormLabel>
+                  <FormControl className="inline-block ml-2">
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  {isFicha && (
+                    <FormField
+                      control={form.control}
+                      name="fichatecnica"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              className="w-full p-2 rounded mt-1 focus:outline-none focus-visible:ring-offset-0"
+                              type="file"
+                              placeholder="Suba la ficha tecnica"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex gap-3 w-full pt-4">
+              <Button type="submit" className="w-full bg-blue-700">
+                Guardar
+              </Button>
+            </div>
+          </form>
+        </Form>
       </div>
+    </div>
   );
 }

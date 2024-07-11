@@ -144,6 +144,45 @@ async function main() {
   console.log({ adminType, user });
 }
 
+//Crear tipos de Fertilizantes
+
+// const tiposFertilizantes = [
+//   { claseFertilizante: "Sintético", nombre: "Urea uso agrícola", porcentajeNitrogeno: 46 },
+//   { claseFertilizante: "Sintético", nombre: "Fosfato diamónico", porcentajeNitrogeno: 18 },
+//   { claseFertilizante: "Sintético", nombre: "Sulfato de Amonio", porcentajeNitrogeno: 21 },
+//   { claseFertilizante: "Sintético", nombre: "Nitrato de Amonio", porcentajeNitrogeno: 34 },
+// ];
+
+// const mockDocuments = [
+//   { name: "Informe de fertilización", content: "Contenido del informe de fertilización..." },
+//   { name: "Análisis de suelo", content: "Resultados del análisis de suelo..." },
+//   { name: "Certificado de calidad", content: "Certificado de calidad del fertilizante..." },
+//   // Agrega más documentos según sea necesario
+// ];
+
+// // Obtener ids de Mes, Anio, Sede y tipoFertilizante usando Prisma
+// const allMeses = await prisma.mes.findMany();
+// const allAnios = await prisma.anio.findMany();
+// const allSedes = await prisma.sede.findMany();
+// const allTiposFertilizantes = await prisma.tipoFertilizante.findMany();
+// const allDocument = await prisma.document.findMany(); // Asumiendo que 'document' es el nombre correcto del modelo
+
+// // Crear datos aleatorios para Fertilizante
+// for (let i = 0; i < 100; i++) {
+//   await prisma.fertilizante.create({
+//     data: {
+//       tipoFertilizante_id: allTiposFertilizantes[Math.floor(Math.random() * allTiposFertilizantes.length)].id,
+//       cantidad: faker.datatype.float({ min: 0, max: 100 }),
+//       is_ficha: faker.datatype.boolean(),
+//       fichaId: mockDocuments[Math.floor(Math.random() * mockDocuments.length)].id,
+//       anio_id: allAnios[Math.floor(Math.random() * allAnios.length)].id,
+//       sede_id: allSedes[Math.floor(Math.random() * allSedes.length)].id,
+//       created_at: new Date(),
+//       updated_at: new Date(),
+//     },
+//   });
+// }
+
 main()
   .catch((e) => {
     console.error(e);
