@@ -7,7 +7,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 model Access {
   id           Int      @id @default(autoincrement())
   type_user_id Int
@@ -40,6 +39,7 @@ model Sede {
   name         String         @db.VarChar(45)
   combustibles Combustible[]
   fertilizante Fertilizante[]
+  ConsumoPapel ConsumoPapel[]
 }
 
 model tipoCombustible {
@@ -130,35 +130,33 @@ model Fertilizante {
 }
 
 model TipoPapel {
-  id                    Int       @id @default(autoincrement())
-  nombre                String    @db.VarChar(50)
-  gramaje               Float     @db.Float
-  unidad_paquete        String    @db.VarChar(45)
-  is_certificado        Boolean   @default(false)
-  is_reciclable         Boolean   @default(false)
-  porcentaje_reciclado  Float?    @db.Float
-  nombre_certificado    String?   @db.VarChar(50)
-
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
-
-  consumoPapel          ConsumoPapel[]
-}
-
-
-model ConsumoPapel {
-  id                  Int       @id @default(autoincrement())
-  tipoPapel_id        Int
-  cantidad_paquete    Int
-  anio_id             Int
-  comentario          String
+  id                   Int     @id @default(autoincrement())
+  nombre               String  @db.VarChar(50)
+  gramaje              Float   @db.Float
+  unidad_paquete       String  @db.VarChar(45)
+  is_certificado       Boolean @default(false)
+  is_reciclable        Boolean @default(false)
+  porcentaje_reciclado Float?  @db.Float
+  nombre_certificado   String? @db.VarChar(50)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  tipoPapel           TipoPapel @relation(fields: [tipoPapel_id], references: [id])
-  anio                Anio      @relation(fields: [anio_id], references: [id])
+  consumoPapel ConsumoPapel[]
 }
 
+model ConsumoPapel {
+  id               Int     @id @default(autoincrement())
+  tipoPapel_id     Int
+  cantidad_paquete Int
+  comentario       String?
+  anio_id          Int
+  sede_id          Int?
 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
+  tipoPapel TipoPapel @relation(fields: [tipoPapel_id], references: [id])
+  anio      Anio      @relation(fields: [anio_id], references: [id])
+  sede      Sede?     @relation(fields: [sede_id], references: [id])
+}

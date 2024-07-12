@@ -315,9 +315,10 @@ async function main() {
             Math.floor(Math.random() * allTiposPapel.length)
           ].id,
         
-        cantidad_paquete: faker.number({ min: 0, max: 100 }),
+        cantidad_paquete: faker.number.float({ min: 0, max: 100 }),
         anio_id: allAnios[Math.floor(Math.random() * allAnios.length)].id,
         sede_id: allSedes[Math.floor(Math.random() * allSedes.length)].id,
+        
         created_at: new Date(),
         updated_at: new Date(),
       },

@@ -145,8 +145,9 @@ CREATE TABLE `ConsumoPapel` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `tipoPapel_id` INTEGER NOT NULL,
     `cantidad_paquete` INTEGER NOT NULL,
+    `comentario` VARCHAR(191) NULL,
     `anio_id` INTEGER NOT NULL,
-    `comentario` VARCHAR(191) NOT NULL,
+    `sede_id` INTEGER NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -188,3 +189,6 @@ ALTER TABLE `ConsumoPapel` ADD CONSTRAINT `ConsumoPapel_tipoPapel_id_fkey` FOREI
 
 -- AddForeignKey
 ALTER TABLE `ConsumoPapel` ADD CONSTRAINT `ConsumoPapel_anio_id_fkey` FOREIGN KEY (`anio_id`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ConsumoPapel` ADD CONSTRAINT `ConsumoPapel_sede_id_fkey` FOREIGN KEY (`sede_id`) REFERENCES `Sede`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
