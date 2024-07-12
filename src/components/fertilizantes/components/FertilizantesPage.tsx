@@ -1,16 +1,10 @@
 "use client";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectGroup,
+  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -23,7 +17,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { SelectItem } from "@radix-ui/react-select";
 import { useEffect, useState } from "react";
 import { ChevronsUpDown, Plus } from "lucide-react";
 import { FormFertilizantes } from "./FormFertilizantes";
@@ -50,11 +43,11 @@ export default function FertilizantePage() {
     "desc"
   );
 
-
   useEffect(() => {
     loadFertilizante({ sedeId: Number(selectedSede) });
+
     loadSedes();
-  }, [loadFertilizante, loadSedes]);
+  }, [loadFertilizante, loadSedes, selectedSede]);
 
   const handleSedeChange = (value: string) => {
     setSelectedSede(value);
@@ -63,22 +56,14 @@ export default function FertilizantePage() {
 
   const handleToggleCantidadSort = () => {
     setCantidadDirection(cantidadDirection === "asc" ? "desc" : "asc");
-    // loadCombustion({
-    //   tipo: formulario,
-    //   sedeId: Number(selectedSede),
-    //   sort: "consumo",
-    //   direction: consumoDirection,
-    // });
   };
 
   const handleClose = () => {
     setIsDialogOpen(false);
     loadFertilizante({ sedeId: Number(selectedSede) });
-  
   };
 
-  if (!fertilizante) return 
-  <p>Cargando...</p>;
+  if (!fertilizante) return <p>Cargando...</p>;
 
   return (
     <div className="w-full max-w-[1150px] h-full ">
@@ -89,7 +74,7 @@ export default function FertilizantePage() {
         </div>
         <div className="flex justify-end gap-5">
           <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end0">
-          <Select
+            <Select
               onValueChange={(value) => handleSedeChange(value)}
               defaultValue={selectedSede}
             >
@@ -98,8 +83,11 @@ export default function FertilizantePage() {
               </SelectTrigger>
               <SelectContent className="border-none">
                 <SelectGroup>
-                  {sedes.map((sede) => (
-                    <SelectItem key={sede.id} value={sede.id.toString()}>
+                  {sedes.map((sede, index) => (
+                    <SelectItem
+                      key={`${sede.id}-${index}`}
+                      value={sede.id.toString()}
+                    >
                       {sede.name}
                     </SelectItem>
                   ))}
@@ -124,7 +112,7 @@ export default function FertilizantePage() {
                 </DialogDescription>
                 <DialogClose></DialogClose>
               </DialogHeader>
-              <FormFertilizantes onClose={handleClose}/>
+              <FormFertilizantes onClose={handleClose} />
             </DialogContent>
           </Dialog>
         </div>
@@ -134,9 +122,6 @@ export default function FertilizantePage() {
         <Table>
           <TableHeader>
             <TableRow>
-              {/* <TableHead className=" font-Manrope text-sm font-bold text-center">
-                SEDE
-              </TableHead> */}
               <TableHead className="text-sm font-bold text-center">
                 TIPO DE FERTILIZANTE
               </TableHead>
@@ -167,18 +152,14 @@ export default function FertilizantePage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-          {fertilizante.map((item:fertilizanteCollection ) => (
+            {fertilizante.map((item: any) => (
               <TableRow key={item.id} className="text-center">
                 <TableCell>{item.clase}</TableCell>
                 <TableCell>{item.tipoFertilizante}</TableCell>
                 <TableCell>{item.cantidad}</TableCell>
-                <TableCell>{item.porcentajeNitrogeno}</TableCell>
+                <TableCell>{item.porcentajeNit}</TableCell>
                 <TableCell>
-                  {item.is_ficha ? (
-                    <Badge>SI</Badge>
-                  ) : (
-                    <Badge>NO</Badge>
-                  )}
+                  {item.is_ficha ? <Badge>SI</Badge> : <Badge>NO</Badge>}
                 </TableCell>
                 <TableCell>{item.anio}</TableCell>
                 <TableCell className="flex space-x-4 justify-center items-center bg-transparent ">
@@ -191,27 +172,7 @@ export default function FertilizantePage() {
                 </TableCell>
               </TableRow>
             ))}
-
           </TableBody>
-
-          {/* <TableBody>
-            <TableRow className="text-center">
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell className="flex space-x-4 justify-center items-center bg-transparent ">
-                <Button
-                  size="icon"
-                  className="bg-transparent hover:bg-transparent text-blue-700 border"
-                >
-                  <Pencil1Icon className="h-4 text-blue-700" />
-                </Button>
-              </TableCell>
-            </TableRow>
-          </TableBody> */}
         </Table>
       </div>
     </div>

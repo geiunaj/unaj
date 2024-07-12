@@ -1,12 +1,12 @@
 import api from "../../../../config/api";
 import { AxiosRequestConfig } from "axios";
-import { FertilizanteCollection, FertilizanteRequest } from "./fertilizante.interface";
+import { fertilizanteCollection, FertilizanteRequest } from "./fertilizante.interface";
 
 export async function getFertilizante(
   sedeId?: number,
   sort?: string,
   direction?: string
-): Promise<FertilizanteCollection[]> {
+): Promise<fertilizanteCollection[]> {
   const config: AxiosRequestConfig = {
     params: {
       sedeId,
@@ -14,7 +14,7 @@ export async function getFertilizante(
       direction,
     },
   };
-  const { data } = await api.get<FertilizanteCollection[]>(
+  const { data } = await api.get<fertilizanteCollection[]>(
     "/api/fertilizante",
     config
   );

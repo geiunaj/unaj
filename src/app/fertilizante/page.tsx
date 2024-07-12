@@ -6,7 +6,7 @@ import LayoutWrapper from "@/components/Layout/layout";
 export default function Page() {
   return (
     <LayoutWrapper>
-      <FerlizantePage />;
+      <FerlizantePage />
     </LayoutWrapper>
   );
 }

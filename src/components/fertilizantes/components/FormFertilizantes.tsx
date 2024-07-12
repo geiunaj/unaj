@@ -61,6 +61,7 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
 
   const { watch } = form;
   const isFicha = watch("is_ficha");
+  const tipoFertilizante = watch("tipo_fertilizante");
 
   useEffect(() => {
     loadSedes();
@@ -81,10 +82,10 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
   //   await createFertilizante(fertilizanteRequest);
   //   onClose();
   // };
-  
+
   return (
-    <div className="flex items-center justify-center w-full">
-      <div className="flex flex-col items-center justify-center">
+    <div className="flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center w-full">
         <Form {...form}>
           <form
             className="w-full flex flex-col gap-2"
@@ -134,12 +135,16 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Sede 1">
-                        Fertilizantes Sinteticos
-                      </SelectItem>
-                      <SelectItem value="Sede 2">
-                        Fertilizantes Organicos
-                      </SelectItem>
+                      <SelectGroup>
+                        {tiposFertilizante.map((tipo_fertilizante) => (
+                          <SelectItem
+                            key={tipo_fertilizante.id}
+                            value={tipo_fertilizante.id.toString()}
+                          >
+                            {tipo_fertilizante.clase}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
                     </SelectContent>
                   </Select>
                 </FormItem>
@@ -147,15 +152,52 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
             />
 
             {/* Name */}
+            {/* {tipoFertilizante && (
+              <FormField
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="pt-2">
+                    <FormLabel>Nombre de Fertilizante</FormLabel>
+                    <Select {...field}>
+                      <FormControl className="w-full">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Nombre de Fertilizante" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          {tipo_fertilizante.filter(
+                              (tipo_fertilizante) =>
+                                tipo_fertilizante.id ===
+                                tipoFertilizante.id
+                            )
+                            .map((tipo_fertilizante) => (
+                              <SelectItem
+                                key={tipo_fertilizante.id}
+                                value={tipo_fertilizante.id.toString()}
+                              >
+                                {tipo_fertilizante.nombre}
+                              </SelectItem>
+                            ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+            )} */}
+
+            {/* cantidad */}
             <FormField
               control={form.control}
-              name="nombre_fertilizante"
+              name="cantidad"
               render={({ field }) => (
-                <FormItem className="pt-2">
-                  <FormLabel>Nombre del Fertilizante</FormLabel>
+                <FormItem className="pt-2 w-1/2">
+                  <FormLabel>Cantida de fertilizante</FormLabel>
                   <FormControl>
                     <Input
                       className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                      placeholder="Cantidad Kg/año"
                       {...field}
                     />
                   </FormControl>
@@ -163,26 +205,7 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
                 </FormItem>
               )}
             />
-
-              {/* cantidad */}
-              <FormField
-                control={form.control}
-                name="cantidad"
-                render={({ field }) => (
-                  <FormItem className="pt-2 w-1/2">
-                    <FormLabel>Cantida de fertilizante</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                        placeholder="Cantidad Kg/año"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* Nitrogen Percentage
+            {/* Nitrogen Percentage
               <FormField
                 control={form.control}
                 name="nitrogen_percentage"

@@ -45,5 +45,6 @@ export function formaFertilizante(fertilizante: any) {
     sede: sede?.name,
     clase: tipoFertilizante?.clase,
     tipoFertilizante: tipoFertilizante?.nombre,
+    porcentajeNit: tipoFertilizante?.porcentajeNitrogeno,
   };
 }

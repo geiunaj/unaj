@@ -1,8 +1,8 @@
 export interface TipoFertilizante {
     id: number;
+    clase: string;
     nombre: string;
-    abreviatura: string;
-    unidad: string;
+    porcentajeNitrogeno: number;
     created_at: Date;
     updated_at: Date;
   }
