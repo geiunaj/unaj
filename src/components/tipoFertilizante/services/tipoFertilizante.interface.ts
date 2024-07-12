@@ -5,5 +5,4 @@ export interface TipoFertilizante {
     porcentajeNitrogeno: number;
     created_at: Date;
     updated_at: Date;
-  }
-  
+}
