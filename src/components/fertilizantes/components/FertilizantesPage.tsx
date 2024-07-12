@@ -1,4 +1,3 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -45,7 +44,6 @@ export default function FertilizantePage() {
 
   useEffect(() => {
     loadFertilizante({ sedeId: Number(selectedSede) });
-
     loadSedes();
   }, [loadFertilizante, loadSedes, selectedSede]);
 
@@ -56,6 +54,11 @@ export default function FertilizantePage() {
 
   const handleToggleCantidadSort = () => {
     setCantidadDirection(cantidadDirection === "asc" ? "desc" : "asc");
+    loadFertilizante({
+      sedeId: Number(selectedSede),
+      sort: "cantidadFertilizante",
+      direction: cantidadDirection === "asc" ? "desc" : "asc",
+    });
   };
 
   const handleClose = () => {
@@ -73,7 +76,7 @@ export default function FertilizantePage() {
           <h2 className="text-base text-gray-500">Huella de carbono</h2>
         </div>
         <div className="flex justify-end gap-5">
-          <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end0">
+          <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
             <Select
               onValueChange={(value) => handleSedeChange(value)}
               defaultValue={selectedSede}
@@ -131,7 +134,7 @@ export default function FertilizantePage() {
               <TableHead className="text-sm font-bold text-center">
                 <Button
                   variant="ghost"
-                  onClick={() => handleToggleCantidadSort()}
+                  onClick={handleToggleCantidadSort}
                 >
                   CNT. DE FERTILIZANTE
                   <ChevronsUpDown className="ml-2 h-3 w-3" />
@@ -152,12 +155,12 @@ export default function FertilizantePage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {fertilizante.map((item: any) => (
+            {fertilizante.map((item: fertilizanteCollection) => (
               <TableRow key={item.id} className="text-center">
                 <TableCell>{item.clase}</TableCell>
                 <TableCell>{item.tipoFertilizante}</TableCell>
                 <TableCell>{item.cantidad}</TableCell>
-                <TableCell>{item.porcentajeNit}</TableCell>
+                <TableCell>{item.porcentajeNit} %</TableCell>
                 <TableCell>
                   {item.is_ficha ? <Badge>SI</Badge> : <Badge>NO</Badge>}
                 </TableCell>

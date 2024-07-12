@@ -155,12 +155,12 @@ async function main() {
       porcentajeNitrogeno: 18,
     },
     {
-      clase: "Sintético",
+      clase: "Organico",
       nombre: "Sulfato de Amonio",
       porcentajeNitrogeno: 21,
     },
     {
-      clase: "Sintético",
+      clase: "Organico",
       nombre: "Nitrato de Amonio",
       porcentajeNitrogeno: 34,
     },
@@ -195,7 +195,7 @@ async function main() {
 
   const fichaIds = allDocument.map((doc: { id: any }) => doc.id); // Obtener los IDs de los documentos creados
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 60; i++) {
     await prisma.fertilizante.create({
       data: {
         tipoFertilizante_id:

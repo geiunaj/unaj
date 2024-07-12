@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,19 +30,21 @@ import {
 import { useSedeStore } from "@/components/sede/lib/sede.store";
 import { useTipoFertilizante } from "@/components/tipoFertilizante/lib/tipoFertilizante.store";
 import { useFertilizanteStore } from "../lib/fertilizante.store";
+import { useAnioStore } from "@/components/anio/lib/anio.store";
 
 const Ferilizer = z.object({
   tipo_fertilizante: z.string().min(1, "Seleccione un tipo de fertilizante"),
   nombre_fertilizante: z.string().min(1, "Ingrese un nombre de fertilizante"),
   cantidad: z.number(),
-  nitrogen_percentage: z.number(),
   is_ficha: z.boolean(),
   fichatecnica: z.string().optional(), // Permite que el campo sea opcional
   sede: z.string().min(1, "Seleccione una sede"),
+  anio: z.string().min(1, "Seleccione un año"),
 });
 
 export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
   const { sedes, loadSedes } = useSedeStore();
+  const { anios, loadAnios } = useAnioStore();
   const { tiposFertilizante, loadTiposFertilizante } = useTipoFertilizante();
   const { createFertilizante } = useFertilizanteStore();
 
@@ -52,36 +54,49 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
       nombre_fertilizante: "",
       tipo_fertilizante: "",
       cantidad: 0,
-      nitrogen_percentage: 0,
+      // nitrogen_percentage: 0,
       is_ficha: false,
       fichatecnica: "",
       sede: "",
+      anio: "",
     },
   });
 
-  const { watch } = form;
+  const { watch, setValue } = form;
   const isFicha = watch("is_ficha");
   const tipoFertilizante = watch("tipo_fertilizante");
+  const [filteredNombres, setFilteredNombres] = useState<string[]>([]);
 
   useEffect(() => {
     loadSedes();
+    loadAnios();
     loadTiposFertilizante();
-  }, [loadSedes, loadTiposFertilizante]);
+  }, [loadSedes, loadTiposFertilizante, loadAnios]);
 
-  // const onSubmit = async (data: z.infer<typeof Ferilizer>) => {
-  //   const fertilizanteRequest: FertilizanteRequest = {
-  //     // fertilizanteTipo: data.tipo_fertilizante,
-  //     // fertilizante: data.nombre_fertilizante,
-  //     // cantidadFertilizante: data.cantidad,
-  //     // porcentajeN: data.nitrogen_percentage,
-  //     is_ficha: data.is_ficha,
-  //     // ficha: data.fichatecnica,
-  //     sede_id: Number(data.sede),
-  //   };
-  //   console.log(fertilizanteRequest);
-  //   await createFertilizante(fertilizanteRequest);
-  //   onClose();
-  // };
+  useEffect(() => {
+    if (tipoFertilizante) {
+      const nombres = tiposFertilizante
+        .filter((tipo) => tipo.clase === tipoFertilizante)
+        .map((tipo) => tipo.nombre);
+      setFilteredNombres(nombres);
+    } else {
+      setFilteredNombres([]);
+    }
+  }, [tipoFertilizante, tiposFertilizante]);
+
+  const onSubmit = async (data: z.infer<typeof Ferilizer>) => {
+    const fertilizanteRequest: FertilizanteRequest = {
+      tipoFertilizante_id: parseInt(tipoFertilizante),
+      cantidad: data.cantidad,
+      sede_id: parseInt(data.sede),
+      is_ficha: data.is_ficha,
+      anio_id: parseInt(data.anio),
+      // fichatecnica: data.fichatecnica,
+    };
+    console.log(fertilizanteRequest);
+    await createFertilizante(fertilizanteRequest);
+    onClose();
+  };
 
   return (
     <div className="flex items-center justify-center">
@@ -89,7 +104,7 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
         <Form {...form}>
           <form
             className="w-full flex flex-col gap-2"
-            // onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit)}
           >
             {/* Sede */}
             <FormField
@@ -104,7 +119,7 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
                   >
                     <FormControl className="w-full">
                       <SelectTrigger>
-                        <SelectValue placeholder="Seleciona tu sede" />
+                        <SelectValue placeholder="Selecciona tu sede" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -128,7 +143,11 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
               render={({ field }) => (
                 <FormItem className="pt-2">
                   <FormLabel>Tipo de Fertilizante</FormLabel>
-                  <Select>
+                  <Select
+                    onValueChange={(value) =>
+                      setValue("tipo_fertilizante", value)
+                    }
+                  >
                     <FormControl className="w-full">
                       <SelectTrigger>
                         <SelectValue placeholder="Tipo de Fertilizante" />
@@ -136,12 +155,9 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        {tiposFertilizante.map((tipo_fertilizante) => (
-                          <SelectItem
-                            key={tipo_fertilizante.id}
-                            value={tipo_fertilizante.id.toString()}
-                          >
-                            {tipo_fertilizante.clase}
+                        {tiposFertilizante.map((tipo) => (
+                          <SelectItem key={tipo.id} value={tipo.clase}>
+                            {tipo.clase}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -151,14 +167,15 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
               )}
             />
 
-            {/* Name */}
-            {/* {tipoFertilizante && (
+            {/* Nombre del Fertilizante */}
+            {tipoFertilizante && (
               <FormField
+                name="nombre_fertilizante"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="pt-2">
                     <FormLabel>Nombre de Fertilizante</FormLabel>
-                    <Select {...field}>
+                    <Select onValueChange={field.onChange}>
                       <FormControl className="w-full">
                         <SelectTrigger>
                           <SelectValue placeholder="Nombre de Fertilizante" />
@@ -166,70 +183,78 @@ export function FormFertilizantes({ onClose }: CreateFertilizanteProps) {
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
-                          {tipo_fertilizante.filter(
-                              (tipo_fertilizante) =>
-                                tipo_fertilizante.id ===
-                                tipoFertilizante.id
-                            )
-                            .map((tipo_fertilizante) => (
-                              <SelectItem
-                                key={tipo_fertilizante.id}
-                                value={tipo_fertilizante.id.toString()}
-                              >
-                                {tipo_fertilizante.nombre}
-                              </SelectItem>
-                            ))}
+                          {filteredNombres.map((nombre, index) => (
+                            <SelectItem key={index} value={nombre}>
+                              {nombre}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
                   </FormItem>
                 )}
               />
-            )} */}
+            )}
 
-            {/* cantidad */}
-            <FormField
-              control={form.control}
-              name="cantidad"
-              render={({ field }) => (
-                <FormItem className="pt-2 w-1/2">
-                  <FormLabel>Cantida de fertilizante</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                      placeholder="Cantidad Kg/año"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* Nitrogen Percentage
+            <div className="flex gap-4">
+              {/* Cantidad */}
               <FormField
                 control={form.control}
-                name="nitrogen_percentage"
+                name="cantidad"
                 render={({ field }) => (
-                  <FormItem className="pt-2">
-                    <FormLabel>% Nitrogeno</FormLabel>
+                  <FormItem className="pt-2 w-1/2">
+                    <FormLabel>Cantidad de fertilizante</FormLabel>
                     <FormControl>
                       <Input
                         className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                        placeholder="% Nitrogeno"
+                        placeholder="Cantidad Kg/año"
                         {...field}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
+              {/* año */}
+              <FormField
+                control={form.control}
+                name="anio"
+                render={({ field }) => (
+                  <FormItem className="pt-2 w-1/2">
+                    <FormLabel>Año</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl className="w-full">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona el año" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          {anios.map((anio) => (
+                            <SelectItem
+                              key={anio.id}
+                              value={anio.id.toString()}
+                            >
+                              {anio.nombre}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {/* is_ficha */}
             <FormField
               control={form.control}
               name="is_ficha"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="pt-2">
                   <FormLabel className="inline-block">
                     ¿Cuenta con ficha tecnica?
                   </FormLabel>
