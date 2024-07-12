@@ -195,7 +195,7 @@ async function main() {
 
   const fichaIds = allDocument.map((doc: { id: any }) => doc.id); // Obtener los IDs de los documentos creados
 
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 40; i++) {
     await prisma.fertilizante.create({
       data: {
         tipoFertilizante_id:

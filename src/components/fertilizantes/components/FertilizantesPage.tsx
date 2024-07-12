@@ -38,6 +38,7 @@ export default function FertilizantePage() {
   const { sedes, loadSedes } = useSedeStore();
   const { fertilizante, loadFertilizante } = useFertilizanteStore();
   const [selectedSede, setSelectedSede] = useState<string>("1");
+  // const [selectedClase, setSelectedClase] = useState<string>("1");
   const [cantidadDirection, setCantidadDirection] = useState<"asc" | "desc">(
     "desc"
   );
@@ -49,8 +50,15 @@ export default function FertilizantePage() {
 
   const handleSedeChange = (value: string) => {
     setSelectedSede(value);
-    loadFertilizante({ sedeId: Number(value) });
+    loadFertilizante({ sedeId: Number(value) })
+    ;
   };
+
+  // const handleClaseChange = (value: string) => {
+  //   setSelectedClase(value);
+  //   setSelectedSede(value);
+  //   loadFertilizante({ sedeId: Number(value) });
+  // };
 
   const handleToggleCantidadSort = () => {
     setCantidadDirection(cantidadDirection === "asc" ? "desc" : "asc");
@@ -97,7 +105,30 @@ export default function FertilizantePage() {
                 </SelectGroup>
               </SelectContent>
             </Select>
+            {/* <Select
+              onValueChange={(value) => handleClaseChange(value)}
+              defaultValue={selectedClase}
+            >
+              <SelectTrigger className="rounded-sm h-10 w-80 focus:outline-none focus-visible:ring-0">
+                <SelectValue placeholder="Selecciona la Sede" />
+              </SelectTrigger>
+              <SelectContent className="border-none">
+                <SelectGroup>
+                  <SelectItem value="Organico">Orgánico</SelectItem>
+                  <SelectItem value="Sintético">Sintético</SelectItem>
+                  {/* {sedes.map((sede, index) => (
+                    <SelectItem
+                      key={`${sede.id}-${index}`}
+                      value={sede.id.toString()}
+                    >
+                      {sede.name}
+                    </SelectItem>
+                  ))} */}
+                {/* </SelectGroup>
+              </SelectContent>
+            </Select> */} 
           </div>
+
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="default" className=" text-white">
@@ -132,10 +163,7 @@ export default function FertilizantePage() {
                 FERTILIZANTE
               </TableHead>
               <TableHead className="text-sm font-bold text-center">
-                <Button
-                  variant="ghost"
-                  onClick={handleToggleCantidadSort}
-                >
+                <Button variant="ghost" onClick={handleToggleCantidadSort}>
                   CNT. DE FERTILIZANTE
                   <ChevronsUpDown className="ml-2 h-3 w-3" />
                 </Button>

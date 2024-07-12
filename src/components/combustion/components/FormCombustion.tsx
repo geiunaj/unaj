@@ -42,7 +42,7 @@ const Combustion = z.object({
   ),
 });
 
-export function FormCombustion({ onClose }: CreateCombustionProps) {
+export function FormCombustion({ onClose, tipo }: CreateCombustionProps & { tipo: string }) {
   const { sedes, loadSedes } = useSedeStore();
   const { tiposCombustible, loadTiposCombustible } = useTipoCombustibleStore();
   // const {mes, loadmes} = useMesStore();
@@ -66,7 +66,7 @@ export function FormCombustion({ onClose }: CreateCombustionProps) {
 
   const onSubmit = async (data: z.infer<typeof Combustion>) => {
     const combustionRequest: CombustionRequest = {
-      tipo: "estacionario",
+      tipo,
       sede_id: Number(data.sede),
       tipoEquipo: data.type_equipment,
       tipoCombustible_id: Number(data.type_combustion),

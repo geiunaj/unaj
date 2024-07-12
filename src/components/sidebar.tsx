@@ -5,8 +5,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { FileText } from "lucide-react";
@@ -14,8 +18,15 @@ import { FileText } from "lucide-react";
 export default function Sidebar() {
   const navigate = useRouter();
 
-  const handleCombustion = () => {
-    navigate.push("/combustible");
+  // const handleCombustion = () => {
+  //   navigate.push("/combustible");
+  // };
+  const handleCombustionEstacionaria = () => {
+    navigate.push("/combustion/estacionaria");
+  };
+
+  const handleCombustionMovil = () => {
+    navigate.push("/combustion/movil");
   };
 
   const handleFertilizante = () => {
@@ -24,11 +35,11 @@ export default function Sidebar() {
 
   const handleConsElectricidad = () => {
     navigate.push("/electricidad");
-  }
+  };
 
   const handleConsPapel = () => {
     navigate.push("/papel");
-  }
+  };
   const logo = "/img/logoUNAJ.png";
   return (
     <>
@@ -41,39 +52,70 @@ export default function Sidebar() {
           </div> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="default"
-                className="w-full justify-start h-10"
-              >
+              <Button variant="default" className="w-full justify-start h-10">
                 <FileText className="mr-2 h-4 w-4" />
                 <p className="ml-3 text-sm">Registros</p>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-56 rounded-xl "
+              className="w-56 rounded-xl"
               side="right"
               sideOffset={5}
             >
               <DropdownMenuRadioGroup className="font-Manrope">
-                <DropdownMenuItem
-                  className="flex  items-center w-full"
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>Combustion</DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={handleCombustionEstacionaria}>
+                        Combustion Estacionaria
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleCombustionMovil}>
+                        Combustion Movil
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+                {/* <DropdownMenuItem
+                  className="flex items-center w-full"
                   onClick={handleCombustion}
                 >
                   Combustion
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex  items-center w-full"
-                onClick={handleFertilizante}>
+                </DropdownMenuItem> */}
+                {/* <DropdownMenuContent>
+                  <DropdownMenuItem
+                    className="flex items-center w-full"
+                    // onClick={handleCombustionEstacionaria}
+                  >
+                    Combustion Estacionaria
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="flex items-center w-full"
+                    // onClick={handleCombustionMovil}
+                  >
+                    Combustion Movil
+                  </DropdownMenuItem>
+                </DropdownMenuContent> */}
+
+                <DropdownMenuItem
+                  className="flex items-center w-full"
+                  onClick={handleFertilizante}
+                >
                   Fertilizantes
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex  items-center w-full"
-                onClick={handleConsElectricidad}>
+                <DropdownMenuItem
+                  className="flex items-center w-full"
+                  onClick={handleConsElectricidad}
+                >
                   Electricidad
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex  items-center w-full"
-                onClick={handleConsPapel}>
+                <DropdownMenuItem
+                  className="flex items-center w-full"
+                  onClick={handleConsPapel}
+                >
                   Papel
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex  items-center w-full">
+                <DropdownMenuItem className="flex items-center w-full">
                   Refrigerantes
                 </DropdownMenuItem>
               </DropdownMenuRadioGroup>

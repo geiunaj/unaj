@@ -31,7 +31,10 @@ import { FormCombustion } from "./FormCombustion";
 import { X } from "lucide-react";
 import { ChevronsUpDown, Plus } from "lucide-react";
 import { useCombustionStore } from "../lib/combustion.store";
-import { CombustionCollection } from "../services/combustion.interface";
+import {
+  CombustionCollection,
+  CombustionProps,
+} from "../services/combustion.interface";
 import { useSedeStore } from "@/components/sede/lib/sede.store";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -44,7 +47,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export default function CombustionPage() {
+export default function CombustionPage({ combustionType }: CombustionProps) {
+  const { tipo } = combustionType;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { combustion, loadCombustion } = useCombustionStore();
   const { sedes, loadSedes } = useSedeStore();
@@ -53,22 +57,27 @@ export default function CombustionPage() {
     "desc"
   );
 
-  const formulario = "estacionario";
+  // const formulario = "estacionario";
+
+  // useEffect(() => {
+  //   loadCombustion({ tipo: formulario, sedeId: Number(selectedSede) }); // Llama a loadCombustion cuando el componente se monta
+  //   loadSedes();
+  // }, [loadCombustion, loadSedes]); // Dependencia vacía para solo llamar una vez al montar
 
   useEffect(() => {
-    loadCombustion({ tipo: formulario, sedeId: Number(selectedSede) }); // Llama a loadCombustion cuando el componente se monta
+    loadCombustion({ tipo, sedeId: Number(selectedSede) });
     loadSedes();
-  }, [loadCombustion, loadSedes]); // Dependencia vacía para solo llamar una vez al montar
+  }, [loadCombustion, loadSedes, tipo, selectedSede]);
 
   const handleSedeChange = (value: string) => {
     setSelectedSede(value);
-    loadCombustion({ tipo: formulario, sedeId: Number(value) });
+    loadCombustion({ tipo, sedeId: Number(value) });
   };
 
   const handleToggleConsumoSort = () => {
     setConsumoDirection(consumoDirection === "asc" ? "desc" : "asc");
     loadCombustion({
-      tipo: formulario,
+      tipo: tipo,
       sedeId: Number(selectedSede),
       sort: "consumo",
       direction: consumoDirection,
@@ -77,7 +86,7 @@ export default function CombustionPage() {
 
   const handleClose = () => {
     setIsDialogOpen(false);
-    loadCombustion({ tipo: formulario, sedeId: Number(selectedSede) });
+    loadCombustion({ tipo, sedeId: Number(selectedSede) });
   };
 
   if (!combustion) {
@@ -89,8 +98,13 @@ export default function CombustionPage() {
       <div className="flex flex-row justify-between items-start mb-6">
         <div className="font-Manrope">
           <h1 className="text-xl text-gray-800 font-bold">
-            COMBUSTION ESTACIONARIA
+            {tipo === "estacionario"
+              ? "Combustión Estacionaria"
+              : "Combustión Móvil"}
           </h1>
+          {/* <h1 className="text-xl text-gray-800 font-bold">
+            COMBUSTION ESTACIONARIA
+          </h1> */}
           <h2 className="text-base text-gray-500">Huella de carbono</h2>
         </div>
         <div className="flex justify-end gap-5">
@@ -113,7 +127,7 @@ export default function CombustionPage() {
               </SelectContent>
             </Select>
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="default" className=" text-white">
                 <Plus />
@@ -130,6 +144,30 @@ export default function CombustionPage() {
                 <DialogClose></DialogClose>
               </DialogHeader>
               <FormCombustion onClose={handleClose} />
+            </DialogContent>
+          </Dialog> */}
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="default">
+                <Plus /> Registrar
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  {tipo === "estacionario"
+                    ? "Registro Estacionario"
+                    : "Registro Móvil"}
+                </DialogTitle>
+                <DialogDescription>
+                  Indicar el consumo de combustible de{" "}
+                  {tipo === "estacionario"
+                    ? "equipos estacionarios"
+                    : "equipos móviles"}
+                  .
+                </DialogDescription>
+              </DialogHeader>
+              <FormCombustion onClose={handleClose} tipo={tipo} />
             </DialogContent>
           </Dialog>
         </div>
@@ -199,3 +237,5 @@ export default function CombustionPage() {
     </div>
   );
 }
+export const CombustionEstacionariaPage = () => <CombustionPage combustionType={{ tipo: "estacionario" }} />;
+export const CombustionMovilPage = () => <CombustionPage combustionType={{ tipo: "movil" }} />;

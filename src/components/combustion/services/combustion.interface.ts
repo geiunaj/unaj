@@ -1,4 +1,5 @@
 export interface CreateCombustionProps {
+  tipo: string;
   onClose: () => void;
 }
 
@@ -22,4 +23,12 @@ export interface CombustionRequest {
   tipoCombustible_id: number;
   mes_id: number;
   anio_id: number;
+}
+
+export interface CombustionType{
+  tipo: "estacionario" | "movil";
+}
+
+export interface CombustionProps{
+  combustionType: CombustionType;
 }
