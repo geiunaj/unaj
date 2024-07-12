@@ -76,27 +76,6 @@ export default function Sidebar() {
                     </DropdownMenuSubContent>
                   </DropdownMenuPortal>
                 </DropdownMenuSub>
-                {/* <DropdownMenuItem
-                  className="flex items-center w-full"
-                  onClick={handleCombustion}
-                >
-                  Combustion
-                </DropdownMenuItem> */}
-                {/* <DropdownMenuContent>
-                  <DropdownMenuItem
-                    className="flex items-center w-full"
-                    // onClick={handleCombustionEstacionaria}
-                  >
-                    Combustion Estacionaria
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="flex items-center w-full"
-                    // onClick={handleCombustionMovil}
-                  >
-                    Combustion Movil
-                  </DropdownMenuItem>
-                </DropdownMenuContent> */}
-
                 <DropdownMenuItem
                   className="flex items-center w-full"
                   onClick={handleFertilizante}

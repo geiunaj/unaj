@@ -213,6 +213,118 @@ async function main() {
     });
   }
 
+  const tipoPapel = [
+    // A3
+    {
+      nombre: "A3",
+      gramaje: 80.0,
+      unidad_paquete: "500 hojas",
+      is_certificado: false,
+      is_reciclable: true,
+      porcentaje_reciclado: 0.0,
+      nombre_certificado: null,
+    },
+    {
+      nombre: "A3",
+      gramaje: 90.0,
+      unidad_paquete: "millar",
+      is_certificado: true,
+      is_reciclable: true,
+      porcentaje_reciclado: 80.0,
+      nombre_certificado: "FSC",
+    },
+    {
+      nombre: "A4",
+      gramaje: 70.0,
+      unidad_paquete: "millar",
+      is_certificado: false,
+      is_reciclable: true,
+      porcentaje_reciclado: 0.0,
+      nombre_certificado: null,
+    },
+    {
+      nombre: "A4",
+      gramaje: 80.0,
+      unidad_paquete: "millar",
+      is_certificado: true,
+      is_reciclable: true,
+      porcentaje_reciclado: 90.0,
+      nombre_certificado: "FSC",
+    },
+    {
+      nombre: "Letter",
+      gramaje: 70.0,
+      unidad_paquete: "500 hojas",
+      is_certificado: false,
+      is_reciclable: true,
+      porcentaje_reciclado: 0.0,
+      nombre_certificado: null,
+    },
+    {
+      nombre: "Letter",
+      gramaje: 75.0,
+      unidad_paquete: "500 hojas",
+      is_certificado: true,
+      is_reciclable: true,
+      porcentaje_reciclado: 100.0,
+      nombre_certificado: "FSC",
+    },
+    {
+      nombre: "Legal",
+      gramaje: 80.0,
+      unidad_paquete: "500 hojas",
+      is_certificado: true,
+      is_reciclable: true,
+      porcentaje_reciclado: 100.0,
+      nombre_certificado: "FSC",
+    },
+    {
+      nombre: "Legal",
+      gramaje: 90.0,
+      unidad_paquete: "500 hojas",
+      is_certificado: false,
+      is_reciclable: false,
+      porcentaje_reciclado: 0.0,
+      nombre_certificado: null,
+    },
+  ];
+  for (const tipo of tipoPapel) {
+    await prisma.tipoPapel.create({
+      data: {
+        nombre: tipo.nombre,
+        gramaje: tipo.gramaje,
+        unidad_paquete: tipo.unidad_paquete,
+        is_certificado: tipo.is_certificado,
+        is_reciclable: tipo.is_reciclable,
+        porcentaje_reciclado: tipo.porcentaje_reciclado,
+        nombre_certificado: tipo.nombre_certificado,
+        created_at: new Date(),
+        updated_at: new Date(),
+
+      },
+    });
+  }
+
+  const allTiposPapel = await prisma.tipoPapel.findMany();
+
+  for (let i = 0; i < 40; i++) {
+    await prisma.consumoPapel.create({
+      data: {
+        tipoPapel_id:
+        allTiposPapel[
+            Math.floor(Math.random() * allTiposPapel.length)
+          ].id,
+        
+        cantidad_paquete: faker.number({ min: 0, max: 100 }),
+        anio_id: allAnios[Math.floor(Math.random() * allAnios.length)].id,
+        sede_id: allSedes[Math.floor(Math.random() * allSedes.length)].id,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+    });
+  }
+
+
   console.log({ adminType, user });
 }
 

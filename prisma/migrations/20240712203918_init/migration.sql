@@ -124,6 +124,35 @@ CREATE TABLE `Fertilizante` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `TipoPapel` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(50) NOT NULL,
+    `gramaje` FLOAT NOT NULL,
+    `unidad_paquete` VARCHAR(45) NOT NULL,
+    `is_certificado` BOOLEAN NOT NULL DEFAULT false,
+    `is_reciclable` BOOLEAN NOT NULL DEFAULT false,
+    `porcentaje_reciclado` FLOAT NULL,
+    `nombre_certificado` VARCHAR(50) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ConsumoPapel` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `tipoPapel_id` INTEGER NOT NULL,
+    `cantidad_paquete` INTEGER NOT NULL,
+    `anio_id` INTEGER NOT NULL,
+    `comentario` VARCHAR(191) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `Access` ADD CONSTRAINT `Access_type_user_id_fkey` FOREIGN KEY (`type_user_id`) REFERENCES `TypeUser`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -153,3 +182,9 @@ ALTER TABLE `Fertilizante` ADD CONSTRAINT `Fertilizante_sede_id_fkey` FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE `Fertilizante` ADD CONSTRAINT `Fertilizante_anio_id_fkey` FOREIGN KEY (`anio_id`) REFERENCES `Anio`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ConsumoPapel` ADD CONSTRAINT `ConsumoPapel_tipoPapel_id_fkey` FOREIGN KEY (`tipoPapel_id`) REFERENCES `TipoPapel`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ConsumoPapel` ADD CONSTRAINT `ConsumoPapel_anio_id_fkey` FOREIGN KEY (`anio_id`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
