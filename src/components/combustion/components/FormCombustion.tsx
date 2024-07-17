@@ -29,6 +29,8 @@ import {
   CreateCombustionProps,
 } from "../services/combustion.interface";
 import { useCombustionStore } from "../lib/combustion.store";
+import { useAnioStore } from "@/components/anio/lib/anio.store";
+import { useMesStore } from "@/components/mes/lib/mes.stores";
 
 const Combustion = z.object({
   sede: z.string().min(1, "Selecciona la sede"),
@@ -46,6 +48,9 @@ export function FormCombustion({ onClose, tipo }: CreateCombustionProps & { tipo
   const { sedes, loadSedes } = useSedeStore();
   const { tiposCombustible, loadTiposCombustible } = useTipoCombustibleStore();
   const { createCombustion } = useCombustionStore();
+  const { anios, loadAnios } = useAnioStore();
+  const {meses, loadMeses} = useMesStore();
+  
   const form = useForm<z.infer<typeof Combustion>>({
     resolver: zodResolver(Combustion),
     defaultValues: {
@@ -61,7 +66,9 @@ export function FormCombustion({ onClose, tipo }: CreateCombustionProps & { tipo
   useEffect(() => {
     loadSedes();
     loadTiposCombustible();
-  }, [loadSedes, loadTiposCombustible]); // Dependencia vacía para solo llamar una vez al montar
+    loadMeses();
+    loadAnios();
+  }, [loadSedes, loadTiposCombustible,loadMeses,loadAnios]); // Dependencia vacía para solo llamar una vez al montar
 
   const onSubmit = async (data: z.infer<typeof Combustion>) => {
     const combustionRequest: CombustionRequest = {
@@ -173,25 +180,21 @@ export function FormCombustion({ onClose, tipo }: CreateCombustionProps & { tipo
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <FormControl>
+                      <FormControl className="w-full">
                         <SelectTrigger>
-                          <SelectValue placeholder="Seleciona el mes" />
+                          <SelectValue placeholder="Selecciona el año" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="1">Enero</SelectItem>
-                          <SelectItem value="2">Febrero</SelectItem>
-                          <SelectItem value="3">Marzo</SelectItem>
-                          <SelectItem value="4">Abril</SelectItem>
-                          <SelectItem value="5">Mayo</SelectItem>
-                          <SelectItem value="6">Junio</SelectItem>
-                          <SelectItem value="7">Julio</SelectItem>
-                          <SelectItem value="8">Agosto</SelectItem>
-                          <SelectItem value="9">Septiembre</SelectItem>
-                          <SelectItem value="10">Octubre</SelectItem>
-                          <SelectItem value="11">Noviembre</SelectItem>
-                          <SelectItem value="12">Diciembre</SelectItem>
+                          {meses.map((mes) => (
+                            <SelectItem
+                              key={mes.id}
+                              value={mes.id.toString()}
+                            >
+                              {mes.nombre}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -209,17 +212,21 @@ export function FormCombustion({ onClose, tipo }: CreateCombustionProps & { tipo
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <FormControl>
+                      <FormControl className="w-full">
                         <SelectTrigger>
-                          <SelectValue placeholder="Seleciona el año" />
+                          <SelectValue placeholder="Selecciona el año" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="4">2021</SelectItem>
-                          <SelectItem value="3">2022</SelectItem>
-                          <SelectItem value="2">2023</SelectItem>
-                          <SelectItem value="1">2024</SelectItem>
+                          {anios.map((anio) => (
+                            <SelectItem
+                              key={anio.id}
+                              value={anio.id.toString()}
+                            >
+                              {anio.nombre}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

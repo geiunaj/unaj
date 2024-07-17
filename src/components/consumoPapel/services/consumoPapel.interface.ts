@@ -7,15 +7,16 @@ export interface ConsumoPapelRequest {
 }
 
 export interface CollectionConsumoPapel {
-    id: number;
-    cantidad_paquete: number;
-    sede: string;
-    anio: number;
-    tipoPapel: string;
-    gramaje: number;
-    nombre_certificado: string;
-    porcentaje_reciclado: number;
-    unidad_paquete: string;
-
-
-    }
+  id: number;
+  cantidad_paquete: number;
+  sede: string;
+  anio: number;
+  nombre: string;
+  gramaje: number;
+  nombre_certificado: string;
+  porcentaje_reciclado: number;
+  unidad_paquete: string;
+}
+export interface CreateConsumoPapelProps {
+  onClose: () => void;
+}

@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "../../ui/button";
 import { useSedeStore } from "../../sede/lib/sede.store";
 import { useTipoPapelStore } from "../../tipoPapel/lib/tipoPapel.store";
-import { ConsumoPapelRequest } from "../services/consumoPapel.interface";
+import { ConsumoPapelRequest, CreateConsumoPapelProps } from "../services/consumoPapel.interface";
 import { createConsumoPapel } from "../services/consumoPapel.actions";
 import { useAnioStore } from "../../anio/lib/anio.store";
 import { Textarea } from "../../ui/textarea";
@@ -38,7 +38,7 @@ const ConsumoPapel = z.object({
   sede: z.string(),
 });
 
-export function FormPapel() {
+export function FormPapel({ onClose }: CreateConsumoPapelProps) {
   const { sedes, loadSedes } = useSedeStore();
   const { tiposPapel, loadTiposPapel } = useTipoPapelStore();
   const { anios, loadAnios } = useAnioStore();

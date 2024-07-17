@@ -102,9 +102,6 @@ export default function CombustionPage({ combustionType }: CombustionProps) {
               ? "Combustión Estacionaria"
               : "Combustión Móvil"}
           </h1>
-          {/* <h1 className="text-xl text-gray-800 font-bold">
-            COMBUSTION ESTACIONARIA
-          </h1> */}
           <h2 className="text-base text-gray-500">Huella de carbono</h2>
         </div>
         <div className="flex justify-end gap-5">
@@ -127,25 +124,6 @@ export default function CombustionPage({ combustionType }: CombustionProps) {
               </SelectContent>
             </Select>
           </div>
-          {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default" className=" text-white">
-                <Plus />
-                Registrar
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg border-2">
-              <DialogHeader className="">
-                <DialogTitle>Combustión Estacionaria</DialogTitle>
-                <DialogDescription>
-                  Indicar el consumo de combustible de equipos estacionarios,
-                  incluir balones usados en calefacción
-                </DialogDescription>
-                <DialogClose></DialogClose>
-              </DialogHeader>
-              <FormCombustion onClose={handleClose} />
-            </DialogContent>
-          </Dialog> */}
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="default">
@@ -177,9 +155,6 @@ export default function CombustionPage({ combustionType }: CombustionProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              {/* <TableHead className=" font-Manrope text-sm font-bold text-center">
-                SEDE
-              </TableHead> */}
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 TIPO DE EQUIPO
               </TableHead>

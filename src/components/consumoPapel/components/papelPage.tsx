@@ -31,24 +31,26 @@ import {
 import { FormPapel } from "./FormPapelOficce";
 import { useSedeStore } from "@/components/sede/lib/sede.store";
 import { useConsumoPapelStore } from "../lib/consumoPapel.store";
-import { CollectionConsumoPapel } from "../services/consumoPapel.interface";
+import {
+  CollectionConsumoPapel,
+  CreateConsumoPapelProps,
+} from "../services/consumoPapel.interface";
 
-export default function PapelPage() {
+export default function PapelPage({ onClose }: CreateConsumoPapelProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const {sedes, loadSedes} = useSedeStore();
-  const {consumoPapel, loadConsumoPapel} = useConsumoPapelStore();
+  const { sedes, loadSedes } = useSedeStore();
+  const { consumoPapel, loadConsumoPapel } = useConsumoPapelStore();
   const [selectedSede, setSelectedSede] = useState<string>("1");
 
-
   useEffect(() => {
-    loadConsumoPapel({  sedeId: Number(selectedSede) });
+    loadConsumoPapel({ sedeId: Number(selectedSede) });
     loadSedes();
-  }, [loadConsumoPapel, loadSedes,  selectedSede]);
+  }, [loadConsumoPapel, loadSedes, selectedSede]);
 
   const handleSedeChange = (value: string) => {
     setSelectedSede(value);
-    loadConsumoPapel({  sedeId: Number(value) });
-  }
+    loadConsumoPapel({ sedeId: Number(value) });
+  };
 
   const handleClose = () => {
     setIsDialogOpen(false);
@@ -58,7 +60,6 @@ export default function PapelPage() {
   if (!consumoPapel) {
     return <p>Cargando...</p>;
   }
-
 
   return (
     <div className="w-full max-w-[1150px] h-full ">
@@ -70,8 +71,8 @@ export default function PapelPage() {
         <div className="flex justify-end gap-5">
           <div className="flex flex-row space-x-4 mb-6 font-normal justify-end">
             <Select
-            // onValueChange={(value) => handleSedeChange(value)}
-            // defaultValue={selectedSede}
+              onValueChange={(value) => handleSedeChange(value)}
+              defaultValue={selectedSede}
             >
               <SelectTrigger className="rounded-sm h-10 w-80 focus:outline-none focus-visible:ring-0">
                 <SelectValue placeholder="Selecciona la Sede" />
@@ -87,7 +88,7 @@ export default function PapelPage() {
               </SelectContent>
             </Select>
           </div>
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="default" className=" text-white">
                 <Plus />
@@ -102,7 +103,7 @@ export default function PapelPage() {
                 </DialogDescription>
                 <DialogClose />
               </DialogHeader>
-              <FormPapel />
+              <FormPapel onClose={handleClose} />
             </DialogContent>
           </Dialog>
         </div>
@@ -110,7 +111,7 @@ export default function PapelPage() {
       <div className="rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="border">
+            <TableRow>
               {/* <TableHead className="text-sm font-bold text-center ">
                 SEDE
               </TableHead> */}
@@ -128,7 +129,7 @@ export default function PapelPage() {
               </TableHead>
               <TableHead className="text-sm font-bold text-center">
                 CERTIFICADO
-                </TableHead>
+              </TableHead>
               <TableHead className=" text-sm font-bold text-center">
                 GRAMAJE
               </TableHead>
@@ -138,22 +139,28 @@ export default function PapelPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-          {consumoPapel.map((item: CollectionConsumoPapel) => (
+            {consumoPapel.map((item: CollectionConsumoPapel) => (
               <TableRow key={item.id} className="text-center">
                 {/* <TableCell>{item.sede}</TableCell> */}
-                <TableCell>{item.tipoPapel}</TableCell>
+                <TableCell>{item.nombre}</TableCell>
                 <TableCell>{item.cantidad_paquete}</TableCell>
                 <TableCell>{item.unidad_paquete}</TableCell>
-                <TableCell>{item.porcentaje_reciclado}</TableCell>
-                <TableCell>{item.nombre_certificado}</TableCell>
-                <TableCell>{item.gramaje} g </TableCell>                
-                <TableCell className="flex space-x-4 justify-center items-center bg-transparent ">
-                <Button
-                  size="icon"
-                  className="bg-transparent hover:bg-transparent text-blue-700 border"
-                >
-                  <Pencil1Icon className="h-4 text-blue-700" />
-                </Button>
+                <TableCell>
+                  {item.porcentaje_reciclado === 0
+                    ? "---"
+                    : item.porcentaje_reciclado + "%"}
+                </TableCell>
+                <TableCell>
+                  {item.nombre_certificado ? item.nombre_certificado : "---"}
+                </TableCell>
+                <TableCell>{item.gramaje} g</TableCell>
+                <TableCell className="flex space-x-4 justify-center items-center bg-transparent">
+                  <Button
+                    size="icon"
+                    className="bg-transparent hover:bg-transparent text-blue-700 border"
+                  >
+                    <Pencil1Icon className="h-4 text-blue-700" />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
