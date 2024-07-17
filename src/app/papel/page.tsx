@@ -1,7 +1,6 @@
 "use client";
-
+import PapelPage from "@/components/consumoPapel/components/papelPage";
 import LayoutWrapper from "@/components/Layout/layout";
-import PapelPage from "@/components/consumoPapel/papelPage";
 
 export default function Page() {
   return (

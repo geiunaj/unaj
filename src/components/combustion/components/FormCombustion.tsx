@@ -45,7 +45,6 @@ const Combustion = z.object({
 export function FormCombustion({ onClose, tipo }: CreateCombustionProps & { tipo: string }) {
   const { sedes, loadSedes } = useSedeStore();
   const { tiposCombustible, loadTiposCombustible } = useTipoCombustibleStore();
-  // const {mes, loadmes} = useMesStore();
   const { createCombustion } = useCombustionStore();
   const form = useForm<z.infer<typeof Combustion>>({
     resolver: zodResolver(Combustion),

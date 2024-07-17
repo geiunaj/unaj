@@ -13,20 +13,20 @@ type sort =
   | "sede_id";
 type direction = "asc" | "desc";
 
-interface CombustionStore {
+interface ConsumoPapelStore {
   consumoPapel: CollectionConsumoPapel[];
   loadConsumoPapel: (options?: {
     sedeId?: number;
     sort?: sort;
     direction?: direction;
   }) => void;
-  createCombustion: (consumoPapel: ConsumoPapelRequest) => void;
+  createConsumoPapel: (consumoPapel: ConsumoPapelRequest) => void;
   // showCombustion: (id: number) => void;
   // updateCombustion: (id: number, combustion: CombustionRequest) => void;
   // deleteCombustion: (id: number) => void;
 }
 
-export const useCombustionStore = create<CombustionStore>((set) => ({
+export const useConsumoPapelStore = create<ConsumoPapelStore>((set) => ({
     consumoPapel: [],
     loadConsumoPapel: async ({
     sedeId,
@@ -44,7 +44,7 @@ export const useCombustionStore = create<CombustionStore>((set) => ({
       console.error("Error loading combustion data:", error);
     }
   },
-  createCombustion: async (consumoPapel: ConsumoPapelRequest) => {
+  createConsumoPapel: async (consumoPapel: ConsumoPapelRequest) => {
     try {
       const data = await createConsumoPapel(consumoPapel);
       console.log("Combustion created:", data);
