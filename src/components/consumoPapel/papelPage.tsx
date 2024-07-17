@@ -87,18 +87,9 @@ export default function PapelPage() {
                 UNIDAD
               </TableHead>
               <TableHead className="text-sm font-bold text-center">
-                <div>
-                  ¿CERTIFICADO DE BOSQUES PROTEGUIDOS O RECICLABLE?
-                  <div className="flex justify-center space-x-2 mt-2">
-                    <span className="text-xs text-center">
-                      % CERTIFICADO O RECICLABLE
-                    </span>
-                    <span className="text-xs text-center">
-                      NOMBRE DE CERTIFICADO
-                    </span>
-                  </div>
-                </div>
+                % CERTIFICADO O RECICLABLE
               </TableHead>
+              <TableHead>NOMBRE DEL CERTIFICADO</TableHead>
               <TableHead className=" text-sm font-bold text-center">
                 GRAMAJE
               </TableHead>
@@ -109,6 +100,8 @@ export default function PapelPage() {
           </TableHeader>
           <TableBody>
             <TableRow className="text-center">
+              <TableCell></TableCell>
+              <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>

@@ -7,7 +7,6 @@ import {FertilizanteRequest} from "@/components/fertilizantes/services/fertiliza
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
-        const tipo = searchParams.get("tipo") ?? undefined;
         const sedeId = searchParams.get("sedeId") ?? undefined;
         const sort = searchParams.get("sort") ?? "id";
         const direction = searchParams.get("direction") ?? "desc";

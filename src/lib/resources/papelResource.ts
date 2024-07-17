@@ -1,8 +1,7 @@
-// lib/resources/combustibleResource.ts
 type tipoPapel = {
   id: number;
   nombre: string;
-  grameje: number;
+  gramaje: number;  
   unidad_paquete: string;
   is_certificado: boolean;
   is_reciclable: boolean;
@@ -28,11 +27,17 @@ type Sede = {
 
 type ConsumoPapel = {
   id: number;
-  canidad: number;
-  tipoPapel_id: number;
+  cantidad_paquete: number;  
+  nombre: string;
   anio_id: number;
   sede_id: number;
-  comentario: string;
+  comentario?: string; 
+  gramaje: number;
+  unidad_paquete: string;
+  is_reciclable: boolean;
+  is_certificado: boolean;
+  porcentaje_reciclado: number;
+  nombre_certificado: string;
   created_at: Date;
   updated_at: Date;
   tipoPapel?: tipoPapel;
@@ -40,61 +45,36 @@ type ConsumoPapel = {
   sede?: Sede;
 };
 
-export function formattedConsumoPapel(consumoPapel: any) {
+export function formatConsumoPapel(consumoPapel: any): ConsumoPapel {
   const {
+    id,
+    cantidad_paquete,
+    comentario,
+    anio_id,
+    sede_id,
     created_at,
     updated_at,
     tipoPapel,
     anio,
     sede,
-    canidad,
-    comentario,
-    ...rest
   } = consumoPapel;
 
   return {
-    ...rest,
-    updated_at: undefined,
-    canidad: Number(canidad.toFixed(2)),
-    tipoPapel_id: undefined,
-    anio_id: undefined,
-    sede_id: undefined,
-    anio: Number(anio?.nombre),
-    tipoPapel: tipoPapel?.nombre,
-    gramaje: tipoPapel?.grameje,
-    unidad_paquete: tipoPapel?.unidad_paquete,
-    is_certificado: tipoPapel?.is_certificado,
-    is_reciclable: tipoPapel?.is_reciclable,
-    porcentaje_reciclado: tipoPapel?.porcentaje_reciclado,
-    nombre_certificado: tipoPapel?.nombre_certificado,
-    sede: sede?.name,
-    // tipoCombustible: tipoCombustible
-    //   ? {
-    //       ...tipoCombustible,
-    //       created_at: undefined,
-    //       updated_at: undefined,
-    //     }
-    //   : null,
-    // mes: mes
-    //   ? {
-    //       ...mes,
-    //       created_at: undefined,
-    //       updated_at: undefined,
-    //     }
-    //   : null,
-    // anio: anio
-    //   ? {
-    //       ...anio,
-    //       created_at: undefined,
-    //       updated_at: undefined,
-    //     }
-    //   : null,
-    // sede: sede
-    //   ? {
-    //       ...sede,
-    //       created_at: undefined,
-    //       updated_at: undefined,
-    //     }
-    //   : null,
+    id,
+    nombre: tipoPapel?.nombre ?? "",
+    cantidad_paquete,
+    comentario: comentario ?? null,
+    anio_id,
+    sede_id,
+    created_at,
+    updated_at,
+    gramaje: tipoPapel?.gramaje ?? 0,
+    unidad_paquete: tipoPapel?.unidad_paquete ?? "",
+    is_certificado: tipoPapel?.is_certificado ?? false,
+    is_reciclable: tipoPapel?.is_reciclable ?? false,
+    porcentaje_reciclado: tipoPapel?.porcentaje_reciclado ?? 0,
+    nombre_certificado: tipoPapel?.nombre_certificado ?? "",
+    anio: anio?.nombre ?? "",
+    sede: sede?.name ?? "",
   };
 }
