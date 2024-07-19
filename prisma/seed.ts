@@ -49,9 +49,9 @@ async function main() {
         });
     }
 
-    // Crear los últimos 10 años
+    // Crear los últimos 5 años
     const currentYear = new Date().getFullYear();
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
         await prisma.anio.create({
             data: {
                 nombre: (currentYear - i).toString(),
@@ -120,25 +120,29 @@ async function main() {
     const allAnios = await prisma.anio.findMany();
     const allSedes = await prisma.sede.findMany();
     const allTiposCombustible = await prisma.tipoCombustible.findMany();
+    const types = ["estacionario", "movil"];
 
     // Crear datos aleatorios para Combustible
-    for (let i = 0; i < 100; i++) {
-        await prisma.combustible.create({
-            data: {
-                tipo: faker.helpers.arrayElement(["estacionario", "movil"]),
-                tipoEquipo: faker.lorem.word(),
-                consumo: faker.number.float({min: 0, max: 100}),
-                tipoCombustible_id:
-                allTiposCombustible[
-                    Math.floor(Math.random() * allTiposCombustible.length)
-                    ].id,
-                mes_id: allMeses[Math.floor(Math.random() * allMeses.length)].id,
-                anio_id: allAnios[Math.floor(Math.random() * allAnios.length)].id,
-                sede_id: allSedes[Math.floor(Math.random() * allSedes.length)].id,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
+    for (const type of types) {
+        for (const sede of allSedes) {
+            for (const anio of allAnios) {
+                for (const mes of allMeses) {
+                    await prisma.combustible.create({
+                        data: {
+                            tipo: type,
+                            tipoEquipo: faker.lorem.word(),
+                            consumo: faker.number.float({min: 0, max: 100}),
+                            tipoCombustible_id: faker.helpers.arrayElement(allTiposCombustible).id,
+                            mes_id: mes.id,
+                            anio_id: anio.id,
+                            sede_id: sede.id,
+                            created_at: new Date(),
+                            updated_at: new Date(),
+                        },
+                    });
+                }
+            }
+        }
     }
 
     // Crear tipos de Fertilizantes

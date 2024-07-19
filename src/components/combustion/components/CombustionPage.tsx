@@ -1,115 +1,100 @@
 "use client";
+import {useEffect, useState, useMemo, useCallback} from "react";
 import {
-    AlertDialog,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+    AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
+    AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
 import {Button} from "@/components/ui/button";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+    Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+    Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
 import {Pencil1Icon} from "@radix-ui/react-icons";
-import {useEffect, useState} from "react";
 import {FormCombustion} from "./FormCombustion";
 import {X} from "lucide-react";
 import {ChevronsUpDown, Plus} from "lucide-react";
 import {useCombustionStore} from "../lib/combustion.store";
-import {
-    CombustionCollection,
-    CombustionProps,
-} from "../services/combustion.interface";
+import {CombustionCollection, CombustionProps} from "../services/combustion.interface";
 import {useSedeStore} from "@/components/sede/lib/sede.store";
 import {Badge} from "@/components/ui/badge";
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+    Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
+import {useAnioStore} from "@/components/anio/lib/anio.store";
 
 export default function CombustionPage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const {combustion, loadCombustion} = useCombustionStore();
     const {sedes, loadSedes} = useSedeStore();
+    const {anios, loadAnios} = useAnioStore();
     const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
-        "desc"
-    );
+    const [selectedAnio, setSelectedAnio] = useState<string>("");
+    const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">("desc");
 
-    // const formulario = "estacionario";
-
-    // useEffect(() => {
-    //   loadCombustion({ tipo: formulario, sedeId: Number(selectedSede) }); // Llama a loadCombustion cuando el componente se monta
-    //   loadSedes();
-    // }, [loadCombustion, loadSedes]); // Dependencia vacía para solo llamar una vez al montar
 
     useEffect(() => {
-        loadCombustion({tipo, sedeId: Number(selectedSede)});
-        loadSedes();
-    }, [loadCombustion, loadSedes, tipo, selectedSede]);
+        if (sedes.length === 0) loadSedes();
+        if (anios.length === 0) loadAnios();
+    }, [loadSedes, loadAnios, sedes.length, anios.length]);
 
-    const handleSedeChange = (value: string) => {
+    useEffect(() => {
+        const currentYear = new Date().getFullYear().toString();
+
+        if (anios.length > 0 && !selectedAnio) {
+            const currentAnio = anios.find(anio => anio.nombre === currentYear);
+            if (currentAnio) {
+                setSelectedAnio(currentAnio.id.toString());
+            }
+        }
+        loadCombustion({tipo, sedeId: Number(selectedSede), anioId: selectedAnio ? Number(selectedAnio) : undefined});
+    }, [loadCombustion, anios, tipo, selectedSede, selectedAnio]);
+
+    const handleSedeChange = useCallback((value: string) => {
         setSelectedSede(value);
-        loadCombustion({tipo, sedeId: Number(value)});
-    };
+    }, []);
 
-    const handleToggleConsumoSort = () => {
-        setConsumoDirection(consumoDirection === "asc" ? "desc" : "asc");
-        loadCombustion({
-            tipo: tipo,
-            sedeId: Number(selectedSede),
-            sort: "consumo",
-            direction: consumoDirection,
+    const handleAnioChange = useCallback((value: string) => {
+        setSelectedAnio(value);
+    }, []);
+
+    const handleToggleConsumoSort = useCallback(() => {
+        setConsumoDirection(prevDirection => {
+            const newDirection = prevDirection === "asc" ? "desc" : "asc";
+            loadCombustion({
+                tipo,
+                sedeId: Number(selectedSede),
+                sort: "consumo",
+                direction: newDirection
+            });
+            return newDirection;
         });
-    };
+    }, [loadCombustion, tipo, selectedSede]);
 
-    const handleClose = () => {
+
+    const handleClose = useCallback(() => {
         setIsDialogOpen(false);
         loadCombustion({tipo, sedeId: Number(selectedSede)});
-    };
+    }, [loadCombustion, tipo, selectedSede]);
 
     if (!combustion) {
         return <p>Cargando...</p>;
     }
 
     return (
-        <div className="w-full max-w-[1150px] h-full ">
+        <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-row justify-between items-start mb-6">
                 <div className="font-Manrope">
                     <h1 className="text-xl text-gray-800 font-bold">
-                        {tipo === "estacionario"
-                            ? "Combustión Estacionaria"
-                            : "Combustión Móvil"}
+                        {tipo === "estacionario" ? "Combustión Estacionaria" : "Combustión Móvil"}
                     </h1>
                     <h2 className="text-base text-gray-500">Huella de carbono</h2>
                 </div>
                 <div className="flex justify-end gap-5">
                     <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
-                        <Select
-                            onValueChange={(value) => handleSedeChange(value)}
-                            defaultValue={selectedSede}
-                        >
+                        <Select onValueChange={handleSedeChange} defaultValue={selectedSede}>
                             <SelectTrigger className="rounded-sm h-10 w-80 focus:outline-none focus-visible:ring-0">
                                 <SelectValue placeholder="Selecciona la Sede"/>
                             </SelectTrigger>
@@ -118,6 +103,21 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                                     {sedes.map((sede) => (
                                         <SelectItem key={sede.id} value={sede.id.toString()}>
                                             {sede.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+
+                        <Select onValueChange={handleAnioChange} defaultValue={selectedAnio}>
+                            <SelectTrigger className="rounded-sm h-10 w-28 focus:outline-none focus-visible:ring-0">
+                                <SelectValue placeholder="Año"/>
+                            </SelectTrigger>
+                            <SelectContent className="border-none">
+                                <SelectGroup>
+                                    {anios.map((anio) => (
+                                        <SelectItem key={anio.id} value={anio.id.toString()}>
+                                            {anio.nombre}
                                         </SelectItem>
                                     ))}
                                 </SelectGroup>
@@ -133,16 +133,11 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                         <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>
-                                    {tipo === "estacionario"
-                                        ? "Registro Estacionario"
-                                        : "Registro Móvil"}
+                                    {tipo === "estacionario" ? "Registro Estacionario" : "Registro Móvil"}
                                 </DialogTitle>
                                 <DialogDescription>
-                                    Indicar el consumo de combustible de{" "}
-                                    {tipo === "estacionario"
-                                        ? "equipos estacionarios"
-                                        : "equipos móviles"}
-                                    .
+                                    Indicar el consumo de combustible
+                                    de {tipo === "estacionario" ? "equipos estacionarios" : "equipos móviles"}.
                                 </DialogDescription>
                             </DialogHeader>
                             <FormCombustion onClose={handleClose} tipo={tipo}/>
@@ -155,39 +150,24 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                TIPO DE EQUIPO
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                TIPO DE GAS
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                <Button
-                                    variant="ghost"
-                                    onClick={() => handleToggleConsumoSort()}
-                                >
+                            <TableHead className="font-Manrope text-sm font-bold text-center">TIPO DE EQUIPO</TableHead>
+                            <TableHead className="font-Manrope text-sm font-bold text-center">TIPO DE GAS</TableHead>
+                            <TableHead className="text-center">
+                                <Button className="font-Manrope text-sm font-bold text-center" variant="ghost"
+                                        onClick={handleToggleConsumoSort}>
                                     CONSUMO
                                     <ChevronsUpDown className="ml-2 h-3 w-3"/>
                                 </Button>
                             </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                UNIDAD
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                MES
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                AÑO
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                ACCIONES
-                            </TableHead>
+                            <TableHead className="font-Manrope text-sm font-bold text-center">UNIDAD</TableHead>
+                            <TableHead className="font-Manrope text-sm font-bold text-center">MES</TableHead>
+                            {/*<TableHead className="font-Manrope text-sm font-bold text-center">AÑO</TableHead>*/}
+                            <TableHead className="font-Manrope text-sm font-bold text-center">ACCIONES</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {combustion.map((item: CombustionCollection) => (
                             <TableRow key={item.id} className="text-center">
-                                {/* <TableCell>{item.sede}</TableCell> */}
                                 <TableCell>{item.tipoEquipo}</TableCell>
                                 <TableCell>{item.tipoCombustible}</TableCell>
                                 <TableCell>
@@ -195,12 +175,10 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                                 </TableCell>
                                 <TableCell>{item.unidad}</TableCell>
                                 <TableCell>{item.mes}</TableCell>
-                                <TableCell>{item.anio}</TableCell>
+                                {/*<TableCell>{item.anio}</TableCell>*/}
                                 <TableCell className="flex space-x-4 justify-center items-center bg-transparent ">
-                                    <Button
-                                        size="icon"
-                                        className="bg-transparent hover:bg-transparent text-blue-700 border"
-                                    >
+                                    <Button size="icon"
+                                            className="bg-transparent hover:bg-transparent text-blue-700 border">
                                         <Pencil1Icon className="h-4 text-blue-700"/>
                                     </Button>
                                 </TableCell>
@@ -212,5 +190,6 @@ export default function CombustionPage({combustionType}: CombustionProps) {
         </div>
     );
 }
+
 export const CombustionEstacionariaPage = () => <CombustionPage combustionType={{tipo: "estacionario"}}/>;
 export const CombustionMovilPage = () => <CombustionPage combustionType={{tipo: "movil"}}/>;

@@ -75,3 +75,23 @@ export async function PUT(
         return new NextResponse("Error updating combustible", {status: 500});
     }
 }
+
+// DELETE ROUTE -> PARAM [ID]
+export async function DELETE(
+    req: NextRequest,
+    {params}: { params: { id: string } }
+): Promise<NextResponse> {
+    try {
+        const id = parseInt(params.id);
+        const combustible = await prisma.combustible.delete({
+            where: {
+                id: id,
+            },
+        });
+
+        return NextResponse.json(combustible);
+    } catch (error) {
+        console.error("Error deleting combustible", error);
+        return new NextResponse("Error deleting combustible", {status: 500});
+    }
+}

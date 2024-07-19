@@ -12,11 +12,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const sedeId = searchParams.get("sedeId") ?? undefined;
         const sort = searchParams.get("sort") ?? undefined;
         const direction = searchParams.get("direction") ?? undefined;
+        const anioId = searchParams.get("anioId") ?? undefined;
 
         const combustibles = await prisma.combustible.findMany({
             where: {
                 tipo: tipo ? tipo : undefined,
                 sede_id: sedeId ? parseInt(sedeId) : undefined,
+                anio_id: anioId ? parseInt(anioId) : undefined,
             },
             include: {
                 tipoCombustible: true,
