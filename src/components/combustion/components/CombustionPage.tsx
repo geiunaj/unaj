@@ -31,7 +31,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
     const {sedes, loadSedes} = useSedeStore();
     const {anios, loadAnios} = useAnioStore();
     const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [selectedAnio, setSelectedAnio] = useState<string>("");
+    const [selectedAnio, setSelectedAnio] = useState<string>(new Date().getFullYear().toString());
     const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">("desc");
 
 
@@ -116,7 +116,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                             <SelectContent className="border-none">
                                 <SelectGroup>
                                     {anios.map((anio) => (
-                                        <SelectItem key={anio.id} value={anio.id.toString()}>
+                                        <SelectItem key={anio.id} value={anio.nombre.toString()}>
                                             {anio.nombre}
                                         </SelectItem>
                                     ))}
