@@ -25,29 +25,32 @@ import { Button } from "../../ui/button";
 import { useSedeStore } from "@/components/sede/lib/sede.store";
 import { useTipoCombustibleStore } from "@/components/tipoCombustible/lib/tipoCombustible.store";
 import {
+  CombustionResource,
   CombustionRequest,
-  CreateCombustionProps,
+  UpdateCombustionProps,
 } from "../services/combustion.interface";
 import { useCombustionStore } from "../lib/combustion.store";
 import { useAnioStore } from "@/components/anio/lib/anio.store";
 import { useMesStore } from "@/components/mes/lib/mes.stores";
+import { updateCombustion } from "../services/combustion.actions";
 
 const Combustion = z.object({
   sede: z.string().min(1, "Selecciona la sede"),
   type_equipment: z.string().min(1, "Ingresa el tipo de equipo"),
   type_combustion: z.string().min(1, "Selecciona el tipo de combustible"),
   mes: z.string().min(1, "Selecciona el mes"),
-  anio: z.string().min(1, "Seleciona el anio"),
+  anio: z.string().min(1, "Selecciona el año"),
   consumo: z.preprocess(
     (val) => parseInt(val as string, 10),
     z.number().min(0, "Ingresa un valor mayor a 0")
   ),
 });
 
-export function FormCombustion({
+export function UpdateFormCombustion({
+  id,
   onClose,
   tipo,
-}: CreateCombustionProps & { tipo: string }) {
+}: UpdateCombustionProps) {
   const { sedes, loadSedes } = useSedeStore();
   const { tiposCombustible, loadTiposCombustible } = useTipoCombustibleStore();
   const { createCombustion, showCombustion } = useCombustionStore();
@@ -71,12 +74,19 @@ export function FormCombustion({
     loadTiposCombustible();
     loadMeses();
     loadAnios();
-    loadForm(1);
-  }, [loadSedes, loadTiposCombustible, loadMeses, loadAnios]); // Dependencia vacía para solo llamar una vez al montar
+    loadForm(id);
+  }, [loadSedes, loadTiposCombustible, loadMeses, loadAnios, id]);
 
   const loadForm = async (id: number) => {
-    const combustion = await showCombustion(id);
-    console.log(combustion);
+    const combustion: CombustionResource = await showCombustion(id);
+    form.reset({
+      sede: combustion.sede_id.toString(),
+      type_combustion: combustion.tipoCombustible_id.toString(),
+      type_equipment: combustion.tipoEquipo,
+      mes: combustion.mes_id.toString(),
+      anio: combustion.anio_id.toString(),
+      consumo: combustion.consumo,
+    });
   };
 
   const onSubmit = async (data: z.infer<typeof Combustion>) => {
@@ -89,8 +99,7 @@ export function FormCombustion({
       anio_id: Number(data.anio),
       consumo: data.consumo,
     };
-    console.log(combustionRequest);
-    await createCombustion(combustionRequest);
+    await updateCombustion(id, combustionRequest);
     onClose();
   };
 
@@ -108,13 +117,10 @@ export function FormCombustion({
               render={({ field }) => (
                 <FormItem className="pt-2">
                   <FormLabel>Sede</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl className="w-full">
                       <SelectTrigger>
-                        <SelectValue placeholder="Seleciona tu sede" />
+                        <SelectValue placeholder="Selecciona tu sede" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -155,13 +161,10 @@ export function FormCombustion({
               render={({ field }) => (
                 <FormItem className="pt-2">
                   <FormLabel>Tipo de Combustible</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Seleciona un tipo de combustible" />
+                        <SelectValue placeholder="Selecciona un tipo de combustible" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -185,13 +188,10 @@ export function FormCombustion({
                 render={({ field }) => (
                   <FormItem className="pt-2 w-1/2">
                     <FormLabel>Mes</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl className="w-full">
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecciona el año" />
+                          <SelectValue placeholder="Selecciona el mes" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -214,10 +214,7 @@ export function FormCombustion({
                 render={({ field }) => (
                   <FormItem className="pt-2 w-1/2">
                     <FormLabel>Año</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl className="w-full">
                         <SelectTrigger>
                           <SelectValue placeholder="Selecciona el año" />

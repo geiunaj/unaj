@@ -1,14 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo, useCallback } from "react";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -29,7 +20,7 @@ import {
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { FormCombustion } from "./FormCombustion";
 import { X } from "lucide-react";
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { ChevronsUpDown, Plus, Pencil } from "lucide-react";
 import { useCombustionStore } from "../lib/combustion.store";
 import {
   CombustionCollection,
@@ -47,10 +38,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useAnioStore } from "@/components/anio/lib/anio.store";
+import { UpdateFormCombustion } from "./UpdateFormCombustion";
 
 export default function CombustionPage({ combustionType }: CombustionProps) {
   const { tipo } = combustionType;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const { combustion, loadCombustion } = useCombustionStore();
   const { sedes, loadSedes } = useSedeStore();
   const { anios, loadAnios } = useAnioStore();
@@ -61,6 +54,12 @@ export default function CombustionPage({ combustionType }: CombustionProps) {
   const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
     "desc"
   );
+  const [idForUpdate, setIdForUpdate] = useState<number>(0);
+
+  const handleClickUpdate = (id: number) => {
+    setIdForUpdate(id);
+    setIsUpdateDialogOpen(true);
+  };
 
   useEffect(() => {
     if (sedes.length === 0) loadSedes();
@@ -105,9 +104,13 @@ export default function CombustionPage({ combustionType }: CombustionProps) {
   }, [loadCombustion, tipo, selectedSede]);
 
   const handleClose = useCallback(() => {
-    setIsDialogOpen(false);
-    loadCombustion({ tipo, sedeId: Number(selectedSede) });
-  }, [loadCombustion, tipo, selectedSede]);
+    setIsUpdateDialogOpen(false);
+    loadCombustion({
+      tipo,
+      sedeId: Number(selectedSede),
+      anioId: Number(selectedAnio),
+    });
+  }, [loadCombustion, tipo, selectedSede, selectedAnio]);
 
   if (!combustion) {
     return <p>Cargando...</p>;
@@ -231,32 +234,16 @@ export default function CombustionPage({ combustionType }: CombustionProps) {
                 </TableCell>
                 <TableCell>{item.unidad}</TableCell>
                 <TableCell>{item.mes}</TableCell>
+
                 {/* UPDATE */}
                 <TableCell>
-                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button variant="default">
-                        <Plus /> Registrar
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>
-                          {tipo === "estacionario"
-                            ? "Registro Estacionario"
-                            : "Registro Móvil"}
-                        </DialogTitle>
-                        <DialogDescription>
-                          Indicar el consumo de combustible de{" "}
-                          {tipo === "estacionario"
-                            ? "equipos estacionarios"
-                            : "equipos móviles"}
-                          .
-                        </DialogDescription>
-                      </DialogHeader>
-                      <FormCombustion onClose={handleClose} tipo={tipo} />
-                    </DialogContent>
-                  </Dialog>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => handleClickUpdate(item.id)}
+                  >
+                    <Pencil1Icon className="h-4 text-blue-700" />
+                  </Button>
                 </TableCell>
 
                 <TableCell className="flex space-x-4 justify-center items-center bg-transparent ">
@@ -272,6 +259,32 @@ export default function CombustionPage({ combustionType }: CombustionProps) {
           </TableBody>
         </Table>
       </div>
+
+      {/*MODAL UPDATE*/}
+      <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {tipo === "estacionario"
+                ? "Registro Estacionario"
+                : "Registro Móvil"}
+            </DialogTitle>
+            <DialogDescription>
+              Indicar el consumo de combustible de{" "}
+              {tipo === "estacionario"
+                ? "equipos estacionarios"
+                : "equipos móviles"}
+              .
+            </DialogDescription>
+          </DialogHeader>
+          <UpdateFormCombustion
+            onClose={handleClose}
+            tipo={tipo}
+            id={idForUpdate}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

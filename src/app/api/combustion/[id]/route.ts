@@ -26,7 +26,9 @@ export async function GET(
             return new NextResponse("Combustible not found", {status: 404});
         }
 
-        return NextResponse.json(formatCombustible(combustible));
+        return NextResponse.json(combustible);
+
+        // return NextResponse.json(formatCombustible(combustible));
     } catch (error) {
         console.error("Error finding combustible", error);
         return new NextResponse("Error finding combustible", {status: 500});
