@@ -43,6 +43,10 @@ CREATE TABLE `tipoCombustible` (
     `nombre` VARCHAR(45) NOT NULL,
     `abreviatura` VARCHAR(45) NOT NULL,
     `unidad` VARCHAR(45) NOT NULL,
+    `valorCalorico` FLOAT NOT NULL,
+    `factorEmisionCO2` FLOAT NOT NULL,
+    `factorEmisionCH4` FLOAT NOT NULL,
+    `factorEmisionN2O` FLOAT NOT NULL,
     `created_at` DATETIME(3) NOT NULL,
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -91,6 +95,7 @@ CREATE TABLE `TipoFertilizante` (
     `clase` VARCHAR(45) NOT NULL,
     `nombre` VARCHAR(45) NOT NULL,
     `porcentajeNitrogeno` FLOAT NOT NULL,
+    `unidad` VARCHAR(45) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -154,6 +159,53 @@ CREATE TABLE `ConsumoPapel` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `GWP` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(45) NOT NULL,
+    `formula` VARCHAR(45) NOT NULL,
+    `valor` FLOAT NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `combustibleCalculos` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `combustibleId` INTEGER NOT NULL,
+    `consumo` FLOAT NOT NULL,
+    `emisionCO2` FLOAT NOT NULL,
+    `emisionCH4` FLOAT NOT NULL,
+    `emisionN2O` FLOAT NOT NULL,
+    `totalGEI` FLOAT NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `factorEmision` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `valor` FLOAT NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `fertilizanteCalculos` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `fertilizanteId` INTEGER NOT NULL,
+    `cantidadAporte` FLOAT NOT NULL,
+    `factorEmisionId` INTEGER NOT NULL,
+    `emisionDirecta` FLOAT NOT NULL,
+    `emisionGEI` FLOAT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `Access` ADD CONSTRAINT `Access_type_user_id_fkey` FOREIGN KEY (`type_user_id`) REFERENCES `TypeUser`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -192,3 +244,9 @@ ALTER TABLE `ConsumoPapel` ADD CONSTRAINT `ConsumoPapel_anio_id_fkey` FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE `ConsumoPapel` ADD CONSTRAINT `ConsumoPapel_sede_id_fkey` FOREIGN KEY (`sede_id`) REFERENCES `Sede`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `combustibleCalculos` ADD CONSTRAINT `combustibleCalculos_combustibleId_fkey` FOREIGN KEY (`combustibleId`) REFERENCES `Combustible`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_fertilizanteId_fkey` FOREIGN KEY (`fertilizanteId`) REFERENCES `Fertilizante`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

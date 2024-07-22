@@ -28,7 +28,17 @@ export async function getCombustion(
     return data;
 }
 
+export async function getCombustionById(id: number) {
+    const {data} = await api.get(`/api/combustion/${id}`);
+    return data;
+}
+
 export async function createCombustion(body: CombustionRequest) {
     const {data} = await api.post("/api/combustion", body);
+    return data;
+}
+
+export async function updateCombustion(id: number, body: CombustionRequest) {
+    const {data} = await api.put(`/api/combustion/${id}`, body);
     return data;
 }

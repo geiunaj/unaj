@@ -43,13 +43,17 @@ model Sede {
 }
 
 model tipoCombustible {
-  id           Int           @id @default(autoincrement())
-  nombre       String        @db.VarChar(45)
-  abreviatura  String        @db.VarChar(45)
-  unidad       String        @db.VarChar(45)
-  created_at   DateTime
-  updated_at   DateTime
-  combustibles Combustible[]
+  id               Int           @id @default(autoincrement())
+  nombre           String        @db.VarChar(45)
+  abreviatura      String        @db.VarChar(45)
+  unidad           String        @db.VarChar(45)
+  valorCalorico    Float         @db.Float
+  factorEmisionCO2 Float         @db.Float
+  factorEmisionCH4 Float         @db.Float
+  factorEmisionN2O Float         @db.Float
+  created_at       DateTime
+  updated_at       DateTime
+  combustibles     Combustible[]
 }
 
 model Mes {
@@ -83,17 +87,19 @@ model Combustible {
   created_at DateTime
   updated_at DateTime
 
-  tipoCombustible tipoCombustible? @relation(fields: [tipoCombustible_id], references: [id])
-  mes             Mes?             @relation(fields: [mes_id], references: [id])
-  anio            Anio?            @relation(fields: [anio_id], references: [id])
-  sede            Sede?            @relation(fields: [sede_id], references: [id])
+  tipoCombustible     tipoCombustible?      @relation(fields: [tipoCombustible_id], references: [id])
+  mes                 Mes?                  @relation(fields: [mes_id], references: [id])
+  anio                Anio?                 @relation(fields: [anio_id], references: [id])
+  sede                Sede?                 @relation(fields: [sede_id], references: [id])
+  combustibleCalculos combustibleCalculos[]
 }
 
 model TipoFertilizante {
   id                  Int      @id @default(autoincrement())
-  clase               String   @db.VarChar(45) // Cambiado a String
+  clase               String   @db.VarChar(45) // Organico o Sintetico
   nombre              String   @db.VarChar(45)
   porcentajeNitrogeno Float    @db.Float
+  unidad              String   @db.VarChar(45)
   created_at          DateTime @default(now())
   updated_at          DateTime @updatedAt
 
@@ -123,10 +129,11 @@ model Fertilizante {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  tipoFertilizante TipoFertilizante @relation(fields: [tipoFertilizante_id], references: [id])
-  ficha            Documento?       @relation(fields: [ficha_id], references: [id])
-  sede             Sede?            @relation(fields: [sede_id], references: [id])
-  anio             Anio?            @relation(fields: [anio_id], references: [id])
+  tipoFertilizante     TipoFertilizante?      @relation(fields: [tipoFertilizante_id], references: [id])
+  ficha                Documento?             @relation(fields: [ficha_id], references: [id])
+  sede                 Sede?                  @relation(fields: [sede_id], references: [id])
+  anio                 Anio?                  @relation(fields: [anio_id], references: [id])
+  fertilizanteCalculos fertilizanteCalculos[]
 }
 
 model TipoPapel {
@@ -159,4 +166,49 @@ model ConsumoPapel {
   tipoPapel TipoPapel @relation(fields: [tipoPapel_id], references: [id])
   anio      Anio      @relation(fields: [anio_id], references: [id])
   sede      Sede?     @relation(fields: [sede_id], references: [id])
+}
+
+// CALCULOS
+// POTENCIAL DE CALIENTAMIENTO GLOBAL
+model GWP {
+  id      Int    @id @default(autoincrement())
+  nombre  String @db.VarChar(45)
+  formula String @db.VarChar(45)
+  valor   Float  @db.Float
+}
+
+// A1_1 COMBUSTIBLES
+model combustibleCalculos {
+  id            Int   @id @default(autoincrement())
+  combustibleId Int
+  consumo       Float @db.Float
+  emisionCO2    Float @db.Float
+  emisionCH4    Float @db.Float
+  emisionN2O    Float @db.Float
+  totalGEI      Float @db.Float
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  combustible Combustible? @relation(fields: [combustibleId], references: [id])
+}
+
+// A1_5 - FERTILIZANTES
+model factorEmision {
+  id    Int   @id @default(autoincrement())
+  valor Float @db.Float
+}
+
+model fertilizanteCalculos {
+  id              Int    @id @default(autoincrement())
+  fertilizanteId  Int
+  cantidadAporte  Float  @db.Float
+  factorEmisionId Int
+  emisionDirecta  Float  @db.Float
+  emisionGEI      Float? @db.Float
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  fertilizante Fertilizante? @relation(fields: [fertilizanteId], references: [id])
 }
