@@ -4,7 +4,7 @@ import {Button} from "@/components/ui/button";
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {ListRestart} from "lucide-react";
+import {Calculator, ListRestart, Plus} from "lucide-react";
 import {useCombustionStore} from "../lib/combustion.store";
 import {useSedeStore} from "@/components/sede/lib/sede.store";
 import {useAnioStore} from "@/components/anio/lib/anio.store";
@@ -40,6 +40,11 @@ export default function CombustionCalculate() {
         loadCombustionCalculates(parseInt(selectedSede), parseInt(value));
     }, [loadCombustionCalculates, selectedSede]);
 
+    const handleCalculate = useCallback(async () => {
+        await createCombustionCalculate(parseInt(selectedSede), parseInt(selectedAnio));
+        await loadCombustionCalculates(parseInt(selectedSede), parseInt(selectedAnio));
+    }, [createCombustionCalculate, selectedSede, selectedAnio, loadCombustionCalculates]);
+
     if (!combustionCalculates) {
         return <p>Cargando...</p>;
     }
@@ -73,7 +78,15 @@ export default function CombustionCalculate() {
                             nombre={"nombre"}
                             id={"id"}
                         />
+
                     </div>
+                    <Button
+                        variant="default"
+                        className="flex justify-between gap-2"
+                        onClick={handleCalculate}
+                    >
+                        <Calculator className="h-4"/> Calcular
+                    </Button>
                 </div>
             </div>
 

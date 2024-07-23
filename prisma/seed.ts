@@ -77,7 +77,7 @@ async function main() {
                 nombre: "Petróleo Industrial 500",
                 unidad: "L",
                 valorCalorico: 0.000151,
-                factorEmisionCO2: 77400,
+                factorEmisionCO2: 77.4,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -86,7 +86,7 @@ async function main() {
                 nombre: "Petróleo Industrial 6",
                 unidad: "L",
                 valorCalorico: 0.000151,
-                factorEmisionCO2: 77400,
+                factorEmisionCO2: 77.4,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -95,7 +95,7 @@ async function main() {
                 nombre: "Gasolina",
                 unidad: "L",
                 valorCalorico: 0.00012,
-                factorEmisionCO2: 69300,
+                factorEmisionCO2: 69.3,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -104,7 +104,7 @@ async function main() {
                 nombre: "Diésel 2",
                 unidad: "L",
                 valorCalorico: 0.000142,
-                factorEmisionCO2: 74100,
+                factorEmisionCO2: 74.1,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -113,7 +113,7 @@ async function main() {
                 nombre: "Diésel B5",
                 unidad: "L",
                 valorCalorico: 0.000142,
-                factorEmisionCO2: 74100,
+                factorEmisionCO2: 74.1,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6,
             },
@@ -122,7 +122,7 @@ async function main() {
                 nombre: "Gas Licuado de Petróleo",
                 unidad: "L",
                 valorCalorico: 0.00010464768,
-                factorEmisionCO2: 63100,
+                factorEmisionCO2: 63.1,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -131,7 +131,7 @@ async function main() {
                 nombre: "Gas Natural Licuado",
                 unidad: "m³",
                 valorCalorico: 0.01989,
-                factorEmisionCO2: 64200,
+                factorEmisionCO2: 64.2,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -140,7 +140,7 @@ async function main() {
                 nombre: "Gas Natural",
                 unidad: "m³",
                 valorCalorico: 0.000036,
-                factorEmisionCO2: 56126,
+                factorEmisionCO2: 56.126,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -149,7 +149,7 @@ async function main() {
                 nombre: "Coque",
                 unidad: "kg",
                 valorCalorico: 0.0267,
-                factorEmisionCO2: 94600,
+                factorEmisionCO2: 94.6,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -158,7 +158,7 @@ async function main() {
                 nombre: "Carbón mineral antracita",
                 unidad: "kg",
                 valorCalorico: 0.0267,
-                factorEmisionCO2: 98300,
+                factorEmisionCO2: 98.3,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -167,7 +167,7 @@ async function main() {
                 nombre: "Carbón mineral bituminoso",
                 unidad: "kg",
                 valorCalorico: 0.0258,
-                factorEmisionCO2: 94600,
+                factorEmisionCO2: 94.6,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -176,7 +176,7 @@ async function main() {
                 nombre: "Carbón vegetal",
                 unidad: "kg",
                 valorCalorico: 0.0295,
-                factorEmisionCO2: 112000,
+                factorEmisionCO2: 112,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -185,7 +185,7 @@ async function main() {
                 nombre: "Bagazo",
                 unidad: "kg",
                 valorCalorico: 0.0116,
-                factorEmisionCO2: 100000,
+                factorEmisionCO2: 100,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -194,7 +194,7 @@ async function main() {
                 nombre: "Leña",
                 unidad: "kg",
                 valorCalorico: 0.0116,
-                factorEmisionCO2: 112000,
+                factorEmisionCO2: 112,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -203,7 +203,7 @@ async function main() {
                 nombre: "Biocombustible 100%",
                 unidad: "L",
                 valorCalorico: 0.000089,
-                factorEmisionCO2: 70800,
+                factorEmisionCO2: 70.8,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -212,7 +212,7 @@ async function main() {
                 nombre: "Etanol",
                 unidad: "L",
                 valorCalorico: 0.00009,
-                factorEmisionCO2: 70800,
+                factorEmisionCO2: 70.8,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             },
@@ -221,7 +221,7 @@ async function main() {
                 nombre: "Biogás",
                 unidad: "m³",
                 valorCalorico: 0.000034272,
-                factorEmisionCO2: 54600,
+                factorEmisionCO2: 54.6,
                 factorEmisionCH4: 3,
                 factorEmisionN2O: 0.6
             }

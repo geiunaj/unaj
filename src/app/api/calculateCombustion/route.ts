@@ -59,7 +59,19 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const body: CombustionCalcRequest = await req.json();
 
         const sedeId = body.sedeId;
-        const anioId = body.anioId;
+        let anioId = body.anioId;
+
+        const searchAnio = await prisma.anio.findFirst({
+            where: {
+                nombre: anioId.toString(),
+            },
+        });
+
+        if (!searchAnio) {
+            return NextResponse.json([{error: "Anio not found"}]);
+        } else {
+            anioId = searchAnio.id;
+        }
 
         const tiposCombustible = await prisma.tipoCombustible.findMany();
         const combustibles = await prisma.combustible.findMany({

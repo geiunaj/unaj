@@ -17,7 +17,7 @@ export default function SelectFilter(
             onValueChange={handleItemSelect}
             defaultValue={itemSelected}
         >
-            <SelectTrigger className="rounded-sm h-9 w-auto gap-2 focus:outline-none focus-visible:ring-0">
+            <SelectTrigger className="rounded-sm h-9 w-auto gap-4 focus:outline-none focus-visible:ring-0">
                 <SelectValue placeholder="Selecciona una opción"/>
             </SelectTrigger>
             <SelectContent className="border-none">
