@@ -282,10 +282,11 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                                 <TableCell>{item.unidad}</TableCell>
                                 <TableCell>{item.mes}</TableCell>
 
-                                <TableCell>
+                                <TableCell className="p-1">
                                     <div className="flex justify-center gap-4">
                                         {/*UPDATE*/}
                                         <Button
+                                            className="h-7 w-7"
                                             size="icon"
                                             variant="outline"
                                             onClick={() => handleClickUpdate(item.id)}
@@ -295,6 +296,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
 
                                         {/*DELETE*/}
                                         <Button
+                                            className="h-7 w-7"
                                             size="icon"
                                             variant="outline"
                                             onClick={() => handleCLickDelete(item.id)}
