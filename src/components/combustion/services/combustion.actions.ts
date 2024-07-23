@@ -11,6 +11,7 @@ export async function getCombustion(
     sort?: string,
     direction?: string,
     anioId?: number,
+    tipoCombustibleId?: number
 ): Promise<CombustionCollection[]> {
     const config: AxiosRequestConfig = {
         params: {
@@ -19,6 +20,7 @@ export async function getCombustion(
             sort,
             direction,
             anioId,
+            tipoCombustibleId,
         },
     };
     const {data} = await api.get<CombustionCollection[]>(
@@ -40,5 +42,10 @@ export async function createCombustion(body: CombustionRequest) {
 
 export async function updateCombustion(id: number, body: CombustionRequest) {
     const {data} = await api.put(`/api/combustion/${id}`, body);
+    return data;
+}
+
+export async function deleteCombustion(id: number) {
+    const {data} = await api.delete(`/api/combustion/${id}`);
     return data;
 }

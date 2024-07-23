@@ -1,6 +1,12 @@
 import {create} from "zustand";
 import {CombustionCollection, CombustionRequest,} from "../services/combustion.interface";
-import {createCombustion, getCombustion, getCombustionById,} from "../services/combustion.actions";
+import {
+    createCombustion,
+    deleteCombustion,
+    getCombustion,
+    getCombustionById,
+    updateCombustion,
+} from "../services/combustion.actions";
 
 type tipoForm = "estacionario" | "movil";
 type sort =
@@ -22,11 +28,12 @@ interface CombustionStore {
         sort?: sort;
         direction?: direction;
         anioId?: number;
+        tipoCombustibleId?: number;
     }) => void;
-    createCombustion: (combustion: CombustionRequest) => void;
+    createCombustion: (combustion: CombustionRequest) => Promise<void>;
     showCombustion: (id: number) => Promise<any>;
-    updateCombustion: (id: number, combustion: CombustionRequest) => void;
-    deleteCombustion: (id: number) => void;
+    updateCombustion: (id: number, combustion: CombustionRequest) => Promise<void>;
+    deleteCombustion: (id: number) => Promise<any>;
 }
 
 export const useCombustionStore = create<CombustionStore>((set) => ({
@@ -37,15 +44,17 @@ export const useCombustionStore = create<CombustionStore>((set) => ({
                                sort,
                                direction,
                                anioId,
+                               tipoCombustibleId,
                            }: {
         tipo?: tipoForm;
         sedeId?: number;
         sort?: sort;
         direction?: direction;
         anioId?: number;
+        tipoCombustibleId?: number;
     } = {}) => {
         try {
-            const data = await getCombustion(tipo, sedeId, sort, direction, anioId);
+            const data = await getCombustion(tipo, sedeId, sort, direction, anioId, tipoCombustibleId);
             set({combustion: data});
         } catch (error) {
             console.error("Error loading combustion data:", error);
@@ -66,10 +75,20 @@ export const useCombustionStore = create<CombustionStore>((set) => ({
             console.error("Error loading combustion:", error);
         }
     },
-    updateCombustion: (id: number, combustion: CombustionRequest) => {
-        console.log("Update combustion:", id, combustion);
+    updateCombustion: async (id: number, combustion: CombustionRequest) => {
+        try {
+            const data = await updateCombustion(id, combustion);
+            console.log("Combustion updated:", data);
+        } catch (error) {
+            console.error("Error updating combustion data:", error);
+        }
     },
-    deleteCombustion: (id: number) => {
-        console.log("Delete combustion:", id);
+    deleteCombustion: async (id: number) => {
+        try {
+            const data = await deleteCombustion(id);
+            console.log("Combustion deleted:", data);
+        } catch (error) {
+            console.error("Error deleting combustion:", error);
+        }
     },
 }));
