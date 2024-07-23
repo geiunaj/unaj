@@ -1,13 +1,11 @@
-// "use client";
-// import CombustionPage, { CombustionEstacionariaPage } from "@/components/combustion/components/CombustionPage";
-// import { FormCombustion } from "@/components/combustion/components/FormCombustion";
-// import LayoutWrapper from "@/components/Layout/layout";
+"use client";
+import LayoutWrapper from "@/components/Layout/layout";
+import CombustionCalculate from "@/components/combustion/components/CombustionCalculate";
 
-// export default function Page() {
-//   return (
-//     <LayoutWrapper>
-//       {/* <CombustionTable /> */}
-//       <CombustionPage/>
-//     </LayoutWrapper>
-//   );
-// }
+export default function Page() {
+    return (
+        <LayoutWrapper>
+            <CombustionCalculate/>
+        </LayoutWrapper>
+    );
+}

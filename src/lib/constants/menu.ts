@@ -26,6 +26,11 @@ export const menu: MenuItem[] = [
                 icon: "Flame",
                 href: "/combustion-movil",
             },
+            {
+                title: "Cálculos",
+                icon: "Flame",
+                href: "/combustion",
+            }
         ],
     },
     {

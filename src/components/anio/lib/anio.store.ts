@@ -1,6 +1,6 @@
 import {create} from "zustand";
-import {Anio} from "@prisma/client";
 import {getAnio} from "../services/anio.actions";
+import {Anio} from "@/components/anio/services/anio.interface";
 
 interface AnioStore {
     anios: Anio[];

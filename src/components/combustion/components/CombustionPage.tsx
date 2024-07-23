@@ -49,6 +49,7 @@ import {
 import {useAnioStore} from "@/components/anio/lib/anio.store";
 import {UpdateFormCombustion} from "./UpdateFormCombustion";
 import {useTipoCombustibleStore} from "@/components/tipoCombustible/lib/tipoCombustible.store";
+import SelectFilter from "@/components/selectFilter";
 
 export default function CombustionPage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
@@ -177,66 +178,39 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                 </div>
                 <div className="flex justify-end gap-5">
                     <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
-                        <Select
-                            onValueChange={handleTipoCombustibleChange}
-                            defaultValue={selectTipoCombustible}
-                        >
-                            <SelectTrigger className="rounded-sm h-9 w-60 focus:outline-none focus-visible:ring-0">
-                                <SelectValue placeholder="Selecciona el Tipo de Combustible"/>
-                            </SelectTrigger>
-                            <SelectContent className="border-none">
-                                <SelectGroup>
-                                    {tiposCombustible.map((tipo) => (
-                                        <SelectItem key={tipo.id} value={tipo.id.toString()}>
-                                            {tipo.nombre}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+
+                        <SelectFilter
+                            list={tiposCombustible}
+                            itemSelected={selectTipoCombustible}
+                            handleItemSelect={handleTipoCombustibleChange}
+                            value={"id"}
+                            nombre={"nombre"}
+                            id={"id"}
+                        />
                         {selectTipoCombustible && (
                             <Button size="icon" variant="ghost" onClick={() => setSelectTipoCombustible("")}>
                                 <ListRestart className="h-4 text-gray-500"/>
                             </Button>
-                        )
-                        }
+                        )}
 
+                        <SelectFilter
+                            list={sedes}
+                            itemSelected={selectedSede}
+                            handleItemSelect={handleSedeChange}
+                            value={"id"}
+                            nombre={"name"}
+                            id={"id"}
+                        />
 
-                        <Select
-                            onValueChange={handleSedeChange}
-                            defaultValue={selectedSede}
-                        >
-                            <SelectTrigger className="rounded-sm h-9 w-52 focus:outline-none focus-visible:ring-0">
-                                <SelectValue placeholder="Selecciona la Sede"/>
-                            </SelectTrigger>
-                            <SelectContent className="border-none">
-                                <SelectGroup>
-                                    {sedes.map((sede) => (
-                                        <SelectItem key={sede.id} value={sede.id.toString()}>
-                                            {sede.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                        <SelectFilter
+                            list={anios}
+                            itemSelected={selectedAnio}
+                            handleItemSelect={handleAnioChange}
+                            value={"nombre"}
+                            nombre={"nombre"}
+                            id={"id"}
+                        />
 
-                        <Select
-                            onValueChange={handleAnioChange}
-                            defaultValue={selectedAnio}
-                        >
-                            <SelectTrigger className="rounded-sm h-9 w-24 focus:outline-none focus-visible:ring-0">
-                                <SelectValue placeholder="Año"/>
-                            </SelectTrigger>
-                            <SelectContent className="border-none">
-                                <SelectGroup>
-                                    {anios.map((anio) => (
-                                        <SelectItem key={anio.id} value={anio.nombre.toString()}>
-                                            {anio.nombre}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
                     </div>
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogTrigger asChild>
