@@ -2,67 +2,45 @@
 import {useEffect, useState, useCallback} from "react";
 import {Button} from "@/components/ui/button";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+    Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {ChevronsUpDown, ListRestart, Plus, Trash2} from "lucide-react";
+import {ListRestart} from "lucide-react";
 import {useCombustionStore} from "../lib/combustion.store";
-import {
-    CombustionCollection,
-} from "../services/combustion.interface";
 import {useSedeStore} from "@/components/sede/lib/sede.store";
-import {Badge} from "@/components/ui/badge";
 import {useAnioStore} from "@/components/anio/lib/anio.store";
-import {useTipoCombustibleStore} from "@/components/tipoCombustible/lib/tipoCombustible.store";
 import SelectFilter from "@/components/selectFilter";
+import {useCombustionCalculateStore} from "@/components/combustion/lib/combustionCalculate.store";
+import {CombustionCalcResponse} from "@/components/combustion/services/combustionCalculate.interface";
+import {Badge} from "@/components/ui/badge";
 
 export default function CombustionCalculate() {
     // STORES
-    const {combustion, loadCombustion, deleteCombustion} = useCombustionStore();
-    const {tiposCombustible, loadTiposCombustible} = useTipoCombustibleStore();
+    const {combustionCalculates, loadCombustionCalculates, createCombustionCalculate} = useCombustionCalculateStore();
     const {sedes, loadSedes} = useSedeStore();
     const {anios, loadAnios} = useAnioStore();
 
     // SELECTS - FILTERS
-    const [selectTipoCombustible, setSelectTipoCombustible] = useState<string>("");
     const [selectedSede, setSelectedSede] = useState<string>("1");
     const [selectedAnio, setSelectedAnio] = useState<string>(new Date().getFullYear().toString());
 
 
     useEffect(() => {
-        if (tiposCombustible.length === 0) loadTiposCombustible();
         if (sedes.length === 0) loadSedes();
         if (anios.length === 0) loadAnios();
-    }, [loadTiposCombustible, loadSedes, loadAnios, sedes.length, anios.length, tiposCombustible.length]);
-
-    useEffect(() => {
-        const currentYear = new Date().getFullYear().toString();
-
-        if (anios.length > 0 && !selectedAnio) {
-            const currentAnio = anios.find((anio) => anio.nombre === currentYear);
-            if (currentAnio) {
-                setSelectedAnio(currentAnio.id.toString());
-            }
-        }
-    }, [anios, selectedSede, selectedAnio, selectTipoCombustible]);
-
-    const handleTipoCombustibleChange = useCallback((value: string) => {
-        setSelectTipoCombustible(value);
-    }, []);
+        if (combustionCalculates.length === 0) loadCombustionCalculates(parseInt(selectedSede), parseInt(selectedAnio));
+    }, [loadCombustionCalculates, loadSedes, loadAnios, sedes.length, anios.length, selectedSede, selectedAnio, combustionCalculates.length]);
 
     const handleSedeChange = useCallback((value: string) => {
         setSelectedSede(value);
-    }, []);
+        loadCombustionCalculates(parseInt(value), parseInt(selectedAnio));
+    }, [loadCombustionCalculates, selectedAnio]);
 
     const handleAnioChange = useCallback((value: string) => {
         setSelectedAnio(value);
-    }, []);
+        loadCombustionCalculates(parseInt(selectedSede), parseInt(value));
+    }, [loadCombustionCalculates, selectedSede]);
 
-    if (!combustion) {
+    if (!combustionCalculates) {
         return <p>Cargando...</p>;
     }
 
@@ -77,20 +55,6 @@ export default function CombustionCalculate() {
                 </div>
                 <div className="flex justify-end gap-5">
                     <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
-
-                        <SelectFilter
-                            list={tiposCombustible}
-                            itemSelected={selectTipoCombustible}
-                            handleItemSelect={handleTipoCombustibleChange}
-                            value={"id"}
-                            nombre={"nombre"}
-                            id={"id"}
-                        />
-                        {selectTipoCombustible && (
-                            <Button size="icon" variant="ghost" onClick={() => setSelectTipoCombustible("")}>
-                                <ListRestart className="h-4 text-gray-500"/>
-                            </Button>
-                        )}
 
                         <SelectFilter
                             list={sedes}
@@ -118,56 +82,68 @@ export default function CombustionCalculate() {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                TIPO DE EQUIPO
+                                TIPO DE COMBUSTIBLE
                             </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                UNIDAD
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                CANTIDAD
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                VALOR CALORICO NETO
-                            </TableHead>
+                            {/*<TableHead className="font-Manrope text-sm font-bold text-center">*/}
+                            {/*    UNIDAD*/}
+                            {/*</TableHead>*/}
+                            {/*<TableHead className="font-Manrope text-sm font-bold text-center">*/}
+                            {/*    CANTIDAD*/}
+                            {/*</TableHead>*/}
+                            {/*<TableHead className="font-Manrope text-sm font-bold text-center">*/}
+                            {/*    VALOR CALORICO NETO*/}
+                            {/*</TableHead>*/}
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 CONSUMO
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                FACTOR DE EMISIÓN DE CO2
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 EMISIONES DE CO2
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                FACTOR DE EMISIÓN DE CH4
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
                                 EMISIONES DE CH4
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                FACTOR DE EMISION DE N2O
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 EMISIONES DE N2O
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                TOTAL EMISIONES
+                                TOTAL EMISIONES GEI
                             </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {combustion.map((item: CombustionCollection) => (
-                            <TableRow key={item.id} className="text-center">
-                                <TableCell>{item.tipoEquipo}</TableCell>
-                                <TableCell>{item.tipoCombustible}</TableCell>
-                                <TableCell>
-                                    <Badge variant="default">{item.consumo}</Badge>
-                                </TableCell>
-                                <TableCell>{item.unidad}</TableCell>
-                                <TableCell>{item.mes}</TableCell>
-                                <TableCell> </TableCell>
-                            </TableRow>
-                        ))}
+                        {
+                            combustionCalculates.map((combustionCalculate: CombustionCalcResponse) => (
+                                <TableRow className="text-center" key={combustionCalculate.id}>
+                                    <TableCell className="text-start">
+                                        {combustionCalculate.tipoCombustible}
+                                    </TableCell>
+                                    {/*<TableCell>*/}
+                                    {/*    {combustionCalculate.unidad}*/}
+                                    {/*</TableCell>*/}
+                                    {/*<TableCell>*/}
+                                    {/*    {combustionCalculate.cantidad}*/}
+                                    {/*</TableCell>*/}
+                                    {/*<TableCell>*/}
+                                    {/*    {combustionCalculate.valorCalorico}*/}
+                                    {/*</TableCell>*/}
+                                    <TableCell>
+                                        <Badge variant="secondary">{combustionCalculate.consumo}</Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        {combustionCalculate.emisionCO2}
+                                    </TableCell>
+                                    <TableCell>
+                                        {combustionCalculate.emisionCH4}
+                                    </TableCell>
+                                    <TableCell>
+                                        {combustionCalculate.emisionN2O}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge variant="default">{combustionCalculate.totalGEI}</Badge>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        }
                     </TableBody>
                 </Table>
             </div>

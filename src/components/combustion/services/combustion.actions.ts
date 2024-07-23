@@ -15,12 +15,7 @@ export async function getCombustion(
 ): Promise<CombustionCollection[]> {
     const config: AxiosRequestConfig = {
         params: {
-            tipo,
-            sedeId,
-            sort,
-            direction,
-            anioId,
-            tipoCombustibleId,
+            tipo, sedeId, sort, direction, anioId, tipoCombustibleId,
         },
     };
     const {data} = await api.get<CombustionCollection[]>(
