@@ -5,13 +5,17 @@ import { fertilizanteCollection, FertilizanteRequest } from "./fertilizante.inte
 export async function getFertilizante(
   sedeId?: number,
   sort?: string,
-  direction?: string
+  direction?: string,
+  anioId?: number,
+  tipoFertilizanteId?: number
 ): Promise<fertilizanteCollection[]> {
   const config: AxiosRequestConfig = {
     params: {
       sedeId,
       sort,
       direction,
+      anioId,
+      tipoFertilizanteId,
     },
   };
   const { data } = await api.get<fertilizanteCollection[]>(
@@ -21,7 +25,22 @@ export async function getFertilizante(
   return data;
 }
 
+export async function getFertilizanteById(id: number) {
+  const {data} = await api.get(`/api/fertilizante/${id}`);
+  return data;
+}
+
 export async function createFertilizante(body: FertilizanteRequest) {
   const { data } = await api.post("/api/fertilizante", body);
+  return data;
+}
+
+export async function updateFertilizante(id: number, body: FertilizanteRequest) {
+  const {data} = await api.put(`/api/fertilizante/${id}`, body);
+  return data;
+}
+
+export async function deleteFertilizante(id: number) {
+  const {data} = await api.delete(`/api/fertilizante/${id}`);
   return data;
 }

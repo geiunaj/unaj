@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -16,8 +16,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { useEffect, useState } from "react";
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { ChevronsUpDown, Plus, Trash2 } from "lucide-react";
 import { FormFertilizantes } from "./FormFertilizantes";
 import { useSedeStore } from "@/components/sede/lib/sede.store";
 import {
@@ -32,33 +32,95 @@ import {
 import { useFertilizanteStore } from "../lib/fertilizante.store";
 import { Badge } from "@/components/ui/badge";
 import { fertilizanteCollection } from "../services/fertilizante.interface";
+import { useAnioStore } from "@/components/anio/lib/anio.store";
+import SelectFilter from "@/components/selectFilter";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useTipoFertilizante } from "@/components/tipoFertilizante/lib/tipoFertilizante.store";
 
 export default function FertilizantePage() {
+  //DIALOGS
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  //STORES
+  const { fertilizante, loadFertilizante, deleteFertilizante } =
+    useFertilizanteStore();
+    const {tiposFertilizante, loadTiposFertilizante} = useTipoFertilizante();
+  // const { tipoFertilizante, loadTipoFertilizante } = useTipoFertilizanteStore();
   const { sedes, loadSedes } = useSedeStore();
-  const { fertilizante, loadFertilizante } = useFertilizanteStore();
+  const { anios, loadAnios } = useAnioStore();
+
+  //SELECTS - FILTERS
   const [selectedSede, setSelectedSede] = useState<string>("1");
-  // const [selectedClase, setSelectedClase] = useState<string>("1");
+  const [selectedAnio, setSelectedAnio] = useState<string>(
+    new Date().getFullYear().toString()
+  );
+  const [selectedTipoFertilizante, setSelectedTipoFertilizante] =
+    useState<string>("1");
   const [cantidadDirection, setCantidadDirection] = useState<"asc" | "desc">(
     "desc"
   );
 
-  useEffect(() => {
-    loadFertilizante({ sedeId: Number(selectedSede) });
-    loadSedes();
-  }, [loadFertilizante, loadSedes, selectedSede]);
+  //IDS
+  const [idForUpdate, setIdForUpdate] = useState<number>(0);
+  const [idForDelete, setIdForDelete] = useState<number>(0);
 
-  const handleSedeChange = (value: string) => {
-    setSelectedSede(value);
-    loadFertilizante({ sedeId: Number(value) })
-    ;
+  const handleClickUpdate = (id: number) => {
+    setIdForUpdate(id);
+    setIsUpdateDialogOpen(true);
   };
 
-  // const handleClaseChange = (value: string) => {
-  //   setSelectedClase(value);
-  //   setSelectedSede(value);
-  //   loadFertilizante({ sedeId: Number(value) });
-  // };
+  const handleCLickDelete = (id: number) => {
+    setIdForDelete(id);
+    setIsDeleteDialogOpen(true);
+  };
+
+  useEffect(() => {
+    if (tiposFertilizante.length === 0) loadFertilizante();
+    if (sedes.length === 0) loadSedes();
+    if (anios.length === 0) loadAnios();
+  }, [loadFertilizante, loadSedes, selectedSede]);
+
+  useEffect(() => {
+    const currentYear = new Date().getFullYear().toString();
+
+    if (anios.length > 0 && !selectedAnio) {
+      const currentAnio = anios.find((anio) => anio.nombre === currentYear);
+      if (currentAnio) {
+        setSelectedAnio(currentAnio.id.toString());
+      }
+    }
+    loadFertilizante({
+      sedeId: Number(selectedSede),
+      anioId: selectedAnio ? Number(selectedAnio) : undefined,
+      tipoFertilizanteId: selectedTipoFertilizante
+        ? Number(selectedTipoFertilizante)
+        : undefined,
+    });
+  }, [anios, selectedSede, selectedAnio, selectedTipoFertilizante]);
+
+  const handletipoFertilizanteChange = useCallback((value: string) => {
+    setSelectedTipoFertilizante(value);
+  }, []);
+
+  const handleSedeChange = useCallback((value: string) => {
+    setSelectedSede(value);
+  }, []);
+
+  const handleAnioChange = useCallback((value: string) => {
+    setSelectedAnio(value);
+  }, []);
 
   const handleToggleCantidadSort = () => {
     setCantidadDirection(cantidadDirection === "asc" ? "desc" : "asc");
@@ -69,12 +131,40 @@ export default function FertilizantePage() {
     });
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsDialogOpen(false);
-    loadFertilizante({ sedeId: Number(selectedSede) });
-  };
+    loadFertilizante({
+      sedeId: Number(selectedSede),
+      anioId: Number(selectedAnio),
+    });
+  }, [loadFertilizante, selectedSede, selectedAnio]);
 
-  if (!fertilizante) return <p>Cargando...</p>;
+  const handleCloseUpdate = useCallback(() => {
+    setIsUpdateDialogOpen(false);
+    loadFertilizante({
+      sedeId: Number(selectedSede),
+      anioId: Number(selectedAnio),
+    });
+  }, [loadFertilizante, selectedSede, selectedAnio]);
+
+  const handleDelete = useCallback(async () => {
+    await deleteFertilizante(idForDelete);
+    setIsDeleteDialogOpen(false);
+    loadFertilizante({
+      sedeId: Number(selectedSede),
+      anioId: Number(selectedAnio),
+    });
+  }, [
+    deleteFertilizante,
+    idForDelete,
+    loadFertilizante,
+    selectedSede,
+    selectedAnio,
+  ]);
+
+  if (!fertilizante) {
+    return <p>Cargando...</p>;
+  }
 
   return (
     <div className="w-full max-w-[1150px] h-full ">
@@ -85,48 +175,32 @@ export default function FertilizantePage() {
         </div>
         <div className="flex justify-end gap-5">
           <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
-            <Select
-              onValueChange={(value) => handleSedeChange(value)}
-              defaultValue={selectedSede}
-            >
-              <SelectTrigger className="rounded-sm h-10 w-80 focus:outline-none focus-visible:ring-0">
-                <SelectValue placeholder="Selecciona la Sede" />
-              </SelectTrigger>
-              <SelectContent className="border-none">
-                <SelectGroup>
-                  {sedes.map((sede, index) => (
-                    <SelectItem
-                      key={`${sede.id}-${index}`}
-                      value={sede.id.toString()}
-                    >
-                      {sede.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            {/* <Select
-              onValueChange={(value) => handleClaseChange(value)}
-              defaultValue={selectedClase}
-            >
-              <SelectTrigger className="rounded-sm h-10 w-80 focus:outline-none focus-visible:ring-0">
-                <SelectValue placeholder="Selecciona la Sede" />
-              </SelectTrigger>
-              <SelectContent className="border-none">
-                <SelectGroup>
-                  <SelectItem value="Organico">Orgánico</SelectItem>
-                  <SelectItem value="Sintético">Sintético</SelectItem>
-                  {/* {sedes.map((sede, index) => (
-                    <SelectItem
-                      key={`${sede.id}-${index}`}
-                      value={sede.id.toString()}
-                    >
-                      {sede.name}
-                    </SelectItem>
-                  ))} */}
-                {/* </SelectGroup>
-              </SelectContent>
-            </Select> */} 
+            <SelectFilter
+              list={tiposFertilizante}
+              itemSelected={selectedTipoFertilizante}
+              handleItemSelect={handletipoFertilizanteChange}
+              value={"id"}
+              nombre={"nombre"}
+              id={"id"}
+            />
+
+            <SelectFilter
+              list={sedes}
+              itemSelected={selectedSede}
+              handleItemSelect={handleSedeChange}
+              value={"id"}
+              nombre={"name"}
+              id={"id"}
+            />
+
+            <SelectFilter
+              list={anios}
+              itemSelected={selectedAnio}
+              handleItemSelect={handleAnioChange}
+              value={"nombre"}
+              nombre={"nombre"}
+              id={"id"}
+            />
           </div>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -193,19 +267,76 @@ export default function FertilizantePage() {
                   {item.is_ficha ? <Badge>SI</Badge> : <Badge>NO</Badge>}
                 </TableCell>
                 <TableCell>{item.anio}</TableCell>
-                <TableCell className="flex space-x-4 justify-center items-center bg-transparent ">
-                  <Button
-                    size="icon"
-                    className="bg-transparent hover:bg-transparent text-blue-700 border"
-                  >
-                    <Pencil1Icon className="h-4 text-blue-700" />
-                  </Button>
+                <TableCell className="p-1">
+                  <div className="flex justify-center gap-4">
+                    {/*UPDATE*/}
+                    <Button
+                      className="h-7 w-7"
+                      size="icon"
+                      variant="outline"
+                      onClick={() => handleClickUpdate(item.id)}
+                    >
+                      <Pencil1Icon className="h-4 text-blue-700" />
+                    </Button>
+
+                    {/*DELETE*/}
+                    <Button
+                      className="h-7 w-7"
+                      size="icon"
+                      variant="outline"
+                      onClick={() => handleCLickDelete(item.id)}
+                    >
+                      <Trash2 className="h-4 text-gray-500" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+
+      {/*MODAL UPDATE*/}
+      <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+          {/* <UpdateFormCombustion
+                        onClose={handleCloseUpdate}
+                        tipo={tipo}
+                        id={idForUpdate}
+                    /> */}
+        </DialogContent>
+      </Dialog>
+
+      {/*    MODAL DELETE*/}
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogTrigger asChild></AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Eliminar registro</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer, ¿Estás seguro de eliminar este
+              registro?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className={buttonVariants({ variant: "destructive" })}
+              onClick={handleDelete}
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

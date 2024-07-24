@@ -5,7 +5,10 @@ import {
 } from "../services/fertilizante.interface";
 import {
   createFertilizante,
+  deleteFertilizante,
   getFertilizante,
+  getFertilizanteById,
+  updateFertilizante,
 } from "../services/fertilizante.actions";
 
 type sort =
@@ -21,11 +24,16 @@ type direction = "asc" | "desc";
 interface FertilizanteStore {
   fertilizante: fertilizanteCollection[];
   loadFertilizante: (options?: {
+    anioId?: number;
     sedeId?: number;
     sort?: sort;
     direction?: direction;
+    tipoFertilizanteId?: number;
   }) => void;
-  createFertilizante: (fertilizante: FertilizanteRequest) => void;
+  createFertilizante: (fertilizante: FertilizanteRequest) => Promise<void>;
+  showFertiliante: (id: number) => Promise<any>;
+  updateFertilizante: (id: number, fertilizante: FertilizanteRequest) => Promise<void>;
+  deleteFertilizante: (id: number) => Promise<any>;
 }
 
 export const useFertilizanteStore = create<FertilizanteStore>((set) => ({
@@ -34,13 +42,23 @@ export const useFertilizanteStore = create<FertilizanteStore>((set) => ({
     sedeId,
     sort,
     direction,
+    anioId,
+    tipoFertilizanteId,
   }: {
     sedeId?: number;
     sort?: sort;
     direction?: direction;
+    anioId?: number;
+    tipoFertilizanteId?: number;
   } = {}) => {
     try {
-      const data = await getFertilizante(sedeId, sort, direction);
+      const data = await getFertilizante(
+        sedeId,
+        sort,
+        direction,
+        anioId,
+        tipoFertilizanteId
+      );
       set({ fertilizante: data });
     } catch (error) {
       console.error("Error loading fertilizante data", error);
@@ -51,6 +69,29 @@ export const useFertilizanteStore = create<FertilizanteStore>((set) => ({
       const data = await createFertilizante(fertilizante);
     } catch (error) {
       console.error("Error creating fertilizante", error);
+    }
+  },
+  showFertiliante: async (id: number): Promise<any> => {
+    try {
+      return await getFertilizanteById(id);
+    } catch (error) {
+      console.error("Error loading fertilizante:", error);
+    }
+  },
+  updateFertilizante: async (id: number, fertilizante: FertilizanteRequest) => {
+    try {
+      const data = await updateFertilizante(id, fertilizante);
+      console.log("Fertilizante updated:", data);
+    } catch (error) {
+      console.error("Error updating fertilizante data:", error);
+    }
+  },
+  deleteFertilizante: async (id: number) => {
+    try {
+      const data = await deleteFertilizante(id);
+      console.log("Fertilizante deleted:", data);
+    } catch (error) {
+      console.error("Error deleting fertilizante:", error);
     }
   },
 }));

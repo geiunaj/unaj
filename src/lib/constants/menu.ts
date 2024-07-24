@@ -47,5 +47,10 @@ export const menu: MenuItem[] = [
         title: "Consumo de Papel",
         icon: "FileText",
         href: "/papel",
+    },
+    {
+        title: "Taxis Contratados",
+        icon: "FileText",
+        href: "/taxi",
     }
 ];

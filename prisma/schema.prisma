@@ -41,6 +41,8 @@ model Sede {
   fertilizante        Fertilizante[]
   ConsumoPapel        ConsumoPapel[]
   combustibleCalculos combustibleCalculos[]
+  taxi               Taxi[]
+
 }
 
 model tipoCombustible {
@@ -64,6 +66,7 @@ model Mes {
   created_at   DateTime
   updated_at   DateTime
   combustibles Combustible[]
+  Taxi         Taxi[]
 }
 
 model Anio {
@@ -75,6 +78,7 @@ model Anio {
   fertilizante        Fertilizante[]
   consumoPapel        ConsumoPapel[]
   combustibleCalculos combustibleCalculos[]
+  Taxi                Taxi[]
 }
 
 model Combustible {
@@ -219,4 +223,22 @@ model fertilizanteCalculos {
   updated_at DateTime @updatedAt
 
   fertilizante Fertilizante? @relation(fields: [fertilizanteId], references: [id])
+}
+
+model Taxi {
+  id                Int    @id @default(autoincrement())
+  unidadContratante String
+  lugarSalida       String
+  lugarDestino      String
+  montoGastado      Float
+  sede_id           Int
+  mes_id            Int
+  anio_id           Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  mes  Mes?  @relation(fields: [mes_id], references: [id])
+  anio Anio? @relation(fields: [anio_id], references: [id])
+  sede Sede? @relation(fields: [sede_id], references: [id])
 }

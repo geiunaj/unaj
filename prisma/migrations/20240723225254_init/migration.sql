@@ -210,6 +210,22 @@ CREATE TABLE `fertilizanteCalculos` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `Taxi` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `unidadContratante` VARCHAR(191) NOT NULL,
+    `lugarSalida` VARCHAR(191) NOT NULL,
+    `lugarDestino` VARCHAR(191) NOT NULL,
+    `montoGastado` DOUBLE NOT NULL,
+    `sede_id` INTEGER NOT NULL,
+    `mes_id` INTEGER NOT NULL,
+    `anio_id` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `Access` ADD CONSTRAINT `Access_type_user_id_fkey` FOREIGN KEY (`type_user_id`) REFERENCES `TypeUser`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -260,3 +276,12 @@ ALTER TABLE `combustibleCalculos` ADD CONSTRAINT `combustibleCalculos_sedeId_fke
 
 -- AddForeignKey
 ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_fertilizanteId_fkey` FOREIGN KEY (`fertilizanteId`) REFERENCES `Fertilizante`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Taxi` ADD CONSTRAINT `Taxi_mes_id_fkey` FOREIGN KEY (`mes_id`) REFERENCES `Mes`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Taxi` ADD CONSTRAINT `Taxi_anio_id_fkey` FOREIGN KEY (`anio_id`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Taxi` ADD CONSTRAINT `Taxi_sede_id_fkey` FOREIGN KEY (`sede_id`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
