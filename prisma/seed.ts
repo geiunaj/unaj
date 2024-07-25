@@ -276,33 +276,69 @@ async function main() {
     }
 
     // Crear tipos de Fertilizantes
-
     const tiposFertilizantes = [
         {
             clase: "Sintético",
-            nombre: "Urea uso agrícola",
+            nombre: "Urea",
             porcentajeNitrogeno: 46,
             unidad: "kg",
         },
         {
             clase: "Sintético",
-            nombre: "Fosfato diamónico",
+            nombre: "Fosfato Diamónico (DAP)",
             porcentajeNitrogeno: 18,
             unidad: "kg",
         },
         {
-            clase: "Organico",
+            clase: "Sintético",
+            nombre: "Nitrato de Amonio",
+            porcentajeNitrogeno: 34,
+            unidad: "kg",
+        },
+        {
+            clase: "Sintético",
+            nombre: "Fosfato Monoamónico (MAP)",
+            porcentajeNitrogeno: 11,
+            unidad: "kg",
+        },
+        {
+            clase: "Sintético",
             nombre: "Sulfato de Amonio",
             porcentajeNitrogeno: 21,
             unidad: "kg",
         },
         {
-            clase: "Organico",
-            nombre: "Nitrato de Amonio",
-            porcentajeNitrogeno: 34,
+            clase: "Orgánico",
+            nombre: "Compost",
+            porcentajeNitrogeno: 3,
             unidad: "kg",
         },
+        {
+            clase: "Orgánico",
+            nombre: "Guano de Isla",
+            porcentajeNitrogeno: 15,
+            unidad: "kg",
+        },
+        {
+            clase: "Orgánico",
+            nombre: "Humus de Lombriz",
+            porcentajeNitrogeno: 2,
+            unidad: "kg",
+        },
+        {
+            clase: "Orgánico",
+            nombre: "Abono de Estiércol de Vacuno",
+            porcentajeNitrogeno: 1,
+            unidad: "kg",
+        },
+        {
+            clase: "Orgánico",
+            nombre: "Biofertilizante Líquido",
+            porcentajeNitrogeno: 2,
+            unidad: "L",
+        },
     ];
+    
 
     for (const tipo of tiposFertilizantes) {
         await prisma.tipoFertilizante.create({
@@ -334,7 +370,7 @@ async function main() {
 
     const fichaIds = allDocument.map((doc: { id: any }) => doc.id); // Obtener los IDs de los documentos creados
 
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 100; i++) {
         await prisma.fertilizante.create({
             data: {
                 tipoFertilizante_id:

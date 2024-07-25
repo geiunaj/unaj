@@ -21,7 +21,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     return <LayoutSkeleton />;
   }
 
-  return (//session ? (
+  return (session ? (
     <div className="flex h-screen">
       <div className="border-e h-full w-80">
         <Sidebar />
@@ -35,9 +35,10 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         </div>
       </div>
     </div>
-   ) //: (
-  //   <LoginPage />
-  // );
+   ) : (
+    <LoginPage />
+  )
+  );
 };
 
 export default LayoutWrapper;

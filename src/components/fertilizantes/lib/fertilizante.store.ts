@@ -21,6 +21,7 @@ type sort =
   | "sede_id";
 type direction = "asc" | "desc";
 
+
 interface FertilizanteStore {
   fertilizante: fertilizanteCollection[];
   loadFertilizante: (options?: {
@@ -29,6 +30,7 @@ interface FertilizanteStore {
     sort?: sort;
     direction?: direction;
     tipoFertilizanteId?: number;
+    claseFertilizante?: string;
   }) => void;
   createFertilizante: (fertilizante: FertilizanteRequest) => Promise<void>;
   showFertiliante: (id: number) => Promise<any>;
@@ -44,12 +46,14 @@ export const useFertilizanteStore = create<FertilizanteStore>((set) => ({
     direction,
     anioId,
     tipoFertilizanteId,
+    claseFertilizante,
   }: {
     sedeId?: number;
     sort?: sort;
     direction?: direction;
     anioId?: number;
     tipoFertilizanteId?: number;
+    claseFertilizante?: string;
   } = {}) => {
     try {
       const data = await getFertilizante(
@@ -57,7 +61,8 @@ export const useFertilizanteStore = create<FertilizanteStore>((set) => ({
         sort,
         direction,
         anioId,
-        tipoFertilizanteId
+        tipoFertilizanteId,
+        claseFertilizante
       );
       set({ fertilizante: data });
     } catch (error) {
