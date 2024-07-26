@@ -170,7 +170,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
             <div className="flex flex-row justify-between items-start mb-6">
                 <div className="font-Manrope">
                     <h1 className="text-xl text-gray-800 font-bold">
-                        {tipo === "estacionario"
+                        {tipo === "estacionaria"
                             ? "Combustión Estacionaria"
                             : "Combustión Móvil"}
                     </h1>
@@ -221,13 +221,13 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                         <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>
-                                    {tipo === "estacionario"
-                                        ? "Registro Estacionario"
+                                    {tipo === "estacionaria"
+                                        ? "Registro Estacionaria"
                                         : "Registro Móvil"}
                                 </DialogTitle>
                                 <DialogDescription>
                                     Indicar el consumo de combustible de{" "}
-                                    {tipo === "estacionario"
+                                    {tipo === "estacionaria"
                                         ? "equipos estacionarios"
                                         : "equipos móviles"}
                                     .
@@ -317,13 +317,13 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>
-                            {tipo === "estacionario"
-                                ? "Actualizar Combustible Estacionario"
+                            {tipo === "estacionaria"
+                                ? "Actualizar Combustible Estacionaria"
                                 : "Actualizar Combustible Móvil"}
                         </DialogTitle>
                         <DialogDescription>
                             Indicar el consumo de combustible de{" "}
-                            {tipo === "estacionario"
+                            {tipo === "estacionaria"
                                 ? "equipos estacionarios"
                                 : "equipos móviles"}
                             .
@@ -363,7 +363,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
 }
 
 export const CombustionEstacionariaPage = () => (
-    <CombustionPage combustionType={{tipo: "estacionario"}}/>
+    <CombustionPage combustionType={{tipo: "estacionaria"}}/>
 );
 export const CombustionMovilPage = () => (
     <CombustionPage combustionType={{tipo: "movil"}}/>

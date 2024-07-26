@@ -6,7 +6,7 @@ import {
 import {AxiosRequestConfig} from "axios";
 
 export async function getCombustion(
-    tipo: string = "estacionario",
+    tipo: string = "estacionaria",
     sedeId?: number,
     sort?: string,
     direction?: string,

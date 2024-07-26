@@ -77,7 +77,7 @@ export interface CombustionRequest {
 }
 
 export interface CombustionType {
-    tipo: "estacionario" | "movil";
+    tipo: "estacionaria" | "movil";
 }
 
 export interface CombustionProps {

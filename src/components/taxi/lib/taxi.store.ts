@@ -1,9 +1,9 @@
 import {create} from "zustand";
-import { TaxiCollection, TaxiRequest } from "../service/taxi.interface";
-import { createTaxi, deleteTaxi, getTaxi, getTaxiById, updateTaxi } from "../service/taxi.actions";
+import {TaxiCollection, TaxiRequest} from "../service/taxi.interface";
+import {createTaxi, deleteTaxi, getTaxi, getTaxiById, updateTaxi} from "../service/taxi.actions";
 
 
-type tipoForm = "estacionario" | "movil";
+type tipoForm = "estacionaria" | "movil";
 type sort =
     | "id"
     | "tipo"
@@ -34,12 +34,12 @@ interface TaxiStore {
 export const usetaxiStore = create<TaxiStore>((set) => ({
     taxi: [],
     loadtaxi: async ({
-                               sedeId,
-                               sort,
-                               direction,
-                               anioId,
-                               mesId,
-                           }: {
+                         sedeId,
+                         sort,
+                         direction,
+                         anioId,
+                         mesId,
+                     }: {
         tipo?: tipoForm;
         sedeId?: number;
         sort?: sort;

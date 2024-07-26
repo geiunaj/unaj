@@ -12,7 +12,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         let anioId = searchParams.get("anioId");
         const tipo = searchParams.get("tipo");
 
-        if (!sedeId || !anioId) {
+        if (!sedeId || !anioId || !tipo) {
             return NextResponse.json([
                 {error: "Missing sedeId or anioId"}
             ]);

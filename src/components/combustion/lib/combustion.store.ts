@@ -8,7 +8,7 @@ import {
     updateCombustion,
 } from "../services/combustion.actions";
 
-type tipoForm = "estacionario" | "movil";
+type tipoForm = "estacionaria" | "movil";
 type sort =
     | "id"
     | "tipo"
