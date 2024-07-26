@@ -370,22 +370,23 @@ async function main() {
 
     const fichaIds = allDocument.map((doc: { id: any }) => doc.id); // Obtener los IDs de los documentos creados
 
-    for (let i = 0; i < 100; i++) {
-        await prisma.fertilizante.create({
-            data: {
-                tipoFertilizante_id:
-                allTiposFertilizantes[
-                    Math.floor(Math.random() * allTiposFertilizantes.length)
-                    ].id,
-                cantidad: faker.number.float({min: 0, max: 100}),
-                is_ficha: faker.datatype.boolean(),
-                ficha_id: fichaIds[i], // Usar valores del 1 al 100 para ficha_id
-                anio_id: allAnios[Math.floor(Math.random() * allAnios.length)].id,
-                sede_id: allSedes[Math.floor(Math.random() * allSedes.length)].id,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
+    for (const typeFertilizante of allTiposFertilizantes) {
+        for (const sede of allSedes) {
+            for (const anio of allAnios) {
+                await prisma.fertilizante.create({
+                    data: {
+                        tipoFertilizante_id: typeFertilizante.id,
+                        cantidad: faker.number.float({min: 0, max: 100}),
+                        is_ficha: false,
+                        ficha_id: null,
+                        anio_id: anio.id,
+                        sede_id: sede.id,
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                    },
+                });
+            }
+        }
     }
 
     const tipoPapel = [
