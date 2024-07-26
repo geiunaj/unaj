@@ -46,6 +46,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useClaseFertilizante } from "@/components/tipoFertilizante/lib/claseFertilizante.store";
+import { UpdateFormFertilizantes } from "./UpdateFormFertilizante";
 
 //types claseFertilzante 
 
@@ -310,11 +311,10 @@ export default function FertilizantePage() {
             <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          {/* <UpdateFormCombustion
+          <UpdateFormFertilizantes
                         onClose={handleCloseUpdate}
-                        tipo={tipo}
                         id={idForUpdate}
-                    /> */}
+                    />
         </DialogContent>
       </Dialog>
 
