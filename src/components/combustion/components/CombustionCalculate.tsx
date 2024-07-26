@@ -4,8 +4,7 @@ import {Button} from "@/components/ui/button";
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {Calculator, ListRestart, Plus} from "lucide-react";
-import {useCombustionStore} from "../lib/combustion.store";
+import {Calculator} from "lucide-react";
 import {useSedeStore} from "@/components/sede/lib/sede.store";
 import {useAnioStore} from "@/components/anio/lib/anio.store";
 import SelectFilter from "@/components/selectFilter";
@@ -22,28 +21,38 @@ export default function CombustionCalculate() {
     // SELECTS - FILTERS
     const [selectedSede, setSelectedSede] = useState<string>("1");
     const [selectedAnio, setSelectedAnio] = useState<string>(new Date().getFullYear().toString());
-
+    const [selectedTipo, setSelectedTipo] = useState<string>("estacionaria");
 
     useEffect(() => {
         if (sedes.length === 0) loadSedes();
         if (anios.length === 0) loadAnios();
-        if (combustionCalculates.length === 0) loadCombustionCalculates(parseInt(selectedSede), parseInt(selectedAnio));
-    }, [loadCombustionCalculates, loadSedes, loadAnios, sedes.length, anios.length, selectedSede, selectedAnio, combustionCalculates.length]);
+        if (combustionCalculates.length === 0) loadCombustionCalculates(parseInt(selectedSede), parseInt(selectedAnio), selectedTipo);
+    }, [loadCombustionCalculates, loadSedes, loadAnios, sedes.length, anios.length, selectedSede, selectedAnio, combustionCalculates.length, selectedTipo]);
 
     const handleSedeChange = useCallback((value: string) => {
         setSelectedSede(value);
-        loadCombustionCalculates(parseInt(value), parseInt(selectedAnio));
-    }, [loadCombustionCalculates, selectedAnio]);
+        loadCombustionCalculates(parseInt(value), parseInt(selectedAnio), selectedTipo);
+    }, [loadCombustionCalculates, selectedAnio, selectedTipo]);
 
     const handleAnioChange = useCallback((value: string) => {
         setSelectedAnio(value);
-        loadCombustionCalculates(parseInt(selectedSede), parseInt(value));
-    }, [loadCombustionCalculates, selectedSede]);
+        loadCombustionCalculates(parseInt(selectedSede), parseInt(value), selectedTipo);
+    }, [loadCombustionCalculates, selectedSede, selectedTipo]);
 
     const handleCalculate = useCallback(async () => {
-        await createCombustionCalculate(parseInt(selectedSede), parseInt(selectedAnio));
-        await loadCombustionCalculates(parseInt(selectedSede), parseInt(selectedAnio));
-    }, [createCombustionCalculate, selectedSede, selectedAnio, loadCombustionCalculates]);
+        await createCombustionCalculate(parseInt(selectedSede), parseInt(selectedAnio), selectedTipo);
+        await loadCombustionCalculates(parseInt(selectedSede), parseInt(selectedAnio), selectedTipo);
+    }, [createCombustionCalculate, selectedSede, selectedAnio, selectedTipo, loadCombustionCalculates]);
+
+    const tipos = [
+        {value: "estacionaria", name: "Estacionaria"},
+        {value: "movil", name: "Móvil"},
+    ];
+
+    const handleTipo = useCallback((value: string) => {
+        setSelectedTipo(value);
+        loadCombustionCalculates(parseInt(selectedSede), parseInt(selectedAnio), value);
+    }, [loadCombustionCalculates, selectedAnio, selectedSede]);
 
     if (!combustionCalculates) {
         return <p>Cargando...</p>;
@@ -60,6 +69,15 @@ export default function CombustionCalculate() {
                 </div>
                 <div className="flex justify-end gap-5">
                     <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
+
+                        <SelectFilter
+                            list={tipos}
+                            itemSelected={selectedTipo}
+                            handleItemSelect={handleTipo}
+                            value={"value"}
+                            nombre={"name"}
+                            id={"value"}
+                        />
 
                         <SelectFilter
                             list={sedes}

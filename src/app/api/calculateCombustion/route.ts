@@ -10,6 +10,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const {searchParams} = new URL(req.url);
         const sedeId = searchParams.get("sedeId");
         let anioId = searchParams.get("anioId");
+        const tipo = searchParams.get("tipo");
 
         if (!sedeId || !anioId) {
             return NextResponse.json([
@@ -30,7 +31,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const combustibleCalculos = await prisma.combustibleCalculos.findMany({
             where: {
                 sedeId: parseInt(sedeId),
-                anioId: searchAnio.id
+                anioId: searchAnio.id,
+                tipo: tipo,
             },
             include: {
                 tipoCombustible: true,
@@ -60,6 +62,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         const sedeId = body.sedeId;
         let anioId = body.anioId;
+        const tipo = body.tipo;
 
         const searchAnio = await prisma.anio.findFirst({
             where: {
@@ -77,11 +80,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const combustibles = await prisma.combustible.findMany({
             where: {
                 sede_id: sedeId,
-                anio_id: anioId
+                anio_id: anioId,
+                tipo: tipo,
             }
         });
 
-        await prisma.combustibleCalculos.deleteMany({where: {anioId: anioId, sedeId: sedeId}});
+        await prisma.combustibleCalculos.deleteMany({where: {anioId: anioId, sedeId: sedeId, tipo: tipo}});
 
         for (const tipoCombustible of tiposCombustible) {
             // CALCULAR TOTAL DE CONSUMO DE COMBUSTIBLE POR TIPO DE COMBUSTIBLE
@@ -104,6 +108,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
             // GUARDAR CALCULO DE COMBUSTIBLE
             const calculoCombustible: CombustionCalc = {
+                tipo: tipo,
                 tipoCombustibleId: tipoCombustible.id,
                 consumoTotal: totalConsumo,
                 valorCalorico: valorCalorico,

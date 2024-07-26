@@ -1,4 +1,5 @@
 export interface CombustionCalc {
+    tipo: string;
     tipoCombustibleId: number;
     consumoTotal: number;
     valorCalorico: number;
@@ -14,11 +15,13 @@ export interface CombustionCalc {
 export interface CombustionCalcRequest {
     sedeId: number;
     anioId: number;
+    tipo: string;
     // combustibleId: number;
 }
 
 export interface CombustionCalcResponse {
     id: number;
+    tipo: string;
     tipoCombustibleId: number;
     anioId: number;
     sedeId: number;

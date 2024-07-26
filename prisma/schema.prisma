@@ -41,8 +41,7 @@ model Sede {
   fertilizante        Fertilizante[]
   ConsumoPapel        ConsumoPapel[]
   combustibleCalculos combustibleCalculos[]
-  taxi               Taxi[]
-
+  taxi                Taxi[]
 }
 
 model tipoCombustible {
@@ -185,17 +184,18 @@ model GWP {
 
 // A1_1 COMBUSTIBLES
 model combustibleCalculos {
-  id                Int   @id @default(autoincrement())
+  id                Int    @id @default(autoincrement())
+  tipo              String @db.VarChar(45)
   tipoCombustibleId Int
-  consumoTotal      Float @db.Float
-  valorCalorico     Float @db.Float
-  consumo           Float @db.Float
-  emisionCO2        Float @db.Float
-  emisionCH4        Float @db.Float
-  emisionN2O        Float @db.Float
-  totalGEI          Float @db.Float
-  anioId            Int   @db.Int
-  sedeId            Int   @db.Int
+  consumoTotal      Float  @db.Float
+  valorCalorico     Float  @db.Float
+  consumo           Float  @db.Float
+  emisionCO2        Float  @db.Float
+  emisionCH4        Float  @db.Float
+  emisionN2O        Float  @db.Float
+  totalGEI          Float  @db.Float
+  anioId            Int    @db.Int
+  sedeId            Int    @db.Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

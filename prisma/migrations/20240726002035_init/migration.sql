@@ -172,6 +172,7 @@ CREATE TABLE `GWP` (
 -- CreateTable
 CREATE TABLE `combustibleCalculos` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `tipo` VARCHAR(45) NOT NULL,
     `tipoCombustibleId` INTEGER NOT NULL,
     `consumoTotal` FLOAT NOT NULL,
     `valorCalorico` FLOAT NOT NULL,

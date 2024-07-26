@@ -249,7 +249,7 @@ async function main() {
     const allAnios = await prisma.anio.findMany();
     const allSedes = await prisma.sede.findMany();
     const allTiposCombustible = await prisma.tipoCombustible.findMany();
-    const types = ["estacionario", "movil"];
+    const types = ["estacionaria", "movil"];
 
     // Crear datos aleatorios para Combustible
     for (const type of types) {
@@ -338,7 +338,7 @@ async function main() {
             unidad: "L",
         },
     ];
-    
+
 
     for (const tipo of tiposFertilizantes) {
         await prisma.tipoFertilizante.create({
@@ -499,19 +499,19 @@ async function main() {
 
     for (let i = 0; i < 50; i++) {
         await prisma.taxi.create({
-          data: {
-            unidadContratante: `Unidad ${faker.number.int({ min: 1, max: 10 })}`,
-            lugarSalida: faker.location.city(),
-            lugarDestino: faker.location.city(),
-            montoGastado: faker.number.float({ min: 10, max: 50, precision: 0.01 }),
-            mes_id: allMeses[Math.floor(Math.random() * allMeses.length)].id,
-            anio_id: allAnios[Math.floor(Math.random() * allAnios.length)].id,
-            sede_id: allSedes[Math.floor(Math.random() * allSedes.length)].id,
-            created_at: new Date(),
-            updated_at: new Date(),
-          },
+            data: {
+                unidadContratante: `Unidad ${faker.number.int({min: 1, max: 10})}`,
+                lugarSalida: faker.location.city(),
+                lugarDestino: faker.location.city(),
+                montoGastado: faker.number.float({min: 10, max: 50, precision: 0.01}),
+                mes_id: allMeses[Math.floor(Math.random() * allMeses.length)].id,
+                anio_id: allAnios[Math.floor(Math.random() * allAnios.length)].id,
+                sede_id: allSedes[Math.floor(Math.random() * allSedes.length)].id,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
         });
-      }
+    }
 
     console.log({adminType, user});
 }

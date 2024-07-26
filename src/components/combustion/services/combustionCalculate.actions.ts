@@ -5,11 +5,12 @@ import {
 import {AxiosRequestConfig} from "axios";
 
 
-export async function getCombustionCalculate(sedeId: number, anioId: number): Promise<CombustionCalcResponse[]> {
+export async function getCombustionCalculate(sedeId: number, anioId: number, tipo: string): Promise<CombustionCalcResponse[]> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
-            anioId
+            anioId,
+            tipo
         }
     };
     const {data} = await api.get("/api/calculateCombustion", config);

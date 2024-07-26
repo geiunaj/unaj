@@ -7,23 +7,23 @@ import {CombustionCalcResponse} from "@/components/combustion/services/combustio
 
 interface CombustionCalculateStore {
     combustionCalculates: CombustionCalcResponse[];
-    loadCombustionCalculates: (sedeId: number, anioId: number) => Promise<void>;
-    createCombustionCalculate: (sedeId: number, anioId: number) => Promise<void>;
+    loadCombustionCalculates: (sedeId: number, anioId: number, tipo: string) => Promise<void>;
+    createCombustionCalculate: (sedeId: number, anioId: number, tipo: string) => Promise<void>;
 }
 
 export const useCombustionCalculateStore = create<CombustionCalculateStore>((set) => ({
     combustionCalculates: [],
-    loadCombustionCalculates: async (sedeId: number, anioId: number) => {
+    loadCombustionCalculates: async (sedeId: number, anioId: number, tipo: string) => {
         try {
-            const data = await getCombustionCalculate(sedeId, anioId);
+            const data = await getCombustionCalculate(sedeId, anioId, tipo);
             set({combustionCalculates: data});
         } catch (error) {
             console.error("Error loading combustion calculates data:", error);
         }
     },
-    createCombustionCalculate: async (sedeId: number, anioId: number) => {
+    createCombustionCalculate: async (sedeId: number, anioId: number, tipo: string) => {
         try {
-            const data = await createCombustionCalculate({sedeId, anioId});
+            const data = await createCombustionCalculate({sedeId, anioId, tipo});
             console.log("Combustion calculate created:", data);
         } catch (error) {
             console.error("Error creating combustion calculate:", error);
