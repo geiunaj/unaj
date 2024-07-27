@@ -90,12 +90,10 @@ CREATE TABLE `Combustible` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `TipoFertilizante` (
+CREATE TABLE `Documento` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `clase` VARCHAR(45) NOT NULL,
-    `nombre` VARCHAR(45) NOT NULL,
-    `porcentajeNitrogeno` FLOAT NOT NULL,
-    `unidad` VARCHAR(45) NOT NULL,
+    `nombre` VARCHAR(255) NOT NULL,
+    `contenido` LONGBLOB NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -103,10 +101,12 @@ CREATE TABLE `TipoFertilizante` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Documento` (
+CREATE TABLE `TipoFertilizante` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(255) NOT NULL,
-    `contenido` LONGBLOB NOT NULL,
+    `clase` VARCHAR(45) NOT NULL,
+    `nombre` VARCHAR(45) NOT NULL,
+    `porcentajeNitrogeno` FLOAT NOT NULL,
+    `unidad` VARCHAR(45) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -204,7 +204,10 @@ CREATE TABLE `fertilizanteCalculos` (
     `cantidadAporte` FLOAT NOT NULL,
     `factorEmisionId` INTEGER NOT NULL,
     `emisionDirecta` FLOAT NOT NULL,
+    `totalEmisionesDirectas` FLOAT NOT NULL,
     `emisionGEI` FLOAT NULL,
+    `anioId` INTEGER NOT NULL,
+    `sedeId` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -277,6 +280,15 @@ ALTER TABLE `combustibleCalculos` ADD CONSTRAINT `combustibleCalculos_sedeId_fke
 
 -- AddForeignKey
 ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_fertilizanteId_fkey` FOREIGN KEY (`fertilizanteId`) REFERENCES `Fertilizante`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_factorEmisionId_fkey` FOREIGN KEY (`factorEmisionId`) REFERENCES `factorEmision`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_anioId_fkey` FOREIGN KEY (`anioId`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_sedeId_fkey` FOREIGN KEY (`sedeId`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Taxi` ADD CONSTRAINT `Taxi_mes_id_fkey` FOREIGN KEY (`mes_id`) REFERENCES `Mes`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

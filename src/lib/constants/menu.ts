@@ -37,6 +37,13 @@ export const menu: MenuItem[] = [
         title: "Fertilizante",
         icon: "Bean",
         href: "/fertilizante",
+        items: [
+            {
+                title: "Cálculos",
+                icon: "Bean",
+                href: "/calculateFertilizante",
+            }
+        ],
     },
     {
         title: "Consumo de Electricidad",

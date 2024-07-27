@@ -35,13 +35,14 @@ model User {
 }
 
 model Sede {
-  id                  Int                   @id @default(autoincrement())
-  name                String                @db.VarChar(45)
-  combustibles        Combustible[]
-  fertilizante        Fertilizante[]
-  ConsumoPapel        ConsumoPapel[]
-  combustibleCalculos combustibleCalculos[]
-  taxi                Taxi[]
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(45)
+  combustibles         Combustible[]
+  fertilizante         Fertilizante[]
+  ConsumoPapel         ConsumoPapel[]
+  combustibleCalculos  combustibleCalculos[]
+  taxi                 Taxi[]
+  fertilizanteCalculos fertilizanteCalculos[]
 }
 
 model tipoCombustible {
@@ -69,15 +70,16 @@ model Mes {
 }
 
 model Anio {
-  id                  Int                   @id @default(autoincrement())
-  nombre              String                @db.VarChar(45)
-  created_at          DateTime
-  updated_at          DateTime
-  combustibles        Combustible[]
-  fertilizante        Fertilizante[]
-  consumoPapel        ConsumoPapel[]
-  combustibleCalculos combustibleCalculos[]
-  Taxi                Taxi[]
+  id                   Int                    @id @default(autoincrement())
+  nombre               String                 @db.VarChar(45)
+  created_at           DateTime
+  updated_at           DateTime
+  combustibles         Combustible[]
+  fertilizante         Fertilizante[]
+  consumoPapel         ConsumoPapel[]
+  combustibleCalculos  combustibleCalculos[]
+  Taxi                 Taxi[]
+  fertilizanteCalculos fertilizanteCalculos[]
 }
 
 model Combustible {
@@ -99,6 +101,17 @@ model Combustible {
   sede            Sede?            @relation(fields: [sede_id], references: [id])
 }
 
+model Documento {
+  id        Int    @id @default(autoincrement())
+  nombre    String @db.VarChar(255)
+  contenido Bytes
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  fertilizante Fertilizante?
+}
+
 model TipoFertilizante {
   id                  Int      @id @default(autoincrement())
   clase               String   @db.VarChar(45) // Organico o Sintetico
@@ -109,17 +122,6 @@ model TipoFertilizante {
   updated_at          DateTime @updatedAt
 
   fertilizantes Fertilizante[]
-}
-
-model Documento {
-  id        Int    @id @default(autoincrement())
-  nombre    String @db.VarChar(255)
-  contenido Bytes
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  fertilizante Fertilizante?
 }
 
 model Fertilizante {
@@ -207,22 +209,29 @@ model combustibleCalculos {
 
 // A1_5 - FERTILIZANTES
 model factorEmision {
-  id    Int   @id @default(autoincrement())
-  valor Float @db.Float
+  id                   Int                    @id @default(autoincrement())
+  valor                Float                  @db.Float
+  fertilizanteCalculos fertilizanteCalculos[]
 }
 
 model fertilizanteCalculos {
-  id              Int    @id @default(autoincrement())
-  fertilizanteId  Int
-  cantidadAporte  Float  @db.Float
-  factorEmisionId Int
-  emisionDirecta  Float  @db.Float
-  emisionGEI      Float? @db.Float
+  id                     Int    @id @default(autoincrement())
+  fertilizanteId         Int
+  cantidadAporte         Float  @db.Float
+  factorEmisionId        Int
+  emisionDirecta         Float  @db.Float
+  totalEmisionesDirectas Float  @db.Float
+  emisionGEI             Float? @db.Float
+  anioId                 Int    @db.Int
+  sedeId                 Int    @db.Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  fertilizante Fertilizante? @relation(fields: [fertilizanteId], references: [id])
+  fertilizante  Fertilizante? @relation(fields: [fertilizanteId], references: [id])
+  factorEmision factorEmision @relation(fields: [factorEmisionId], references: [id])
+  anio          Anio?         @relation(fields: [anioId], references: [id])
+  sede          Sede?         @relation(fields: [sedeId], references: [id])
 }
 
 model Taxi {
