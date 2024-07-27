@@ -31,4 +31,4 @@ export interface FertilizanteCalcResponse {
     emisionGEI: number;
     anioId: number;
     sedeId: number;
-}
+}}
