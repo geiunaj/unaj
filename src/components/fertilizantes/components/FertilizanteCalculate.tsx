@@ -157,10 +157,10 @@ export default function CombustionCalculate() {
                 TIPO DE COMBUSTIBLE
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
-                UNIDAD
+                CONSUMO
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
-                CONSUMO
+                UNIDAD
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 PORCENTAJE NITROGENO
@@ -168,12 +168,12 @@ export default function CombustionCalculate() {
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 CANTIDAD DE APORTE DE NITROGENO
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              {/* <TableHead className="font-Manrope text-sm font-bold text-center">
                 FACTOR DE EMISIÓN PARA EMISIONES DIRECTAS
-              </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              </TableHead> */}
+              {/* <TableHead className="font-Manrope text-sm font-bold text-center">
                 EMISIONES DIRECTA DE LOS SUELOS
-              </TableHead>
+              </TableHead> */}
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 TOTAL DE EMISIONES DIRECTAS DE N2O
               </TableHead>
@@ -190,17 +190,15 @@ export default function CombustionCalculate() {
                   key={FertilizanteCalculate.id}
                 >
                   <TableCell className="text-start">
-                    {FertilizanteCalculate.tipofertilizanteId}
-                  </TableCell>
-                  <TableCell className="text-start">
-                    {FertilizanteCalculate.unidad}
+                    {FertilizanteCalculate.tipoFertilizante}
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary">
-                      {FertilizanteCalculate.consumoTotal}
+                      {FertilizanteCalculate.consumo}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-start">
+                  <TableCell>{FertilizanteCalculate.unidad}</TableCell>
+                  <TableCell>
                     {FertilizanteCalculate.porcentajeNitrogeno}
                   </TableCell>
                   <TableCell>
@@ -208,10 +206,8 @@ export default function CombustionCalculate() {
                       {FertilizanteCalculate.cantidadAporte}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-start">
-                    {FertilizanteCalculate.emisionDirecta}
-                  </TableCell>
-                  <TableCell className="text-start">
+                  {/* <TableCell>{FertilizanteCalculate.emisionDirecta}</TableCell> */}
+                  <TableCell>
                     {FertilizanteCalculate.totalEmisionesDirectas}
                   </TableCell>
                   <TableCell>

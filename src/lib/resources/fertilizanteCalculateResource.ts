@@ -58,6 +58,8 @@ export function formatFertilizanteCalculo(fertilizanteCalculo: any) {
         emisionGEI: Number(emisionGEI.toFixed(5)),
         created_at: undefined,
         updated_at: undefined,
+        anio: undefined,
+        sede: undefined,
     };
     
 }
