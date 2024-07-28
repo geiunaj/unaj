@@ -354,6 +354,52 @@ async function main() {
         });
     }
 
+    // Crear datos para GWP
+
+    const gwp = [
+        {
+            nombre: "Dióxido de carbono",
+            formula: "CO2",
+            valor: 1,
+        },
+        {
+            nombre: "Metano - fosil",
+            formula: "CH4",
+            valor: 30,
+        },
+        {
+            nombre: "Metano - biomasa",
+            formula: "CH4",
+            valor: 28,
+        },
+        {
+            nombre: "Óxido nitroso",
+            formula: "N2O",
+            valor: 265,
+        },
+        {
+            nombre:"Hexafluoruro de azufre",
+            formula:"SF6",
+            valor: 23500,
+        },
+        {
+            nombre:"Trifluoruro de nitrógeno",
+            formula:"NF3",
+            valor: 16100,
+        }
+    ];
+    for (const gases of gwp) {
+        await prisma.gwp.create({
+            data: {
+                nombre: gases.nombre,
+                formula: gases.formula,
+                valor: gases.valor,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+
     for (let i = 0; i < 100; i++) {
         await prisma.documento.create({
             data: {

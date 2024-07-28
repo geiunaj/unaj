@@ -8,9 +8,6 @@ interface FertilizanteCalculateStore {
   createFertilizanteCalculate: (
     sedeId: number,
     anioId: number,
-    fertilizanteId: number, // Agregar los campos requeridos
-    cantidad: number,
-    factorEmisionId: number
   ) => Promise<void>;
 }
 
@@ -28,17 +25,11 @@ export const useFertilizanteCalculateStore = create<FertilizanteCalculateStore>(
     createFertilizanteCalculate: async (
       sedeId: number,
       anioId: number,
-      fertilizanteId: number, 
-      cantidad: number,
-      factorEmisionId: number
     ) => {
       try {
         const requestData: FertilizanteCalcRequest = {
           sedeId,
           anioId,
-          fertilizanteId,
-          cantidad,
-          factorEmisionId
         };
         const data = await createFertilizanteCalculate(requestData);
         console.log("Fertilizante calculate created:", data);

@@ -13,12 +13,12 @@ import { Calculator } from "lucide-react";
 import { useSedeStore } from "@/components/sede/lib/sede.store";
 import { useAnioStore } from "@/components/anio/lib/anio.store";
 import SelectFilter from "@/components/selectFilter";
+import { CombustionCalcResponse } from "@/components/combustion/services/combustionCalculate.interface";
 import { Badge } from "@/components/ui/badge";
 import { useFertilizanteCalculateStore } from "../lib/fertilizanteCalculate.store";
 import { FertilizanteCalcResponse } from "../services/fertilizanteCalculate.interface";
-import { parse } from "path";
 
-export default function FertilizanteCalculate() {
+export default function CombustionCalculate() {
   // STORES
   const {
     FertilizanteCalculates,
@@ -33,9 +33,7 @@ export default function FertilizanteCalculate() {
   const [selectedAnio, setSelectedAnio] = useState<string>(
     new Date().getFullYear().toString()
   );
-  const [fertilizanteId, setFertilizanteId] = useState<string>("1");
-  const [cantidad, setCantidad] = useState<number>(0);
-  const [factorEmisionId, setFactorEmisionId] = useState<string>("1");
+  const [selectedTipo, setSelectedTipo] = useState<string>("estacionaria");
 
   useEffect(() => {
     if (sedes.length === 0) loadSedes();
@@ -61,7 +59,7 @@ export default function FertilizanteCalculate() {
       setSelectedSede(value);
       loadFertilizanteCalculates(parseInt(value), parseInt(selectedAnio));
     },
-    [loadFertilizanteCalculates, selectedAnio]
+    [loadFertilizanteCalculates, selectedAnio, selectedTipo]
   );
 
   const handleAnioChange = useCallback(
@@ -69,16 +67,13 @@ export default function FertilizanteCalculate() {
       setSelectedAnio(value);
       loadFertilizanteCalculates(parseInt(selectedSede), parseInt(value));
     },
-    [loadFertilizanteCalculates, selectedSede]
+    [loadFertilizanteCalculates, selectedSede, selectedTipo]
   );
 
   const handleCalculate = useCallback(async () => {
     await createFertilizanteCalculate(
       parseInt(selectedSede),
-      parseInt(selectedAnio),
-      parseInt(fertilizanteId),
-      cantidad,
-      parseInt(factorEmisionId)
+      parseInt(selectedAnio)
     );
     await loadFertilizanteCalculates(
       parseInt(selectedSede),
@@ -88,6 +83,7 @@ export default function FertilizanteCalculate() {
     createFertilizanteCalculate,
     selectedSede,
     selectedAnio,
+    selectedTipo,
     loadFertilizanteCalculates,
   ]);
 
@@ -98,7 +94,7 @@ export default function FertilizanteCalculate() {
 
   // const handleTipo = useCallback((value: string) => {
   //     setSelectedTipo(value);
-  //     loadFertilizanteCalculates(parseInt(selectedSede), parseInt(selectedAnio), value);
+  //     loadFertilizanteCalculates(parseInt(selectedSede), parseInt(selectedAnio));
   // }, [loadFertilizanteCalculates, selectedAnio, selectedSede]);
 
   if (!FertilizanteCalculates) {
@@ -110,12 +106,21 @@ export default function FertilizanteCalculate() {
       <div className="flex flex-row justify-between items-start mb-6">
         <div className="font-Manrope">
           <h1 className="text-xl text-gray-800 font-bold">
-            Cálculo de emisiones de N2O por fertilizante
+            Cálculo de emisiones de CO2 por combustión
           </h1>
           <h2 className="text-base text-gray-500">Huella de carbono</h2>
         </div>
         <div className="flex justify-end gap-5">
           <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
+            {/* <SelectFilter
+                            list={tipos}
+                            itemSelected={selectedTipo}
+                            handleItemSelect={handleTipo}
+                            value={"value"}
+                            nombre={"name"}
+                            id={"value"}
+                        /> */}
+
             <SelectFilter
               list={sedes}
               itemSelected={selectedSede}
@@ -149,31 +154,28 @@ export default function FertilizanteCalculate() {
           <TableHeader>
             <TableRow>
               <TableHead className="font-Manrope text-sm font-bold text-center">
-                TIPO DE FERTILIZANTE
+                TIPO DE COMBUSTIBLE
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 UNIDAD
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
-                CANTIDAD
+                CONSUMO
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
-                % NITROGENO
-              </TableHead>
-              {/*<TableHead className="font-Manrope text-sm font-bold text-center">*/}
-              {/*    VALOR CALORICO NETO*/}
-              {/*</TableHead>*/}
-              <TableHead className="font-Manrope text-sm font-bold text-center">
-                CANTIDA DE APORTE DE NITROGENO
+                PORCENTAJE NITROGENO
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
-                FACTOR DE EMISION DIRECTA
+                CANTIDAD DE APORTE DE NITROGENO
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
-                EMISIONES DIRECTAS DE LOS SUELOS
+                FACTOR DE EMISIÓN PARA EMISIONES DIRECTAS
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
-                TOTAL DE EMICIONES DIRECTAS DE N2O
+                EMISIONES DIRECTA DE LOS SUELOS
+              </TableHead>
+              <TableHead className="font-Manrope text-sm font-bold text-center">
+                TOTAL DE EMISIONES DIRECTAS DE N2O
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 EMISIONES GEI
@@ -182,34 +184,39 @@ export default function FertilizanteCalculate() {
           </TableHeader>
           <TableBody>
             {FertilizanteCalculates.map(
-              (fertilizanteCalculate: FertilizanteCalcResponse) => (
+              (FertilizanteCalculate: FertilizanteCalcResponse) => (
                 <TableRow
                   className="text-center"
-                  key={fertilizanteCalculate.id}
+                  key={FertilizanteCalculate.id}
                 >
                   <TableCell className="text-start">
-                    {fertilizanteCalculate.tipofertilizante}
+                    {FertilizanteCalculate.tipofertilizanteId}
                   </TableCell>
                   <TableCell className="text-start">
-                    {fertilizanteCalculate.unidad}
-                  </TableCell>
-                  <TableCell>{fertilizanteCalculate.cantidad}</TableCell>
-                  <TableCell>
-                    {fertilizanteCalculate.porcentajeNitrogeno}
+                    {FertilizanteCalculate.unidad}
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary">
-                      {fertilizanteCalculate.cantidadAporte}
+                      {FertilizanteCalculate.consumoTotal}
                     </Badge>
                   </TableCell>
-                  <TableCell>{fertilizanteCalculate.factorEmision}</TableCell>
-                  <TableCell>{fertilizanteCalculate.emisionDirecta}</TableCell>
-                  <TableCell>
-                    {fertilizanteCalculate.totalEmisionesDirectas}
+                  <TableCell className="text-start">
+                    {FertilizanteCalculate.porcentajeNitrogeno}
                   </TableCell>
                   <TableCell>
                     <Badge variant="default">
-                      {fertilizanteCalculate.emisionGEI}
+                      {FertilizanteCalculate.cantidadAporte}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-start">
+                    {FertilizanteCalculate.emisionDirecta}
+                  </TableCell>
+                  <TableCell className="text-start">
+                    {FertilizanteCalculate.totalEmisionesDirectas}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="default">
+                      {FertilizanteCalculate.emisionGEI}
                     </Badge>
                   </TableCell>
                 </TableRow>

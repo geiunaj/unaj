@@ -2,9 +2,10 @@ export interface FertilizanteCalculo {
     id: number;
     fertilizanteId: number;
     unidad: string;
-    cantidad: number;
+    consumoTotal: number; //consumo
     cantidadAporte: number;
     factorEmisionId: number;
+    factorEmision: number;
     emisionDirecta: number;
     totalEmisionesDirectas: number;
     emisionGEI: number;
@@ -12,7 +13,6 @@ export interface FertilizanteCalculo {
     sedeId: number;
     created_at: Date;
     updated_at: Date;
-    factorEmision: FactorEmision;
     sede: Sede;
     anio: Anio;
     fertilizante: Fertilizante;
@@ -73,7 +73,7 @@ export function formatFertilizanteCalculo(fertilizanteCalculo: any) {
 
     return {
         ...rest,
-        cantidad: Fertilizante.cantidad,
+        consumo: Fertilizante.consumoTotal,
         tipoFertilizante: Fertilizante.tipoFertilizante.nombre,
         unidad: Fertilizante.tipoFertilizante.unidad,
         clase: Fertilizante.tipoFertilizante.clase,

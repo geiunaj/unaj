@@ -121,7 +121,8 @@ model TipoFertilizante {
   created_at          DateTime @default(now())
   updated_at          DateTime @updatedAt
 
-  fertilizantes Fertilizante[]
+  fertilizantes        Fertilizante[]
+  fertilizanteCalculos fertilizanteCalculos[]
 }
 
 model Fertilizante {
@@ -136,11 +137,10 @@ model Fertilizante {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  tipoFertilizante     TipoFertilizante?      @relation(fields: [tipoFertilizante_id], references: [id])
-  ficha                Documento?             @relation(fields: [ficha_id], references: [id])
-  sede                 Sede?                  @relation(fields: [sede_id], references: [id])
-  anio                 Anio?                  @relation(fields: [anio_id], references: [id])
-  fertilizanteCalculos fertilizanteCalculos[]
+  tipoFertilizante TipoFertilizante? @relation(fields: [tipoFertilizante_id], references: [id])
+  ficha            Documento?        @relation(fields: [ficha_id], references: [id])
+  sede             Sede?             @relation(fields: [sede_id], references: [id])
+  anio             Anio?             @relation(fields: [anio_id], references: [id])
 }
 
 model TipoPapel {
@@ -207,18 +207,19 @@ model combustibleCalculos {
   sede            Sede?            @relation(fields: [sedeId], references: [id])
 }
 
-// A1_5 - FERTILIZANTES
-model factorEmision {
-  id                   Int                    @id @default(autoincrement())
-  valor                Float                  @db.Float
-  fertilizanteCalculos fertilizanteCalculos[]
-}
+// // A1_5 - FERTILIZANTES
+// model factorEmision {
+//   id                   Int                    @id @default(autoincrement())
+//   valor                Float                  @db.Float
+//   fertilizanteCalculos fertilizanteCalculos[]
+// }
 
 model fertilizanteCalculos {
   id                     Int    @id @default(autoincrement())
-  fertilizanteId         Int
+  tipofertilizanteId     Int
+  consumoTotal           Float  @db.Float
   cantidadAporte         Float  @db.Float
-  factorEmisionId        Int
+  // factorEmision          Float @db.Float
   emisionDirecta         Float  @db.Float
   totalEmisionesDirectas Float  @db.Float
   emisionGEI             Float? @db.Float
@@ -228,10 +229,9 @@ model fertilizanteCalculos {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  fertilizante  Fertilizante? @relation(fields: [fertilizanteId], references: [id])
-  factorEmision factorEmision @relation(fields: [factorEmisionId], references: [id])
-  anio          Anio?         @relation(fields: [anioId], references: [id])
-  sede          Sede?         @relation(fields: [sedeId], references: [id])
+  anio               Anio?             @relation(fields: [anioId], references: [id])
+  sede               Sede?             @relation(fields: [sedeId], references: [id])
+  TipoFertilizante   TipoFertilizante? @relation(fields: [tipofertilizanteId], references: [id])
 }
 
 model Taxi {

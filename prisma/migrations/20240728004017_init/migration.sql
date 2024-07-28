@@ -190,19 +190,11 @@ CREATE TABLE `combustibleCalculos` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `factorEmision` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `valor` FLOAT NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `fertilizanteCalculos` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `fertilizanteId` INTEGER NOT NULL,
+    `tipofertilizanteId` INTEGER NOT NULL,
+    `consumoTotal` FLOAT NOT NULL,
     `cantidadAporte` FLOAT NOT NULL,
-    `factorEmisionId` INTEGER NOT NULL,
     `emisionDirecta` FLOAT NOT NULL,
     `totalEmisionesDirectas` FLOAT NOT NULL,
     `emisionGEI` FLOAT NULL,
@@ -279,16 +271,13 @@ ALTER TABLE `combustibleCalculos` ADD CONSTRAINT `combustibleCalculos_anioId_fke
 ALTER TABLE `combustibleCalculos` ADD CONSTRAINT `combustibleCalculos_sedeId_fkey` FOREIGN KEY (`sedeId`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_fertilizanteId_fkey` FOREIGN KEY (`fertilizanteId`) REFERENCES `Fertilizante`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_factorEmisionId_fkey` FOREIGN KEY (`factorEmisionId`) REFERENCES `factorEmision`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_anioId_fkey` FOREIGN KEY (`anioId`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_sedeId_fkey` FOREIGN KEY (`sedeId`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_tipofertilizanteId_fkey` FOREIGN KEY (`tipofertilizanteId`) REFERENCES `TipoFertilizante`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Taxi` ADD CONSTRAINT `Taxi_mes_id_fkey` FOREIGN KEY (`mes_id`) REFERENCES `Mes`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
