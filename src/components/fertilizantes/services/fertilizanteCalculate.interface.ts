@@ -3,7 +3,7 @@ export interface FertilizanteCalc {
     consumoTotal: number;
     cantidadAporte: number,
     emisionDirecta: number,
-    porcentajeNitrogeno: number;
+    // porcentajeNitrogeno: number;
     totalEmisionesDirectas: number,
     emisionGEI: number,
     anioId: number;

@@ -1,85 +1,58 @@
-export interface FertilizanteCalculo {
-    id: number;
-    fertilizanteId: number;
-    unidad: string;
-    consumoTotal: number; //consumo
-    cantidadAporte: number;
-    factorEmisionId: number;
-    factorEmision: number;
-    emisionDirecta: number;
+export interface Main {
+    id:                     number;
+    tipofertilizanteId:     number;
+    consumoTotal:           number;
+    cantidadAporte:         number;
+    emisionDirecta:         number;
     totalEmisionesDirectas: number;
-    emisionGEI: number;
-    anioId: number;
-    sedeId: number;
-    created_at: Date;
-    updated_at: Date;
-    sede: Sede;
-    anio: Anio;
-    fertilizante: Fertilizante;
-
-}
-
-export interface Fertilizante {
-    id: number;
-    cantidad: number;
-    tipoFertilizanteId: number;
-    tipoFertilizante: TipoFertilizante;
-    created_at: Date;
-    updated_at: Date;
+    emisionGEI:             number;
+    anioId:                 number;
+    sedeId:                 number;
+    created_at:             Date;
+    updated_at:             Date;
+    TipoFertilizante:       TipoFertilizante;
 }
 
 export interface TipoFertilizante {
-    id: number;
-    nombre: string;
-    clase: string;
-    unidad: string;
+    id:                  number;
+    clase:               Clase;
+    nombre:              string;
     porcentajeNitrogeno: number;
-    created_at: Date;
-    updated_at: Date;
+    unidad:              string;
+    created_at:          Date;
+    updated_at:          Date;
 }
 
-export interface FactorEmision {
-    id: number;
-    valor: string;
-    created_at: Date;
-    updated_at: Date;
+export enum Clase {
+    Orgánico = "Orgánico",
+    Sintético = "Sintético",
 }
-
-export interface Anio {
-    id: number;
-    nombre: string;
-    created_at: Date;
-    updated_at: Date;
-}
-
-export interface Sede {
-    id: number;
-    name: string;
-}
-
 
 
 
 export function formatFertilizanteCalculo(fertilizanteCalculo: any) {
     const {
-        Fertilizante,
+        tipofertilizanteId,
+        consumoTotal,
         cantidadAporte,
-        factorEmisionId,
         emisionDirecta,
         totalEmisionesDirectas,
         emisionGEI,
+        anioId,
+        sedeId,
+        TipoFertilizante: TipoFertilizante,
+        
         ...rest
     } = fertilizanteCalculo;
 
     return {
         ...rest,
-        consumo: Fertilizante.consumoTotal,
-        tipoFertilizante: Fertilizante.tipoFertilizante.nombre,
-        unidad: Fertilizante.tipoFertilizante.unidad,
-        clase: Fertilizante.tipoFertilizante.clase,
-        porcentajeNitrogeno: Fertilizante.tipoFertilizante.porcentajeNitrogeno,
+        consumo: consumoTotal,
+        tipoFertilizante: TipoFertilizante.nombre,
+        unidad: TipoFertilizante.unidad,
+        clase: TipoFertilizante.clase,
+        porcentajeNitrogeno: Number(TipoFertilizante.porcentajeNitrogeno.toFixed(5)),
         cantidadAporte: Number(cantidadAporte.toFixed(5)),
-        factorEmisionId: factorEmisionId,
         emisionDirecta: Number(emisionDirecta.toFixed(5)),
         totalEmisionesDirectas: Number(totalEmisionesDirectas.toFixed(5)),
         emisionGEI: Number(emisionGEI.toFixed(5)),

@@ -57,6 +57,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const body: FertilizanteCalcRequest = await req.json();
 
+    if (!body) {
+      return NextResponse.json([{ error: "Missing body" }]);
+    }
+
+    console.log("body: " + JSON.stringify(body));
+
     const sedeId = body.sedeId;
     let anioId = body.anioId;
 
@@ -84,30 +90,28 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       where: { anioId: anioId, sedeId: sedeId },
     });
 
+    const gwp = await prisma.gWP.findFirstOrThrow({
+      where: {
+        formula: "N2O",
+      },
+    });
+
     for (const tipoFertilizante of tiposFertilizante) {
-      // CALCULAR TOTAL DE CONSUMO DE COMBUSTIBLE POR TIPO DE COMBUSTIBLE
-      console.log("tipoFertilizante: " + tipoFertilizante.id);
       const totalConsumo: number = fertilizante.reduce((acc, fertilizante) => {
         if (fertilizante.tipoFertilizante_id === tipoFertilizante.id) {
-          console.log("fertilizante: " + fertilizante.tipoFertilizante_id);
           return acc + fertilizante.cantidad;
         }
         return acc;
       }, 0);
 
+      console.log(
+        "totalConsumo de " + tipoFertilizante.nombre + ": " + totalConsumo
+      );
+
       //CONSTANTES PARA CALCULAR EMISIONES
       const porcentajeNitrogeno = tipoFertilizante.porcentajeNitrogeno;
       const consumo = porcentajeNitrogeno * totalConsumo;
       const factorEmision = 0.0125;
-
-      const gwp = await prisma.gWP.findFirst({
-        where: { formula: "N20" },
-      });
-
-      if (!gwp) {
-        console.log(`No se encontró GWP para la fórmula "N20"`);
-        continue;
-      }
 
       // CALCULAR EMISIONESFDIRECTAS
       const emisionDirecta = factorEmision * consumo;
@@ -119,13 +123,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         tipofertilizanteId: tipoFertilizante.id,
         consumoTotal: totalConsumo,
         cantidadAporte: consumo,
-        porcentajeNitrogeno: porcentajeNitrogeno,
         emisionDirecta: emisionDirecta,
         totalEmisionesDirectas: totalEmisionesDirectas,
+        // porcentajeNitrogeno: porcentajeNitrogeno,
         emisionGEI: emisionGEI,
         anioId: anioId,
         sedeId: sedeId,
       };
+
       const tipoFertilizanteCreate = await prisma.fertilizanteCalculos.create({
         data: calculoFertilizante,
         include: {
@@ -138,12 +143,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
 
     const formattedFertilizanteCalculos: any[] = fertilizanteCalculos.map(
-      (fertilizanteeCalculo) => formatFertilizanteCalculo(fertilizanteeCalculo)
+      (fertilizanteCalculo) => formatFertilizanteCalculo(fertilizanteCalculo)
     );
 
-    return NextResponse.json(formatFertilizanteCalculo);
+    return NextResponse.json(formattedFertilizanteCalculos);
   } catch (error) {
-    console.error("Error calculating combustion", error);
-    return new NextResponse("Error calculating combustion", { status: 500 });
+    console.error("Error calculating fertilizante", error);
+    return new NextResponse("Error calculating fertilizante", {
+      status: 500,
+    });
   }
 }

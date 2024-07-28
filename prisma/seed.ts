@@ -377,18 +377,18 @@ async function main() {
             valor: 265,
         },
         {
-            nombre:"Hexafluoruro de azufre",
-            formula:"SF6",
+            nombre: "Hexafluoruro de azufre",
+            formula: "SF6",
             valor: 23500,
         },
         {
-            nombre:"Trifluoruro de nitrógeno",
-            formula:"NF3",
+            nombre: "Trifluoruro de nitrógeno",
+            formula: "NF3",
             valor: 16100,
         }
     ];
     for (const gwp of gwpData) {
-        await prisma.gwp.create({
+        await prisma.gWP.create({
             data: {
                 nombre: gwp.nombre,
                 formula: gwp.formula,

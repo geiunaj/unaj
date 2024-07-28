@@ -178,10 +178,12 @@ model ConsumoPapel {
 // CALCULOS
 // POTENCIAL DE CALIENTAMIENTO GLOBAL
 model GWP {
-  id      Int    @id @default(autoincrement())
-  nombre  String @db.VarChar(45)
-  formula String @db.VarChar(45)
-  valor   Float  @db.Float
+  id         Int      @id @default(autoincrement())
+  nombre     String   @db.VarChar(45)
+  formula    String   @db.VarChar(45)
+  valor      Float    @db.Float
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 // A1_1 COMBUSTIBLES
@@ -229,9 +231,9 @@ model fertilizanteCalculos {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  anio               Anio?             @relation(fields: [anioId], references: [id])
-  sede               Sede?             @relation(fields: [sedeId], references: [id])
-  TipoFertilizante   TipoFertilizante? @relation(fields: [tipofertilizanteId], references: [id])
+  anio             Anio?             @relation(fields: [anioId], references: [id])
+  sede             Sede?             @relation(fields: [sedeId], references: [id])
+  TipoFertilizante TipoFertilizante? @relation(fields: [tipofertilizanteId], references: [id])
 }
 
 model Taxi {
