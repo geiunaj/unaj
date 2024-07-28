@@ -355,8 +355,7 @@ async function main() {
     }
 
     // Crear datos para GWP
-
-    const gwp = [
+    const gwpData = [
         {
             nombre: "Dióxido de carbono",
             formula: "CO2",
@@ -388,12 +387,12 @@ async function main() {
             valor: 16100,
         }
     ];
-    for (const gases of gwp) {
+    for (const gwp of gwpData) {
         await prisma.gwp.create({
             data: {
-                nombre: gases.nombre,
-                formula: gases.formula,
-                valor: gases.valor,
+                nombre: gwp.nombre,
+                formula: gwp.formula,
+                valor: gwp.valor,
                 created_at: new Date(),
                 updated_at: new Date(),
             },
