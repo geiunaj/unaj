@@ -13,12 +13,16 @@ import { Calculator } from "lucide-react";
 import { useSedeStore } from "@/components/sede/lib/sede.store";
 import { useAnioStore } from "@/components/anio/lib/anio.store";
 import SelectFilter from "@/components/selectFilter";
-import { CombustionCalcResponse } from "@/components/combustion/services/combustionCalculate.interface";
 import { Badge } from "@/components/ui/badge";
 import { useFertilizanteCalculateStore } from "../lib/fertilizanteCalculate.store";
 import { FertilizanteCalcResponse } from "../services/fertilizanteCalculate.interface";
+import ButtonCalculate from "@/components/buttonCalculate";
+import ButtonBack from "@/components/ButtonBack";
+import { useRouter } from "next/navigation";
 
-export default function CombustionCalculate() {
+export default function FertilizanteCalculate() {
+  const { push } = useRouter();
+
   // STORES
   const {
     FertilizanteCalculates,
@@ -87,6 +91,10 @@ export default function CombustionCalculate() {
     loadFertilizanteCalculates,
   ]);
 
+  const handleFertilizante = () => {
+    push("/fertilizante");
+  };
+
   const tipos = [
     { value: "estacionaria", name: "Estacionaria" },
     { value: "movil", name: "Móvil" },
@@ -103,24 +111,18 @@ export default function CombustionCalculate() {
 
   return (
     <div className="w-full max-w-[1150px] h-full">
-      <div className="flex flex-row justify-between items-start mb-6">
-        <div className="font-Manrope">
-          <h1 className="text-xl text-gray-800 font-bold">
-            Cálculo de emisiones de CO2 por combustión
-          </h1>
-          <h2 className="text-base text-gray-500">Huella de carbono</h2>
+      <div className="flex flex-row justify-between items-center mb-6">
+        <div className="flex gap-4 items-center">
+          <ButtonBack onClick={handleFertilizante} />
+          <div className="font-Manrope">
+            <h1 className="text-base text-gray-800 font-bold">
+              Cálculo de emisiones por fertilizantes
+            </h1>
+            <h2 className="text-sm text-gray-500">Huella de carbono</h2>
+          </div>
         </div>
         <div className="flex justify-end gap-5">
-          <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
-            {/* <SelectFilter
-                            list={tipos}
-                            itemSelected={selectedTipo}
-                            handleItemSelect={handleTipo}
-                            value={"value"}
-                            nombre={"name"}
-                            id={"value"}
-                        /> */}
-
+          <div className="flex flex-row space-x-4 font-normal justify-end items-center">
             <SelectFilter
               list={sedes}
               itemSelected={selectedSede}
@@ -139,13 +141,11 @@ export default function CombustionCalculate() {
               id={"id"}
             />
           </div>
-          <Button
-            variant="default"
-            className="flex justify-between gap-2"
+          <ButtonCalculate
             onClick={handleCalculate}
-          >
-            <Calculator className="h-4" /> Calcular
-          </Button>
+            variant="default"
+            text="Calcular"
+          />
         </div>
       </div>
 

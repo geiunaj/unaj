@@ -1,9 +1,31 @@
+import {
+  Home,
+  Truck,
+  Flame,
+  Droplet,
+  Zap,
+  FileText,
+  Bean,
+  Car,
+} from "lucide-react";
+
 export interface MenuItem {
   title: string;
   icon: string;
   href: string;
   items?: MenuItem[];
 }
+
+export const iconComponents: Record<string, any> = {
+  Home,
+  Flame,
+  Truck,
+  Droplet,
+  Zap,
+  FileText,
+  Bean,
+  Car,
+};
 
 export const menu: MenuItem[] = [
   {
@@ -12,43 +34,26 @@ export const menu: MenuItem[] = [
     href: "/home",
   },
   {
-    title: "Combustión",
+    title: "Combustión Estacionaria",
     icon: "Flame",
-    href: "/combustion",
+    href: "/combustion-estacionaria",
     items: [
-      {
-        title: "Combustión Estacionaria",
-        icon: "Flame",
-        href: "/combustion-estacionaria",
-      },
-      {
-        title: "Combustión Móvil",
-        icon: "Flame",
-        href: "/combustion-movil",
-      },
       {
         title: "Cálculos",
         icon: "Flame",
-        href: "/combustion",
+        href: "/combustion-estacionaria/calculos",
       },
     ],
+  },
+  {
+    title: "Combustión Móvil",
+    icon: "Car",
+    href: "/combustion-movil",
   },
   {
     title: "Fertilizante",
     icon: "Bean",
     href: "/fertilizante",
-    items: [
-      {
-        title: "Fertilizante",
-        icon: "Bean",
-        href: "/fertilizante",
-      },
-      {
-        title: "Cálculos",
-        icon: "Bean",
-        href: "/calculateFertilizante",
-      },
-    ],
   },
   {
     title: "Consumo de Electricidad",

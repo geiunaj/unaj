@@ -1,47 +1,40 @@
 "use client";
 
-import {useSession} from "next-auth/react";
-import {useState, useEffect} from "react";
+import { useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
 import LoginPage from "../login/login";
 import Header from "../header";
 import Sidebar from "../sidebar";
 import LayoutSkeleton from "./layoutSkeleton";
+import DynamicBreadcrumbs from "../breadcrumps";
 
-const LayoutWrapper = ({children}: { children: React.ReactNode }) => {
-    const {data: session, status} = useSession();
-    const [loading, setLoading] = useState(true);
+const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
+  const { data: session, status } = useSession();
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (status !== "loading") {
-            setLoading(false);
-        }
-    }, [status]);
-
-    if (loading) {
-        return <LayoutSkeleton/>;
+  useEffect(() => {
+    if (status !== "loading") {
+      setLoading(false);
     }
+  }, [status]);
 
-    return (
-        // session ? (
-        <div className="flex h-screen">
-            <div className="border-e h-full w-80">
-                <Sidebar/>
-            </div>
-            <div className="flex flex-col flex-auto w-full bg-muted/40">
-                <div className="h-14">
-                    <Header/>
-                </div>
-                <div
-                    className="flex-auto m-2 flex justify-center items-center p-6 bg-white rounded-xl shadow h-[calc(100vh - 56px)] overflow-y-auto">
-                    {children}
-                </div>
-            </div>
-        </div>
-        // )
-        //         : (
-        //   <LoginPage />
-        // )
-    );
+  if (loading) {
+    return <LayoutSkeleton />;
+  }
+
+  return (
+    <div className="sm:grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+      <div className="hidden border-r bg-muted/40 md:block">
+        <Sidebar />
+      </div>
+      <div className="flex flex-col">
+        <Header />
+        <main className="flex flex-1 flex-col items-center gap-4 p-2 lg:gap-6 lg:p-6 transition-all">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
 };
 
 export default LayoutWrapper;

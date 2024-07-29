@@ -1,13 +1,5 @@
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Table,
   TableBody,
   TableCell,
@@ -17,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { useCallback, useEffect, useState } from "react";
-import { ChevronsUpDown, Plus, Trash2 } from "lucide-react";
+import { Calculator, ChevronsUpDown, Plus, Trash2 } from "lucide-react";
 import { FormFertilizantes } from "./FormFertilizantes";
 import { useSedeStore } from "@/components/sede/lib/sede.store";
 import {
@@ -47,10 +39,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useClaseFertilizante } from "@/components/tipoFertilizante/lib/claseFertilizante.store";
 import { UpdateFormFertilizantes } from "./UpdateFormFertilizante";
+import ButtonCalculate from "@/components/buttonCalculate";
+import { useRouter } from "next/navigation";
 
-//types claseFertilzante 
+//types claseFertilzante
 
 export default function FertilizantePage() {
+  // NAVIGATION
+  const { push } = useRouter();
+
   //DIALOGS
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -59,7 +56,7 @@ export default function FertilizantePage() {
   //STORES
   const { fertilizante, loadFertilizante, deleteFertilizante } =
     useFertilizanteStore();
-  const {claseFertilizante, loadClaseFertilizante} = useClaseFertilizante();
+  const { claseFertilizante, loadClaseFertilizante } = useClaseFertilizante();
   const { sedes, loadSedes } = useSedeStore();
   const { anios, loadAnios } = useAnioStore();
 
@@ -89,11 +86,11 @@ export default function FertilizantePage() {
   };
 
   useEffect(() => {
-    if(fertilizante.length === 0) loadFertilizante();
+    if (fertilizante.length === 0) loadFertilizante();
     if (claseFertilizante.length === 0) loadClaseFertilizante();
     if (sedes.length === 0) loadSedes();
     if (anios.length === 0) loadAnios();
-  }, [loadFertilizante,loadClaseFertilizante, loadSedes, selectedSede]);
+  }, [loadFertilizante, loadClaseFertilizante, loadSedes, selectedSede]);
 
   useEffect(() => {
     const currentYear = new Date().getFullYear().toString();
@@ -132,6 +129,10 @@ export default function FertilizantePage() {
       sort: "cantidadFertilizante",
       direction: cantidadDirection === "asc" ? "desc" : "asc",
     });
+  };
+
+  const handleCalculate = () => {
+    push("/fertilizante/calculos");
   };
 
   const handleClose = useCallback(() => {
@@ -175,13 +176,15 @@ export default function FertilizantePage() {
 
   return (
     <div className="w-full max-w-[1150px] h-full ">
-      <div className="flex flex-row justify-between items-center mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
         <div className="font-Manrope">
-          <h1 className="text-xl text-gray-800 font-bold">FERTILIZANTES</h1>
-          <h2 className="text-base text-gray-500">Huella de carbono</h2>
+          <h1 className="text-base text-gray-800 font-bold">Fertilizantes</h1>
+          <h2 className="text-xs sm:text-sm text-gray-500">
+            Huella de carbono
+          </h2>
         </div>
-        <div className="flex justify-end gap-5">
-          <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
+        <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+          <div className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center w-1/2">
             <SelectFilter
               list={claseFertilizante}
               itemSelected={selectedClaseFertilizante}
@@ -209,56 +212,59 @@ export default function FertilizantePage() {
               id={"id"}
             />
           </div>
+          <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+            <ButtonCalculate onClick={handleCalculate} />
 
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default" className=" text-white">
-                <Plus />
-                Registrar
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md border-2">
-              <DialogHeader className="">
-                <DialogTitle>Fertilizante</DialogTitle>
-                <DialogDescription>
-                  Indicar el consumo de fertilizantes por tipo y considerar
-                  aquellos usados en prácticas agronómicas y/o mantenimiento de
-                  áreas verdes.
-                </DialogDescription>
-                <DialogClose></DialogClose>
-              </DialogHeader>
-              <FormFertilizantes onClose={handleClose} />
-            </DialogContent>
-          </Dialog>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" className="h-7 gap-1">
+                  <Plus className="h-3.5 w-3.5" />
+                  Registrar
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md border-2">
+                <DialogHeader className="">
+                  <DialogTitle>Fertilizante</DialogTitle>
+                  <DialogDescription>
+                    Indicar el consumo de fertilizantes por tipo y considerar
+                    aquellos usados en prácticas agronómicas y/o mantenimiento
+                    de áreas verdes.
+                  </DialogDescription>
+                  <DialogClose></DialogClose>
+                </DialogHeader>
+                <FormFertilizantes onClose={handleClose} />
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </div>
 
-      <div className="rounded-lg overflow-hidden">
+      <div className="rounded-lg overflow-hidden text-nowrap sm:text-wrap">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-sm font-bold text-center">
-                TIPO DE FERTILIZANTE
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
+                TIPO
               </TableHead>
-              <TableHead className="text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 FERTILIZANTE
               </TableHead>
-              <TableHead className="text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 <Button variant="ghost" onClick={handleToggleCantidadSort}>
                   CNT. DE FERTILIZANTE
                   <ChevronsUpDown className="ml-2 h-3 w-3" />
                 </Button>
               </TableHead>
-              <TableHead className="text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 % DE NITROGENO
               </TableHead>
-              <TableHead className="text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 FICHA TECNICA
               </TableHead>
-              <TableHead className="text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 AÑO
               </TableHead>
-              <TableHead className="text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 ACCIONES
               </TableHead>
             </TableRow>
@@ -266,15 +272,15 @@ export default function FertilizantePage() {
           <TableBody>
             {fertilizante.map((item: fertilizanteCollection) => (
               <TableRow key={item.id} className="text-center">
-                <TableCell>{item.clase}</TableCell>
-                <TableCell>{item.tipoFertilizante}</TableCell>
-                <TableCell>{item.cantidad}</TableCell>
-                <TableCell>{item.porcentajeNit} %</TableCell>
-                <TableCell>
+                <TableCell className="text-xs sm:text-sm">{item.clase}</TableCell>
+                <TableCell className="text-xs sm:text-sm">{item.tipoFertilizante}</TableCell>
+                <TableCell className="text-xs sm:text-sm">{item.cantidad}</TableCell>
+                <TableCell className="text-xs sm:text-sm">{item.porcentajeNit} %</TableCell>
+                <TableCell className="text-xs sm:text-sm">
                   {item.is_ficha ? <Badge>SI</Badge> : <Badge>NO</Badge>}
                 </TableCell>
-                <TableCell>{item.anio}</TableCell>
-                <TableCell className="p-1">
+                <TableCell className="text-xs sm:text-sm">{item.anio}</TableCell>
+                <TableCell className="text-xs sm:text-sm">
                   <div className="flex justify-center gap-4">
                     {/*UPDATE*/}
                     <Button
@@ -312,9 +318,9 @@ export default function FertilizantePage() {
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <UpdateFormFertilizantes
-                        onClose={handleCloseUpdate}
-                        id={idForUpdate}
-                    />
+            onClose={handleCloseUpdate}
+            id={idForUpdate}
+          />
         </DialogContent>
       </Dialog>
 
