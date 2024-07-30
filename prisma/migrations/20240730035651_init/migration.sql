@@ -209,6 +209,63 @@ CREATE TABLE `fertilizanteCalculos` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `consumoEnergia` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `areaId` INTEGER NOT NULL,
+    `numeroSuministro` VARCHAR(45) NOT NULL,
+    `consumo` FLOAT NOT NULL,
+    `mes_id` INTEGER NOT NULL,
+    `anio_id` INTEGER NOT NULL,
+    `sede_id` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `area` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(45) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `energiaCalculos` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `consumoArea` FLOAT NOT NULL,
+    `factorConversion` FLOAT NOT NULL,
+    `factorId` INTEGER NOT NULL,
+    `consumoTotal` FLOAT NOT NULL,
+    `emisionCO2` FLOAT NOT NULL,
+    `emisionCH4` FLOAT NOT NULL,
+    `emisionN2O` FLOAT NOT NULL,
+    `totalGEI` FLOAT NOT NULL,
+    `anioId` INTEGER NOT NULL,
+    `sedeId` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `factorConversionSEIN` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `factorCO2` FLOAT NOT NULL,
+    `factorCH4` FLOAT NOT NULL,
+    `factorN2O` FLOAT NOT NULL,
+    `anioId` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Taxi` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `unidadContratante` VARCHAR(191) NOT NULL,
@@ -280,6 +337,30 @@ ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_sedeId_f
 
 -- AddForeignKey
 ALTER TABLE `fertilizanteCalculos` ADD CONSTRAINT `fertilizanteCalculos_tipofertilizanteId_fkey` FOREIGN KEY (`tipofertilizanteId`) REFERENCES `TipoFertilizante`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `consumoEnergia` ADD CONSTRAINT `consumoEnergia_mes_id_fkey` FOREIGN KEY (`mes_id`) REFERENCES `Mes`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `consumoEnergia` ADD CONSTRAINT `consumoEnergia_anio_id_fkey` FOREIGN KEY (`anio_id`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `consumoEnergia` ADD CONSTRAINT `consumoEnergia_sede_id_fkey` FOREIGN KEY (`sede_id`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `consumoEnergia` ADD CONSTRAINT `consumoEnergia_areaId_fkey` FOREIGN KEY (`areaId`) REFERENCES `area`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_factorId_fkey` FOREIGN KEY (`factorId`) REFERENCES `factorConversionSEIN`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_anioId_fkey` FOREIGN KEY (`anioId`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_sedeId_fkey` FOREIGN KEY (`sedeId`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `factorConversionSEIN` ADD CONSTRAINT `factorConversionSEIN_anioId_fkey` FOREIGN KEY (`anioId`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Taxi` ADD CONSTRAINT `Taxi_mes_id_fkey` FOREIGN KEY (`mes_id`) REFERENCES `Mes`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

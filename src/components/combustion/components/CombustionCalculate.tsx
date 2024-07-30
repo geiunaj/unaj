@@ -225,7 +225,7 @@ export default function CombustionCalculate({
             {combustionCalculates.map(
               (combustionCalculate: CombustionCalcResponse) => (
                 <TableRow className="text-center" key={combustionCalculate.id}>
-                  <TableCell className="text-xs sm:text-sm">
+                  <TableCell className="text-xs sm:text-sm text-start">
                     {combustionCalculate.tipoCombustible}
                   </TableCell>
                   {/*<TableCell>*/}

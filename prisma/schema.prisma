@@ -43,6 +43,8 @@ model Sede {
   combustibleCalculos  combustibleCalculos[]
   taxi                 Taxi[]
   fertilizanteCalculos fertilizanteCalculos[]
+  consumoEnergia       consumoEnergia[]
+  energiaCalculos      energiaCalculos[]
 }
 
 model tipoCombustible {
@@ -61,12 +63,13 @@ model tipoCombustible {
 }
 
 model Mes {
-  id           Int           @id @default(autoincrement())
-  nombre       String        @db.VarChar(45)
-  created_at   DateTime
-  updated_at   DateTime
-  combustibles Combustible[]
-  Taxi         Taxi[]
+  id             Int              @id @default(autoincrement())
+  nombre         String           @db.VarChar(45)
+  created_at     DateTime
+  updated_at     DateTime
+  combustibles   Combustible[]
+  Taxi           Taxi[]
+  consumoEnergia consumoEnergia[]
 }
 
 model Anio {
@@ -80,6 +83,9 @@ model Anio {
   combustibleCalculos  combustibleCalculos[]
   Taxi                 Taxi[]
   fertilizanteCalculos fertilizanteCalculos[]
+  consumoEnergia       consumoEnergia[]
+  factorConversionSEIN factorConversionSEIN[]
+  energiaCalculos      energiaCalculos[]
 }
 
 model Combustible {
@@ -234,6 +240,66 @@ model fertilizanteCalculos {
   anio             Anio?             @relation(fields: [anioId], references: [id])
   sede             Sede?             @relation(fields: [sedeId], references: [id])
   TipoFertilizante TipoFertilizante? @relation(fields: [tipofertilizanteId], references: [id])
+}
+
+model consumoEnergia {
+  id               Int    @id @default(autoincrement())
+  areaId           Int
+  numeroSuministro String @db.VarChar(45)
+  consumo          Float  @db.Float
+  mes_id           Int
+  anio_id          Int
+  sede_id          Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  mes  Mes?  @relation(fields: [mes_id], references: [id])
+  anio Anio? @relation(fields: [anio_id], references: [id])
+  sede Sede? @relation(fields: [sede_id], references: [id])
+  area area? @relation(fields: [areaId], references: [id])
+}
+
+model area {
+  id             Int              @id @default(autoincrement())
+  nombre         String           @db.VarChar(45)
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
+  consumoEnergia consumoEnergia[]
+}
+
+model energiaCalculos {
+  id               Int   @id @default(autoincrement())
+  consumoArea      Float @db.Float
+  factorConversion Float @db.Float
+  factorId         Int
+  consumoTotal     Float @db.Float
+  emisionCO2       Float @db.Float
+  emisionCH4       Float @db.Float
+  emisionN2O       Float @db.Float
+  totalGEI         Float @db.Float
+  anioId           Int
+  sedeId           Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  factor factorConversionSEIN? @relation(fields: [factorId], references: [id])
+  anio   Anio?                 @relation(fields: [anioId], references: [id])
+  sede   Sede?                 @relation(fields: [sedeId], references: [id])
+}
+
+model factorConversionSEIN {
+  id         Int      @id @default(autoincrement())
+  factorCO2  Float    @db.Float
+  factorCH4  Float    @db.Float
+  factorN2O  Float    @db.Float
+  anioId     Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  anio            Anio              @relation(fields: [anioId], references: [id])
+  energiaCalculos energiaCalculos[]
 }
 
 model Taxi {

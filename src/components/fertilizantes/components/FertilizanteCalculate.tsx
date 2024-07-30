@@ -191,7 +191,7 @@ export default function FertilizanteCalculate() {
                   className="text-center"
                   key={FertilizanteCalculate.id}
                 >
-                  <TableCell className="text-xs sm:text-sm">
+                  <TableCell className="text-xs sm:text-sm text-start">
                     {FertilizanteCalculate.tipoFertilizante}
                   </TableCell>
                   <TableCell className="text-xs sm:text-sm">
