@@ -111,18 +111,20 @@ export default function FertilizanteCalculate() {
 
   return (
     <div className="w-full max-w-[1150px] h-full">
-      <div className="flex flex-row justify-between items-center mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
         <div className="flex gap-4 items-center">
           <ButtonBack onClick={handleFertilizante} />
           <div className="font-Manrope">
             <h1 className="text-base text-gray-800 font-bold">
               Cálculo de emisiones por fertilizantes
             </h1>
-            <h2 className="text-sm text-gray-500">Huella de carbono</h2>
+            <h2 className="text-xs sm:text-sm text-gray-500">
+              Huella de carbono
+            </h2>
           </div>
         </div>
-        <div className="flex justify-end gap-5">
-          <div className="flex flex-row space-x-4 font-normal justify-end items-center">
+        <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+          <div className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center w-1/2">
             <SelectFilter
               list={sedes}
               itemSelected={selectedSede}
@@ -149,20 +151,20 @@ export default function FertilizanteCalculate() {
         </div>
       </div>
 
-      <div className="rounded-lg overflow-hidden">
+      <div className="rounded-lg overflow-hidden text-nowrap sm:text-wrap">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 TIPO DE COMBUSTIBLE
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 CONSUMO
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 UNIDAD
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 PORCENTAJE NITROGENO
               </TableHead>
               <TableHead className="font-Manrope text-sm font-bold text-center">
@@ -174,10 +176,10 @@ export default function FertilizanteCalculate() {
               {/* <TableHead className="font-Manrope text-sm font-bold text-center">
                 EMISIONES DIRECTA DE LOS SUELOS
               </TableHead> */}
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 TOTAL DE EMISIONES DIRECTAS DE N2O
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 EMISIONES GEI
               </TableHead>
             </TableRow>
@@ -189,28 +191,30 @@ export default function FertilizanteCalculate() {
                   className="text-center"
                   key={FertilizanteCalculate.id}
                 >
-                  <TableCell className="text-start">
+                  <TableCell className="text-xs sm:text-sm">
                     {FertilizanteCalculate.tipoFertilizante}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-xs sm:text-sm">
                     <Badge variant="secondary">
                       {FertilizanteCalculate.consumo}
                     </Badge>
                   </TableCell>
-                  <TableCell>{FertilizanteCalculate.unidad}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-xs sm:text-sm">
+                    {FertilizanteCalculate.unidad}
+                  </TableCell>
+                  <TableCell className="text-xs sm:text-sm">
                     {FertilizanteCalculate.porcentajeNitrogeno}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-xs sm:text-sm">
                     <Badge variant="default">
                       {FertilizanteCalculate.cantidadAporte}
                     </Badge>
                   </TableCell>
                   {/* <TableCell>{FertilizanteCalculate.emisionDirecta}</TableCell> */}
-                  <TableCell>
+                  <TableCell className="text-xs sm:text-sm">
                     {FertilizanteCalculate.totalEmisionesDirectas}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-xs sm:text-sm">
                     <Badge variant="default">
                       {FertilizanteCalculate.emisionGEI}
                     </Badge>

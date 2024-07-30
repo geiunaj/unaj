@@ -138,18 +138,20 @@ export default function CombustionCalculate({
 
   return (
     <div className="w-full max-w-[1150px] h-full">
-      <div className="flex flex-row justify-between items-center mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
         <div className="flex items-center gap-4">
           <ButtonBack onClick={handleCombustion} />
           <div className="font-Manrope">
             <h1 className="text-base text-gray-800 font-bold">
               Cálculo de emisiones de CO2 por combustión
             </h1>
-            <h2 className="text-sm text-gray-500">Huella de carbono</h2>
+            <h2 className="text-xs sm:text-sm text-gray-500">
+              Huella de carbono
+            </h2>
           </div>
         </div>
-        <div className="flex justify-end gap-5">
-          <div className="flex flex-row space-x-4 font-normal justify-end items-end">
+        <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+          <div className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center w-1/2">
             {/* <SelectFilter
               list={tipos}
               itemSelected={selectedTipo}
@@ -178,19 +180,19 @@ export default function CombustionCalculate({
             />
           </div>
 
-          <ButtonCalculate
-            onClick={handleCalculate}
-            variant="default"
-            text="Calcular"
-          />
+            <ButtonCalculate
+              onClick={handleCalculate}
+              variant="default"
+              text="Calcular"
+            />
         </div>
       </div>
 
-      <div className="rounded-lg overflow-hidden">
+      <div className="rounded-lg overflow-hidden text-nowrap sm:text-wrap">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 TIPO DE COMBUSTIBLE
               </TableHead>
               {/*<TableHead className="font-Manrope text-sm font-bold text-center">*/}
@@ -202,19 +204,19 @@ export default function CombustionCalculate({
               {/*<TableHead className="font-Manrope text-sm font-bold text-center">*/}
               {/*    VALOR CALORICO NETO*/}
               {/*</TableHead>*/}
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 CONSUMO
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 EMISIONES DE CO2
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 EMISIONES DE CH4
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 EMISIONES DE N2O
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 TOTAL EMISIONES GEI
               </TableHead>
             </TableRow>
@@ -223,7 +225,7 @@ export default function CombustionCalculate({
             {combustionCalculates.map(
               (combustionCalculate: CombustionCalcResponse) => (
                 <TableRow className="text-center" key={combustionCalculate.id}>
-                  <TableCell className="text-start">
+                  <TableCell className="text-xs sm:text-sm">
                     {combustionCalculate.tipoCombustible}
                   </TableCell>
                   {/*<TableCell>*/}
@@ -235,15 +237,21 @@ export default function CombustionCalculate({
                   {/*<TableCell>*/}
                   {/*    {combustionCalculate.valorCalorico}*/}
                   {/*</TableCell>*/}
-                  <TableCell>
+                  <TableCell className="text-xs sm:text-sm">
                     <Badge variant="secondary">
                       {combustionCalculate.consumo}
                     </Badge>
                   </TableCell>
-                  <TableCell>{combustionCalculate.emisionCO2}</TableCell>
-                  <TableCell>{combustionCalculate.emisionCH4}</TableCell>
-                  <TableCell>{combustionCalculate.emisionN2O}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-xs sm:text-sm">
+                    {combustionCalculate.emisionCO2}
+                  </TableCell>
+                  <TableCell className="text-xs sm:text-sm">
+                    {combustionCalculate.emisionCH4}
+                  </TableCell>
+                  <TableCell className="text-xs sm:text-sm">
+                    {combustionCalculate.emisionN2O}
+                  </TableCell>
+                  <TableCell className="text-xs sm:text-sm">
                     <Badge variant="default">
                       {combustionCalculate.totalGEI}
                     </Badge>

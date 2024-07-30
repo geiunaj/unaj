@@ -297,15 +297,15 @@ export default function CombustionPage({ combustionType }: CombustionProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="font-Manrope text-xs sm:text-sm  font-bold text-center">
+              <TableHead className="text-xs sm:text-sm  font-bold text-center">
                 TIPO DE EQUIPO
               </TableHead>
-              <TableHead className="font-Manrope text-xs sm:text-sm  font-bold text-center">
+              <TableHead className="text-xs sm:text-sm  font-bold text-center">
                 TIPO DE COMBUSTIBLE
               </TableHead>
               <TableHead className="text-center">
                 <Button
-                  className="font-Manrope text-xs sm:text-sm  font-bold text-center"
+                  className="text-xs sm:text-sm  font-bold text-center"
                   variant="ghost"
                   onClick={handleToggleConsumoSort}
                 >
@@ -313,14 +313,14 @@ export default function CombustionPage({ combustionType }: CombustionProps) {
                   <ChevronsUpDown className="ml-2 h-3 w-3" />
                 </Button>
               </TableHead>
-              <TableHead className="font-Manrope text-xs sm:text-sm  font-bold text-center">
+              <TableHead className="text-xs sm:text-sm  font-bold text-center">
                 UNIDAD
               </TableHead>
-              <TableHead className="font-Manrope text-xs sm:text-sm  font-bold text-center">
+              <TableHead className="text-xs sm:text-sm  font-bold text-center">
                 MES
               </TableHead>
               {/*<TableHead className="font-Manrope text-xs sm:text-sm  font-bold text-center">AÑO</TableHead>*/}
-              <TableHead className="font-Manrope text-xs sm:text-sm  font-bold text-center">
+              <TableHead className="text-xs sm:text-sm  font-bold text-center">
                 ACCIONES
               </TableHead>
             </TableRow>
