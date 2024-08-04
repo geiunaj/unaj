@@ -8,10 +8,12 @@ import {CombustionRequest} from "@/components/combustion/services/combustion.int
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
+        const tipo = searchParams.get("tipo") ?? undefined;
         const sedeId = searchParams.get("sedeId") ?? undefined;
         const sort = searchParams.get("sort") ?? undefined;
         const direction = searchParams.get("direction") ?? undefined;
         const anio = searchParams.get("anioId") ?? undefined;
+        const tipoCombustibleId = searchParams.get("tipoCombustibleId") ?? undefined
 
 
         let anioId;
@@ -26,8 +28,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const combustibles = await prisma.combustible.findMany({
             where: {
+                tipo: tipo ? tipo : undefined,
                 sede_id: sedeId ? parseInt(sedeId) : undefined,
                 anio_id: anioId,
+                tipoCombustible_id: tipoCombustibleId ? parseInt(tipoCombustibleId) : undefined,
             },
             include: {
                 tipoCombustible: true,
@@ -41,7 +45,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         });
 
         const formattedCombustibles: Combustible[] = combustibles.map(
-            (combustible) => formatCombustible(combustible)
+            (combustible) => {
+                return formatCombustible(combustible);
+            }
         );
 
         return NextResponse.json(formattedCombustibles);
