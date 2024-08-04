@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,151 +21,252 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Button } from "../../ui/button";
-import { Calendar } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
-const Combustion = z.object({
-  sede: z.string(),
-  month: z.string().min(1, "Selecciona el mes"),
-  año: z.string().min(1, "Seleciona el año"),
-  consumption_month: z.number(),
+import { useSedeStore } from "@/components/sede/lib/sede.store";
+import { useAnioStore } from "@/components/anio/lib/anio.store";
+import { useMesStore } from "@/components/mes/lib/mes.stores";
+import { useElectricidadStore } from "../lib/electricidad.store";
+import {
+  CreateElectricidadProps,
+  electricidadRequest,
+} from "../services/electricidad.interface";
+
+const Electricidad = z.object({
+  area: z.string().min(1, "Seleccione un área"),
+  numero_suministro: z.string().min(1, "Ingrese un número de suministro"),
+  mes: z.string().min(1, "Seleccione un mes"),
+  sede: z.string().min(1, "Seleccione una sede"),
+  anio: z.string().min(1, "Seleccione un año"),
+  cantidad: z.preprocess(
+    (val) => parseFloat(val as string),
+    z.number().min(0, "Ingresa un valor mayor a 0")
+  ),
 });
 
-export function FormElectricidad() {
-  const form = useForm<z.infer<typeof Combustion>>({
-    resolver: zodResolver(Combustion),
+export function FormElectricidad({ onClose }: CreateElectricidadProps) {
+  const { sedes, loadSedes } = useSedeStore();
+  const { anios, loadAnios } = useAnioStore();
+  const { meses, loadMeses } = useMesStore();
+  const { createElectricidad } = useElectricidadStore();
+
+  const [clases, setClases] = useState<string[]>([]);
+
+  const form = useForm<z.infer<typeof Electricidad>>({
+    resolver: zodResolver(Electricidad),
     defaultValues: {
+      area: "",
+      numero_suministro: "",
+      mes: "",
       sede: "",
-      month: "",
-      año: "",
-      consumption_month: 0,
+      cantidad: 0,
+      anio: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof Combustion>) => {
-    console.log(data);
+  const { watch, setValue } = form;
+
+  useEffect(() => {
+    loadSedes();
+    loadAnios();
+    loadMeses();
+  }, [loadSedes, loadMeses, loadAnios]);
+
+  const onSubmit = async (data: z.infer<typeof Electricidad>) => {
+    const ElectricidadRequest: electricidadRequest = {
+      area_id: parseInt(data.area),
+      numeroSuministro: data.numero_suministro,
+      mes_id: parseInt(data.mes),
+      consumo: data.cantidad,
+      sede_id: parseInt(data.sede),
+      anio_id: parseInt(data.anio),
+    };
+    console.log(ElectricidadRequest);
+    await createElectricidad(ElectricidadRequest);
+    onClose();
   };
 
   return (
-    <div className="flex items-center justify-center flex-col">
-      {/* <div className="flex flex-col w-full h-16 bg-gray-200 p-4 rounded"> */}
-      <h2 className="text-2xl text-gray-800 font-bold uppercase text-center">
-        CONSUMO DE ENERGIA ELECTRICA
-      </h2>
-      <p className="text-xs text-gray-500 text-center">
-        Indicar el consumo de energía eléctica de la Red para cada suministro
-      </p>
-      {/* </div> */}
-      <div className="flex flex-col items-center justify-center mt-4 w-full">
+    <div className="flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center w-full">
         <Form {...form}>
           <form
-            className="w-full flex flex-col gap-3 pt-3"
+            className="w-full flex flex-col gap-2"
             onSubmit={form.handleSubmit(onSubmit)}
           >
+            {/* Sede */}
             <FormField
               name="sede"
               control={form.control}
               render={({ field }) => (
                 <FormItem className="pt-2">
                   <FormLabel>Sede</FormLabel>
-                  <Select>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl className="w-full">
                       <SelectTrigger>
-                        <SelectValue placeholder="Seleciona tu sede" />
+                        <SelectValue placeholder="Selecciona tu sede" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Sede 1">
-                        Sede La Capilla (Administrativo)
-                      </SelectItem>
-                      <SelectItem value="Sede 2">
-                        Sede La Capilla (Académico)
-                      </SelectItem>
-                      <SelectItem value="Sede 3">Sede Ayabacas</SelectItem>
+                      <SelectGroup>
+                        {sedes.map((sede) => (
+                          <SelectItem key={sede.id} value={sede.id.toString()}>
+                            {sede.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
                     </SelectContent>
                   </Select>
                 </FormItem>
               )}
             />
 
+            {/* Area */}
+            <FormField
+              name="area"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="pt-2">
+                  <FormLabel>Sede</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl className="w-full">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona tu area" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        {sedes.map((sede) => (
+                          <SelectItem key={sede.id} value={sede.id.toString()}>
+                            {sede.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+
+            {/* Numero suministro */}
             <FormField
               control={form.control}
-              name="consumption_month"
+              name="numero_suministro"
               render={({ field }) => (
-                <FormItem className="flex-1 pt-2">
-                  <FormLabel>Consumo mensual</FormLabel>
+                <FormItem className="pt-2 w-1/2">
+                  <FormLabel>Número de Suministro</FormLabel>
                   <FormControl>
                     <Input
                       className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                      placeholder="1234567"
+                      type="text"
+                      // step="0.01"
                       {...field}
-                      placeholder="Consumo mensual en kWh"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              name="month"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem className="pt-2">
-                  <FormLabel>Selecciona el mes y año</FormLabel>
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="font-light text-gray-900" />
-                    <div className="flex flex-1 space-x-2">
-                      <div className="flex-1">
-                        <Select>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Mes" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="enero">Enero</SelectItem>
-                            <SelectItem value="febrero">Febrero</SelectItem>
-                            <SelectItem value="marzo">Marzo</SelectItem>
-                            <SelectItem value="abril">Abril</SelectItem>
-                            <SelectItem value="mayo">Mayo</SelectItem>
-                            <SelectItem value="junio">Junio</SelectItem>
-                            <SelectItem value="julio">Julio</SelectItem>
-                            <SelectItem value="agosto">Agosto</SelectItem>
-                            <SelectItem value="septiembre">
-                              Septiembre
+
+            <div className="flex gap-4">
+              {/* Cantidad */}
+              <FormField
+                control={form.control}
+                name="cantidad"
+                render={({ field }) => (
+                  <FormItem className="pt-2 w-1/2">
+                    <FormLabel>Consumo</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                        placeholder="Cantidad Kg/año"
+                        type="number"
+                        step="0.01"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Mes */}
+              <FormField
+                control={form.control}
+                name="mes"
+                render={({ field }) => (
+                  <FormItem className="pt-2 w-1/2">
+                    <FormLabel>Mes</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl className="w-full">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona el mes" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          {meses.map((mes) => (
+                            <SelectItem
+                              key={mes.id}
+                              value={mes.id.toString()}
+                            >
+                              {mes.nombre}
                             </SelectItem>
-                            <SelectItem value="octubre">Octubre</SelectItem>
-                            <SelectItem value="noviembre">Noviembre</SelectItem>
-                            <SelectItem value="diciembre">Diciembre</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="flex-1">
-                        <Select>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Año" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="2021">2021</SelectItem>
-                            <SelectItem value="2022">2022</SelectItem>
-                            <SelectItem value="2023">2023</SelectItem>
-                            <SelectItem value="2024">2024</SelectItem>
-                            <SelectItem value="2025">2025</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-                </FormItem>
-              )}
-            />
-            <div className="flex gap-3 w-full p-3">
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+
+              {/* Año */}
+              <FormField
+                control={form.control}
+                name="anio"
+                render={({ field }) => (
+                  <FormItem className="pt-2 w-1/2">
+                    <FormLabel>Año</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl className="w-full">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona el año" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          {anios.map((anio) => (
+                            <SelectItem
+                              key={anio.id}
+                              value={anio.id.toString()}
+                            >
+                              {anio.nombre}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+            </div>
+           
+            <div className="flex gap-3 w-full pt-4">
               <Button type="submit" className="w-full bg-blue-700">
                 Guardar
-              </Button>
-              <Button type="button" className="w-full" variant="secondary">
-                Cancelar
               </Button>
             </div>
           </form>

@@ -1,19 +1,16 @@
 "use client";
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -23,96 +20,308 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { SelectItem } from "@radix-ui/react-select";
-import { useState } from "react";
-import { X } from "lucide-react";
-import { Plus } from 'lucide-react';
+import { useCallback, useEffect, useState } from "react";
+import { Plus, Trash2} from "lucide-react";
+import { useSedeStore } from "@/components/sede/lib/sede.store";
+import { useAnioStore } from "@/components/anio/lib/anio.store";
+import { useMesStore } from "@/components/mes/lib/mes.stores";
+import { useElectricidadStore } from "../lib/electricidad.store";
+import SelectFilter from "@/components/selectFilter";
+import ButtonCalculate from "@/components/buttonCalculate";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { electricidadCollection } from "../services/electricidad.interface";
 import { FormElectricidad } from "./FromElectricidad";
+import { useRouter } from "next/navigation";
 
+export default function ElectricidadPage() {
+  const { push } = useRouter();
 
-export default function ElectricidaPage() {
+  //DIALOGS
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  //STORES
+  const { Electricidad, loadElectricidad, deleteElectricidad } =
+    useElectricidadStore();
+  const { sedes, loadSedes } = useSedeStore();
+  const { meses, loadMeses } = useMesStore();
+  const { anios, loadAnios } = useAnioStore();
+
+  //SELECT FILTERS
+  const [selectedSede, setSelectedSede] = useState<string>("1");
+  const [selectedAnio, setSelectedAnio] = useState<string>(
+    new Date().getFullYear().toString()
+  );
+  const [selectedMes, setSelectedMes] = useState<string>("1");
+  const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
+    "desc"
+  );
+
+  const [idForUpdate, setIdForUpdate] = useState<number>(0);
+  const [idForDelete, setIdForDelete] = useState<number>(0);
+
+  const handleClickUpdate = (id: number) => {
+    setIdForUpdate(id);
+    setIsUpdateDialogOpen(true);
+  };
+
+  const handleCLickDelete = (id: number) => {
+    setIdForDelete(id);
+    setIsDeleteDialogOpen(true);
+  };
+
+  useEffect(() => {
+    if (Electricidad.length === 0) loadElectricidad();
+    if (sedes.length === 0) loadSedes();
+    if (anios.length === 0) loadAnios();
+    if (meses.length === 0) loadMeses();
+  }, [loadElectricidad, meses, loadSedes, selectedSede]);
+
+  useEffect(() => {
+    const currentYear = new Date().getFullYear().toString();
+
+    if (anios.length > 0 && !selectedAnio) {
+      const currentAnio = anios.find((anio) => anio.nombre === currentYear);
+      if (currentAnio) {
+        setSelectedAnio(currentAnio.id.toString());
+      }
+    }
+    loadElectricidad({
+      sedeId: Number(selectedSede),
+      anioId: selectedAnio ? Number(selectedAnio) : undefined,
+    });
+  }, [anios, selectedSede, selectedAnio, loadElectricidad]);
+
+  const handleSedeChange = useCallback((value: string) => {
+    setSelectedSede(value);
+  }, []);
+
+  const handleAnioChange = useCallback((value: string) => {
+    setSelectedAnio(value);
+  }, []);
+
+  // const handleToggleCantidadSort = () => {
+  //   setCantidadDirection(cantidadDirection === "asc" ? "desc" : "asc");
+  //   loadElectricidad({
+  //     sedeId: Number(selectedSede),
+  //     sort: "cantidadElectricidad",
+  //     direction: cantidadDirection === "asc" ? "desc" : "asc",
+  //   });
+  // };
+
+  const handleCalculate = () => {
+    push("/Electricidad/calculos");
+  };
+
+  const handleClose = useCallback(() => {
+    setIsDialogOpen(false);
+    loadElectricidad({
+      sedeId: Number(selectedSede),
+      anioId: Number(selectedAnio),
+    });
+  }, [loadElectricidad, selectedSede, selectedAnio]);
+
+  const handleCloseUpdate = useCallback(() => {
+    setIsUpdateDialogOpen(false);
+    loadElectricidad({
+      sedeId: Number(selectedSede),
+      anioId: Number(selectedAnio),
+    });
+  }, [loadElectricidad, selectedSede, selectedAnio]);
+
+  const handleDelete = useCallback(async () => {
+    await deleteElectricidad(idForDelete);
+    setIsDeleteDialogOpen(false);
+    loadElectricidad({
+      sedeId: Number(selectedSede),
+      anioId: Number(selectedAnio),
+    });
+  }, [
+    deleteElectricidad,
+    idForDelete,
+    loadElectricidad,
+    selectedSede,
+    selectedAnio,
+  ]);
+
+  if (!Electricidad) {
+    return <p>Cargando...</p>;
+  }
 
   return (
     <div className="w-full max-w-[1150px] h-full ">
-      <div className="flex flex-row justify-between items-center mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
         <div className="font-Manrope">
-          <h1 className="text-xl text-gray-800 font-bold">
-            CONSUMO DE ELECTRICIDAD
-          </h1>
-          <h2 className="text-base text-gray-500">Huella de carbono</h2>
+          <h1 className="text-base text-gray-800 font-bold">Electricidad</h1>
+          <h2 className="text-xs sm:text-sm text-gray-500">
+            Huella de carbono
+          </h2>
         </div>
-        <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <AlertDialogTrigger asChild>
-            <Button variant="default" className=" text-white">
-              <Plus/>
-              Registrar
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="max-w-md border-2">
-            <AlertDialogHeader className="flex flex-row justify-between">
-              <AlertDialogCancel className="absolute right-0 top-0 bg-transparent hover:bg-transparent border-none shadow-none">
-                <X className="h-6 w-6" />
-              </AlertDialogCancel>
-            </AlertDialogHeader>
-            <FormElectricidad />
-          </AlertDialogContent>
-        </AlertDialog>
+        <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+          <div className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center w-1/2">
+            <SelectFilter
+              list={sedes}
+              itemSelected={selectedSede}
+              handleItemSelect={handleSedeChange}
+              value={"id"}
+              nombre={"name"}
+              id={"id"}
+            />
+
+            <SelectFilter
+              list={anios}
+              itemSelected={selectedAnio}
+              handleItemSelect={handleAnioChange}
+              value={"nombre"}
+              nombre={"nombre"}
+              id={"id"}
+            />
+          </div>
+          <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+            <ButtonCalculate onClick={handleCalculate} />
+
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" className="h-7 gap-1">
+                  <Plus className="h-3.5 w-3.5" />
+                  Registrar
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md border-2">
+                <DialogHeader className="">
+                  <DialogTitle>Consumo de electricidad</DialogTitle>
+                  <DialogDescription>
+                    Indicar el consumo de electricidad
+                  </DialogDescription>
+                  <DialogClose></DialogClose>
+                </DialogHeader>
+                <FormElectricidad onClose={handleClose} />
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
       </div>
-      <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
-        <Select>
-          <SelectTrigger className="rounded-sm h-10 w-80 focus:outline-none focus-visible:ring-0">
-            <SelectValue placeholder="Selecciona la Sede" />
-          </SelectTrigger>
-          <SelectContent className="border-none">
-            <SelectGroup>
-              <SelectItem value="1">Sede 1</SelectItem>
-              <SelectItem value="2">Sede 2</SelectItem>
-              <SelectItem value="3">Sede 3</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="rounded-lg overflow-hidden">
+
+      <div className="rounded-lg overflow-hidden text-nowrap sm:text-wrap">
         <Table>
           <TableHeader>
-            <TableRow className="border">
-              <TableHead className=" font-Manrope text-sm font-bold text-center">
-                SEDE
+            <TableRow>
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
+                AREA
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
+                NÉMERO DE SUMINISTRO
+              </TableHead>
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
+                CONSUMO
+              </TableHead>
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 MES
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 AÑO
               </TableHead>
-              <TableHead className="font-Manrope text-sm font-bold text-center">
-                CONSUMO DE MES
-              </TableHead>              
-              <TableHead className="font-Manrope text-sm font-bold text-center">
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 ACCIONES
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow className="text-center">
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell className="flex space-x-4 justify-center items-center bg-transparent ">
-                <Button
-                  size="icon"
-                  className="bg-transparent hover:bg-transparent text-blue-700 border"
-                >
-                  <Pencil1Icon className="h-4 text-blue-700" />
-                </Button>
-              </TableCell>
-            </TableRow>
+            {Electricidad.map((item: electricidadCollection) => (
+              <TableRow key={item.id} className="text-center">
+                <TableCell className="text-xs sm:text-sm">
+                  {item.area}
+                </TableCell>
+                <TableCell className="text-xs sm:text-sm">
+                  {item.numeroSuministro}
+                </TableCell>
+                <TableCell className="text-xs sm:text-sm">
+                  {item.consumo}
+                </TableCell>
+                <TableCell className="text-xs sm:text-sm">
+                  {item.mes}
+                </TableCell>
+                <TableCell className="text-xs sm:text-sm">
+                  {item.anio}
+                </TableCell>
+                <TableCell className="text-xs sm:text-sm">
+                  <div className="flex justify-center gap-4">
+                    {/*UPDATE*/}
+                    <Button
+                      className="h-7 w-7"
+                      size="icon"
+                      variant="outline"
+                      onClick={() => handleClickUpdate(item.id)}
+                    >
+                      <Pencil1Icon className="h-4 text-blue-700" />
+                    </Button>
+
+                    {/*DELETE*/}
+                    <Button
+                      className="h-7 w-7"
+                      size="icon"
+                      variant="outline"
+                      onClick={() => handleCLickDelete(item.id)}
+                    >
+                      <Trash2 className="h-4 text-gray-500" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
+
+      {/*MODAL UPDATE*/}
+      <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+          {/* <UpdateFormFertilizantes
+            onClose={handleCloseUpdate}
+            id={idForUpdate}
+          /> */}
+        </DialogContent>
+      </Dialog>
+
+      {/*    MODAL DELETE*/}
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogTrigger asChild></AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Eliminar registro</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer, ¿Estás seguro de eliminar este
+              registro?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className={buttonVariants({ variant: "destructive" })}
+              onClick={handleDelete}
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
