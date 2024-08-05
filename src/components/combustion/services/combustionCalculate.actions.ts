@@ -13,12 +13,12 @@ export async function getCombustionCalculate(sedeId: number, anioId: number, tip
             tipo
         }
     };
-    const {data} = await api.get("/api/calculateCombustion", config);
+    const {data} = await api.get("/api/combustion/calculate", config);
     return data;
 
 }
 
 export async function createCombustionCalculate(body: CombustionCalcRequest): Promise<CombustionCalcResponse[]> {
-    const {data} = await api.post("/api/calculateCombustion", body);
+    const {data} = await api.post("/api/combustion/calculate", body);
     return data;
 }

@@ -281,7 +281,7 @@ export default function FertilizantePage() {
                                     {item.is_ficha ? <Badge>SI</Badge> : <Badge>NO</Badge>}
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.anio}</TableCell>
-                                <TableCell className="text-xs sm:text-sm">
+                                <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">
                                         {/*UPDATE*/}
                                         <Button

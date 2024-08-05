@@ -1,7 +1,13 @@
 import {create} from "zustand";
 
-import { electricidadCollection, electricidadRequest } from "../services/electricidad.interface";
-import { createElectricidad, deleteElectricidad, getElectricidad, getElectricidadById, updateElectricidad } from "../services/electricidad.actions";
+import {electricidadCollection, electricidadRequest} from "../services/electricidad.interface";
+import {
+    createElectricidad,
+    deleteElectricidad,
+    getElectricidad,
+    getElectricidadById,
+    updateElectricidad
+} from "../services/electricidad.actions";
 
 type sort =
     | "id"
@@ -15,11 +21,13 @@ type direction = "asc" | "desc";
 
 interface ElectricidadStore {
     Electricidad: electricidadCollection[];
-    loadElectricidad: (options?: {
-        sedeId?: number;
+    loadElectricidad: (options: {
+        sedeId: number;
+        anioId: number;
+        areaId: number;
+        mesId?: number;
         sort?: sort;
         direction?: direction;
-        anioId?: number;
     }) => void;
     createElectricidad: (Electricidad: electricidadRequest) => Promise<void>;
     showElectricidad: (id: number) => Promise<any>;
@@ -29,21 +37,18 @@ interface ElectricidadStore {
 
 export const useElectricidadStore = create<ElectricidadStore>((set) => ({
     Electricidad: [],
-    loadElectricidad: async ({
-                               sedeId,
-                               mesId,
-                               sort,
-                               direction,
-                               anioId,
-                           }: {
-        sedeId?: number;
-        mesId?: number;
-        sort?: sort;
-        direction?: direction;
-        anioId?: number;
-    } = {}) => {
+    loadElectricidad: async (
+        {sedeId, anioId, areaId, mesId, sort, direction}: {
+            sedeId: number;
+            anioId: number;
+            areaId: number;
+            mesId?: number;
+            sort?: sort;
+            direction?: direction;
+        }
+    ) => {
         try {
-            const data = await getElectricidad(sedeId, mesId, sort, direction, anioId);
+            const data = await getElectricidad(sedeId, anioId, areaId, mesId, sort, direction);
             set({Electricidad: data});
         } catch (error) {
             console.error("Error loading Electricidad data:", error);
