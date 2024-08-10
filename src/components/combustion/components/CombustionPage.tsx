@@ -58,6 +58,7 @@ import {useTipoCombustibleStore} from "@/components/tipoCombustible/lib/tipoComb
 import SelectFilter from "@/components/selectFilter";
 import ButtonCalculate from "@/components/buttonCalculate";
 import {useRouter} from "next/navigation";
+import {useMesStore} from "@/components/mes/lib/mes.stores";
 
 export default function CombustionPage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
@@ -75,6 +76,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
     const {tiposCombustible, loadTiposCombustible} = useTipoCombustibleStore();
     const {sedes, loadSedes} = useSedeStore();
     const {anios, loadAnios} = useAnioStore();
+    const {meses, loadMeses} = useMesStore();
 
     // SELECTS - FILTERS
     const [selectTipoCombustible, setSelectTipoCombustible] =
@@ -83,6 +85,8 @@ export default function CombustionPage({combustionType}: CombustionProps) {
     const [selectedAnio, setSelectedAnio] = useState<string>(
         new Date().getFullYear().toString()
     );
+    const [selectedMes, setSelectedMes] = useState<string>("1");
+
     const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
         "desc"
     );
@@ -105,13 +109,16 @@ export default function CombustionPage({combustionType}: CombustionProps) {
         if (tiposCombustible.length === 0) loadTiposCombustible();
         if (sedes.length === 0) loadSedes();
         if (anios.length === 0) loadAnios();
+        if (meses.length === 0) loadMeses();
     }, [
         loadTiposCombustible,
         loadSedes,
         loadAnios,
+        loadMeses,
         sedes.length,
         anios.length,
         tiposCombustible.length,
+        meses.length,
     ]);
 
     useEffect(() => {
@@ -127,18 +134,12 @@ export default function CombustionPage({combustionType}: CombustionProps) {
             tipo,
             sedeId: Number(selectedSede),
             anioId: selectedAnio ? Number(selectedAnio) : undefined,
+            mesId: selectedMes ? Number(selectedMes) : undefined,
             tipoCombustibleId: selectTipoCombustible
                 ? Number(selectTipoCombustible)
                 : undefined,
         });
-    }, [
-        loadCombustion,
-        anios,
-        tipo,
-        selectedSede,
-        selectedAnio,
-        selectTipoCombustible,
-    ]);
+    }, [loadCombustion, anios, tipo, selectedSede, selectedAnio, selectTipoCombustible, selectedMes]);
 
     const handleTipoCombustibleChange = useCallback((value: string) => {
         setSelectTipoCombustible(value);
@@ -150,6 +151,10 @@ export default function CombustionPage({combustionType}: CombustionProps) {
 
     const handleAnioChange = useCallback((value: string) => {
         setSelectedAnio(value);
+    }, []);
+
+    const handleMesChange = useCallback((value: string) => {
+        setSelectedMes(value);
     }, []);
 
     const handleToggleConsumoSort = useCallback(() => {
@@ -259,7 +264,18 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                             value={"nombre"}
                             nombre={"nombre"}
                             id={"id"}
+                            all={true}
                         />
+
+                        <SelectFilter
+                            list={meses}
+                            itemSelected={selectedMes}
+                            handleItemSelect={handleMesChange}
+                            value={"id"}
+                            nombre={"nombre"}
+                            id={"id"}
+                        />
+
                     </div>
 
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">

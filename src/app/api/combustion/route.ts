@@ -13,6 +13,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const sort = searchParams.get("sort") ?? undefined;
         const direction = searchParams.get("direction") ?? undefined;
         const anio = searchParams.get("anioId") ?? undefined;
+        const mesId = searchParams.get("mesId") ?? undefined;
         const tipoCombustibleId = searchParams.get("tipoCombustibleId") ?? undefined
 
 
@@ -30,6 +31,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             where: {
                 tipo: tipo ? tipo : undefined,
                 sede_id: sedeId ? parseInt(sedeId) : undefined,
+                mes_id: mesId ? parseInt(mesId) : undefined,
                 anio_id: anioId,
                 tipoCombustible_id: tipoCombustibleId ? parseInt(tipoCombustibleId) : undefined,
             },

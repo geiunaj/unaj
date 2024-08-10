@@ -28,6 +28,7 @@ interface CombustionStore {
         sort?: sort;
         direction?: direction;
         anioId?: number;
+        mesId?: number;
         tipoCombustibleId?: number;
     }) => void;
     createCombustion: (combustion: CombustionRequest) => Promise<void>;
@@ -44,6 +45,7 @@ export const useCombustionStore = create<CombustionStore>((set) => ({
                                sort,
                                direction,
                                anioId,
+                               mesId,
                                tipoCombustibleId,
                            }: {
         tipo?: tipoForm;
@@ -51,10 +53,11 @@ export const useCombustionStore = create<CombustionStore>((set) => ({
         sort?: sort;
         direction?: direction;
         anioId?: number;
+        mesId?: number;
         tipoCombustibleId?: number;
     } = {}) => {
         try {
-            const data = await getCombustion(tipo, sedeId, sort, direction, anioId, tipoCombustibleId);
+            const data = await getCombustion(tipo, sedeId, sort, direction, anioId, mesId, tipoCombustibleId);
             set({combustion: data});
         } catch (error) {
             console.error("Error loading combustion data:", error);
