@@ -2,7 +2,7 @@
 
 import {useCallback, useState} from "react";
 import SelectFilter from "@/components/selectFilter";
-import {Pen, Plus, Trash2} from "lucide-react";
+import {Building, Calendar, File, Pen, Plus, Trash2} from "lucide-react";
 import ButtonCalculate from "@/components/buttonCalculate";
 import {
     Dialog, DialogClose,
@@ -28,8 +28,6 @@ import {FormPapel} from "@/components/consumoPapel/components/FormPapelOficce";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {UpdateFormPapel} from "@/components/consumoPapel/components/UpdateFormPapelOficce";
 import {useAnios, useConsumosPapel, useSedes, useTipoPapel} from "@/components/consumoPapel/lib/consumoPapel.store";
-import {useQuery} from "@tanstack/react-query";
-import {getConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.actions";
 
 export default function PapelPage() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -41,10 +39,12 @@ export default function PapelPage() {
 
     const [selectedSede, setSelectedSede] = useState<string>("1");
     const [selectedTipoPapel, setSelectedTipoPapel] = useState<string>("");
+    const [selectedAnio, setSelectedAnio] = useState<string>(new Date().getFullYear().toString());
 
     const sedeQuery = useSedes();
-    const consumoPapelQuery = useConsumosPapel(selectedSede, selectedTipoPapel);
+    const consumoPapelQuery = useConsumosPapel(selectedSede, selectedTipoPapel, selectedAnio);
     const tiposPapelQuery = useTipoPapel();
+    const aniosQuery = useAnios();
 
     // HANDLES
     const handleSedeChange = useCallback(async (value: string) => {
@@ -54,6 +54,11 @@ export default function PapelPage() {
 
     const handleTipoPapelChange = useCallback(async (value: string) => {
         await setSelectedTipoPapel(value);
+        await consumoPapelQuery.refetch();
+    }, [consumoPapelQuery]);
+
+    const handleAnioChange = useCallback(async (value: string) => {
+        await setSelectedAnio(value);
         await consumoPapelQuery.refetch();
     }, [consumoPapelQuery]);
 
@@ -111,6 +116,7 @@ export default function PapelPage() {
                             nombre={"nombreFiltro"}
                             id={"id"}
                             all={true}
+                            icon={<File className="h-3 w-3"/>}
                         />
 
                         <SelectFilter
@@ -120,6 +126,18 @@ export default function PapelPage() {
                             value={"id"}
                             nombre={"name"}
                             id={"id"}
+                            icon={<Building className="h-3 w-3"/>}
+                        />
+
+                        <SelectFilter
+                            list={aniosQuery.data!}
+                            itemSelected={selectedAnio}
+                            handleItemSelect={handleAnioChange}
+                            value={"nombre"}
+                            nombre={"nombre"}
+                            id={"id"}
+                            all={true}
+                            icon={<Calendar className="h-3 w-3"/>}
                         />
 
                     </div>

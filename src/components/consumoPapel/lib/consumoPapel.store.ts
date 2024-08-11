@@ -4,10 +4,10 @@ import {getConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.a
 import {getTiposPapel} from "@/components/tipoPapel/services/tipoPpel.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 
-export const useConsumosPapel = (selectedSede: string, tipoPapelId: string) => {
+export const useConsumosPapel = (selectedSede: string, tipoPapelId: string, anio: string) => {
     return useQuery({
         queryKey: ['consumoPapelQuery'],
-        queryFn: () => getConsumoPapel(selectedSede, tipoPapelId),
+        queryFn: () => getConsumoPapel(selectedSede, tipoPapelId, anio),
         refetchOnWindowFocus: false,
     })
 }

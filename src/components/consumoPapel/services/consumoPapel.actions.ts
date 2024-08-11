@@ -6,6 +6,7 @@ import {CollectionConsumoPapel, ConsumoPapelRequest} from "./consumoPapel.interf
 export async function getConsumoPapel(
     sedeId?: string,
     tipoPapelId?: string,
+    anio?: string,
     sort?: string,
     direction?: string
 ): Promise<CollectionConsumoPapel[]> {
@@ -14,6 +15,7 @@ export async function getConsumoPapel(
             params: {
                 sedeId,
                 tipoPapelId,
+                anio,
                 sort,
                 direction,
             },

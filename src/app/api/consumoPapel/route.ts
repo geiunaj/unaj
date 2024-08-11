@@ -11,13 +11,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const sort = searchParams.get("sort") ?? "id";
         const direction = searchParams.get("direction") ?? "desc";
         const tipoPapelId = searchParams.get("tipoPapelId") ?? undefined;
+        const anio = searchParams.get("anio") ?? undefined;
 
-        console.log({sedeId, sort, direction});
+        let anioId;
+        if (anio) {
+            const anioRecord = await prisma.anio.findFirst({
+                where: {
+                    nombre: anio,
+                },
+            });
+            anioId = anioRecord ? anioRecord.id : undefined;
+        }
 
         const consumopapel = await prisma.consumoPapel.findMany({
             where: {
                 sede_id: sedeId ? parseInt(sedeId) : undefined,
                 tipoPapel_id: tipoPapelId ? parseInt(tipoPapelId) : undefined,
+                anio_id: anioId,
             },
             include: {
                 tipoPapel: true,
