@@ -319,6 +319,9 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                             <TableHead className="text-xs sm:text-sm  font-bold text-center">
                                 MES
                             </TableHead>
+                            <TableHead className="text-xs sm:text-sm  font-bold text-center">
+                                AÑO
+                            </TableHead>
                             {/*<TableHead className="font-Manrope text-xs sm:text-sm  font-bold text-center">AÑO</TableHead>*/}
                             <TableHead className="text-xs sm:text-sm  font-bold text-center">
                                 ACCIONES
@@ -341,6 +344,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                                     {item.unidad}
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.mes}</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.anio}</TableCell>
 
                                 <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">

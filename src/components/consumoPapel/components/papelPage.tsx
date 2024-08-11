@@ -40,7 +40,7 @@ export default function PapelPage() {
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
     const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [selectedTipoPapel, setSelectedTipoPapel] = useState<string>("1");
+    const [selectedTipoPapel, setSelectedTipoPapel] = useState<string>("");
 
     const sedeQuery = useSedes();
     const consumoPapelQuery = useConsumosPapel(selectedSede, selectedTipoPapel);
@@ -86,7 +86,7 @@ export default function PapelPage() {
         setIsDeleteDialogOpen(true);
     };
 
-    if (sedeQuery.isLoading || consumoPapelQuery.isLoading) {
+    if (sedeQuery.isLoading || consumoPapelQuery.isLoading || tiposPapelQuery.isLoading) {
         return <SkeletonTable/>
     }
 
@@ -108,7 +108,7 @@ export default function PapelPage() {
                             itemSelected={selectedTipoPapel}
                             handleItemSelect={handleTipoPapelChange}
                             value={"id"}
-                            nombre={"nombre"}
+                            nombre={"nombreFiltro"}
                             id={"id"}
                             all={true}
                         />
