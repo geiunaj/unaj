@@ -27,6 +27,7 @@
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.0",
+    "@tanstack/react-query": "^5.51.23",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
     "axios": "^1.7.2",
@@ -52,6 +53,7 @@
     "zustand": "^4.5.4"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.51.15",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

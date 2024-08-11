@@ -29,7 +29,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {Pencil1Icon} from "@radix-ui/react-icons";
-import { Plus, Trash2} from "lucide-react";
+import {Pen, Plus, Trash2} from "lucide-react";
 
 import {useSedeStore} from "@/components/sede/lib/sede.store";
 import {
@@ -42,9 +42,9 @@ import {
 } from "@/components/ui/dialog";
 import {useAnioStore} from "@/components/anio/lib/anio.store";
 import SelectFilter from "@/components/selectFilter";
-import { TaxiCollection } from "../service/taxi.interface";
-import { usetaxiStore } from "../lib/taxi.store";
-import { deleteTaxi } from "../service/taxi.actions";
+import {TaxiCollection} from "../service/taxi.interface";
+import {usetaxiStore} from "../lib/taxi.store";
+import {deleteTaxi} from "../service/taxi.actions";
 
 export default function TaxiPage() {
 
@@ -81,7 +81,7 @@ export default function TaxiPage() {
     useEffect(() => {
         if (sedes.length === 0) loadSedes();
         if (anios.length === 0) loadAnios();
-    }, [ loadSedes, loadAnios, sedes.length, anios.length,]);
+    }, [loadSedes, loadAnios, sedes.length, anios.length,]);
 
     useEffect(() => {
         const currentYear = new Date().getFullYear().toString();
@@ -96,7 +96,7 @@ export default function TaxiPage() {
             sedeId: Number(selectedSede),
             anioId: selectedAnio ? Number(selectedAnio) : undefined,
         });
-    }, [ anios,  selectedSede, selectedAnio, loadtaxi]);
+    }, [anios, selectedSede, selectedAnio, loadtaxi]);
 
     const handleSedeChange = useCallback((value: string) => {
         setSelectedSede(value);
@@ -153,7 +153,7 @@ export default function TaxiPage() {
             <div className="flex flex-row justify-between items-start mb-6">
                 <div className="font-Manrope">
                     <h1 className="text-xl text-gray-800 font-bold">
-                        Taxi Contratados 
+                        Taxi Contratados
                     </h1>
                     <h2 className="text-base text-gray-500">Huella de carbono</h2>
                 </div>
@@ -229,7 +229,7 @@ export default function TaxiPage() {
                         {taxi.map((item: TaxiCollection) => (
                             <TableRow key={item.id} className="text-center">
                                 <TableCell>{item.unidadContratante}</TableCell>
-                                <TableCell>{item.lugarSalida}</TableCell>                        
+                                <TableCell>{item.lugarSalida}</TableCell>
                                 <TableCell>{item.lugarDestino}</TableCell>
                                 <TableCell>{item.monto}</TableCell>
                                 <TableCell>{item.mes}</TableCell>
@@ -242,7 +242,7 @@ export default function TaxiPage() {
                                             variant="outline"
                                             onClick={() => handleClickUpdate(item.id)}
                                         >
-                                            <Pencil1Icon className="h-4 text-blue-700"/>
+                                            <Pen className="h-3.5 text-blue-700"/>
                                         </Button>
 
                                         {/*DELETE*/}
@@ -251,7 +251,7 @@ export default function TaxiPage() {
                                             variant="outline"
                                             onClick={() => handleCLickDelete(item.id)}
                                         >
-                                            <Trash2 className="h-4 text-gray-500"/>
+                                            <Trash2 className="h-3.5 text-gray-500"/>
                                         </Button>
                                     </div>
                                 </TableCell>
@@ -270,7 +270,7 @@ export default function TaxiPage() {
                             Actualizar registro de taxi contratados
                         </DialogTitle>
                         <DialogDescription>
-                        Indicar el historial de taxi contratados.
+                            Indicar el historial de taxi contratados.
                         </DialogDescription>
                     </DialogHeader>
                     {/* <UpdateFormCombustion

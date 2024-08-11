@@ -6,6 +6,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {ReactNode} from "react";
 
 interface SelectFilterProps<I> {
     list: I[];
@@ -15,6 +16,7 @@ interface SelectFilterProps<I> {
     nombre: string;
     id: string;
     all?: boolean;
+    icon?: ReactNode;
 }
 
 export default function SelectFilter({
@@ -25,16 +27,19 @@ export default function SelectFilter({
                                          nombre,
                                          id,
                                          all,
+                                         icon,
                                      }: SelectFilterProps<any>) {
     return (
-        <Select onValueChange={handleItemSelect} defaultValue={itemSelected}>
-            <SelectTrigger className="rounded-sm h-7 text-xs w-auto gap-4 focus:outline-none focus-visible:ring-0">
-                <SelectValue placeholder="Selecciona una opción"/>
+        <Select onValueChange={(selectedValue) => handleItemSelect(selectedValue === "all" ? "" : selectedValue)}
+                defaultValue={itemSelected}>
+            <SelectTrigger className="rounded-sm h-7 text-xs w-auto gap-2 focus:outline-none focus-visible:ring-0">
+                {icon && <span>{icon}</span>}
+                <SelectValue placeholder="Seleccionar"/>
             </SelectTrigger>
             <SelectContent className="border-none text-sm">
                 <SelectGroup className="text-xs">
                     {all && (
-                        <SelectItem className="text-xs" value=" ">
+                        <SelectItem className="text-xs" value="all">
                             Todos
                         </SelectItem>
                     )}

@@ -31,11 +31,13 @@ import {
 import {Pencil1Icon} from "@radix-ui/react-icons";
 import {FormCombustion} from "./FormCombustion";
 import {
-    Calculator,
-    ChevronsUpDown,
+    Building,
+    Calculator, ChevronDown,
+    ChevronsUpDown, Flame,
     ListRestart,
     Plus,
     Trash2,
+    Calendar, CalendarDays, Pen,
 } from "lucide-react";
 import {useCombustionStore} from "../lib/combustion.store";
 import {
@@ -85,7 +87,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
     const [selectedAnio, setSelectedAnio] = useState<string>(
         new Date().getFullYear().toString()
     );
-    const [selectedMes, setSelectedMes] = useState<string>("1");
+    const [selectedMes, setSelectedMes] = useState<string>("");
 
     const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
         "desc"
@@ -236,17 +238,9 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                             value={"id"}
                             nombre={"nombre"}
                             id={"id"}
+                            all={true}
+                            icon={<Flame className="h-3 w-3"/>}
                         />
-                        {selectTipoCombustible && (
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-7 w-7"
-                                onClick={() => setSelectTipoCombustible("")}
-                            >
-                                <ListRestart className="h-4 w-4 text-gray-500"/>
-                            </Button>
-                        )}
 
                         <SelectFilter
                             list={sedes}
@@ -255,6 +249,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                             value={"id"}
                             nombre={"name"}
                             id={"id"}
+                            icon={<Building className="h-3 w-3"/>}
                         />
 
                         <SelectFilter
@@ -265,6 +260,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                             nombre={"nombre"}
                             id={"id"}
                             all={true}
+                            icon={<Calendar className="h-3 w-3"/>}
                         />
 
                         <SelectFilter
@@ -274,6 +270,8 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                             value={"id"}
                             nombre={"nombre"}
                             id={"id"}
+                            all={true}
+                            icon={<CalendarDays className="h-3 w-3"/>}
                         />
 
                     </div>
@@ -368,7 +366,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                                             variant="outline"
                                             onClick={() => handleClickUpdate(item.id)}
                                         >
-                                            <Pencil1Icon className="h-4 text-blue-700"/>
+                                            <Pen className="h-3.5 text-blue-700"/>
                                         </Button>
 
                                         {/*DELETE*/}
@@ -378,7 +376,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                                             variant="outline"
                                             onClick={() => handleCLickDelete(item.id)}
                                         >
-                                            <Trash2 className="h-4 text-gray-500"/>
+                                            <Trash2 className="h-3.5 text-gray-500"/>
                                         </Button>
                                     </div>
                                 </TableCell>

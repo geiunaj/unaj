@@ -1,172 +1,267 @@
 "use client";
-import {Button} from "@/components/ui/button";
+
+import {useQuery} from "@tanstack/react-query";
+import {getConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.actions";
+import {useCallback, useState} from "react";
+import SelectFilter from "@/components/selectFilter";
+import {Pen, Plus, Trash2} from "lucide-react";
+import ButtonCalculate from "@/components/buttonCalculate";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import {Pencil1Icon} from "@radix-ui/react-icons";
-import {useEffect, useState} from "react";
-import {Plus} from "lucide-react";
-import {
-    Dialog,
-    DialogClose,
+    Dialog, DialogClose,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
+    DialogTrigger
 } from "@/components/ui/dialog";
-import {FormPapel} from "./FormPapelOficce";
-import {useSedeStore} from "@/components/sede/lib/sede.store";
-import {useConsumoPapelStore} from "../lib/consumoPapel.store";
+import {Button, buttonVariants} from "@/components/ui/button";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {
-    CollectionConsumoPapel,
-    CreateConsumoPapelProps,
-} from "../services/consumoPapel.interface";
+    AlertDialog, AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
+import {UpdateFormFertilizantes} from "@/components/fertilizantes/components/UpdateFormFertilizante";
+import {getSedes} from "@/components/sede/services/sede.actions";
+import {CollectionConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.interface";
+import {FormPapel} from "@/components/consumoPapel/components/FormPapelOficce";
+import SkeletonTable from "@/components/Layout/skeletonTable";
 
-export default function PapelPage({onClose}: CreateConsumoPapelProps) {
+export default function PapelPage() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const {sedes, loadSedes} = useSedeStore();
-    const {consumoPapel, loadConsumoPapel} = useConsumoPapelStore();
+    const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+    const [idForUpdate, setIdForUpdate] = useState<number>(0);
+    const [idForDelete, setIdForDelete] = useState<number>(0);
+
     const [selectedSede, setSelectedSede] = useState<string>("1");
 
-    useEffect(() => {
-        loadConsumoPapel({sedeId: Number(selectedSede)});
-        loadSedes();
-    }, [loadConsumoPapel, loadSedes, selectedSede]);
+    const sedeQuery = useQuery({
+        queryKey: ['sedeQuery'],
+        queryFn: () => getSedes(),
+    })
 
-    const handleSedeChange = (value: string) => {
+    const consumoPapelQuery = useQuery({
+        queryKey: ['consumoPapelQuery'],
+        queryFn: () => getConsumoPapel(Number(selectedSede)),
+    })
+
+    // HANDLES
+    const handleSedeChange = useCallback((value: string) => {
         setSelectedSede(value);
-        loadConsumoPapel({sedeId: Number(value)});
-    };
+    }, []);
 
-    const handleClose = () => {
+    const handleCalculate = useCallback(() => {
+        consumoPapelQuery.refetch(); // redirigir a la misma página
+    }, [consumoPapelQuery]);
+
+    const handleClose = useCallback(() => {
         setIsDialogOpen(false);
-        loadConsumoPapel({sedeId: Number(selectedSede)});
+        consumoPapelQuery.refetch();
+    }, [consumoPapelQuery]);
+
+    const handleCloseUpdate = useCallback(() => {
+        setIsUpdateDialogOpen(false);
+        consumoPapelQuery.refetch();
+    }, [consumoPapelQuery]);
+
+    const handleDelete = useCallback(async () => {
+        setIsDeleteDialogOpen(false);
+        await consumoPapelQuery.refetch();
+    }, [consumoPapelQuery]);
+
+    const handleClickUpdate = (id: number) => {
+        setIdForUpdate(id);
+        setIsUpdateDialogOpen(true);
     };
 
-    if (!consumoPapel) {
-        return <p>Cargando...</p>;
+    const handleCLickDelete = (id: number) => {
+        setIdForDelete(id);
+        setIsDeleteDialogOpen(true);
+    };
+
+    if (sedeQuery.isFetching || consumoPapelQuery.isFetching) {
+        return <SkeletonTable/>
     }
 
     return (
-        <div className="w-full max-w-[1150px] h-full ">
-            <div className="flex flex-row justify-between items-center mb-6">
+        <div className="w-full max-w-[1150px] h-full">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="font-Manrope">
-                    <h1 className="text-xl text-gray-800 font-bold">CONSUMO DE PAPEL</h1>
-                    <h2 className="text-base text-gray-500">Huella de carbono</h2>
+                    <h1 className="text-base text-gray-800 font-bold">Consumo de Papel</h1>
+                    <h2 className="text-xs sm:text-sm text-gray-500">
+                        Huella de carbono
+                    </h2>
                 </div>
-                <div className="flex justify-end gap-5">
-                    <div className="flex flex-row space-x-4 mb-6 font-normal justify-end">
-                        <Select
-                            onValueChange={(value) => handleSedeChange(value)}
-                            defaultValue={selectedSede}
-                        >
-                            <SelectTrigger className="rounded-sm h-10 w-80 focus:outline-none focus-visible:ring-0">
-                                <SelectValue placeholder="Selecciona la Sede"/>
-                            </SelectTrigger>
-                            <SelectContent className="border-none">
-                                <SelectGroup>
-                                    {sedes.map((sede) => (
-                                        <SelectItem key={sede.id} value={sede.id.toString()}>
-                                            {sede.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+                    <div
+                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
+
+                        <SelectFilter
+                            list={sedeQuery.data!}
+                            itemSelected={selectedSede}
+                            handleItemSelect={handleSedeChange}
+                            value={"id"}
+                            nombre={"name"}
+                            id={"id"}
+                        />
+
+                        <SelectFilter
+                            list={sedeQuery.data!}
+                            itemSelected={selectedSede}
+                            handleItemSelect={handleSedeChange}
+                            value={"id"}
+                            nombre={"name"}
+                            id={"id"}
+                        />
+
                     </div>
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button variant="default" className=" text-white">
-                                <Plus/>
-                                Registrar
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-lg border-2">
-                            <DialogHeader>
-                                <DialogTitle> CONSUMO PAPEL</DialogTitle>
-                                <DialogDescription>
-                                    Registrar el consumo de papel
-                                </DialogDescription>
-                                <DialogClose/>
-                            </DialogHeader>
-                            <FormPapel onClose={handleClose}/>
-                        </DialogContent>
-                    </Dialog>
+                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                        <ButtonCalculate onClick={handleCalculate}/>
+
+                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            <DialogTrigger asChild>
+                                <Button size="sm" className="h-7 gap-1">
+                                    <Plus className="h-3.5 w-3.5"/>
+                                    Registrar
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-lg border-2">
+                                <DialogHeader>
+                                    <DialogTitle> CONSUMO PAPEL</DialogTitle>
+                                    <DialogDescription>
+                                        Registrar el consumo de papel
+                                    </DialogDescription>
+                                    <DialogClose/>
+                                </DialogHeader>
+                                <FormPapel onClose={handleClose}/>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                 </div>
             </div>
-            <div className="rounded-lg overflow-hidden">
+
+            <div className="rounded-lg overflow-hidden text-nowrap sm:text-wrap">
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            {/* <TableHead className="text-sm font-bold text-center ">
-                SEDE
-              </TableHead> */}
-                            <TableHead className="text-sm font-bold text-center">
-                                TIPO DE HOJA
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                N°
                             </TableHead>
-                            <TableHead className="text-sm font-bold text-center">
-                                COMPRAS ANUALES
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                NOMBRE
                             </TableHead>
-                            <TableHead className="text-sm font-bold text-center">
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 UNIDAD
                             </TableHead>
-                            <TableHead className="text-sm font-bold text-center">
-                                % CERTIFICADO O RECICLABLE
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                CANTIDAD DE PAQUETE
                             </TableHead>
-                            <TableHead className="text-sm font-bold text-center">
-                                CERTIFICADO
-                            </TableHead>
-                            <TableHead className=" text-sm font-bold text-center">
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 GRAMAJE
                             </TableHead>
-                            <TableHead className=" text-sm font-bold text-center">
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                CERTIFICADO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                % RECICLADO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                AÑO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 ACCIONES
                             </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {consumoPapel.map((item: CollectionConsumoPapel) => (
+                        {consumoPapelQuery.data!.map((item: CollectionConsumoPapel, index: number) => (
                             <TableRow key={item.id} className="text-center">
-                                {/* <TableCell>{item.sede}</TableCell> */}
-                                <TableCell>{item.nombre}</TableCell>
-                                <TableCell>{item.cantidad_paquete}</TableCell>
-                                <TableCell>{item.unidad_paquete}</TableCell>
-                                <TableCell>
-                                    {item.porcentaje_reciclado === 0
-                                        ? "---"
-                                        : item.porcentaje_reciclado + "%"}
-                                </TableCell>
-                                <TableCell>
-                                    {item.nombre_certificado ? item.nombre_certificado : "---"}
-                                </TableCell>
-                                <TableCell>{item.gramaje} g</TableCell>
-                                <TableCell className="flex space-x-4 justify-center items-center bg-transparent">
-                                    <Button
-                                        size="icon"
-                                        className="bg-transparent hover:bg-transparent text-blue-700 border"
-                                    >
-                                        <Pencil1Icon className="h-4 text-blue-700"/>
-                                    </Button>
+                                <TableCell className="text-xs sm:text-sm">{index}</TableCell>
+                                <TableCell
+                                    className="text-xs sm:text-sm">{item.nombre}</TableCell>
+                                <TableCell
+                                    className="text-xs sm:text-sm">{item.unidad_paquete}</TableCell>
+                                <TableCell
+                                    className="text-xs sm:text-sm">{item.cantidad_paquete} %</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.gramaje}</TableCell>
+                                <TableCell
+                                    className="text-xs sm:text-sm">{item.nombre_certificado}</TableCell>
+                                <TableCell
+                                    className="text-xs sm:text-sm">{item.porcentaje_reciclado}</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.anio}</TableCell>
+                                <TableCell className="text-xs sm:text-sm p-1">
+                                    <div className="flex justify-center gap-4">
+                                        {/*UPDATE*/}
+                                        <Button
+                                            className="h-7 w-7"
+                                            size="icon"
+                                            variant="outline"
+                                            onClick={() => handleClickUpdate(item.id)}
+                                        >
+                                            <Pen className="h-3.5 text-blue-700"/>
+                                        </Button>
+
+                                        {/*DELETE*/}
+                                        <Button
+                                            className="h-7 w-7"
+                                            size="icon"
+                                            variant="outline"
+                                            onClick={() => handleCLickDelete(item.id)}
+                                        >
+                                            <Trash2 className="h-3.5 text-gray-500"/>
+                                        </Button>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </div>
+
+            {/*MODAL UPDATE*/}
+            <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
+                <DialogTrigger asChild></DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
+                        <DialogDescription></DialogDescription>
+                    </DialogHeader>
+                    <UpdateFormFertilizantes
+                        onClose={handleCloseUpdate}
+                        id={idForUpdate}
+                    />
+                </DialogContent>
+            </Dialog>
+
+            {/*    MODAL DELETE*/}
+            <AlertDialog
+                open={isDeleteDialogOpen}
+                onOpenChange={setIsDeleteDialogOpen}
+            >
+                <AlertDialogTrigger asChild></AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Eliminar registro</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Esta acción no se puede deshacer, ¿Estás seguro de eliminar este
+                            registro?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction
+                            className={buttonVariants({variant: "destructive"})}
+                            onClick={handleDelete}
+                        >
+                            Eliminar
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
-    )
+    );
 }

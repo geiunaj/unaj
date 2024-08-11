@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import {Pencil1Icon} from "@radix-ui/react-icons";
 import {useCallback, useEffect, useState} from "react";
-import {Calculator, ChevronsUpDown, Plus, Trash2} from "lucide-react";
+import {Calculator, ChevronsUpDown, Pen, Plus, Trash2} from "lucide-react";
 import {FormFertilizantes} from "./FormFertilizantes";
 import {useSedeStore} from "@/components/sede/lib/sede.store";
 import {
@@ -290,7 +290,7 @@ export default function FertilizantePage() {
                                             variant="outline"
                                             onClick={() => handleClickUpdate(item.id)}
                                         >
-                                            <Pencil1Icon className="h-4 text-blue-700"/>
+                                            <Pen className="h-3.5 text-blue-700"/>
                                         </Button>
 
                                         {/*DELETE*/}
@@ -300,7 +300,7 @@ export default function FertilizantePage() {
                                             variant="outline"
                                             onClick={() => handleCLickDelete(item.id)}
                                         >
-                                            <Trash2 className="h-4 text-gray-500"/>
+                                            <Trash2 className="h-3.5 text-gray-500"/>
                                         </Button>
                                     </div>
                                 </TableCell>
