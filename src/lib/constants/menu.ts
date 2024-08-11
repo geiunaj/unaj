@@ -77,9 +77,9 @@ export const menu: MenuItem[] = [
         icon: "Scroll",
         href: "/tipoPapel",
     },
-  {
-    title: "Tipos de Combustible",
-    icon: "Flame",
-    href: "/tipoCombustible",
-  },
+    {
+        title: "Tipos de Combustible",
+        icon: "Flame",
+        href: "/tipoCombustible",
+    },
 ];
