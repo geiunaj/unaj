@@ -273,7 +273,7 @@ export default function ElectricidadPage() {
                                 <TableCell className="text-xs sm:text-sm">
                                     {item.anio}
                                 </TableCell>
-                                <TableCell className="text-xs sm:text-sm">
+                                <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">
                                         {/*UPDATE*/}
                                         <Button
@@ -282,7 +282,7 @@ export default function ElectricidadPage() {
                                             variant="outline"
                                             onClick={() => handleClickUpdate(item.id)}
                                         >
-                                            <Pen className="h-3.4 text-blue-700"/>
+                                            <Pen className="h-3.5 text-blue-700"/>
                                         </Button>
 
                                         {/*DELETE*/}

@@ -1,55 +1,37 @@
-import { create } from "zustand";
-import { CollectionConsumoPapel, ConsumoPapelRequest } from "../services/consumoPapel.interface";
-import { createConsumoPapel, getConsumoPapel } from "../services/consumoPapel.actions";
+import {useQuery} from "@tanstack/react-query";
+import {getSedes} from "@/components/sede/services/sede.actions";
+import {getConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.actions";
+import {getTiposPapel} from "@/components/tipoPapel/services/tipoPpel.actions";
+import {getAnio} from "@/components/anio/services/anio.actions";
 
-
-type sort =
-  | "id"
-  | "tipoPapel_id"
-  | "cantidad"
-  | "comentario"
-  | "mes_id"
-  | "anio_id"
-  | "sede_id";
-type direction = "asc" | "desc";
-
-interface ConsumoPapelStore {
-  consumoPapel: CollectionConsumoPapel[];
-  loadConsumoPapel: (options?: {
-    sedeId?: number;
-    sort?: sort;
-    direction?: direction;
-  }) => void;
-  createConsumoPapel: (consumoPapel: ConsumoPapelRequest) => void;
-  // showCombustion: (id: number) => void;
-  // updateCombustion: (id: number, combustion: CombustionRequest) => void;
-  // deleteCombustion: (id: number) => void;
+export const useConsumosPapel = (selectedSede: string, tipoPapelId: string) => {
+    return useQuery({
+        queryKey: ['consumoPapelQuery'],
+        queryFn: () => getConsumoPapel(selectedSede, tipoPapelId),
+        refetchOnWindowFocus: false,
+    })
 }
 
-export const useConsumoPapelStore = create<ConsumoPapelStore>((set) => ({
-    consumoPapel: [],
-    loadConsumoPapel: async ({
-    sedeId,
-    sort,
-    direction,
-  }: {
-    sedeId?: number;
-    sort?: sort;
-    direction?: direction;
-  } = {}) => {
-    try {
-      const data = await getConsumoPapel(sedeId, sort, direction);
-      set({ consumoPapel: data });
-    } catch (error) {
-      console.error("Error loading combustion data:", error);
-    }
-  },
-  createConsumoPapel: async (consumoPapel: ConsumoPapelRequest) => {
-    try {
-      const data = await createConsumoPapel(consumoPapel);
-      console.log("Combustion created:", data);
-    } catch (error) {
-      console.error("Error creating combustion:", error);
-    }
-  },
-}));
+export const useSedes = () => {
+    return useQuery({
+        queryKey: ['sedeQuery'],
+        queryFn: () => getSedes(),
+        refetchOnWindowFocus: false,
+    })
+}
+
+export const useTipoPapel = () => {
+    return useQuery({
+        queryKey: ['tiposPapel'],
+        queryFn: () => getTiposPapel(),
+        refetchOnWindowFocus: false,
+    });
+}
+
+export const useAnios = () => {
+    return useQuery({
+        queryKey: ['anios'],
+        queryFn: () => getAnio(),
+        refetchOnWindowFocus: false,
+    });
+}

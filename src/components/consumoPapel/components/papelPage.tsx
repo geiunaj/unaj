@@ -1,7 +1,5 @@
 "use client";
 
-import {useQuery} from "@tanstack/react-query";
-import {getConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.actions";
 import {useCallback, useState} from "react";
 import SelectFilter from "@/components/selectFilter";
 import {Pen, Plus, Trash2} from "lucide-react";
@@ -23,11 +21,15 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
-import {UpdateFormFertilizantes} from "@/components/fertilizantes/components/UpdateFormFertilizante";
 import {getSedes} from "@/components/sede/services/sede.actions";
+import {Badge} from "@/components/ui/badge";
 import {CollectionConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.interface";
 import {FormPapel} from "@/components/consumoPapel/components/FormPapelOficce";
 import SkeletonTable from "@/components/Layout/skeletonTable";
+import {UpdateFormPapel} from "@/components/consumoPapel/components/UpdateFormPapelOficce";
+import {useAnios, useConsumosPapel, useSedes, useTipoPapel} from "@/components/consumoPapel/lib/consumoPapel.store";
+import {useQuery} from "@tanstack/react-query";
+import {getConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.actions";
 
 export default function PapelPage() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -38,21 +40,22 @@ export default function PapelPage() {
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
     const [selectedSede, setSelectedSede] = useState<string>("1");
+    const [selectedTipoPapel, setSelectedTipoPapel] = useState<string>("1");
 
-    const sedeQuery = useQuery({
-        queryKey: ['sedeQuery'],
-        queryFn: () => getSedes(),
-    })
-
-    const consumoPapelQuery = useQuery({
-        queryKey: ['consumoPapelQuery'],
-        queryFn: () => getConsumoPapel(Number(selectedSede)),
-    })
+    const sedeQuery = useSedes();
+    const consumoPapelQuery = useConsumosPapel(selectedSede, selectedTipoPapel);
+    const tiposPapelQuery = useTipoPapel();
 
     // HANDLES
-    const handleSedeChange = useCallback((value: string) => {
-        setSelectedSede(value);
-    }, []);
+    const handleSedeChange = useCallback(async (value: string) => {
+        await setSelectedSede(value);
+        await consumoPapelQuery.refetch();
+    }, [consumoPapelQuery]);
+
+    const handleTipoPapelChange = useCallback(async (value: string) => {
+        await setSelectedTipoPapel(value);
+        await consumoPapelQuery.refetch();
+    }, [consumoPapelQuery]);
 
     const handleCalculate = useCallback(() => {
         consumoPapelQuery.refetch(); // redirigir a la misma página
@@ -83,7 +86,7 @@ export default function PapelPage() {
         setIsDeleteDialogOpen(true);
     };
 
-    if (sedeQuery.isFetching || consumoPapelQuery.isFetching) {
+    if (sedeQuery.isLoading || consumoPapelQuery.isLoading) {
         return <SkeletonTable/>
     }
 
@@ -101,11 +104,11 @@ export default function PapelPage() {
                         className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
 
                         <SelectFilter
-                            list={sedeQuery.data!}
-                            itemSelected={selectedSede}
-                            handleItemSelect={handleSedeChange}
+                            list={tiposPapelQuery.data!}
+                            itemSelected={selectedTipoPapel}
+                            handleItemSelect={handleTipoPapelChange}
                             value={"id"}
-                            nombre={"name"}
+                            nombre={"nombre"}
                             id={"id"}
                         />
 
@@ -158,7 +161,7 @@ export default function PapelPage() {
                                 UNIDAD
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CANTIDAD DE PAQUETE
+                                CANTIDAD
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 GRAMAJE
@@ -180,18 +183,22 @@ export default function PapelPage() {
                     <TableBody>
                         {consumoPapelQuery.data!.map((item: CollectionConsumoPapel, index: number) => (
                             <TableRow key={item.id} className="text-center">
-                                <TableCell className="text-xs sm:text-sm">{index}</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{index + 1}</TableCell>
                                 <TableCell
                                     className="text-xs sm:text-sm">{item.nombre}</TableCell>
                                 <TableCell
                                     className="text-xs sm:text-sm">{item.unidad_paquete}</TableCell>
                                 <TableCell
-                                    className="text-xs sm:text-sm">{item.cantidad_paquete} %</TableCell>
+                                    className="text-xs sm:text-sm">
+                                    <Badge variant="default">{item.cantidad_paquete}</Badge>
+                                </TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.gramaje}</TableCell>
                                 <TableCell
                                     className="text-xs sm:text-sm">{item.nombre_certificado}</TableCell>
                                 <TableCell
-                                    className="text-xs sm:text-sm">{item.porcentaje_reciclado}</TableCell>
+                                    className="text-xs sm:text-sm">
+                                    {item.porcentaje_reciclado !== 0 ? item.porcentaje_reciclado : ""}
+                                </TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.anio}</TableCell>
                                 <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">
@@ -230,10 +237,7 @@ export default function PapelPage() {
                         <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <UpdateFormFertilizantes
-                        onClose={handleCloseUpdate}
-                        id={idForUpdate}
-                    />
+                    <UpdateFormPapel onClose={handleCloseUpdate} id={idForUpdate}/>
                 </DialogContent>
             </Dialog>
 

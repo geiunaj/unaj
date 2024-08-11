@@ -4,7 +4,8 @@ import {AxiosRequestConfig} from "axios";
 import {CollectionConsumoPapel, ConsumoPapelRequest} from "./consumoPapel.interface";
 
 export async function getConsumoPapel(
-    sedeId?: number,
+    sedeId?: string,
+    tipoPapelId?: string,
     sort?: string,
     direction?: string
 ): Promise<CollectionConsumoPapel[]> {
@@ -12,6 +13,7 @@ export async function getConsumoPapel(
         const config: AxiosRequestConfig = {
             params: {
                 sedeId,
+                tipoPapelId,
                 sort,
                 direction,
             },
@@ -27,7 +29,22 @@ export async function getConsumoPapel(
     }
 }
 
-export async function createConsumoPapel(body: ConsumoPapelRequest) {
+export async function createConsumoPapel(body: ConsumoPapelRequest): Promise<any> {
     const {data} = await api.post("/api/consumoPapel", body);
+    return data;
+}
+
+export async function showConsumoPapel(id: number): Promise<any> {
+    const {data} = await api.get(`/api/consumoPapel/${id}`);
+    return data;
+}
+
+export async function updateConsumoPapel(id: number, body: ConsumoPapelRequest): Promise<any> {
+    const {data} = await api.put(`/api/consumoPapel/${id}`, body);
+    return data;
+}
+
+export async function deleteConsumoPapel(id: number): Promise<any> {
+    const {data} = await api.delete(`/api/consumoPapel/${id}`);
     return data;
 }

@@ -2,14 +2,6 @@
 import {useEffect, useState, useCallback} from "react";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
     AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
@@ -28,16 +20,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {Pencil1Icon} from "@radix-ui/react-icons";
 import {FormCombustion} from "./FormCombustion";
 import {
-    Building,
-    Calculator, ChevronDown,
-    ChevronsUpDown, Flame,
-    ListRestart,
-    Plus,
-    Trash2,
-    Calendar, CalendarDays, Pen,
+    Building, ChevronsUpDown, Flame, Plus, Trash2, Calendar, CalendarDays, Pen,
 } from "lucide-react";
 import {useCombustionStore} from "../lib/combustion.store";
 import {

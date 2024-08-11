@@ -22,7 +22,11 @@ import {Input} from "@/components/ui/input";
 import {Button} from "../../ui/button";
 import {useSedeStore} from "../../sede/lib/sede.store";
 import {useTipoPapelStore} from "../../tipoPapel/lib/tipoPapel.store";
-import {ConsumoPapelRequest, CreateConsumoPapelProps} from "../services/consumoPapel.interface";
+import {
+    ConsumoPapelRequest,
+    CreateConsumoPapelProps,
+    UpdateConsumoPapelProps
+} from "../services/consumoPapel.interface";
 import {createConsumoPapel} from "../services/consumoPapel.actions";
 import {useAnioStore} from "../../anio/lib/anio.store";
 import {Textarea} from "../../ui/textarea";
@@ -42,7 +46,8 @@ const ConsumoPapel = z.object({
     sede: z.string().min(1, "Seleccione una sede"),
 });
 
-export function FormPapel({onClose}: CreateConsumoPapelProps) {
+export function UpdateFormPapel({onClose, id}: UpdateConsumoPapelProps) {
+
     const form = useForm<z.infer<typeof ConsumoPapel>>({
         resolver: zodResolver(ConsumoPapel),
         defaultValues: {
