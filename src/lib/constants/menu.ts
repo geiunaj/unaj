@@ -70,4 +70,9 @@ export const menu: MenuItem[] = [
     icon: "FileText",
     href: "/taxi",
   },
+  {
+    title: "Tipos de Combustible",
+    icon: "Flame",
+    href: "/tipoCombustible",
+  },
 ];

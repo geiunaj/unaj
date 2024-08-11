@@ -1,8 +1,12 @@
 import { Sede } from "@prisma/client";
 import api from "../../../../config/api";
-import { TipoCombustible } from "./tipoCombustible.interface";
+import { TipoCombustibleCollection } from "./tipoCombustible.interface";
 
-export async function getTiposCombustible(): Promise<TipoCombustible[]> {
-  const { data } = await api.get<TipoCombustible[]>("/api/tipoCombustible");
+export async function getTiposCombustible(): Promise<
+  TipoCombustibleCollection[]
+> {
+  const { data } = await api.get<TipoCombustibleCollection[]>(
+    "/api/tipoCombustible"
+  );
   return data;
 }
