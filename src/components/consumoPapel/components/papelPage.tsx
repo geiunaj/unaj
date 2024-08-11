@@ -110,6 +110,7 @@ export default function PapelPage() {
                             value={"id"}
                             nombre={"nombre"}
                             id={"id"}
+                            all={true}
                         />
 
                         <SelectFilter
