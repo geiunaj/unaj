@@ -131,7 +131,7 @@ export function FormElectricidad({ onClose }: CreateElectricidadProps) {
               control={form.control}
               render={({ field }) => (
                 <FormItem className="pt-2">
-                  <FormLabel>Sede</FormLabel>
+                  <FormLabel>Area</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -155,28 +155,27 @@ export function FormElectricidad({ onClose }: CreateElectricidadProps) {
               )}
             />
 
-            {/* Numero suministro */}
-            <FormField
-              control={form.control}
-              name="numero_suministro"
-              render={({ field }) => (
-                <FormItem className="pt-2 w-1/2">
-                  <FormLabel>Número de Suministro</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                      placeholder="1234567"
-                      type="text"
-                      // step="0.01"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="numero_suministro"
+                render={({ field }) => (
+                  <FormItem className="pt-2 w-1/2">
+                    <FormLabel>Número de Suministro</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                        placeholder="1234567"
+                        type="text"
+                        // step="0.01"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               {/* Cantidad */}
               <FormField
                 control={form.control}
@@ -187,7 +186,7 @@ export function FormElectricidad({ onClose }: CreateElectricidadProps) {
                     <FormControl>
                       <Input
                         className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                        placeholder="Cantidad Kg/año"
+                        placeholder="kw/h"
                         type="number"
                         step="0.01"
                         {...field}
@@ -197,6 +196,9 @@ export function FormElectricidad({ onClose }: CreateElectricidadProps) {
                   </FormItem>
                 )}
               />
+            </div>
+
+            <div className="flex gap-4">
               {/* Mes */}
               <FormField
                 control={form.control}
@@ -216,10 +218,7 @@ export function FormElectricidad({ onClose }: CreateElectricidadProps) {
                       <SelectContent>
                         <SelectGroup>
                           {meses.map((mes) => (
-                            <SelectItem
-                              key={mes.id}
-                              value={mes.id.toString()}
-                            >
+                            <SelectItem key={mes.id} value={mes.id.toString()}>
                               {mes.nombre}
                             </SelectItem>
                           ))}
@@ -229,7 +228,6 @@ export function FormElectricidad({ onClose }: CreateElectricidadProps) {
                   </FormItem>
                 )}
               />
-
               {/* Año */}
               <FormField
                 control={form.control}
@@ -263,7 +261,7 @@ export function FormElectricidad({ onClose }: CreateElectricidadProps) {
                 )}
               />
             </div>
-           
+
             <div className="flex gap-3 w-full pt-4">
               <Button type="submit" className="w-full bg-blue-700">
                 Guardar

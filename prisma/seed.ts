@@ -603,7 +603,7 @@ async function main() {
     }
 
     //Datos prueba para area
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
         await prisma.area.create({
             data: {
                 nombre: `Area ${i + 1}`,
@@ -623,7 +623,7 @@ async function main() {
                         data: {
                             areaId: area.id,
                             numeroSuministro: faker.lorem.words(),
-                            consumo: faker.number.float({min: 1, max: 50}),
+                            consumo: faker.number.float({min: 1, max: 200}),
                             mes_id: mes.id,
                             anio_id: anio.id,
                             sede_id: sede.id,
