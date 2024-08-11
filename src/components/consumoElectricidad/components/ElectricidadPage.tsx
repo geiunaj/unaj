@@ -41,6 +41,7 @@ import {electricidadCollection} from "../services/electricidad.interface";
 import {FormElectricidad} from "./FromElectricidad";
 import {useRouter} from "next/navigation";
 import {useAreaStore} from "@/components/area/lib/area.store";
+import {Badge} from "@/components/ui/badge";
 
 export default function ElectricidadPage() {
     const {push} = useRouter();
@@ -236,10 +237,13 @@ export default function ElectricidadPage() {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                N°
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AREA
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                NÉMERO DE SUMINISTRO
+                                N° SUMINISTRO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 CONSUMO
@@ -256,8 +260,11 @@ export default function ElectricidadPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {Electricidad.map((item: electricidadCollection) => (
+                        {Electricidad.map((item: electricidadCollection, index: number) => (
                             <TableRow key={item.id} className="text-center">
+                                <TableCell className="text-xs sm:text-sm">
+                                    <Badge variant="secondary">{index + 1}</Badge>
+                                </TableCell>
                                 <TableCell className="text-xs sm:text-sm">
                                     {item.area}
                                 </TableCell>
@@ -265,7 +272,7 @@ export default function ElectricidadPage() {
                                     {item.numeroSuministro}
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">
-                                    {item.consumo}
+                                    <Badge variant="default">{item.consumo}</Badge>
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">
                                     {item.mes}

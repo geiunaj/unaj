@@ -202,7 +202,9 @@ export default function PapelPage() {
                     <TableBody>
                         {consumoPapelQuery.data!.map((item: CollectionConsumoPapel, index: number) => (
                             <TableRow key={item.id} className="text-center">
-                                <TableCell className="text-xs sm:text-sm">{index + 1}</TableCell>
+                                <TableCell className="text-xs sm:text-sm">
+                                    <Badge variant="secondary">{index + 1}</Badge>
+                                </TableCell>
                                 <TableCell
                                     className="text-xs sm:text-sm">{item.nombre}</TableCell>
                                 <TableCell

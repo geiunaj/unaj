@@ -622,7 +622,7 @@ async function main() {
                     await prisma.consumoEnergia.create({
                         data: {
                             areaId: area.id,
-                            numeroSuministro: faker.lorem.words(),
+                            numeroSuministro: (faker.number.int({min: 10000000, max: 99999999})).toString(),
                             consumo: faker.number.float({min: 1, max: 200}),
                             mes_id: mes.id,
                             anio_id: anio.id,

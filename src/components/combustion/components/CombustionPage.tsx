@@ -298,6 +298,9 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="text-xs sm:text-sm  font-bold text-center">
+                                N°
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm  font-bold text-center">
                                 TIPO DE EQUIPO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm  font-bold text-center">
@@ -329,8 +332,11 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {combustion.map((item: CombustionCollection) => (
+                        {combustion.map((item: CombustionCollection, index: number) => (
                             <TableRow key={item.id} className="text-center">
+                                <TableCell className="text-xs sm:text-sm">
+                                    <Badge variant="secondary">{index + 1}</Badge>
+                                </TableCell>
                                 <TableCell className="text-xs sm:text-sm">
                                     {item.tipoEquipo}
                                 </TableCell>

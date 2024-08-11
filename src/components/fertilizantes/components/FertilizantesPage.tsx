@@ -245,6 +245,9 @@ export default function FertilizantePage() {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                N°
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 TIPO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
@@ -252,7 +255,7 @@ export default function FertilizantePage() {
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 <Button variant="ghost" onClick={handleToggleCantidadSort}>
-                                    CNT. DE FERTILIZANTE
+                                    CANTIDAD
                                     <ChevronsUpDown className="ml-2 h-3 w-3"/>
                                 </Button>
                             </TableHead>
@@ -271,15 +274,18 @@ export default function FertilizantePage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {fertilizante.map((item: fertilizanteCollection) => (
+                        {fertilizante.map((item: fertilizanteCollection, index: number) => (
                             <TableRow key={item.id} className="text-center">
+                                <TableCell className="text-xs sm:text-sm">
+                                    <Badge variant="secondary">{index + 1}</Badge>
+                                </TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.clase}</TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.tipoFertilizante}</TableCell>
-                                <TableCell className="text-xs sm:text-sm">{item.cantidad}</TableCell>
-                                <TableCell className="text-xs sm:text-sm">{item.porcentajeNit} %</TableCell>
                                 <TableCell className="text-xs sm:text-sm">
-                                    {item.is_ficha ? <Badge>SI</Badge> : <Badge>NO</Badge>}
+                                    <Badge variant="default">{item.cantidad}</Badge>
                                 </TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.porcentajeNit} %</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.is_ficha ? "SI" : "NO"}</TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.anio}</TableCell>
                                 <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">
