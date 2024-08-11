@@ -3,7 +3,6 @@ import {useRouter, usePathname} from "next/navigation";
 import {Button} from "./ui/button";
 import {iconComponents, menu, MenuItem} from "@/lib/constants/menu";
 import {useState, useEffect} from "react";
-import {Calculator} from "lucide-react";
 import Link from "next/link";
 import {Separator} from "./ui/separator";
 

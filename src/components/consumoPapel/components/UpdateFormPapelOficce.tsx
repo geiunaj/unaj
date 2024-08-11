@@ -32,7 +32,7 @@ import {useAnioStore} from "../../anio/lib/anio.store";
 import {Textarea} from "../../ui/textarea";
 import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
-import {getTiposPapel} from "@/components/tipoPapel/services/tipoPpel.actions";
+import {getTiposPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import skeletonForm from "@/components/Layout/skeletonForm";
 import SkeletonForm from "@/components/Layout/skeletonForm";
