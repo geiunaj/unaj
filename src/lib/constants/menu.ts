@@ -8,7 +8,8 @@ import {
     Bean,
     Car,
     Scroll,
-    Sprout 
+    Sprout,
+    Settings
 } from "lucide-react";
 
 export interface MenuItem {
@@ -28,6 +29,8 @@ export const iconComponents: Record<string, any> = {
     Bean,
     Car,
     Scroll,
+    Sprout,
+    Settings
 };
 
 export const menu: MenuItem[] = [
@@ -40,13 +43,6 @@ export const menu: MenuItem[] = [
         title: "Combustión Estacionaria",
         icon: "Flame",
         href: "/combustion-estacionaria",
-        items: [
-            {
-                title: "Cálculos",
-                icon: "Flame",
-                href: "/combustion-estacionaria/calculos",
-            },
-        ],
     },
     {
         title: "Combustión Móvil",
@@ -74,18 +70,26 @@ export const menu: MenuItem[] = [
         href: "/taxi",
     },
     {
-        title: "Tipo de Papel",
-        icon: "Scroll",
-        href: "/tipoPapel",
+        title: "Configuraciones",
+        icon: "Settings",
+        href: "/settings",
+        items: [
+            {
+                title: "Tipo de Papel",
+                icon: "Scroll",
+                href: "/tipoPapel",
+            },
+            {
+                title: "Tipos de Combustible",
+                icon: "Flame",
+                href: "/tipoCombustible",
+            },
+            {
+                title: "Tipos de Fertilizantes",
+                icon: "Sprout",
+                href: "/tipoFertilizante",
+            },
+        ]
     },
-    {
-        title: "Tipos de Combustible",
-        icon: "Flame",
-        href: "/tipoCombustible",
-    },
-    {
-        title: "Tipos de Fertilizantes",
-        icon: "Sprout",
-        href: "/tipoFertilizante",
-    },
+
 ];
