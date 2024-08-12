@@ -8,6 +8,7 @@ import {
     Bean,
     Car,
     Scroll,
+    Sprout 
 } from "lucide-react";
 
 export interface MenuItem {
@@ -81,5 +82,10 @@ export const menu: MenuItem[] = [
         title: "Tipos de Combustible",
         icon: "Flame",
         href: "/tipoCombustible",
+    },
+    {
+        title: "Tipos de Fertilizantes",
+        icon: "Sprout",
+        href: "/tipoFertilizante",
     },
 ];

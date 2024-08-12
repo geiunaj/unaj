@@ -29,3 +29,12 @@ export interface TipoCombustibleCollection {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface CreateTipoCombustibleProps {
+  onClose: () => void;
+}
+
+export interface UpdateTipoCombustibleProps {
+  onClose: () => void;
+  id: number;
+}

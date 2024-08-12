@@ -2,8 +2,7 @@
 
 import { useCallback, useState } from "react";
 import SelectFilter from "@/components/selectFilter";
-import { Building, Calendar, File, Pen, Plus, Trash2 } from "lucide-react";
-import ButtonCalculate from "@/components/buttonCalculate";
+import { Pen, Plus, Trash2, Bean } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -34,21 +33,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { CollectionConsumoPapel } from "@/components/consumoPapel/services/consumoPapel.interface";
-import { FormPapel } from "@/components/consumoPapel/components/FormPapelOficce";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import { UpdateFormPapel } from "@/components/consumoPapel/components/UpdateFormPapelOficce";
 import {
-  useAnios,
-  useConsumosPapel,
-  useSedes,
-  useTipoPapel,
-} from "@/components/consumoPapel/lib/consumoPapel.store";
-import { useTipoCombustible } from "../lib/tipoCombustible.hook";
-import { TipoCombustibleCollection } from "../services/tipoCombustible.interface";
-import { FromTipoCombustible } from "./FromTipoCombustiblePage";
+  useClaseFertilizante,
+  useTipoFertilizante,
+} from "../lib/tipoCombustible.hook";
+import { TipoFertilizanteCollection } from "../services/tipoFertilizante.interface";
 
-export default function TipoCombustiblePage() {
+export default function TipoFertilizantePage() {
   //DIALOGS
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -57,24 +50,35 @@ export default function TipoCombustiblePage() {
   const [idForDelete, setIdForDelete] = useState<number>(0);
 
   //USE QUERIES
-  const tipoCombustibleQuery = useTipoCombustible();
+  const claseFertilizanteQuery = useClaseFertilizante();
+
+  const [selectedClase, setSelectedClase] = useState<string>("1");
+  const tipoFertilizanteQuery = useTipoFertilizante(selectedClase);
+
+  const handleClaseChange = useCallback(
+    async (value: string) => {
+      await setSelectedClase(value);
+      await tipoFertilizanteQuery.refetch();
+    },
+    [tipoFertilizanteQuery]
+  );
 
   // HANDLES
 
   const handleClose = useCallback(() => {
     setIsDialogOpen(false);
-    tipoCombustibleQuery.refetch();
-  }, [tipoCombustibleQuery]);
+    tipoFertilizanteQuery.refetch();
+  }, [tipoFertilizanteQuery]);
 
   const handleCloseUpdate = useCallback(() => {
     setIsUpdateDialogOpen(false);
-    tipoCombustibleQuery.refetch();
-  }, [tipoCombustibleQuery]);
+    tipoFertilizanteQuery.refetch();
+  }, [tipoFertilizanteQuery]);
 
   const handleDelete = useCallback(async () => {
     setIsDeleteDialogOpen(false);
-    await tipoCombustibleQuery.refetch();
-  }, [tipoCombustibleQuery]);
+    await tipoFertilizanteQuery.refetch();
+  }, [tipoFertilizanteQuery]);
 
   const handleClickUpdate = (id: number) => {
     setIdForUpdate(id);
@@ -86,7 +90,7 @@ export default function TipoCombustiblePage() {
     setIsDeleteDialogOpen(true);
   };
 
-  if (tipoCombustibleQuery.isLoading) {
+  if (tipoFertilizanteQuery.isLoading) {
     return <SkeletonTable />;
   }
 
@@ -95,13 +99,25 @@ export default function TipoCombustiblePage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
         <div className="font-Manrope">
           <h1 className="text-base text-gray-800 font-bold">
-            Tipos de Combustible
+            Tipos de Fertilizante
           </h1>
           <h2 className="text-xs sm:text-sm text-gray-500">
             Huella de carbono
           </h2>
         </div>
         <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
+          <div className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
+            <SelectFilter
+              list={claseFertilizanteQuery.data!}
+              itemSelected={selectedClase}
+              handleItemSelect={handleClaseChange}
+              value={"id"}
+              nombre={"nombreFiltro"}
+              id={"id"}
+              all={true}
+              icon={<Bean className="h-3 w-3" />}
+            />
+          </div>
           <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
@@ -112,13 +128,13 @@ export default function TipoCombustiblePage() {
               </DialogTrigger>
               <DialogContent className="max-w-lg border-2">
                 <DialogHeader>
-                  <DialogTitle> TIPOS DE COMBUSTIBLE</DialogTitle>
+                  <DialogTitle> TIPOS DE Fertilizante</DialogTitle>
                   <DialogDescription>
-                    Agregar Tipo de Combustible
+                    Agregar Tipo de Fertilizante
                   </DialogDescription>
                   <DialogClose />
                 </DialogHeader>
-                <FromTipoCombustible onClose={handleClose} />
+                {/* <FromTipoFertilizante onClose={handleClose} /> */}
               </DialogContent>
             </Dialog>
           </div>
@@ -135,32 +151,19 @@ export default function TipoCombustiblePage() {
               <TableHead className="text-xs sm:text-sm font-bold text-center">
                 NOMBRE
               </TableHead>
-              {/* <TableHead className="text-xs sm:text-sm font-bold text-center">
-                ABREVIATURA
-              </TableHead> */}
+
               <TableHead className="text-xs sm:text-sm font-bold text-center">
-                UNIDAD
+                % NITROGENO
               </TableHead>
-              <TableHead className="text-xs sm:text-sm font-bold text-center">
-                VALOR CALORICO
-              </TableHead>
-              <TableHead className="text-xs sm:text-sm font-bold text-center">
-                FE CO2
-              </TableHead>
-              <TableHead className="text-xs sm:text-sm font-bold text-center">
-                FE CH4
-              </TableHead>
-              <TableHead className="text-xs sm:text-sm font-bold text-center">
-                FE N2O
-              </TableHead>
+
               <TableHead className="text-xs sm:text-sm font-bold text-center">
                 ACCIONES
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tipoCombustibleQuery.data!.map(
-              (item: TipoCombustibleCollection, index: number) => (
+            {tipoFertilizanteQuery.data!.map(
+              (item: TipoFertilizanteCollection, index: number) => (
                 <TableRow key={item.id} className="text-center">
                   <TableCell className="text-xs sm:text-sm">
                     <Badge variant="secondary">{index + 1}</Badge>
@@ -168,24 +171,11 @@ export default function TipoCombustiblePage() {
                   <TableCell className="text-xs text-start sm:text-sm">
                     {item.nombre}
                   </TableCell>
-                  {/* <TableCell className="text-xs sm:text-sm">
-                    {item.abreviatura}
-                  </TableCell> */}
                   <TableCell className="text-xs sm:text-sm">
-                    {item.unidad}
+                    <Badge variant="default"> {item.porcentajeNitrogeno}</Badge>
+                    {item.porcentajeNitrogeno}
                   </TableCell>
-                  <TableCell className="text-xs sm:text-sm">
-                    {item.valorCalorico}
-                  </TableCell>
-                  <TableCell className="text-xs sm:text-sm">
-                    {item.factorEmisionCO2}
-                  </TableCell>
-                  <TableCell className="text-xs sm:text-sm">
-                    {item.factorEmisionCH4}
-                  </TableCell>
-                  <TableCell className="text-xs sm:text-sm">
-                    {item.factorEmisionN2O}
-                  </TableCell>
+
                   <TableCell className="text-xs sm:text-sm p-1">
                     <div className="flex justify-center gap-4">
                       {/*UPDATE*/}
