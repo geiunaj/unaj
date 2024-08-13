@@ -9,12 +9,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
         const tipo = searchParams.get("tipo") ?? undefined;
+        const tipoCombustibleId = searchParams.get("tipoCombustibleId") ?? undefined
         const sedeId = searchParams.get("sedeId") ?? undefined;
+        const anio = searchParams.get("anio") ?? undefined;
+        const mesId = searchParams.get("mesId") ?? undefined;
         const sort = searchParams.get("sort") ?? undefined;
         const direction = searchParams.get("direction") ?? undefined;
-        const anio = searchParams.get("anioId") ?? undefined;
-        const mesId = searchParams.get("mesId") ?? undefined;
-        const tipoCombustibleId = searchParams.get("tipoCombustibleId") ?? undefined
 
 
         let anioId;
@@ -30,10 +30,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const combustibles = await prisma.combustible.findMany({
             where: {
                 tipo: tipo ? tipo : undefined,
-                sede_id: sedeId ? parseInt(sedeId) : undefined,
-                mes_id: mesId ? parseInt(mesId) : undefined,
-                anio_id: anioId,
                 tipoCombustible_id: tipoCombustibleId ? parseInt(tipoCombustibleId) : undefined,
+                sede_id: sedeId ? parseInt(sedeId) : undefined,
+                anio_id: anioId,
+                mes_id: mesId ? parseInt(mesId) : undefined,
             },
             include: {
                 tipoCombustible: true,
@@ -85,11 +85,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             },
         });
 
-        const formattedCombustible = formatCombustible(combustible);
-
-        return NextResponse.json(formattedCombustible);
+        return NextResponse.json({
+            message: "Combustible creado",
+            combustible: formatCombustible(combustible),
+        });
     } catch (error) {
-        console.error("Error creating combustible", error);
-        return new NextResponse("Error creating combustible", {status: 500});
+        console.error("Error creando combustible", error);
+        return new NextResponse("Error creando combustible", {status: 500});
     }
 }

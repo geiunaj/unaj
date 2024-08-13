@@ -46,6 +46,17 @@ import SelectFilter from "@/components/selectFilter";
 import ButtonCalculate from "@/components/buttonCalculate";
 import {useRouter} from "next/navigation";
 import {useMesStore} from "@/components/mes/lib/mes.stores";
+import {
+    useAnio,
+    useCombustible,
+    useMes,
+    useSede,
+    useTipoCombustible
+} from "@/components/combustion/lib/combustion.hook";
+import SkeletonTable from "@/components/Layout/skeletonTable";
+import {useSedes} from "@/components/consumoPapel/lib/consumoPapel.store";
+import {deleteCombustion} from "@/components/combustion/services/combustion.actions";
+import {errorToast, successToast} from "@/lib/utils/core.function";
 
 export default function CombustionPage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
@@ -58,13 +69,6 @@ export default function CombustionPage({combustionType}: CombustionProps) {
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-    // STORES
-    const {combustion, loadCombustion, deleteCombustion} = useCombustionStore();
-    const {tiposCombustible, loadTiposCombustible} = useTipoCombustibleStore();
-    const {sedes, loadSedes} = useSedeStore();
-    const {anios, loadAnios} = useAnioStore();
-    const {meses, loadMeses} = useMesStore();
-
     // SELECTS - FILTERS
     const [selectTipoCombustible, setSelectTipoCombustible] =
         useState<string>("");
@@ -74,9 +78,18 @@ export default function CombustionPage({combustionType}: CombustionProps) {
     );
     const [selectedMes, setSelectedMes] = useState<string>("");
 
-    const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
-        "desc"
-    );
+    // HOOKS
+    const combustible = useCombustible({
+        tipo,
+        tipoCombustibleId: selectTipoCombustible ? Number(selectTipoCombustible) : undefined,
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
+        anio: selectedAnio ? Number(selectedAnio) : undefined,
+        mesId: selectedMes ? Number(selectedMes) : undefined,
+    });
+    const tiposCombustible = useTipoCombustible();
+    const sedes = useSede();
+    const anios = useAnio();
+    const meses = useMes();
 
     // IDS
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
@@ -92,112 +105,53 @@ export default function CombustionPage({combustionType}: CombustionProps) {
         setIsDeleteDialogOpen(true);
     };
 
-    useEffect(() => {
-        if (tiposCombustible.length === 0) loadTiposCombustible();
-        if (sedes.length === 0) loadSedes();
-        if (anios.length === 0) loadAnios();
-        if (meses.length === 0) loadMeses();
-    }, [
-        loadTiposCombustible,
-        loadSedes,
-        loadAnios,
-        loadMeses,
-        sedes.length,
-        anios.length,
-        tiposCombustible.length,
-        meses.length,
-    ]);
+    const handleTipoCombustibleChange = useCallback(async (value: string) => {
+        await setSelectTipoCombustible(value);
+        await combustible.refetch();
+    }, [combustible]);
 
-    useEffect(() => {
-        const currentYear = new Date().getFullYear().toString();
+    const handleSedeChange = useCallback(async (value: string) => {
+        await setSelectedSede(value);
+        await combustible.refetch();
+    }, [combustible]);
 
-        if (anios.length > 0 && !selectedAnio) {
-            const currentAnio = anios.find((anio) => anio.nombre === currentYear);
-            if (currentAnio) {
-                setSelectedAnio(currentAnio.id.toString());
-            }
-        }
-        loadCombustion({
-            tipo,
-            sedeId: Number(selectedSede),
-            anioId: selectedAnio ? Number(selectedAnio) : undefined,
-            mesId: selectedMes ? Number(selectedMes) : undefined,
-            tipoCombustibleId: selectTipoCombustible
-                ? Number(selectTipoCombustible)
-                : undefined,
-        });
-    }, [loadCombustion, anios, tipo, selectedSede, selectedAnio, selectTipoCombustible, selectedMes]);
+    const handleAnioChange = useCallback(async (value: string) => {
+        await setSelectedAnio(value);
+        await combustible.refetch();
+    }, [combustible]);
 
-    const handleTipoCombustibleChange = useCallback((value: string) => {
-        setSelectTipoCombustible(value);
-    }, []);
-
-    const handleSedeChange = useCallback((value: string) => {
-        setSelectedSede(value);
-    }, []);
-
-    const handleAnioChange = useCallback((value: string) => {
-        setSelectedAnio(value);
-    }, []);
-
-    const handleMesChange = useCallback((value: string) => {
-        setSelectedMes(value);
-    }, []);
-
-    const handleToggleConsumoSort = useCallback(() => {
-        setConsumoDirection((prevDirection) => {
-            const newDirection = prevDirection === "asc" ? "desc" : "asc";
-            loadCombustion({
-                tipo,
-                sedeId: Number(selectedSede),
-                sort: "consumo",
-                direction: newDirection,
-            });
-            return newDirection;
-        });
-    }, [loadCombustion, tipo, selectedSede]);
+    const handleMesChange = useCallback(async (value: string) => {
+        await setSelectedMes(value);
+        await combustible.refetch();
+    }, [combustible]);
 
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
-        loadCombustion({
-            tipo,
-            sedeId: Number(selectedSede),
-            anioId: Number(selectedAnio),
-        });
-    }, [loadCombustion, tipo, selectedSede, selectedAnio]);
+        combustible.refetch();
+    }, [combustible]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
-        loadCombustion({
-            tipo,
-            sedeId: Number(selectedSede),
-            anioId: Number(selectedAnio),
-        });
-    }, [loadCombustion, tipo, selectedSede, selectedAnio]);
+        combustible.refetch();
+    }, [combustible]);
 
     const handleDelete = useCallback(async () => {
-        await deleteCombustion(idForDelete);
-        setIsDeleteDialogOpen(false);
-        loadCombustion({
-            tipo,
-            sedeId: Number(selectedSede),
-            anioId: Number(selectedAnio),
-        });
-    }, [
-        deleteCombustion,
-        idForDelete,
-        loadCombustion,
-        tipo,
-        selectedSede,
-        selectedAnio,
-    ]);
+        try {
+            const response = await deleteCombustion(idForDelete);
+            setIsDeleteDialogOpen(false);
+            successToast(response.data.message);
+        } catch (error: any) {
+            errorToast(error.response.data.message);
+        }
+        await combustible.refetch();
+    }, [idForDelete, combustible]);
 
     const handleCalculate = () => {
         push(`/combustion-${tipo}/calculos`);
     };
 
-    if (!combustion) {
-        return <p>Cargando...</p>;
+    if (combustible.isLoading || tiposCombustible.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {
+        return <SkeletonTable/>;
     }
 
     return (
@@ -217,7 +171,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                     <div
                         className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
                         <SelectFilter
-                            list={tiposCombustible}
+                            list={tiposCombustible.data!}
                             itemSelected={selectTipoCombustible}
                             handleItemSelect={handleTipoCombustibleChange}
                             value={"id"}
@@ -228,7 +182,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                         />
 
                         <SelectFilter
-                            list={sedes}
+                            list={sedes.data!}
                             itemSelected={selectedSede}
                             handleItemSelect={handleSedeChange}
                             value={"id"}
@@ -238,7 +192,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                         />
 
                         <SelectFilter
-                            list={anios}
+                            list={anios.data!}
                             itemSelected={selectedAnio}
                             handleItemSelect={handleAnioChange}
                             value={"nombre"}
@@ -249,7 +203,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                         />
 
                         <SelectFilter
-                            list={meses}
+                            list={meses.data!}
                             itemSelected={selectedMes}
                             handleItemSelect={handleMesChange}
                             value={"id"}
@@ -307,14 +261,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                                 TIPO DE COMBUSTIBLE
                             </TableHead>
                             <TableHead className="text-center">
-                                <Button
-                                    className="text-xs sm:text-sm  font-bold text-center"
-                                    variant="ghost"
-                                    onClick={handleToggleConsumoSort}
-                                >
-                                    CONSUMO
-                                    <ChevronsUpDown className="ml-2 h-3 w-3"/>
-                                </Button>
+                                CONSUMO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm  font-bold text-center">
                                 UNIDAD
@@ -332,7 +279,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {combustion.map((item: CombustionCollection, index: number) => (
+                        {combustible.data!.map((item: CombustionCollection, index: number) => (
                             <TableRow key={item.id} className="text-center">
                                 <TableCell className="text-xs sm:text-sm">
                                     <Badge variant="secondary">{index + 1}</Badge>

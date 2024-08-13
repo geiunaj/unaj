@@ -71,10 +71,14 @@ export async function PUT(
             },
         });
 
-        return NextResponse.json(formatCombustible(combustible));
+        return NextResponse.json({
+            message: "Combustible actualizado",
+            combustible: formatCombustible(combustible),
+        });
+
     } catch (error) {
-        console.error("Error updating combustible", error);
-        return new NextResponse("Error updating combustible", {status: 500});
+        console.error("Error actualizando combustible", error);
+        return new NextResponse("Error actualizando combustible", {status: 500});
     }
 }
 
@@ -85,13 +89,15 @@ export async function DELETE(
 ): Promise<NextResponse> {
     try {
         const id = parseInt(params.id);
-        const combustible = await prisma.combustible.delete({
+        await prisma.combustible.delete({
             where: {
                 id: id,
             },
         });
 
-        return NextResponse.json(combustible);
+        return NextResponse.json({
+            message: "Combustible eliminado",
+        });
     } catch (error) {
         console.error("Error deleting combustible", error);
         return new NextResponse("Error deleting combustible", {status: 500});

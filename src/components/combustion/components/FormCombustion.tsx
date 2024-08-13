@@ -1,5 +1,3 @@
-"use client";
-
 import React, {useEffect} from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
@@ -31,6 +29,11 @@ import {
 import {useCombustionStore} from "../lib/combustion.store";
 import {useAnioStore} from "@/components/anio/lib/anio.store";
 import {useMesStore} from "@/components/mes/lib/mes.stores";
+import {useQuery} from "@tanstack/react-query";
+import {getSedes} from "@/components/sede/services/sede.actions";
+import {getTiposCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";
+import {getAnio} from "@/components/anio/services/anio.actions";
+import {getMes} from "@/components/mes/services/mes.actions";
 
 const Combustion = z.object({
     sede: z.string().min(1, "Selecciona la sede"),
@@ -42,13 +45,7 @@ const Combustion = z.object({
         z.number().min(0, "Ingresa un valor mayor a 0")),
 });
 
-export function FormCombustion({onClose, tipo}: CreateCombustionProps & { tipo: string }) {
-    const {sedes, loadSedes} = useSedeStore();
-    const {tiposCombustible, loadTiposCombustible} = useTipoCombustibleStore();
-    const {createCombustion} = useCombustionStore();
-    const {anios, loadAnios} = useAnioStore();
-    const {meses, loadMeses} = useMesStore();
-
+export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
     const form = useForm<z.infer<typeof Combustion>>({
         resolver: zodResolver(Combustion),
         defaultValues: {
@@ -61,12 +58,29 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps & { tipo: 
         },
     });
 
-    useEffect(() => {
-        loadSedes();
-        loadTiposCombustible();
-        loadMeses();
-        loadAnios();
-    }, [loadSedes, loadTiposCombustible, loadMeses, loadAnios]); // Dependencia vacía para solo llamar una vez al montar
+    const sedes = useQuery({
+        queryKey: ['sede'],
+        queryFn: () => getSedes(),
+        refetchOnWindowFocus: false,
+    });
+
+    const tiposCombustible = useQuery({
+        queryKey: ['tipoCombustible'],
+        queryFn: () => getTiposCombustible(),
+        refetchOnWindowFocus: false,
+    });
+
+    const anios = useQuery({
+        queryKey: ['anio'],
+        queryFn: () => getAnio(),
+        refetchOnWindowFocus: false,
+    });
+    const meses = useQuery({
+        queryKey: ['mes'],
+        queryFn: () => getMes(),
+        refetchOnWindowFocus: false,
+    });
+    s
 
     const onSubmit = async (data: z.infer<typeof Combustion>) => {
         const combustionRequest: CombustionRequest = {
