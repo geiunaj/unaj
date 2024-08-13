@@ -18,6 +18,7 @@ import {CreateTipoPapelProps, TipoPapelRequest} from "@/components/tipoPapel/ser
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {createTipoPapel, deleteTipoPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
 import {Switch} from "@/components/ui/switch";
+import {errorToast, successToast} from "@/lib/utils/core.function";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -73,9 +74,9 @@ export function CreateFormTipoPapel({onClose}: CreateTipoPapelProps) {
         try {
             const response = await createTipoPapel(tipoPapelRequest);
             onClose();
-            toast.success(response.data.message);
+            successToast(response.data.message);
         } catch (error: any) {
-            toast.error(error.response?.data?.message || "No se pudo crear el tipo de papel");
+            errorToast(error.response?.data?.message);
         }
     };
 

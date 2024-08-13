@@ -23,6 +23,7 @@ import {Switch} from "@/components/ui/switch";
 import {useQuery} from "@tanstack/react-query";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {toast} from "sonner";
+import {errorToast, successToast} from "@/lib/utils/core.function";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -104,9 +105,9 @@ export function UpdateFormTipoPapel({id, onClose}: UpdateTipoPapelProps) {
         try {
             const response = await updateTipoPapel(id, tipoPapelRequest);
             onClose();
-            toast.success(response.data.message);
+            successToast(response.data.message);
         } catch (error: any) {
-            toast.error(error.response?.data?.message || "No se pudo actualizar el tipo de papel");
+            errorToast(error.response?.data?.message);
         }
     };
 
