@@ -31,9 +31,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             },
         });
 
-        return NextResponse.json(tipoPapel);
+        return NextResponse.json({
+            message: "Tipo de papel creado correctamente",
+            tipoPapel: formatTipoPapel(tipoPapel),
+        });
     } catch (error) {
-        console.error("Error al crear el tipo de papel", error);
-        return new NextResponse("Error creating tipo de papel", {status: 500});
+        console.error("Error al crear Tipo de papel", error);
+        return new NextResponse("Error al crear Tipo de papel", {status: 500});
     }
 }

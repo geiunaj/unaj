@@ -1,8 +1,7 @@
-import React from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {toast} from "sonner";
 import {
     Form,
     FormControl,
@@ -14,10 +13,16 @@ import {
 
 import {Input} from "@/components/ui/input";
 import {Button} from "../../ui/button";
-import {CreateTipoPapelProps, TipoPapelRequest} from "@/components/tipoPapel/services/tipoPapel.interface";
-import SkeletonForm from "@/components/Layout/skeletonForm";
-import {createTipoPapel, deleteTipoPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
+import {
+    CreateTipoPapelProps,
+    TipoPapelRequest,
+    UpdateTipoPapelProps
+} from "@/components/tipoPapel/services/tipoPapel.interface";
+import {createTipoPapel, getTipoPapel, updateTipoPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
 import {Switch} from "@/components/ui/switch";
+import {useQuery} from "@tanstack/react-query";
+import SkeletonForm from "@/components/Layout/skeletonForm";
+import {toast} from "sonner";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -46,7 +51,8 @@ const TipoPapel = z.object({
         }
     );
 
-export function CreateFormTipoPapel({onClose}: CreateTipoPapelProps) {
+export function UpdateFormTipoPapel({id, onClose}: UpdateTipoPapelProps) {
+
     const form = useForm<z.infer<typeof TipoPapel>>({
         resolver: zodResolver(TipoPapel),
         defaultValues: {
@@ -60,6 +66,31 @@ export function CreateFormTipoPapel({onClose}: CreateTipoPapelProps) {
         },
     });
 
+    const tipoPapel = useQuery({
+        queryKey: ['tipoPapel'],
+        queryFn: () => getTipoPapel(id),
+        refetchOnWindowFocus: false,
+    });
+
+    const loadForm = useCallback(async () => {
+        if (tipoPapel.data) {
+            const tipoPapelData = tipoPapel.data;
+            form.reset({
+                nombre: tipoPapelData.nombre,
+                gramaje: tipoPapelData.gramaje,
+                unidad_paquete: tipoPapelData.unidad_paquete,
+                is_certificado: tipoPapelData.is_certificado,
+                is_reciclable: tipoPapelData.is_reciclable,
+                porcentaje_reciclado: tipoPapelData.porcentaje_reciclado ?? 0,
+                nombre_certificado: tipoPapelData.nombre_certificado ?? "",
+            });
+        }
+    }, [tipoPapel.data, id]);
+
+    useEffect(() => {
+        loadForm();
+    }, [loadForm, id]);
+
     const onSubmit = async (data: z.infer<typeof TipoPapel>) => {
         const tipoPapelRequest: TipoPapelRequest = {
             nombre: data.nombre,
@@ -67,17 +98,21 @@ export function CreateFormTipoPapel({onClose}: CreateTipoPapelProps) {
             unidad_paquete: data.unidad_paquete,
             is_certificado: data.is_certificado,
             is_reciclable: data.is_reciclable,
-            porcentaje_reciclado: data.porcentaje_reciclado,
-            nombre_certificado: data.nombre_certificado,
+            porcentaje_reciclado: data.is_reciclable ? data.porcentaje_reciclado : 0,
+            nombre_certificado: data.is_certificado ? data.nombre_certificado : "",
         };
         try {
-            const response = await createTipoPapel(tipoPapelRequest);
+            const response = await updateTipoPapel(id, tipoPapelRequest);
             onClose();
             toast.success(response.data.message);
         } catch (error: any) {
-            toast.error(error.response?.data?.message || "No se pudo crear el tipo de papel");
+            toast.error(error.response?.data?.message || "No se pudo actualizar el tipo de papel");
         }
     };
+
+    if (tipoPapel.isLoading) {
+        return <SkeletonForm/>;
+    }
 
     return (
         <div className="flex items-center justify-center">

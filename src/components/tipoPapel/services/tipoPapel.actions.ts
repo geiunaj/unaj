@@ -1,5 +1,10 @@
 import api from "../../../../config/api";
 import {TipoPapelCollection, TipoPapelRequest} from "./tipoPapel.interface";
+import {AxiosResponse} from "axios";
+
+interface Response {
+    message: string;
+}
 
 export async function getTiposPapel(): Promise<TipoPapelCollection[]> {
     try {
@@ -11,13 +16,8 @@ export async function getTiposPapel(): Promise<TipoPapelCollection[]> {
     }
 }
 
-export async function createTipoPapel(tipoPapel: TipoPapelRequest): Promise<void> {
-    try {
-        await api.post("/api/tipoPapel", tipoPapel);
-    } catch (error) {
-        console.error(error);
-        throw new Error("Error al crear el tipo de papel");
-    }
+export async function createTipoPapel(tipoPapel: TipoPapelRequest): Promise<AxiosResponse<Response>> {
+    return await api.post("/api/tipoPapel", tipoPapel);
 }
 
 export async function getTipoPapel(id: number): Promise<TipoPapelCollection> {
@@ -30,20 +30,10 @@ export async function getTipoPapel(id: number): Promise<TipoPapelCollection> {
     }
 }
 
-export async function updateTipoPapel(tipoPapel: any): Promise<void> {
-    try {
-        await api.put(`/api/tipoPapel/${tipoPapel.id}`, tipoPapel);
-    } catch (error) {
-        console.error(error);
-        throw new Error("Error al actualizar el tipo de papel");
-    }
+export async function updateTipoPapel(id: number, tipoPapel: TipoPapelRequest): Promise<AxiosResponse<Response>> {
+    return await api.put(`/api/tipoPapel/${id}`, tipoPapel);
 }
 
-export async function deleteTipoPapel(id: number): Promise<void> {
-    try {
-        await api.delete(`/api/tipoPapel/${id}`);
-    } catch (error) {
-        console.error(error);
-        throw new Error("Error al eliminar el tipo de papel");
-    }
+export async function deleteTipoPapel(id: number): Promise<AxiosResponse<Response>> {
+    return await api.delete(`/api/tipoPapel/${id}`);
 }

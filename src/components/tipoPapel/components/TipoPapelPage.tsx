@@ -28,6 +28,10 @@ import SkeletonTable from "@/components/Layout/skeletonTable";
 import {UpdateFormPapel} from "@/components/consumoPapel/components/UpdateFormPapelOficce";
 import {useTipoPapel} from "@/components/tipoPapel/lib/tipoPapel.hook";
 import {TipoPapelCollection} from "@/components/tipoPapel/services/tipoPapel.interface";
+import {CreateFormTipoPapel} from "@/components/tipoPapel/components/CreateFormTipoPapel";
+import {UpdateFormTipoPapel} from "@/components/tipoPapel/components/UpdateFormTipoPapel";
+import {toast} from "sonner";
+import {deleteTipoPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
 
 export default function TipoPapelPage() {
     // DIALOGS
@@ -52,9 +56,17 @@ export default function TipoPapelPage() {
     }, [tiposPapelQuery]);
 
     const handleDelete = useCallback(async () => {
-        setIsDeleteDialogOpen(false);
-        await tiposPapelQuery.refetch();
+        try {
+            const response = await deleteTipoPapel(idForDelete);
+            setIsDeleteDialogOpen(false);
+            toast.success(response.data.message);
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Error al eliminar el tipo de papel");
+        } finally {
+            await tiposPapelQuery.refetch();
+        }
     }, [tiposPapelQuery]);
+
 
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
@@ -96,7 +108,7 @@ export default function TipoPapelPage() {
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                <FormPapel onClose={handleClose}/>
+                                <CreateFormTipoPapel onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -204,7 +216,7 @@ export default function TipoPapelPage() {
                         <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <UpdateFormPapel onClose={handleCloseUpdate} id={idForUpdate}/>
+                    <UpdateFormTipoPapel onClose={handleCloseUpdate} id={idForUpdate}/>
                 </DialogContent>
             </Dialog>
 

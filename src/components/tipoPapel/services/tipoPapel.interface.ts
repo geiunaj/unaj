@@ -37,3 +37,8 @@ export interface TipoPapelRequest {
 export interface CreateTipoPapelProps {
     onClose: () => void;
 }
+
+export interface UpdateTipoPapelProps {
+    onClose: () => void;
+    id: number;
+}
