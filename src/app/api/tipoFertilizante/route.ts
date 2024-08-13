@@ -42,7 +42,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       },
     });
 
-    return NextResponse.json(tipoFertilizante);
+    
+    return NextResponse.json({
+      message: "Tipo de Fertilizante creado",
+      tipoFertilizante: tipoFertilizante,
+  });
+
   } catch (error) {
     console.error("Error creating tipo de fertilizante", error);
     return new NextResponse("Error creating tipo de fertilizante", { status: 500 });

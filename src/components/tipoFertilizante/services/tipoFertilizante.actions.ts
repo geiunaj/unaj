@@ -30,3 +30,7 @@ export async function getClaseFertilizante(): Promise<ClaseFertilizante[]> {
 export async function createTipoFertilizante(tipoFertilizante: TipoFertilizanteRequest): Promise<AxiosResponse<Response>> {
     return await api.post("/api/tipoFertilizante", tipoFertilizante);
 }
+
+export async function deleteTipoFertilizante(id: number): Promise<AxiosResponse<Response>> {
+    return await api.delete(`/api/tipoFertilizante/${id}`);
+}
