@@ -1,48 +1,63 @@
 import api from "../../../../config/api";
-import { AxiosRequestConfig } from "axios";
-import { fertilizanteCollection, FertilizanteRequest } from "./fertilizante.interface";
+import {AxiosRequestConfig} from "axios";
+import {fertilizanteCollection, FertilizanteRequest, fertilizanteResource} from "./fertilizante.interface";
 
 export async function getFertilizante(
-  sedeId?: number,
-  sort?: string,
-  direction?: string,
-  anioId?: number,
-  tipoFertilizanteId?: number,
-  claseFertilizante?: string,
+    tipoFertilizanteId?: number,
+    claseFertilizante?: string,
+    sedeId?: number,
+    anio?: string,
+    sort?: string,
+    direction?: string,
 ): Promise<fertilizanteCollection[]> {
-  const config: AxiosRequestConfig = {
-    params: {
-      sedeId,
-      sort,
-      direction,
-      anioId,
-      tipoFertilizanteId,
-      claseFertilizante,
-    },
-  };
-  const { data } = await api.get<fertilizanteCollection[]>(
-    "/api/fertilizante",
-    config
-  );
-  return data;
+    const config: AxiosRequestConfig = {
+        params: {
+            sedeId,
+            sort,
+            direction,
+            anio,
+            tipoFertilizanteId,
+            claseFertilizante,
+        },
+    };
+    const {data} = await api.get<fertilizanteCollection[]>(
+        "/api/fertilizante",
+        config
+    );
+    return data;
 }
 
-export async function getFertilizanteById(id: number) {
-  const {data} = await api.get(`/api/fertilizante/${id}`);
-  return data;
+export async function getFertilizanteById(id: number): Promise<fertilizanteResource> {
+    try {
+        const {data} = await api.get(`/api/fertilizante/${id}`);
+        return data;
+    } catch (error) {
+        console.error("Error en getFertilizanteById: ", error);
+        throw error;
+    }
 }
 
 export async function createFertilizante(body: FertilizanteRequest) {
-  const { data } = await api.post("/api/fertilizante", body);
-  return data;
+    try {
+        const {data} = await api.post("/api/fertilizante", body);
+        return data;
+    } catch (error) {
+        console.error("Error en createFertilizante: ", error);
+        return null;
+    }
 }
 
 export async function updateFertilizante(id: number, body: FertilizanteRequest) {
-  const {data} = await api.put(`/api/fertilizante/${id}`, body);
-  return data;
+    try {
+        const {data} = await api.put(`/api/fertilizante/${id}`, body);
+        return data;
+    } catch (error) {
+        console.error("Error en updateFertilizante: ", error);
+        return null;
+    }
 }
 
 export async function deleteFertilizante(id: number) {
-  const {data} = await api.delete(`/api/fertilizante/${id}`);
-  return data;
+    const {data} = await api.delete(`/api/fertilizante/${id}`);
+    return data;
 }

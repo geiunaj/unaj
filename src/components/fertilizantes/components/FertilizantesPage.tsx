@@ -7,11 +7,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {Pencil1Icon} from "@radix-ui/react-icons";
-import {useCallback, useEffect, useState} from "react";
-import {Calculator, ChevronsUpDown, Pen, Plus, Trash2} from "lucide-react";
+import {useCallback, useState} from "react";
+import {Pen, Plus, Trash2} from "lucide-react";
 import {FormFertilizantes} from "./FormFertilizantes";
-import {useSedeStore} from "@/components/sede/lib/sede.store";
 import {
     Dialog,
     DialogClose,
@@ -21,10 +19,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import {useFertilizanteStore} from "../lib/fertilizante.store";
 import {Badge} from "@/components/ui/badge";
 import {fertilizanteCollection} from "../services/fertilizante.interface";
-import {useAnioStore} from "@/components/anio/lib/anio.store";
 import SelectFilter from "@/components/selectFilter";
 import {
     AlertDialog,
@@ -37,12 +33,17 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {useClaseFertilizante} from "@/components/tipoFertilizante/lib/claseFertilizante.store";
-import {UpdateFormFertilizantes} from "./UpdateFormFertilizante";
 import ButtonCalculate from "@/components/buttonCalculate";
 import {useRouter} from "next/navigation";
-
-//types claseFertilzante
+import SkeletonTable from "@/components/Layout/skeletonTable";
+import {
+    useAnio,
+    useClaseFertilizante,
+    useFertilizante,
+    useSede, useTipoFertilizante
+} from "@/components/fertilizantes/lib/fertilizante.hook";
+import {deleteFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
+import {UpdateFormFertilizantes} from "@/components/fertilizantes/components/UpdateFormFertilizante";
 
 export default function FertilizantePage() {
     // NAVIGATION
@@ -53,28 +54,35 @@ export default function FertilizantePage() {
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-    //STORES
-    const {fertilizante, loadFertilizante, deleteFertilizante} =
-        useFertilizanteStore();
-    const {claseFertilizante, loadClaseFertilizante} = useClaseFertilizante();
-    const {sedes, loadSedes} = useSedeStore();
-    const {anios, loadAnios} = useAnioStore();
-
-    //SELECTS - FILTERS
-    const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [selectedAnio, setSelectedAnio] = useState<string>(
-        new Date().getFullYear().toString()
-    );
-    const [selectedClaseFertilizante, setSelectedClaseFertilizante] =
-        useState<string>("Sintético");
-    const [cantidadDirection, setCantidadDirection] = useState<"asc" | "desc">(
-        "desc"
-    );
-
     //IDS
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
+    //SELECTS - FILTERS
+    const [selectedTipoFertilizanteId, setSelectedTipoFertilizanteId] = useState<string>("");
+    const [selectedClaseFertilizante, setSelectedClaseFertilizante] =
+        useState<string>("Orgánico");
+    const [selectedSede, setSelectedSede] = useState<string>("1");
+    const [selectedAnio, setSelectedAnio] = useState<string>(
+        new Date().getFullYear().toString()
+    );
+
+    // HOOKS
+    const fertilizante = useFertilizante(
+        {
+            tipoFertilizanteId: selectedTipoFertilizanteId ? parseInt(selectedTipoFertilizanteId) : undefined,
+            claseFertilizante: selectedClaseFertilizante,
+            sedeId: parseInt(selectedSede),
+            anio: selectedAnio
+        }
+    );
+    const tipoFertilizante = useTipoFertilizante(selectedClaseFertilizante);
+    const claseFertilizante = useClaseFertilizante();
+    const sedes = useSede();
+    const anios = useAnio();
+
+
+    // HANDLE FUNCTIONS
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
         setIsUpdateDialogOpen(true);
@@ -85,93 +93,56 @@ export default function FertilizantePage() {
         setIsDeleteDialogOpen(true);
     };
 
-    useEffect(() => {
-        if (fertilizante.length === 0) loadFertilizante();
-        if (claseFertilizante.length === 0) loadClaseFertilizante();
-        if (sedes.length === 0) loadSedes();
-        if (anios.length === 0) loadAnios();
-    }, [loadFertilizante, loadClaseFertilizante, loadSedes, selectedSede]);
+    const handleclaseFertilizanteChange = useCallback(async (value: string) => {
+        await setSelectedClaseFertilizante(value);
+        await setSelectedTipoFertilizanteId("");
+        await fertilizante.refetch();
+        await tipoFertilizante.refetch();
+    }, [fertilizante, tipoFertilizante]);
 
-    useEffect(() => {
-        const currentYear = new Date().getFullYear().toString();
+    const handleSedeChange = useCallback(async (value: string) => {
+        await setSelectedSede(value);
+        await fertilizante.refetch();
+    }, [fertilizante]);
 
-        if (anios.length > 0 && !selectedAnio) {
-            const currentAnio = anios.find((anio) => anio.nombre === currentYear);
-            if (currentAnio) {
-                setSelectedAnio(currentAnio.id.toString());
-            }
-        }
-        loadFertilizante({
-            sedeId: Number(selectedSede),
-            anioId: selectedAnio ? Number(selectedAnio) : undefined,
-            claseFertilizante: selectedClaseFertilizante
-                ? selectedClaseFertilizante
-                : undefined,
-        });
-    }, [anios, selectedSede, selectedAnio, selectedClaseFertilizante]);
+    const handleAnioChange = useCallback(async (value: string) => {
+        await setSelectedAnio(value);
+        await fertilizante.refetch();
+    }, [fertilizante]);
 
-    const handleclaseFertilizanteChange = useCallback((value: string) => {
-        setSelectedClaseFertilizante(value);
-    }, []);
-
-    const handleSedeChange = useCallback((value: string) => {
-        setSelectedSede(value);
-    }, []);
-
-    const handleAnioChange = useCallback((value: string) => {
-        setSelectedAnio(value);
-    }, []);
-
-    const handleToggleCantidadSort = () => {
-        setCantidadDirection(cantidadDirection === "asc" ? "desc" : "asc");
-        loadFertilizante({
-            sedeId: Number(selectedSede),
-            sort: "cantidadFertilizante",
-            direction: cantidadDirection === "asc" ? "desc" : "asc",
-        });
-    };
+    const handleTipoFertilizanteChange = useCallback(async (value: string) => {
+        await setSelectedTipoFertilizanteId(value);
+        await fertilizante.refetch();
+    }, [fertilizante]);
 
     const handleCalculate = () => {
         push("/fertilizante/calculos");
     };
 
-    const handleClose = useCallback(() => {
+    const handleClose = useCallback(async () => {
         setIsDialogOpen(false);
-        loadFertilizante({
-            sedeId: Number(selectedSede),
-            anioId: Number(selectedAnio),
-            claseFertilizante: selectedClaseFertilizante,
-        });
-    }, [loadFertilizante, selectedSede, selectedAnio, selectedClaseFertilizante]);
+        await fertilizante.refetch();
+    }, [fertilizante]);
 
-    const handleCloseUpdate = useCallback(() => {
+    const handleCloseUpdate = useCallback(async () => {
         setIsUpdateDialogOpen(false);
-        loadFertilizante({
-            sedeId: Number(selectedSede),
-            anioId: Number(selectedAnio),
-            claseFertilizante: selectedClaseFertilizante,
-        });
-    }, [loadFertilizante, selectedSede, selectedAnio, selectedClaseFertilizante]);
+        await fertilizante.refetch();
+    }, [fertilizante]);
 
     const handleDelete = useCallback(async () => {
         await deleteFertilizante(idForDelete);
         setIsDeleteDialogOpen(false);
-        loadFertilizante({
-            sedeId: Number(selectedSede),
-            anioId: Number(selectedAnio),
-            claseFertilizante: selectedClaseFertilizante,
-        });
-    }, [
-        deleteFertilizante,
-        idForDelete,
-        loadFertilizante,
-        selectedSede,
-        selectedAnio,
-        selectedClaseFertilizante,
-    ]);
+        await fertilizante.refetch();
+    }, [fertilizante, idForDelete]);
 
-    if (!fertilizante) {
-        return <p>Cargando...</p>;
+    if (fertilizante.isLoading || claseFertilizante.isLoading || tipoFertilizante.isLoading
+        || sedes.isLoading || anios.isLoading) {
+        return <SkeletonTable/>;
+    }
+
+    if (fertilizante.isError || claseFertilizante.isError || tipoFertilizante.isError
+        || sedes.isError || anios.isError) {
+        return <div>Error al cargar los datos</div>;
     }
 
     return (
@@ -187,7 +158,7 @@ export default function FertilizantePage() {
                     <div
                         className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
                         <SelectFilter
-                            list={claseFertilizante}
+                            list={claseFertilizante.data!}
                             itemSelected={selectedClaseFertilizante}
                             handleItemSelect={handleclaseFertilizanteChange}
                             value={"nombre"}
@@ -196,7 +167,17 @@ export default function FertilizantePage() {
                         />
 
                         <SelectFilter
-                            list={sedes}
+                            list={tipoFertilizante.data!}
+                            itemSelected={selectedTipoFertilizanteId}
+                            handleItemSelect={handleTipoFertilizanteChange}
+                            value={"id"}
+                            nombre={"nombre"}
+                            id={"id"}
+                            all={true}
+                        />
+
+                        <SelectFilter
+                            list={sedes.data!}
                             itemSelected={selectedSede}
                             handleItemSelect={handleSedeChange}
                             value={"id"}
@@ -205,7 +186,7 @@ export default function FertilizantePage() {
                         />
 
                         <SelectFilter
-                            list={anios}
+                            list={anios.data!}
                             itemSelected={selectedAnio}
                             handleItemSelect={handleAnioChange}
                             value={"nombre"}
@@ -254,10 +235,10 @@ export default function FertilizantePage() {
                                 FERTILIZANTE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                <Button variant="ghost" onClick={handleToggleCantidadSort}>
-                                    CANTIDAD
-                                    <ChevronsUpDown className="ml-2 h-3 w-3"/>
-                                </Button>
+                                {/*<Button variant="ghost" onClick={handleToggleCantidadSort}>*/}
+                                CANTIDAD
+                                {/*<ChevronsUpDown className="ml-2 h-3 w-3"/>*/}
+                                {/*</Button>*/}
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 % DE NITROGENO
@@ -274,7 +255,7 @@ export default function FertilizantePage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {fertilizante.map((item: fertilizanteCollection, index: number) => (
+                        {fertilizante.data!.map((item: fertilizanteCollection, index: number) => (
                             <TableRow key={item.id} className="text-center">
                                 <TableCell className="text-xs sm:text-sm">
                                     <Badge variant="secondary">{index + 1}</Badge>

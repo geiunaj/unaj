@@ -1,5 +1,3 @@
-"use client";
-
 import React, {useCallback, useEffect, useState} from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
@@ -24,19 +22,19 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Switch} from "@/components/ui/switch";
 import {
-    CreateFertilizanteProps,
     FertilizanteRequest,
-    fertilizanteResource,
     UpdateFertilizanteProps,
 } from "../services/fertilizante.interface";
-import {useSedeStore} from "@/components/sede/lib/sede.store";
-import {useTipoFertilizante} from "@/components/tipoFertilizante/lib/tipoFertilizante.store";
-import {useFertilizanteStore} from "../lib/fertilizante.store";
-import {useAnioStore} from "@/components/anio/lib/anio.store";
-import {ClaseFertilizante, TipoFertilizante} from "@/components/tipoFertilizante/services/tipoFertilizante.interface";
-import {useClaseFertilizante} from "@/components/tipoFertilizante/lib/claseFertilizante.store";
+import {useQuery} from "@tanstack/react-query";
+import {
+    getClaseFertilizante,
+    getTiposFertilizante
+} from "@/components/tipoFertilizante/services/tipoFertilizante.actions";
+import {updateFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
+import SkeletonForm from "@/components/Layout/skeletonForm";
+import {useAnio, useFertilizanteId, useSede} from "@/components/fertilizantes/lib/fertilizante.hook";
 
-const Ferilizer = z.object({
+const Fertilizante = z.object({
     clase: z.string().min(1, "Seleccione una clase de fertilizante"),
     tipoFertilizante_id: z.string().min(1, "Seleccione un tipo de fertilizante"),
     is_ficha: z.boolean(),
@@ -48,20 +46,13 @@ const Ferilizer = z.object({
 });
 
 export function UpdateFormFertilizantes({
-                                            id,
-                                            onClose,
+                                            id, onClose,
                                         }: UpdateFertilizanteProps) {
-    const {sedes, loadSedes} = useSedeStore();
-    const {anios, loadAnios} = useAnioStore();
-    const {tiposFertilizante, loadTiposFertilizante} = useTipoFertilizante();
-    const [fertilizante, setFertilizante] = useState<fertilizanteResource>();
-    const {showFertiliante, updateFertilizante} = useFertilizanteStore();
-    const {claseFertilizante, loadClaseFertilizante} = useClaseFertilizante();
     const [isFicha, setIsFicha] = useState(false);
-    const [filteredTipos, setFilteredTipos] = useState<TipoFertilizante[]>([]);
+    const [isFormLoaded, setIsFormLoaded] = useState(false); // Estado para controlar la carga del formulario
 
-    const form = useForm<z.infer<typeof Ferilizer>>({
-        resolver: zodResolver(Ferilizer),
+    const form = useForm<z.infer<typeof Fertilizante>>({
+        resolver: zodResolver(Fertilizante),
         defaultValues: {
             clase: "",
             tipoFertilizante_id: "",
@@ -73,51 +64,48 @@ export function UpdateFormFertilizantes({
         },
     });
 
-    const loadData = async () => {
-        loadSedes();
-        loadAnios();
-        loadTiposFertilizante();
-        const fertilizanteData = await showFertiliante(id);
-        setFertilizante(fertilizanteData);
-        loadForm(fertilizanteData);
-    };
+    // HOOKS
+    const fertilizante = useFertilizanteId(id);
+    const sedes = useSede();
+    const anios = useAnio();
+    const tiposFertilizante = useQuery({
+        queryKey: ['tipoFertilizante'],
+        queryFn: () => getTiposFertilizante(form.getValues().clase),
+        refetchOnWindowFocus: false,
+    });
+    const claseFertilizante = useQuery({
+        queryKey: ['claseFertilizante'],
+        queryFn: () => getClaseFertilizante(),
+        refetchOnWindowFocus: false,
+    });
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    useEffect(() => {
-        loadClaseFertilizante();
-    }, []);
-
-    useEffect(() => {
-        const tiposFertilizante1 = tiposFertilizante.filter((tf) => tf.clase === form.getValues().clase);
-        setFilteredTipos(tiposFertilizante1);
-        console.log(tiposFertilizante1);
-    }, [tiposFertilizante]);
-
-    const onClaseChange = useCallback(() => {
-        loadTiposFertilizante();
-        const tiposFiltrados = tiposFertilizante.filter((tf) => tf.clase === form.getValues().clase);
-        setFilteredTipos(tiposFiltrados);
-    }, [form, loadTiposFertilizante, tiposFertilizante]);
-
-    const loadForm = useCallback((fertilizante: fertilizanteResource) => {
-        if (fertilizante) {
+    const loadForm = useCallback(async () => {
+        if (fertilizante.data && !isFormLoaded) {
+            await fertilizante.refetch();
+            const fertilizanteData = fertilizante.data;
             form.reset({
-                clase: fertilizante.tipoFertilizante.clase,
-                tipoFertilizante_id: fertilizante.tipoFertilizante_id?.toString() || "",
-                cantidad: fertilizante.cantidad || 0,
-                is_ficha: fertilizante.is_ficha || false,
-                fichatecnica: fertilizante.ficha_id?.toString() || "",
-                sede: fertilizante.sede_id?.toString() || "",
-                anio: fertilizante.anio_id?.toString() || "",
+                clase: fertilizanteData.tipoFertilizante.clase,
+                tipoFertilizante_id: fertilizanteData.tipoFertilizante.id.toString(),
+                cantidad: fertilizanteData.cantidad,
+                is_ficha: fertilizanteData.is_ficha,
+                sede: fertilizanteData.sede.id.toString(),
+                anio: fertilizanteData.anio.id.toString(),
             });
-            onClaseChange();
+            tiposFertilizante.refetch();
+            setIsFormLoaded(true);
         }
-    }, [form, onClaseChange]);
+    }, [fertilizante, isFormLoaded, form, tiposFertilizante]);
 
-    const onSubmit = async (data: z.infer<typeof Ferilizer>) => {
+    useEffect(() => {
+        loadForm();
+    }, [loadForm]);
+
+    const handleClose = useCallback(() => {
+        setIsFormLoaded(false);
+        onClose();
+    }, [onClose]);
+
+    const onSubmit = async (data: z.infer<typeof Fertilizante>) => {
         const fertilizanteRequest: FertilizanteRequest = {
             tipoFertilizante_id: parseInt(data.tipoFertilizante_id),
             cantidad: data.cantidad,
@@ -127,8 +115,17 @@ export function UpdateFormFertilizantes({
         };
         console.log(fertilizanteRequest);
         await updateFertilizante(id, fertilizanteRequest);
-        onClose();
+        handleClose();
     };
+
+    const onClaseChange = useCallback(() => {
+        form.setValue("tipoFertilizante_id", "");
+        tiposFertilizante.refetch();
+    }, [form, tiposFertilizante]);
+
+    if (!isFormLoaded || fertilizante.isLoading || sedes.isLoading || anios.isLoading || tiposFertilizante.isLoading || claseFertilizante.isLoading) {
+        return <SkeletonForm/>;
+    }
 
     return (
         <div className="flex items-center justify-center">
@@ -156,7 +153,7 @@ export function UpdateFormFertilizantes({
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {sedes.map((sede) => (
+                                                {sedes.data!.map((sede) => (
                                                     <SelectItem key={sede.id} value={sede.id.toString()}>
                                                         {sede.name}
                                                     </SelectItem>
@@ -190,7 +187,7 @@ export function UpdateFormFertilizantes({
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {claseFertilizante.map((clase) => (
+                                                {claseFertilizante.data!.map((clase) => (
                                                     <SelectItem key={clase.nombre} value={clase.nombre}>
                                                         {clase.nombre}
                                                     </SelectItem>
@@ -210,7 +207,7 @@ export function UpdateFormFertilizantes({
                                 <FormItem className="pt-2">
                                     <FormLabel>Nombre de Fertilizante</FormLabel>
                                     <Select
-                                        disabled={filteredTipos.length === 0}
+                                        disabled={tiposFertilizante.data!.length === 0}
                                         onValueChange={field.onChange}
                                         value={field.value}
                                         defaultValue={field.value}
@@ -222,7 +219,7 @@ export function UpdateFormFertilizantes({
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {filteredTipos.map((tipo) => (
+                                                {tiposFertilizante.data!.map((tipo) => (
                                                     <SelectItem key={tipo.id} value={tipo.id.toString()}>
                                                         {tipo.nombre}
                                                     </SelectItem>
@@ -274,7 +271,7 @@ export function UpdateFormFertilizantes({
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    {anios.map((anio) => (
+                                                    {anios.data!.map((anio) => (
                                                         <SelectItem
                                                             key={anio.id}
                                                             value={anio.id.toString()}

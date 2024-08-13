@@ -81,6 +81,7 @@ export default function Sidebar() {
 
                         return item.items ? (
                             <Accordion
+                                key={item.title}
                                 type="single"
                                 collapsible
                                 value={isAccordionOpen ? item.title : ""}

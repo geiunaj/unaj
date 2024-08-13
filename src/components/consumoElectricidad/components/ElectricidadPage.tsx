@@ -38,7 +38,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {electricidadCollection} from "../services/electricidad.interface";
-import {FormElectricidad} from "./FromElectricidad";
+import {FormElectricidad} from "./FormElectricidad";
 import {useRouter} from "next/navigation";
 import {useAreaStore} from "@/components/area/lib/area.store";
 import {Badge} from "@/components/ui/badge";

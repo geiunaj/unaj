@@ -3,7 +3,7 @@ import api from "../../../../config/api";
 import {ClaseFertilizante, TipoFertilizante} from "./tipoFertilizante.interface";
 import {AxiosRequestConfig} from "axios";
 
-export async function getTiposFertilizante(clase: string = "Orgánico"): Promise<TipoFertilizante[]> {
+export async function getTiposFertilizante(clase?: string): Promise<TipoFertilizante[]> {
     const config: AxiosRequestConfig = {
         params: {
             clase
@@ -14,6 +14,11 @@ export async function getTiposFertilizante(clase: string = "Orgánico"): Promise
 }
 
 export async function getClaseFertilizante(): Promise<ClaseFertilizante[]> {
-    const {data} = await api.get<ClaseFertilizante[]>("/api/tipoFertilizante/clase");
-    return data;
+    try {
+        const {data} = await api.get<ClaseFertilizante[]>("/api/tipoFertilizante/clase");
+        return data;
+    } catch (error) {
+        console.error("Error en getClaseFertilizante: ", error);
+        return [];
+    }
 }
