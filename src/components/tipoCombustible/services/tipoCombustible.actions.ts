@@ -33,3 +33,4 @@ export async function updateTipoCombustible(id: number, body: TipoCombustibleReq
 export async function deleteTipoCombustible(id: number): Promise<AxiosResponse<Response>> {
     return await api.delete(`/api/tipoCombustible/${id}`);
 }
+

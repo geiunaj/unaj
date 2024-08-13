@@ -208,7 +208,7 @@ export default function TipoPapelPage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
+                        <DialogTitle>Actualizar Registro de Tipo de Papel</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
                     <UpdateFormTipoPapel onClose={handleCloseUpdate} id={idForUpdate}/>

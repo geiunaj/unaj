@@ -22,3 +22,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         return new NextResponse("Error al obtener las clases de fertilizantes", { status: 500 });
     }
 }
+
+
+
+
