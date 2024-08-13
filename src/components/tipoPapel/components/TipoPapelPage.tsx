@@ -1,9 +1,7 @@
 "use client";
 
 import {useCallback, useState} from "react";
-import SelectFilter from "@/components/selectFilter";
-import {Building, Calendar, Check, CircleCheck, CircleX, File, Pen, Plus, Trash2} from "lucide-react";
-import ButtonCalculate from "@/components/buttonCalculate";
+import {CircleCheck, CircleX, Pen, Plus, Trash2} from "lucide-react";
 import {
     Dialog, DialogClose,
     DialogContent,
@@ -22,10 +20,7 @@ import {
     AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
-import {CollectionConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.interface";
-import {FormPapel} from "@/components/consumoPapel/components/FormPapelOficce";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {UpdateFormPapel} from "@/components/consumoPapel/components/UpdateFormPapelOficce";
 import {useTipoPapel} from "@/components/tipoPapel/lib/tipoPapel.hook";
 import {TipoPapelCollection} from "@/components/tipoPapel/services/tipoPapel.interface";
 import {CreateFormTipoPapel} from "@/components/tipoPapel/components/CreateFormTipoPapel";

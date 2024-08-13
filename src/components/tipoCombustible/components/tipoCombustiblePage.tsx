@@ -1,9 +1,7 @@
 "use client";
 
 import {useCallback, useState} from "react";
-import SelectFilter from "@/components/selectFilter";
-import {Building, Calendar, File, Pen, Plus, Trash2} from "lucide-react";
-import ButtonCalculate from "@/components/buttonCalculate";
+import {Pen, Plus, Trash2} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -34,19 +32,13 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
-import {CollectionConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.interface";
-import {FormPapel} from "@/components/consumoPapel/components/FormPapelOficce";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {UpdateFormPapel} from "@/components/consumoPapel/components/UpdateFormPapelOficce";
-import {
-    useAnios,
-    useConsumosPapel,
-    useSedes,
-    useTipoPapel,
-} from "@/components/consumoPapel/lib/consumoPapel.store";
 import {useTipoCombustible} from "../lib/tipoCombustible.hook";
 import {TipoCombustibleCollection} from "../services/tipoCombustible.interface";
 import {FromTipoCombustible} from "./FormTipoCombustiblePage";
+import {toast} from "sonner";
+import {deleteTipoCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";
 
 export default function TipoCombustiblePage() {
     //DIALOGS
@@ -72,8 +64,27 @@ export default function TipoCombustiblePage() {
     }, [tipoCombustibleQuery]);
 
     const handleDelete = useCallback(async () => {
-        setIsDeleteDialogOpen(false);
-        await tipoCombustibleQuery.refetch();
+        try {
+            const response = await deleteTipoCombustible(idForDelete);
+            setIsDeleteDialogOpen(false);
+            toast.success(response.data.message, {
+                description: new Date().toLocaleString(),
+                action: {
+                    label: "Listo",
+                    onClick: () => toast.dismiss(),
+                },
+            })
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Error al eliminar el tipo de papel", {
+                description: new Date().toLocaleString(),
+                action: {
+                    label: "Listo",
+                    onClick: () => toast.dismiss(),
+                },
+            });
+        } finally {
+            await tipoCombustibleQuery.refetch();
+        }
     }, [tipoCombustibleQuery]);
 
     const handleClickUpdate = (id: number) => {
