@@ -38,8 +38,9 @@ import {UpdateFormPapel} from "@/components/consumoPapel/components/UpdateFormPa
 import {
     useClaseFertilizante,
     useTipoFertilizante,
-} from "../lib/tipoCombustible.hook";
+} from "../lib/tipoFertilizante.hook";
 import {TipoFertilizanteCollection} from "../services/tipoFertilizante.interface";
+import { CreateFormTipoFertilizante } from "./formTipoFertilizante";
 
 export default function TipoFertilizantePage() {
     //DIALOGS
@@ -128,13 +129,13 @@ export default function TipoFertilizantePage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle> TIPOS DE Fertilizante</DialogTitle>
+                                    <DialogTitle> TIPOS DE FERTILIZANTE</DialogTitle>
                                     <DialogDescription>
                                         Agregar Tipo de Fertilizante
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                {/* <FromTipoFertilizante onClose={handleClose} /> */}
+                                <CreateFormTipoFertilizante onClose={handleClose} />
                             </DialogContent>
                         </Dialog>
                     </div>

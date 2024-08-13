@@ -1,7 +1,11 @@
 import {Sede} from "@prisma/client";
 import api from "../../../../config/api";
-import {ClaseFertilizante, TipoFertilizante} from "./tipoFertilizante.interface";
-import {AxiosRequestConfig} from "axios";
+import {ClaseFertilizante, TipoFertilizante, TipoFertilizanteRequest} from "./tipoFertilizante.interface";
+import {AxiosRequestConfig, AxiosResponse} from "axios";
+
+interface Response {
+    message: string;
+}
 
 export async function getTiposFertilizante(clase?: string): Promise<TipoFertilizante[]> {
     const config: AxiosRequestConfig = {
@@ -21,4 +25,8 @@ export async function getClaseFertilizante(): Promise<ClaseFertilizante[]> {
         console.error("Error en getClaseFertilizante: ", error);
         return [];
     }
+}
+
+export async function createTipoFertilizante(tipoFertilizante: TipoFertilizanteRequest): Promise<AxiosResponse<Response>> {
+    return await api.post("/api/tipoFertilizante", tipoFertilizante);
 }

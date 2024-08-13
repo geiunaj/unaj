@@ -19,3 +19,32 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return new NextResponse("Error finding tipos de fertilizante", { status: 500 });
   }
 }
+
+export async function POST(req: NextRequest): Promise<NextResponse> {
+  try {
+    const body = await req.json();
+    const { nombre, porcentajeNitrogeno, unidad, clase } = body;
+    if (
+      !nombre ||
+      !porcentajeNitrogeno ||
+      !unidad ||
+      !clase
+    ) {
+      return new NextResponse("Missing or invalid required fields", { status: 400 });
+    }
+
+    const tipoFertilizante = await prisma.tipoFertilizante.create({
+      data: {
+        nombre,
+        porcentajeNitrogeno,
+        unidad,
+        clase,
+      },
+    });
+
+    return NextResponse.json(tipoFertilizante);
+  } catch (error) {
+    console.error("Error creating tipo de fertilizante", error);
+    return new NextResponse("Error creating tipo de fertilizante", { status: 500 });
+  }
+}
