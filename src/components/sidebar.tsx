@@ -46,6 +46,12 @@ export default function Sidebar() {
         }`;
     };
 
+    const classNameAccordion = (classname: string, href: string) => {
+        return `${classname} ${
+            itemActive === href ? "text-white" : "text-muted-foreground"
+        }`;
+    };
+
     const handleAccordionChange = (value: string | null) => {
         setOpenAccordion(value ? value : null);
     };
@@ -83,7 +89,7 @@ export default function Sidebar() {
                             >
                                 <AccordionItem className="border-0" value={item.title}>
                                     <AccordionTrigger
-                                        className="w-full px-4 py-2 justify-between items-center text-slate-500 hover:text-primary"
+                                        className="w-full px-4 py-2 justify-between items-center text-slate-500 hover:text-primary hover:no-underline"
                                     >
                                         <div className="flex items-center">
                                             <Icon className="mr-2 h-4 w-4"/>
@@ -98,11 +104,16 @@ export default function Sidebar() {
                                             return (
                                                 <Button
                                                     key={subItem.title}
-                                                    variant={itemActive === subItem.href ? "secondary" : "ghost"}
-                                                    className={className(
-                                                        "w-full justify-start hover:text-primary",
-                                                        subItem.href
-                                                    )}
+                                                    variant={itemActive === subItem.href ? "default" : "ghost"}
+                                                    className={
+                                                        itemActive !== subItem.href ? classNameAccordion(
+                                                            "w-full justify-start hover:text-primary",
+                                                            subItem.href
+                                                        ) : classNameAccordion(
+                                                            "w-full justify-start hover:text-white",
+                                                            subItem.href
+                                                        )
+                                                    }
                                                     onClick={() => handleItemClick(subItem)}
                                                 >
                                                     <Icon className="mr-2 h-4 w-4"/>

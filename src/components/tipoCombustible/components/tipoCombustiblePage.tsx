@@ -46,7 +46,7 @@ import {
 } from "@/components/consumoPapel/lib/consumoPapel.store";
 import {useTipoCombustible} from "../lib/tipoCombustible.hook";
 import {TipoCombustibleCollection} from "../services/tipoCombustible.interface";
-import {FromTipoCombustible} from "./FromTipoCombustiblePage";
+import {FromTipoCombustible} from "./FormTipoCombustiblePage";
 
 export default function TipoCombustiblePage() {
     //DIALOGS

@@ -90,7 +90,7 @@ export default function TipoFertilizantePage() {
         setIsDeleteDialogOpen(true);
     };
 
-    if (tipoFertilizanteQuery.isLoading) {
+    if (tipoFertilizanteQuery.isLoading || claseFertilizanteQuery.isLoading) {
         return <SkeletonTable/>;
     }
 

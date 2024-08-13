@@ -33,3 +33,7 @@ export interface TipoPapelRequest {
     porcentaje_reciclado?: number;
     nombre_certificado?: string;
 }
+
+export interface CreateTipoPapelProps {
+    onClose: () => void;
+}
