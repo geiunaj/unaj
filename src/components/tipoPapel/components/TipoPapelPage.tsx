@@ -27,6 +27,7 @@ import {CreateFormTipoPapel} from "@/components/tipoPapel/components/CreateFormT
 import {UpdateFormTipoPapel} from "@/components/tipoPapel/components/UpdateFormTipoPapel";
 import {toast} from "sonner";
 import {deleteTipoPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
+import {errorToast, successToast} from "@/lib/utils/core.function";
 
 export default function TipoPapelPage() {
     // DIALOGS
@@ -54,9 +55,9 @@ export default function TipoPapelPage() {
         try {
             const response = await deleteTipoPapel(idForDelete);
             setIsDeleteDialogOpen(false);
-            toast.success(response.data.message);
+            successToast(response.data.message);
         } catch (error: any) {
-            toast.error(error.response?.data?.message || "Error al eliminar el tipo de papel");
+            errorToast(error.response?.data?.message || "Error al eliminar el tipo de papel");
         } finally {
             await tiposPapelQuery.refetch();
         }

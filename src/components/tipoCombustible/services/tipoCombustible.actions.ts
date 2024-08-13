@@ -15,9 +15,8 @@ export async function getTiposCombustible(): Promise<
     return data;
 }
 
-export async function createTipoCombustible(body: TipoCombustibleRequest): Promise<any> {
-    const {data} = await api.post("/api/tipoCombustible", body);
-    return data;
+export async function createTipoCombustible(body: TipoCombustibleRequest): Promise<AxiosResponse<Response>> {
+    return await api.post("/api/tipoCombustible", body);
 }
 
 export async function showTipoCombustible(id: number): Promise<any> {
@@ -25,9 +24,8 @@ export async function showTipoCombustible(id: number): Promise<any> {
     return data;
 }
 
-export async function updateTipoCombustible(id: number, body: TipoCombustibleRequest): Promise<any> {
-    const {data} = await api.put(`/api/tipoCombustible/${id}`, body);
-    return data;
+export async function updateTipoCombustible(id: number, body: TipoCombustibleRequest): Promise<AxiosResponse<Response>> {
+    return await api.put(`/api/tipoCombustible/${id}`, body);
 }
 
 export async function deleteTipoCombustible(id: number): Promise<AxiosResponse<Response>> {
