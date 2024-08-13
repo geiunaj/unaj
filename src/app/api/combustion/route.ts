@@ -41,9 +41,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 anio: true,
                 sede: true,
             },
-            orderBy: {
-                [sort ?? "id"]: direction ?? "desc",
-            },
+            orderBy: sort
+                ? [{[sort]: direction || 'desc'}]
+                : [
+                    {anio_id: 'desc'},
+                    {mes_id: 'desc'}
+                ],
         });
 
         const formattedCombustibles: Combustible[] = combustibles.map(
@@ -54,8 +57,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         return NextResponse.json(formattedCombustibles);
     } catch (error) {
-        console.error("Error finding combustibles", error);
-        return new NextResponse("Error finding combustibles", {status: 500});
+        console.error("Error buscando combustibles", error);
+        return new NextResponse("Error buscando combustibles", {status: 500});
     }
 }
 
@@ -86,11 +89,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         });
 
         return NextResponse.json({
-            message: "Combustible creado",
+            message: "Combustible registrado",
             combustible: formatCombustible(combustible),
         });
     } catch (error) {
-        console.error("Error creando combustible", error);
-        return new NextResponse("Error creando combustible", {status: 500});
+        console.error("Error registrando combustible", error);
+        return new NextResponse("Error registrando combustible", {status: 500});
     }
 }

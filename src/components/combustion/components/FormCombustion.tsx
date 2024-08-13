@@ -34,6 +34,9 @@ import {getSedes} from "@/components/sede/services/sede.actions";
 import {getTiposCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {getMes} from "@/components/mes/services/mes.actions";
+import {createCombustion} from "@/components/combustion/services/combustion.actions";
+import {errorToast, successToast} from "@/lib/utils/core.function";
+import SkeletonForm from "@/components/Layout/skeletonForm";
 
 const Combustion = z.object({
     sede: z.string().min(1, "Selecciona la sede"),
@@ -80,7 +83,6 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
         queryFn: () => getMes(),
         refetchOnWindowFocus: false,
     });
-    s
 
     const onSubmit = async (data: z.infer<typeof Combustion>) => {
         const combustionRequest: CombustionRequest = {
@@ -92,9 +94,23 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
             anio_id: Number(data.anio),
             consumo: data.consumo,
         };
-        await createCombustion(combustionRequest);
-        onClose();
+
+        try {
+            const response = await createCombustion(combustionRequest);
+            onClose();
+            successToast(response.data.message);
+        } catch (error) {
+            errorToast("Error creando combustible");
+        }
     };
+
+    if (sedes.isLoading || tiposCombustible.isLoading || anios.isLoading || meses.isLoading) {
+        return <SkeletonForm/>;
+    }
+
+    if (sedes.isError || tiposCombustible.isError || anios.isError || meses.isError) {
+        return <div>Error</div>;
+    }
 
     return (
         <div className="flex items-center justify-center flex-col">
@@ -121,7 +137,7 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {sedes.map((sede) => (
+                                                {sedes.data!.map((sede) => (
                                                     <SelectItem key={sede.id} value={sede.id.toString()}>
                                                         {sede.name}
                                                     </SelectItem>
@@ -168,7 +184,7 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {tiposCombustible.map((tipo) => (
+                                                {tiposCombustible.data!.map((tipo) => (
                                                     <SelectItem key={tipo.id} value={tipo.id.toString()}>
                                                         {tipo.nombre}
                                                     </SelectItem>
@@ -198,7 +214,7 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    {meses.map((mes) => (
+                                                    {meses.data!.map((mes) => (
                                                         <SelectItem
                                                             key={mes.id}
                                                             value={mes.id.toString()}
@@ -230,7 +246,7 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    {anios.map((anio) => (
+                                                    {anios.data!.map((anio) => (
                                                         <SelectItem
                                                             key={anio.id}
                                                             value={anio.id.toString()}

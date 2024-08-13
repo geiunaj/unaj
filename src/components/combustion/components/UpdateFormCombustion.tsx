@@ -1,6 +1,4 @@
-"use client";
-
-import React, {useEffect} from "react";
+import React, {useCallback, useEffect} from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -32,7 +30,14 @@ import {
 import {useCombustionStore} from "../lib/combustion.store";
 import {useAnioStore} from "@/components/anio/lib/anio.store";
 import {useMesStore} from "@/components/mes/lib/mes.stores";
-import {updateCombustion} from "../services/combustion.actions";
+import {getCombustionById, updateCombustion} from "../services/combustion.actions";
+import {useQuery} from "@tanstack/react-query";
+import {getSedes} from "@/components/sede/services/sede.actions";
+import {getTiposCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";
+import {getAnio} from "@/components/anio/services/anio.actions";
+import {getMes} from "@/components/mes/services/mes.actions";
+import {errorToast, successToast} from "@/lib/utils/core.function";
+import SkeletonForm from "@/components/Layout/skeletonForm";
 
 const Combustion = z.object({
     sede: z.string().min(1, "Selecciona la sede"),
@@ -51,12 +56,6 @@ export function UpdateFormCombustion({
                                          tipo,
                                          onClose,
                                      }: UpdateCombustionProps) {
-    const {sedes, loadSedes} = useSedeStore();
-    const {tiposCombustible, loadTiposCombustible} = useTipoCombustibleStore();
-    const {showCombustion, updateCombustion} = useCombustionStore();
-    const {anios, loadAnios} = useAnioStore();
-    const {meses, loadMeses} = useMesStore();
-
     const form = useForm<z.infer<typeof Combustion>>({
         resolver: zodResolver(Combustion),
         defaultValues: {
@@ -69,29 +68,52 @@ export function UpdateFormCombustion({
         },
     });
 
-    async function loadForm(id: number) {
-        try {
-            const combustion: CombustionResource = await showCombustion(id);
+    const combustible = useQuery({
+        queryKey: ['combustibleById', id],
+        queryFn: () => getCombustionById(id),
+        refetchOnWindowFocus: false,
+    });
+
+    const sedes = useQuery({
+        queryKey: ['sede'],
+        queryFn: () => getSedes(),
+        refetchOnWindowFocus: false,
+    });
+
+    const tiposCombustible = useQuery({
+        queryKey: ['tipoCombustible'],
+        queryFn: () => getTiposCombustible(),
+        refetchOnWindowFocus: false,
+    });
+
+    const anios = useQuery({
+        queryKey: ['anio'],
+        queryFn: () => getAnio(),
+        refetchOnWindowFocus: false,
+    });
+    const meses = useQuery({
+        queryKey: ['mes'],
+        queryFn: () => getMes(),
+        refetchOnWindowFocus: false,
+    });
+
+    const laodForm = useCallback(async () => {
+        if (combustible.data) {
+            const combustibleData = await combustible.data;
             form.reset({
-                sede: combustion.sede_id.toString(),
-                type_combustion: combustion.tipoCombustible_id.toString(),
-                type_equipment: combustion.tipoEquipo,
-                mes: combustion.mes_id.toString(),
-                anio: combustion.anio_id.toString(),
-                consumo: combustion.consumo,
+                sede: combustibleData.sede_id.toString(),
+                type_combustion: combustibleData.tipoCombustible_id.toString(),
+                type_equipment: combustibleData.tipoEquipo,
+                mes: combustibleData.mes_id.toString(),
+                anio: combustibleData.anio_id.toString(),
+                consumo: combustibleData.consumo,
             });
-        } catch (error) {
-            console.error("Error loading combustion form:", error);
         }
-    }
+    }, [combustible.data, id]);
 
     useEffect(() => {
-        loadSedes();
-        loadTiposCombustible();
-        loadMeses();
-        loadAnios();
-        loadForm(id);
-    }, [loadSedes, loadTiposCombustible, loadMeses, id, loadAnios]);
+        laodForm();
+    }, [laodForm, id]);
 
     const onSubmit = async (data: z.infer<typeof Combustion>) => {
         const combustionRequest: CombustionRequest = {
@@ -103,9 +125,23 @@ export function UpdateFormCombustion({
             anio_id: Number(data.anio),
             consumo: data.consumo,
         };
-        await updateCombustion(id, combustionRequest);
-        onClose();
+        try {
+            const response = await updateCombustion(id, combustionRequest);
+            onClose();
+            successToast(response.data.message);
+        } catch (error: any) {
+            errorToast(error.response.data.message);
+        }
     };
+
+    if (combustible.isLoading || sedes.isLoading || tiposCombustible.isLoading || anios.isLoading || meses.isLoading) {
+        return <SkeletonForm/>;
+    }
+
+    if (combustible.isError || sedes.isError || tiposCombustible.isError || anios.isError || meses.isError) {
+        errorToast("Error al cargar los datos");
+        return <SkeletonForm/>;
+    }
 
     return (
         <div className="flex items-center justify-center flex-col">
@@ -129,7 +165,7 @@ export function UpdateFormCombustion({
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {sedes.map((sede) => (
+                                                {sedes.data!.map((sede) => (
                                                     <SelectItem key={sede.id} value={sede.id.toString()}>
                                                         {sede.name}
                                                     </SelectItem>
@@ -173,7 +209,7 @@ export function UpdateFormCombustion({
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {tiposCombustible.map((tipo) => (
+                                                {tiposCombustible.data!.map((tipo) => (
                                                     <SelectItem key={tipo.id} value={tipo.id.toString()}>
                                                         {tipo.nombre}
                                                     </SelectItem>
@@ -200,7 +236,7 @@ export function UpdateFormCombustion({
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    {meses.map((mes) => (
+                                                    {meses.data!.map((mes) => (
                                                         <SelectItem key={mes.id} value={mes.id.toString()}>
                                                             {mes.nombre}
                                                         </SelectItem>
@@ -226,7 +262,7 @@ export function UpdateFormCombustion({
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    {anios.map((anio) => (
+                                                    {anios.data!.map((anio) => (
                                                         <SelectItem
                                                             key={anio.id}
                                                             value={anio.id.toString()}

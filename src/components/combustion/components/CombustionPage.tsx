@@ -1,5 +1,5 @@
 "use client";
-import {useEffect, useState, useCallback} from "react";
+import {useState, useCallback} from "react";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {
     AlertDialog,
@@ -22,14 +22,12 @@ import {
 } from "@/components/ui/table";
 import {FormCombustion} from "./FormCombustion";
 import {
-    Building, ChevronsUpDown, Flame, Plus, Trash2, Calendar, CalendarDays, Pen,
+    Building, Flame, Plus, Trash2, Calendar, CalendarDays, Pen,
 } from "lucide-react";
-import {useCombustionStore} from "../lib/combustion.store";
 import {
     CombustionCollection,
     CombustionProps,
 } from "../services/combustion.interface";
-import {useSedeStore} from "@/components/sede/lib/sede.store";
 import {Badge} from "@/components/ui/badge";
 import {
     Dialog,
@@ -39,13 +37,10 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import {useAnioStore} from "@/components/anio/lib/anio.store";
 import {UpdateFormCombustion} from "./UpdateFormCombustion";
-import {useTipoCombustibleStore} from "@/components/tipoCombustible/lib/tipoCombustible.store";
 import SelectFilter from "@/components/selectFilter";
 import ButtonCalculate from "@/components/buttonCalculate";
 import {useRouter} from "next/navigation";
-import {useMesStore} from "@/components/mes/lib/mes.stores";
 import {
     useAnio,
     useCombustible,
@@ -54,13 +49,11 @@ import {
     useTipoCombustible
 } from "@/components/combustion/lib/combustion.hook";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {useSedes} from "@/components/consumoPapel/lib/consumoPapel.store";
 import {deleteCombustion} from "@/components/combustion/services/combustion.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 
 export default function CombustionPage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
-
     //   NAVIGATION
     const {push} = useRouter();
 
@@ -151,6 +144,11 @@ export default function CombustionPage({combustionType}: CombustionProps) {
     };
 
     if (combustible.isLoading || tiposCombustible.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {
+        return <SkeletonTable/>;
+    }
+
+    if (combustible.isError || tiposCombustible.isError || sedes.isError || anios.isError || meses.isError) {
+        errorToast("Error al cargar los datos");
         return <SkeletonTable/>;
     }
 
