@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
-import prisma from "@/lib/prisma"; 
-import { electricidadRequest } from "@/components/consumoElectricidad/services/electricidad.interface";
-import { formatElectricidad } from "@/lib/resources/electricidadResource";
+import prisma from "@/lib/prisma";
+import {electricidadRequest} from "@/components/consumoElectricidad/services/electricidad.interface";
+import {formatElectricidad} from "@/lib/resources/electricidadResource";
 
 // SHOW ROUTE -> PARAM [ID]
 export async function GET(
@@ -30,8 +30,8 @@ export async function GET(
         return NextResponse.json(electricidad);
 
     } catch (error) {
-        console.error("Error finding electricidad", error);
-        return new NextResponse("Error finding electricidad", {status: 500});
+        console.error("Error buscando consumo", error);
+        return new NextResponse("Error buscando consumo", {status: 500});
     }
 }
 
@@ -42,7 +42,7 @@ export async function PUT(
 ): Promise<NextResponse> {
     try {
         const id = parseInt(params.id);
-        const body : electricidadRequest = await req.json();
+        const body: electricidadRequest = await req.json();
 
         // VALIDATE BODY
         if (!body.consumo || !body.area_id || !body.mes_id || !body.anio_id || !body.sede_id || !body.numeroSuministro) {
@@ -70,10 +70,13 @@ export async function PUT(
             },
         });
 
-        return NextResponse.json(formatElectricidad(electricidad));
+        return NextResponse.json({
+            message: "Consumo actualizado",
+            electricidad: formatElectricidad(electricidad),
+        });
     } catch (error) {
-        console.error("Error updating electricidad", error);
-        return new NextResponse("Error updating electricidad", {status: 500});
+        console.error("Error actualizando consumo", error);
+        return new NextResponse("Error actualizando consumo", {status: 500});
     }
 }
 
@@ -90,9 +93,11 @@ export async function DELETE(
             },
         });
 
-        return NextResponse.json(electricidad);
+        return NextResponse.json({
+            message: "Consumo eliminado",
+        });
     } catch (error) {
-        console.error("Error deleting electricidad", error);
-        return new NextResponse("Error deleting electricidad", {status: 500});
+        console.error("Error eliminando consumo", error);
+        return new NextResponse("Error eliminando consumo", {status: 500});
     }
 }

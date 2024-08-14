@@ -32,6 +32,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             where: {
                 sede_id: sedeId ? parseInt(sedeId) : undefined,
                 anio_id: anioId,
+                mes_id: mes ? parseInt(mes) : undefined,
                 areaId: areaId ? parseInt(areaId) : undefined,
             },
             include: {
@@ -40,9 +41,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 sede: true,
                 area: true,
             },
-            orderBy: {
-                [sort ?? "id"]: direction ?? "desc",
-            },
+            orderBy: sort
+                ? [{[sort]: direction || 'desc'}]
+                : [
+                    {anio_id: 'desc'},
+                    {mes_id: 'desc'}
+                ],
         });
 
         const formattedElectricidad: electricidadCollection[] = electricidad.map(
@@ -51,8 +55,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         return NextResponse.json(formattedElectricidad);
     } catch (error) {
-        console.error("Error finding electricidad", error);
-        return new NextResponse("Error finding electricidad", {status: 500});
+        console.error("Error buscando electricidad", error);
+        return new NextResponse("Error buscando electricidad", {status: 500});
     }
 }
 
@@ -82,9 +86,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         const formattedElectricidad = formatElectricidad(electricidad);
 
-        return NextResponse.json(formattedElectricidad);
+        return NextResponse.json({
+            message: "Consumo registrado",
+            electricidad: formattedElectricidad,
+        });
     } catch (error) {
-        console.error("Error creating combustible", error);
-        return new NextResponse("Error creating combustible", {status: 500});
+        console.error("Error registrando electricidad", error);
+        return new NextResponse("Error registrando electricidad", {status: 500});
     }
 }
