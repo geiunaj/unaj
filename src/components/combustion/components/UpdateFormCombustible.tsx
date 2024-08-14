@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useCallback, useEffect} from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -23,18 +23,19 @@ import {Button} from "../../ui/button";
 import {useSedeStore} from "@/components/sede/lib/sede.store";
 import {useTipoCombustibleStore} from "@/components/tipoCombustible/lib/tipoCombustible.store";
 import {
+    CombustionResource,
     CombustionRequest,
-    CreateCombustionProps,
+    UpdateCombustionProps,
 } from "../services/combustion.interface";
 import {useCombustionStore} from "../lib/combustion.store";
 import {useAnioStore} from "@/components/anio/lib/anio.store";
 import {useMesStore} from "@/components/mes/lib/mes.stores";
+import {getCombustionById, updateCombustion} from "../services/combustion.actions";
 import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import {getTiposCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {getMes} from "@/components/mes/services/mes.actions";
-import {createCombustion} from "@/components/combustion/services/combustion.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 
@@ -43,12 +44,18 @@ const Combustion = z.object({
     type_equipment: z.string().min(1, "Ingresa el tipo de equipo"),
     type_combustion: z.string().min(1, "Selecciona el tipo de combustible"),
     mes: z.string().min(1, "Selecciona el mes"),
-    anio: z.string().min(1, "Seleciona el anio"),
-    consumo: z.preprocess((val) => parseFloat(val as string,),
-        z.number().min(0, "Ingresa un valor mayor a 0")),
+    anio: z.string().min(1, "Selecciona el año"),
+    consumo: z.preprocess(
+        (val) => parseFloat(val as string),
+        z.number().min(0, "Ingresa un valor mayor a 0")
+    ),
 });
 
-export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
+export function UpdateFormCombustible({
+                                          id,
+                                          tipo,
+                                          onClose,
+                                      }: UpdateCombustionProps) {
     const form = useForm<z.infer<typeof Combustion>>({
         resolver: zodResolver(Combustion),
         defaultValues: {
@@ -59,6 +66,12 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
             anio: "",
             consumo: 0,
         },
+    });
+
+    const combustible = useQuery({
+        queryKey: ['combustibleById', id],
+        queryFn: () => getCombustionById(id),
+        refetchOnWindowFocus: false,
     });
 
     const sedes = useQuery({
@@ -84,6 +97,24 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
         refetchOnWindowFocus: false,
     });
 
+    const laodForm = useCallback(async () => {
+        if (combustible.data) {
+            const combustibleData = await combustible.data;
+            form.reset({
+                sede: combustibleData.sede_id.toString(),
+                type_combustion: combustibleData.tipoCombustible_id.toString(),
+                type_equipment: combustibleData.tipoEquipo,
+                mes: combustibleData.mes_id.toString(),
+                anio: combustibleData.anio_id.toString(),
+                consumo: combustibleData.consumo,
+            });
+        }
+    }, [combustible.data, id]);
+
+    useEffect(() => {
+        laodForm();
+    }, [laodForm, id]);
+
     const onSubmit = async (data: z.infer<typeof Combustion>) => {
         const combustionRequest: CombustionRequest = {
             tipo,
@@ -94,22 +125,22 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
             anio_id: Number(data.anio),
             consumo: data.consumo,
         };
-
         try {
-            const response = await createCombustion(combustionRequest);
+            const response = await updateCombustion(id, combustionRequest);
             onClose();
             successToast(response.data.message);
-        } catch (error) {
-            errorToast("Error creando combustible");
+        } catch (error: any) {
+            errorToast(error.response.data.message);
         }
     };
 
-    if (sedes.isLoading || tiposCombustible.isLoading || anios.isLoading || meses.isLoading) {
+    if (combustible.isLoading || sedes.isLoading || tiposCombustible.isLoading || anios.isLoading || meses.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (sedes.isError || tiposCombustible.isError || anios.isError || meses.isError) {
-        return <div>Error</div>;
+    if (combustible.isError || sedes.isError || tiposCombustible.isError || anios.isError || meses.isError) {
+        errorToast("Error al cargar los datos");
+        return <SkeletonForm/>;
     }
 
     return (
@@ -126,13 +157,10 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
                             render={({field}) => (
                                 <FormItem className="pt-2">
                                     <FormLabel>Sede</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                    >
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Seleciona tu sede"/>
+                                                <SelectValue placeholder="Selecciona tu sede"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -173,13 +201,10 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
                             render={({field}) => (
                                 <FormItem className="pt-2">
                                     <FormLabel>Tipo de Combustible</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                    >
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Seleciona un tipo de combustible"/>
+                                                <SelectValue placeholder="Selecciona un tipo de combustible"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -203,22 +228,16 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Mes</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl className="w-full">
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Selecciona el año"/>
+                                                    <SelectValue placeholder="Selecciona el mes"/>
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectGroup>
                                                     {meses.data!.map((mes) => (
-                                                        <SelectItem
-                                                            key={mes.id}
-                                                            value={mes.id.toString()}
-                                                        >
+                                                        <SelectItem key={mes.id} value={mes.id.toString()}>
                                                             {mes.nombre}
                                                         </SelectItem>
                                                     ))}
@@ -235,10 +254,7 @@ export function FormCombustion({onClose, tipo}: CreateCombustionProps) {
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Año</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl className="w-full">
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Selecciona el año"/>

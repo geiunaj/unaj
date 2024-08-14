@@ -8,7 +8,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {useCallback, useState} from "react";
-import {Pen, Plus, Trash2} from "lucide-react";
+import {Bean, Building, Calendar, LeafyGreen, Pen, Plus, Trash2} from "lucide-react";
 import {FormFertilizantes} from "./FormFertilizantes";
 import {
     Dialog,
@@ -20,7 +20,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {Badge} from "@/components/ui/badge";
-import {fertilizanteCollection} from "../services/fertilizante.interface";
+import {fertilizanteCollection, fertilizanteCollectionItem} from "../services/fertilizante.interface";
 import SelectFilter from "@/components/selectFilter";
 import {
     AlertDialog,
@@ -44,10 +44,14 @@ import {
 } from "@/components/fertilizantes/lib/fertilizante.hook";
 import {deleteFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
 import {UpdateFormFertilizantes} from "@/components/fertilizantes/components/UpdateFormFertilizante";
+import ReactPaginate from "react-paginate";
+import CustomPagination from "@/components/pagination";
+
 
 export default function FertilizantePage() {
     // NAVIGATION
     const {push} = useRouter();
+    const [page, setPage] = useState(1);
 
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -73,7 +77,8 @@ export default function FertilizantePage() {
             tipoFertilizanteId: selectedTipoFertilizanteId ? parseInt(selectedTipoFertilizanteId) : undefined,
             claseFertilizante: selectedClaseFertilizante,
             sedeId: parseInt(selectedSede),
-            anio: selectedAnio
+            anio: selectedAnio,
+            page: page,
         }
     );
     const tipoFertilizante = useTipoFertilizante(selectedClaseFertilizante);
@@ -135,6 +140,11 @@ export default function FertilizantePage() {
         await fertilizante.refetch();
     }, [fertilizante, idForDelete]);
 
+    const handlePageChage = async (page: number) => {
+        await setPage(page);
+        await fertilizante.refetch();
+    }
+
     if (fertilizante.isLoading || claseFertilizante.isLoading || tipoFertilizante.isLoading
         || sedes.isLoading || anios.isLoading) {
         return <SkeletonTable/>;
@@ -164,6 +174,7 @@ export default function FertilizantePage() {
                             value={"nombre"}
                             nombre={"nombre"}
                             id={"nombre"}
+                            icon={<LeafyGreen className="h-3 w-3"/>}
                         />
 
                         <SelectFilter
@@ -174,6 +185,7 @@ export default function FertilizantePage() {
                             nombre={"nombre"}
                             id={"id"}
                             all={true}
+                            icon={<Bean className="h-3 w-3"/>}
                         />
 
                         <SelectFilter
@@ -183,6 +195,7 @@ export default function FertilizantePage() {
                             value={"id"}
                             nombre={"name"}
                             id={"id"}
+                            icon={<Building className="h-3 w-3"/>}
                         />
 
                         <SelectFilter
@@ -192,6 +205,7 @@ export default function FertilizantePage() {
                             value={"nombre"}
                             nombre={"nombre"}
                             id={"id"}
+                            icon={<Calendar className="h-3 w-3"/>}
                         />
                     </div>
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
@@ -255,7 +269,7 @@ export default function FertilizantePage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {fertilizante.data!.map((item: fertilizanteCollection, index: number) => (
+                        {fertilizante.data!.data.map((item: fertilizanteCollectionItem, index: number) => (
                             <TableRow key={item.id} className="text-center">
                                 <TableCell className="text-xs sm:text-sm">
                                     <Badge variant="secondary">{index + 1}</Badge>
@@ -295,6 +309,7 @@ export default function FertilizantePage() {
                         ))}
                     </TableBody>
                 </Table>
+                <CustomPagination meta={fertilizante.data!.meta} onPageChange={handlePageChage}/>
             </div>
 
             {/*MODAL UPDATE*/}

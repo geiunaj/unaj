@@ -194,7 +194,7 @@ export default function TaxiPage() {
                                     Indicar el historial de taxi contratados.
                                 </DialogDescription>
                             </DialogHeader>
-                            {/* <FormCombustion onClose={handleClose} /> */}
+                            {/* <FormCombustible onClose={handleClose} /> */}
                         </DialogContent>
                     </Dialog>
                 </div>
@@ -273,7 +273,7 @@ export default function TaxiPage() {
                             Indicar el historial de taxi contratados.
                         </DialogDescription>
                     </DialogHeader>
-                    {/* <UpdateFormCombustion
+                    {/* <UpdateFormCombustible
                         onClose={handleCloseUpdate}
                         id={idForUpdate}
                     /> */}

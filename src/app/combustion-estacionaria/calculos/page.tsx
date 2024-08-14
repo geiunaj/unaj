@@ -1,11 +1,11 @@
 "use client";
 import LayoutWrapper from "@/components/Layout/layout";
-import CombustionCalculate from "@/components/combustion/components/CombustionCalculate";
+import CombustibleCalculate from "@/components/combustion/components/CombustibleCalculate";
 
 export default function Page() {
     return (
         <LayoutWrapper>
-            <CombustionCalculate tipo="estacionaria"/>
+            <CombustibleCalculate tipo="estacionaria"/>
         </LayoutWrapper>
     );
 }

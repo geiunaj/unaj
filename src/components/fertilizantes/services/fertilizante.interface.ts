@@ -9,10 +9,22 @@ export interface UpdateFertilizanteProps {
 
 //PARA EL INDEX
 export interface fertilizanteCollection {
+    data: fertilizanteCollectionItem[];
+    meta: Meta;
+}
+
+export interface Meta {
+    page: number;
+    perPage: number;
+    totalPages: number;
+    totalRecords: number;
+}
+
+export interface fertilizanteCollectionItem {
     id: number;
     cantidad: number;
     is_ficha: boolean;
-    ficha_id: number;
+    ficha_id: null;
     anio: number;
     sede: string;
     clase: string;

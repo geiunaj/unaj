@@ -15,6 +15,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const sort = searchParams.get("sort") ?? "id";
         const direction = searchParams.get("direction") ?? "desc";
 
+        const page = parseInt(searchParams.get("page") ?? "1");
+        const perPage = parseInt(searchParams.get("perPage") ?? "2");
+
         let anioId: number | undefined;
         if (anio) {
             const anioRecord = await prisma.anio.findFirst({
@@ -23,17 +26,22 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             anioId = anioRecord ? anioRecord.id : undefined;
         }
 
-        const fertilizantes = await prisma.fertilizante.findMany({
-            where: {
-                sede_id: sedeId ? parseInt(sedeId) : undefined,
-                anio_id: anioId,
-                tipoFertilizante_id: tipoFertilizanteId
-                    ? parseInt(tipoFertilizanteId)
-                    : undefined,
-                tipoFertilizante: {
-                    clase: claseFertilizante ? claseFertilizante : undefined,
-                },
+        const whereOptions = {
+            sede_id: sedeId ? parseInt(sedeId) : undefined,
+            anio_id: anioId,
+            tipoFertilizante_id: tipoFertilizanteId
+                ? parseInt(tipoFertilizanteId)
+                : undefined,
+            tipoFertilizante: {
+                clase: claseFertilizante ? claseFertilizante : undefined,
             },
+        };
+
+        const totalRecords = await prisma.fertilizante.count({where: whereOptions});
+        const totalPages = Math.ceil(totalRecords / perPage);
+
+        const fertilizantes = await prisma.fertilizante.findMany({
+            where: whereOptions,
             include: {
                 anio: true,
                 sede: true,
@@ -42,13 +50,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             orderBy: {
                 [sort]: direction,
             },
+            skip: (page - 1) * perPage,
+            take: perPage,
         });
 
         const formattedFertilizantes: Fertilizante[] = fertilizantes.map(
             (fertilizante) => formaFertilizante(fertilizante)
         );
 
-        return NextResponse.json(formattedFertilizantes);
+        return NextResponse.json({
+            data: formattedFertilizantes,
+            meta: {
+                page,
+                perPage,
+                totalPages,
+                totalRecords,
+            },
+        });
     } catch (error) {
         console.error("Error al buscar los fertilizantes", error);
         return new NextResponse("Error al buscar los fertilizantes", {
@@ -56,6 +74,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         });
     }
 }
+
 
 // POST ROUTE -> SIN PARAMETROS
 export async function POST(req: NextRequest): Promise<NextResponse> {

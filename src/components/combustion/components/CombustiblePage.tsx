@@ -20,7 +20,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {FormCombustion} from "./FormCombustion";
+import {FormCombustible} from "./FormCombustible";
 import {
     Building, Flame, Plus, Trash2, Calendar, CalendarDays, Pen,
 } from "lucide-react";
@@ -37,7 +37,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import {UpdateFormCombustion} from "./UpdateFormCombustion";
+import {UpdateFormCombustible} from "./UpdateFormCombustible";
 import SelectFilter from "@/components/selectFilter";
 import ButtonCalculate from "@/components/buttonCalculate";
 import {useRouter} from "next/navigation";
@@ -52,7 +52,7 @@ import SkeletonTable from "@/components/Layout/skeletonTable";
 import {deleteCombustion} from "@/components/combustion/services/combustion.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 
-export default function CombustionPage({combustionType}: CombustionProps) {
+export default function CombustiblePage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
     //   NAVIGATION
     const {push} = useRouter();
@@ -238,7 +238,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                                         .
                                     </DialogDescription>
                                 </DialogHeader>
-                                <FormCombustion onClose={handleClose} tipo={tipo}/>
+                                <FormCombustible onClose={handleClose} tipo={tipo}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -344,7 +344,7 @@ export default function CombustionPage({combustionType}: CombustionProps) {
                             .
                         </DialogDescription>
                     </DialogHeader>
-                    <UpdateFormCombustion
+                    <UpdateFormCombustible
                         onClose={handleCloseUpdate}
                         tipo={tipo}
                         id={idForUpdate}
@@ -382,8 +382,8 @@ export default function CombustionPage({combustionType}: CombustionProps) {
 }
 
 export const CombustionEstacionariaPage = () => (
-    <CombustionPage combustionType={{tipo: "estacionaria"}}/>
+    <CombustiblePage combustionType={{tipo: "estacionaria"}}/>
 );
 export const CombustionMovilPage = () => (
-    <CombustionPage combustionType={{tipo: "movil"}}/>
+    <CombustiblePage combustionType={{tipo: "movil"}}/>
 );

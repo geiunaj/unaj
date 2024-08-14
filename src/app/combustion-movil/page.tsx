@@ -1,13 +1,13 @@
 "use client";
-import CombustionPage, { CombustionMovilPage } from "@/components/combustion/components/CombustionPage";
-import { FormCombustion } from "@/components/combustion/components/FormCombustion";
+import CombustiblePage, {CombustionMovilPage} from "@/components/combustion/components/CombustiblePage";
+import {FormCombustible} from "@/components/combustion/components/FormCombustible";
 import LayoutWrapper from "@/components/Layout/layout";
 
 export default function Page() {
-  return (
-    <LayoutWrapper>
-      {/* <CombustionTable /> */}
-      <CombustionMovilPage />
-    </LayoutWrapper>
-  );
+    return (
+        <LayoutWrapper>
+            {/* <CombustionTable /> */}
+            <CombustionMovilPage/>
+        </LayoutWrapper>
+    );
 }

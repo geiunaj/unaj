@@ -26,9 +26,9 @@ interface CombustionCalculateProps {
 
 type Tipo = "estacionaria" | "movil";
 
-export default function CombustionCalculate({
-                                                tipo = "estacionaria",
-                                            }: CombustionCalculateProps) {
+export default function CombustibleCalculate({
+                                                 tipo = "estacionaria",
+                                             }: CombustionCalculateProps) {
     const {push} = useRouter();
 
     // STORES

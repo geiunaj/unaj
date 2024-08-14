@@ -9,7 +9,8 @@ export async function getFertilizante(
     anio?: string,
     sort?: string,
     direction?: string,
-): Promise<fertilizanteCollection[]> {
+    page?: number,
+): Promise<fertilizanteCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
@@ -18,9 +19,10 @@ export async function getFertilizante(
             anio,
             tipoFertilizanteId,
             claseFertilizante,
+            page,
         },
     };
-    const {data} = await api.get<fertilizanteCollection[]>(
+    const {data} = await api.get<fertilizanteCollection>(
         "/api/fertilizante",
         config
     );

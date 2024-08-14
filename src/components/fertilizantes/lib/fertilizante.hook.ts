@@ -14,13 +14,14 @@ interface getFertilizanteInterface {
     anio?: string;
     sort?: string;
     direction?: string;
+    page?: number;
 }
 
 export const useFertilizante =
-    ({tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction}: getFertilizanteInterface) => {
+    ({tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page}: getFertilizanteInterface) => {
         return useQuery({
             queryKey: ['fertilizante'],
-            queryFn: () => getFertilizante(tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction),
+            queryFn: () => getFertilizante(tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page),
             refetchOnWindowFocus: false,
         });
     }

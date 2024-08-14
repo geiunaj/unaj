@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
-import { formatFertilizante } from "@/lib/resources/tipoFertilizante";
-import { TipoFertilizanteRequest } from "@/components/tipoFertilizante/services/tipoFertilizante.interface";
+import {formatFertilizante} from "@/lib/resources/tipoFertilizante";
+import {TipoFertilizanteRequest} from "@/components/tipoFertilizante/services/tipoFertilizante.interface";
 
 export async function GET(
     req: NextRequest,
@@ -14,7 +14,6 @@ export async function GET(
             where: {
                 id: id,
             },
-
         });
 
         if (!tipoFertilizante) {
@@ -42,8 +41,8 @@ export async function PUT(
         const {
             nombre,
             porcentaje_nitrogeno,
-            unidad, 
-            clase,   
+            unidad,
+            clase,
         } = body;
         if (
 
@@ -61,7 +60,7 @@ export async function PUT(
             unidad: unidad,
             clase: clase,
         };
-        
+
 
         const tipoFertilizante = await prisma.tipoFertilizante.update({
             where: {
@@ -71,7 +70,7 @@ export async function PUT(
         });
 
         return NextResponse.json({
-            message: "Tipo de fertilizante actualizado correctamente",
+            message: "Tipo de fertilizante actualizado",
             tipoFertilizante: formatFertilizante(tipoFertilizante),
         });
     } catch (error) {
@@ -95,7 +94,7 @@ export async function DELETE(
         });
 
         return NextResponse.json({
-            message: "Tipo de fertilizante eliminado correctamente",
+            message: "Tipo de fertilizante eliminado",
         });
     } catch (error: any) {
         console.error("Error eliminando tipo de fertilizante", error);
