@@ -2,23 +2,25 @@ import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {getMes} from "@/components/mes/services/mes.actions";
-import { getElectricidad } from "../services/electricidad.actions";
-import { getArea } from "@/components/area/services/area.actions";
+import {getElectricidad} from "../services/electricidad.actions";
+import {getArea} from "@/components/area/services/area.actions";
 
 interface getElectricidadInterface {
-    sedeId?: number ;
+    sedeId?: number;
     anioId?: number;
     mesId?: number;
     areaId?: number;
     sort?: string;
     direction?: string;
+
+    page?: number;
 }
 
 export const useElectricidad =
-    ({ sedeId, anioId, mesId, areaId,sort, direction}: getElectricidadInterface) => {
+    ({sedeId, anioId, mesId, areaId, sort, direction, page}: getElectricidadInterface) => {
         return useQuery({
             queryKey: ['Electricidad'],
-            queryFn: () => getElectricidad(sedeId, anioId, areaId, mesId, sort, direction),
+            queryFn: () => getElectricidad(sedeId, anioId, areaId, mesId, sort, direction, page),
             refetchOnWindowFocus: false,
         });
     }

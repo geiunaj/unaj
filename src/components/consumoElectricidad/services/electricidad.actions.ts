@@ -12,12 +12,13 @@ interface Response {
 
 export async function getElectricidad(
     sedeId?: number,
-    anioId?:number,
+    anioId?: number,
     areaId?: number,
     mesId?: number,
     sort?: string,
     direction?: string,
-): Promise<electricidadCollection[]> {
+    page?: number
+): Promise<electricidadCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
@@ -26,9 +27,11 @@ export async function getElectricidad(
             sort,
             direction,
             mesId,
+
+            page,
         },
     };
-    const {data} = await api.get<electricidadCollection[]>(
+    const {data} = await api.get<electricidadCollection>(
         "/api/electricidad",
         config
     );
@@ -48,7 +51,6 @@ export async function createElectricidad(tipoPapel: electricidadRequest): Promis
 export async function updateElectricidad(id: number, body: electricidadRequest): Promise<AxiosResponse<Response>> {
     return await api.put(`/api/electricidad/${id}`, body);
 }
-
 
 
 export async function deleteElectricidad(id: number): Promise<AxiosResponse<Response>> {

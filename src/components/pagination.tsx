@@ -79,26 +79,29 @@ export default function CustomPagination({meta, onPageChange}: PaginationProps) 
     return (
         <Pagination className="flex justify-center mt-4">
             <PaginationContent>
-                {page > 1 && (
-                    <PaginationItem className="cursor-pointer">
-                        <PaginationPrevious
-                            className="hover:bg-muted"
-                            onClick={handlePreviousClick}
-                        />
-                    </PaginationItem>
-                )}
+
+                <PaginationItem className="cursor-pointer">
+                    <PaginationPrevious
+                        className={page > 1 ? "" : "hover:text-muted-foreground text-muted-foreground cursor-default"}
+                        onClick={page > 1 ? handlePreviousClick : () => {
+                        }}
+                    />
+                </PaginationItem>
 
                 {generatePageNumbers()}
 
-                {page < totalPages && (
-                    <PaginationItem className="cursor-pointer">
-                        <PaginationNext
-                            className="hover:bg-muted"
-                            onClick={handleNextClick}
-                        />
-                    </PaginationItem>
-                )}
+                <PaginationItem className="cursor-pointer">
+                    <PaginationNext
+                        className={page < totalPages ? "" : "hover:text-muted-foreground text-muted-foreground cursor-default"}
+                        onClick={page < totalPages ? handleNextClick : () => {
+                        }}
+                    />
+                </PaginationItem>
             </PaginationContent>
         </Pagination>
     );
+}
+
+const className = (className: string) => {
+    return className;
 }

@@ -18,6 +18,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const mes = searchParams.get("mesId") ?? undefined;
         const areaId = searchParams.get("areaId") ?? undefined;
 
+        const page = parseInt(searchParams.get("page") ?? "1");
+        const perPage = parseInt(searchParams.get("perPage") ?? "10");
+
+
         let anioId;
         if (anio) {
             const anioRecord = await prisma.anio.findFirst({
@@ -28,13 +32,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             anioId = anioRecord ? anioRecord.id : undefined;
         }
 
+        const whereOptions = {
+            sede_id: sedeId ? parseInt(sedeId) : undefined,
+            anio_id: anioId,
+            mes_id: mes ? parseInt(mes) : undefined,
+            areaId: areaId ? parseInt(areaId) : undefined,
+        };
+
+        const totalRecords = await prisma.consumoEnergia.count({where: whereOptions});
+        const totalPages = Math.ceil(totalRecords / perPage);
+
         const electricidad = await prisma.consumoEnergia.findMany({
-            where: {
-                sede_id: sedeId ? parseInt(sedeId) : undefined,
-                anio_id: anioId,
-                mes_id: mes ? parseInt(mes) : undefined,
-                areaId: areaId ? parseInt(areaId) : undefined,
-            },
+            where: whereOptions,
             include: {
                 mes: true,
                 anio: true,
@@ -47,16 +56,26 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                     {anio_id: 'desc'},
                     {mes_id: 'desc'}
                 ],
+            skip: (page - 1) * perPage,
+            take: perPage,
         });
 
         const formattedElectricidad: electricidadCollection[] = electricidad.map(
             (electricidad) => formatElectricidad(electricidad)
         );
 
-        return NextResponse.json(formattedElectricidad);
+        return NextResponse.json({
+            data: formattedElectricidad,
+            meta: {
+                page,
+                perPage,
+                totalPages,
+                totalRecords,
+            },
+        });
     } catch (error) {
-        console.error("Error buscando electricidad", error);
-        return new NextResponse("Error buscando electricidad", {status: 500});
+        console.error("Error buscando consumos", error);
+        return new NextResponse("Error buscando consumos", {status: 500});
     }
 }
 
@@ -91,7 +110,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             electricidad: formattedElectricidad,
         });
     } catch (error) {
-        console.error("Error registrando electricidad", error);
-        return new NextResponse("Error registrando electricidad", {status: 500});
+        console.error("Error registrando consumo", error);
+        return new NextResponse("Error registrando consumo", {status: 500});
     }
 }

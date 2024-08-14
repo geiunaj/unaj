@@ -18,6 +18,28 @@ export interface electricidadCollection {
     sede: string;
 }
 
+export interface electricidadCollection {
+    data: electricidadCollectionItem[];
+    meta: Meta;
+}
+
+export interface electricidadCollectionItem {
+    id: number;
+    numeroSuministro: string;
+    consumo: number;
+    area: string;
+    sede: string;
+    mes: string;
+    anio: string;
+}
+
+export interface Meta {
+    page: number;
+    perPage: number;
+    totalPages: number;
+    totalRecords: number;
+}
+
 
 //PARA EL SHOW
 export interface electricidadResource {

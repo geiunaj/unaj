@@ -32,7 +32,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import {electricidadCollection} from "../services/electricidad.interface";
+import {electricidadCollection, electricidadCollectionItem} from "../services/electricidad.interface";
 import {FormElectricidad} from "./FormElectricidad";
 import {useRouter} from "next/navigation";
 import {Badge} from "@/components/ui/badge";
@@ -55,10 +55,12 @@ import {
     Pen,
     MapPinned,
 } from "lucide-react";
+import CustomPagination from "@/components/pagination";
 
 export default function ElectricidadPage() {
     //NAVIGATION
     const {push} = useRouter();
+    const [page, setPage] = useState<number>(1);
 
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -82,6 +84,7 @@ export default function ElectricidadPage() {
         anioId: selectedAnio ? Number(selectedAnio) : undefined,
         areaId: selectedArea ? Number(selectedArea) : undefined,
         mesId: selectedMes ? Number(selectedMes) : undefined,
+        page: page,
     });
 
     const sedes = useSede();
@@ -103,37 +106,29 @@ export default function ElectricidadPage() {
         setIsDeleteDialogOpen(true);
     };
 
-    const handleSedeChange = useCallback(
-        async (value: string) => {
-            await setSelectedSede(value);
-            await electricidad.refetch();
-        },
-        [electricidad]
-    );
+    const handleSedeChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setSelectedSede(value);
+        await electricidad.refetch();
+    }, [electricidad]);
 
-    const handleAnioChange = useCallback(
-        async (value: string) => {
-            await setSelectedAnio(value);
-            await electricidad.refetch();
-        },
-        [electricidad]
-    );
+    const handleAnioChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setSelectedAnio(value);
+        await electricidad.refetch();
+    }, [electricidad]);
 
-    const handleAreaChange = useCallback(
-        async (value: string) => {
-            await setSelectedArea(value);
-            await electricidad.refetch();
-        },
-        [electricidad]
-    );
+    const handleAreaChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setSelectedArea(value);
+        await electricidad.refetch();
+    }, [electricidad]);
 
-    const handleMesChange = useCallback(
-        async (value: string) => {
-            await setSelectedMes(value);
-            await electricidad.refetch();
-        },
-        [electricidad]
-    );
+    const handleMesChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setSelectedMes(value);
+        await electricidad.refetch();
+    }, [electricidad]);
 
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
@@ -160,25 +155,18 @@ export default function ElectricidadPage() {
         await electricidad.refetch();
     }, [idForDelete, electricidad]);
 
-    if (
-        electricidad.isLoading ||
-        areas.isLoading ||
-        sedes.isLoading ||
-        anios.isLoading ||
-        meses.isLoading
-    ) {
+    if (electricidad.isLoading || areas.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (
-        electricidad.isError ||
-        areas.isError ||
-        sedes.isError ||
-        anios.isError ||
-        meses.isError
-    ) {
+    if (electricidad.isError || areas.isError || sedes.isError || anios.isError || meses.isError) {
         errorToast("Error al cargar los datos");
         return <SkeletonTable/>;
+    }
+
+    const handlePageChage = async (page: number) => {
+        await setPage(page);
+        await electricidad.refetch();
     }
 
     return (
@@ -261,7 +249,7 @@ export default function ElectricidadPage() {
                 </div>
             </div>
 
-            <div className="rounded-lg overflow-hidden text-nowrap sm:text-wrap">
+            <div className="rounded-lg overflow-hidden text-nowrap sm:text-wrap flex flex-col gap-10    ">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -289,7 +277,7 @@ export default function ElectricidadPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {electricidad.data!.map((item: electricidadCollection, index: number) => (
+                        {electricidad.data!.data.map((item: electricidadCollectionItem, index: number) => (
                             <TableRow key={item.id} className="text-center">
                                 <TableCell className="text-xs sm:text-sm">
                                     <Badge variant="secondary">{index + 1}</Badge>
@@ -334,6 +322,11 @@ export default function ElectricidadPage() {
                         ))}
                     </TableBody>
                 </Table>
+                {
+                    electricidad.data!.meta.totalPages > 1 && (
+                        <CustomPagination meta={electricidad.data!.meta} onPageChange={handlePageChage}/>
+                    )
+                }
             </div>
 
             {/*MODAL UPDATE*/}

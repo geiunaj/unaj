@@ -8,6 +8,7 @@ import {FertilizanteRequest} from "@/components/fertilizantes/services/fertiliza
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
+
         const tipoFertilizanteId = searchParams.get("tipoFertilizanteId") ?? undefined;
         const claseFertilizante = searchParams.get("claseFertilizante") ?? undefined;
         const sedeId = searchParams.get("sedeId") ?? undefined;
@@ -16,7 +17,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const direction = searchParams.get("direction") ?? "desc";
 
         const page = parseInt(searchParams.get("page") ?? "1");
-        const perPage = parseInt(searchParams.get("perPage") ?? "2");
+        const perPage = parseInt(searchParams.get("perPage") ?? "10");
 
         let anioId: number | undefined;
         if (anio) {

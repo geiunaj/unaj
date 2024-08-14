@@ -99,6 +99,7 @@ export default function FertilizantePage() {
     };
 
     const handleclaseFertilizanteChange = useCallback(async (value: string) => {
+        await setPage(1);
         await setSelectedClaseFertilizante(value);
         await setSelectedTipoFertilizanteId("");
         await fertilizante.refetch();
@@ -106,16 +107,19 @@ export default function FertilizantePage() {
     }, [fertilizante, tipoFertilizante]);
 
     const handleSedeChange = useCallback(async (value: string) => {
+        await setPage(1);
         await setSelectedSede(value);
         await fertilizante.refetch();
     }, [fertilizante]);
 
     const handleAnioChange = useCallback(async (value: string) => {
+        await setPage(1);
         await setSelectedAnio(value);
         await fertilizante.refetch();
     }, [fertilizante]);
 
     const handleTipoFertilizanteChange = useCallback(async (value: string) => {
+        await setPage(1);
         await setSelectedTipoFertilizanteId(value);
         await fertilizante.refetch();
     }, [fertilizante]);
@@ -206,6 +210,7 @@ export default function FertilizantePage() {
                             nombre={"nombre"}
                             id={"id"}
                             icon={<Calendar className="h-3 w-3"/>}
+                            all={true}
                         />
                     </div>
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
@@ -309,7 +314,11 @@ export default function FertilizantePage() {
                         ))}
                     </TableBody>
                 </Table>
-                <CustomPagination meta={fertilizante.data!.meta} onPageChange={handlePageChage}/>
+                {
+                    fertilizante.data!.meta.totalPages > 1 && (
+                        <CustomPagination meta={fertilizante.data!.meta} onPageChange={handlePageChage}/>
+                    )
+                }
             </div>
 
             {/*MODAL UPDATE*/}
