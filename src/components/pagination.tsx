@@ -44,7 +44,7 @@ export default function CustomPagination({meta, onPageChange}: PaginationProps) 
                         key={i}
                     >
                         <PaginationLink
-                            // className={`hover:bg-blue-400 text-white ${
+                            // className={`hover:bg-blue-600 text-white ${
                             //     i === page ? "bg-[--blue] text-white" : ""
                             // }`}
                             isActive={i === page}
