@@ -11,9 +11,9 @@ interface Response {
 }
 
 export async function getElectricidad(
-    sedeId: number,
-    anioId: number,
-    areaId: number,
+    sedeId?: number,
+    anioId?:number,
+    areaId?: number,
     mesId?: number,
     sort?: string,
     direction?: string,
