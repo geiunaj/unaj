@@ -54,7 +54,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const body: ConsumoPapelRequest = await req.json();
         const consumopapel = await prisma.consumoPapel.create({
             data: {
-
                 tipoPapel_id: body.tipoPapel_id,
                 anio_id: body.anio_id,
                 sede_id: body.sede_id,
