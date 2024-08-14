@@ -45,6 +45,7 @@ import {Badge} from "@/components/ui/badge";
 
 export default function ElectricidadPage() {
     const {push} = useRouter();
+    
 
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -123,14 +124,6 @@ export default function ElectricidadPage() {
         setSelectedArea(value);
     }, []);
 
-    // const handleToggleCantidadSort = () => {
-    //   setCantidadDirection(cantidadDirection === "asc" ? "desc" : "asc");
-    //   loadElectricidad({
-    //     sedeId: Number(selectedSede),
-    //     sort: "cantidadElectricidad",
-    //     direction: cantidadDirection === "asc" ? "desc" : "asc",
-    //   });
-    // };
 
     const handleCalculate = () => {
         push("/electricidad/calculos");

@@ -20,16 +20,21 @@ import {
 } from "@/components/ui/select";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-import {Switch} from "@/components/ui/switch";
-
-import {useSedeStore} from "@/components/sede/lib/sede.store";
-import {useAnioStore} from "@/components/anio/lib/anio.store";
-import {useMesStore} from "@/components/mes/lib/mes.stores";
-import {useElectricidadStore} from "../lib/electricidad.store";
 import {
     CreateElectricidadProps,
     electricidadRequest,
 } from "../services/electricidad.interface";
+import { useQuery } from "@tanstack/react-query";
+import { getSedes } from "@/components/sede/services/sede.actions";
+import { getAnio } from "@/components/anio/services/anio.actions";
+import { getMes } from "@/components/mes/services/mes.actions";
+import { errorToast, successToast } from "@/lib/utils/core.function";
+import SkeletonForm from "@/components/Layout/skeletonForm";
+import { createElectricidad } from "../services/electricidad.actions";
+import { getArea } from "@/components/area/services/area.actions";
+
+const parseNumber = (val: unknown) => parseFloat(val as string);
+const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
 const Electricidad = z.object({
     area: z.string().min(1, "Seleccione un área"),
@@ -44,12 +49,7 @@ const Electricidad = z.object({
 });
 
 export function FormElectricidad({onClose}: CreateElectricidadProps) {
-    const {sedes, loadSedes} = useSedeStore();
-    const {anios, loadAnios} = useAnioStore();
-    const {meses, loadMeses} = useMesStore();
-    const {createElectricidad} = useElectricidadStore();
 
-    const [clases, setClases] = useState<string[]>([]);
 
     const form = useForm<z.infer<typeof Electricidad>>({
         resolver: zodResolver(Electricidad),
@@ -62,14 +62,30 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
             anio: "",
         },
     });
+    const sedes = useQuery({
+        queryKey: ['sede'],
+        queryFn: () => getSedes(),
+        refetchOnWindowFocus: false,
+    });
 
-    const {watch, setValue} = form;
+    const areas = useQuery({
+        queryKey: ['area'],
+        queryFn: () => getArea(),
+        refetchOnWindowFocus: false,
+    });
 
-    useEffect(() => {
-        loadSedes();
-        loadAnios();
-        loadMeses();
-    }, [loadSedes, loadMeses, loadAnios]);
+    const anios = useQuery({
+        queryKey: ['anio'],
+        queryFn: () => getAnio(),
+        refetchOnWindowFocus: false,
+    });
+    const meses = useQuery({
+        queryKey: ['mes'],
+        queryFn: () => getMes(),
+        refetchOnWindowFocus: false,
+    });
+
+
 
     const onSubmit = async (data: z.infer<typeof Electricidad>) => {
         const ElectricidadRequest: electricidadRequest = {
@@ -80,10 +96,22 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
             sede_id: parseInt(data.sede),
             anio_id: parseInt(data.anio),
         };
-        console.log(ElectricidadRequest);
-        await createElectricidad(ElectricidadRequest);
-        onClose();
+        try{
+            const response = await createElectricidad(ElectricidadRequest);
+            onClose();
+            successToast(response.data.message);
+        } catch (error){
+            errorToast("Error al guardar el consumo de electricidad");
+        }
     };
+
+    if (sedes.isLoading  || anios.isLoading || meses.isLoading) {
+        return <SkeletonForm/>;
+    }
+
+    if (sedes.isError || anios.isError || meses.isError) {
+        return <div>Error</div>;
+    }
 
     return (
         <div className="flex items-center justify-center">
@@ -106,12 +134,12 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
                                     >
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Selecciona tu sede"/>
+                                                <SelectValue placeholder="Seleciona tu sede"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {sedes.map((sede) => (
+                                                {sedes.data!.map((sede) => (
                                                     <SelectItem key={sede.id} value={sede.id.toString()}>
                                                         {sede.name}
                                                     </SelectItem>
@@ -141,9 +169,9 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {sedes.map((sede) => (
-                                                    <SelectItem key={sede.id} value={sede.id.toString()}>
-                                                        {sede.name}
+                                            {areas.data!.map((area) => (
+                                                    <SelectItem key={area.id} value={area.id.toString()}>
+                                                        {area.nombre}
                                                     </SelectItem>
                                                 ))}
                                             </SelectGroup>
@@ -215,11 +243,11 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    {meses.map((mes) => (
-                                                        <SelectItem key={mes.id} value={mes.id.toString()}>
-                                                            {mes.nombre}
-                                                        </SelectItem>
-                                                    ))}
+                                                {meses.data!.map((meses) => (
+                                                    <SelectItem key={meses.id} value={meses.id.toString()}>
+                                                        {meses.nombre}
+                                                    </SelectItem>
+                                                ))}
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
@@ -244,14 +272,11 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    {anios.map((anio) => (
-                                                        <SelectItem
-                                                            key={anio.id}
-                                                            value={anio.id.toString()}
-                                                        >
-                                                            {anio.nombre}
-                                                        </SelectItem>
-                                                    ))}
+                                                {anios.data!.map((anios) => (
+                                                    <SelectItem key={anios.id} value={anios.id.toString()}>
+                                                        {anios.nombre}
+                                                    </SelectItem>
+                                                ))}
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>

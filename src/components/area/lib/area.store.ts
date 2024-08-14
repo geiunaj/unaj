@@ -11,10 +11,13 @@ export const useAreaStore = create<AreaStore>((set) => ({
     areas: [],
     loadAreas: async () => {
         try {
-            const data: Area[] = await getArea();
+            const data = await getArea();
             set({areas: data});
         } catch (error) {
             console.error("Error loading areas data:", error);
         }
     },
 }));
+
+
+
