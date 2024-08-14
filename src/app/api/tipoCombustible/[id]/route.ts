@@ -1,8 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {formatTipoCombustible} from "@/lib/resources/tipoCombustible";
-import {TipoPapelRequest} from "@/components/tipoPapel/services/tipoPapel.interface";
-import {formatTipoPapel} from "@/lib/resources/tipoPapel.resource";
+import {TipoCombustibleRequest} from "@/components/tipoCombustible/services/tipoCombustible.interface";
 
 export async function GET(
     req: NextRequest,
@@ -15,7 +14,6 @@ export async function GET(
             where: {
                 id: id,
             },
-
         });
 
         if (!tipoCombustible) {
@@ -42,49 +40,49 @@ export async function PUT(
         const body = await req.json();
         const {
             nombre,
-            gramaje,
-            unidad_paquete,
-            is_certificado,
-            is_reciclable,
-            porcentaje_reciclado,
-            nombre_certificado
-        } = body;
+            abreviatura,
+            unidad,
+            valorCalorico,
+            factorEmisionCO2,
+            factorEmisionCH4,
+            factorEmisionN2O,
+        }: TipoCombustibleRequest = body;
         if (
             (nombre && typeof nombre !== "string") ||
-            (gramaje && typeof gramaje !== "number") ||
-            (unidad_paquete && typeof unidad_paquete !== "string") ||
-            (is_certificado && typeof is_certificado !== "boolean") ||
-            (is_reciclable && typeof is_reciclable !== "boolean") ||
-            (porcentaje_reciclado && typeof porcentaje_reciclado !== "number") ||
-            (nombre_certificado && typeof nombre_certificado !== "string")
+            (abreviatura && typeof abreviatura !== "string") ||
+            (unidad && typeof unidad !== "string") ||
+            (valorCalorico && typeof valorCalorico !== "number") ||
+            (factorEmisionCO2 && typeof factorEmisionCO2 !== "number") ||
+            (factorEmisionCH4 && typeof factorEmisionCH4 !== "number") ||
+            (factorEmisionN2O && typeof factorEmisionN2O !== "number")
         ) {
             return new NextResponse("Missing or invalid required fields", {status: 404});
         }
 
-        const tipoPapelRequest: TipoPapelRequest = {
+        const tipoCombustibleRequest: TipoCombustibleRequest = {
             nombre: nombre,
-            gramaje: gramaje,
-            unidad_paquete: unidad_paquete,
-            is_certificado: is_certificado,
-            is_reciclable: is_reciclable,
-            porcentaje_reciclado: is_reciclable ? porcentaje_reciclado : null,
-            nombre_certificado: is_certificado ? nombre_certificado : null,
+            abreviatura: abreviatura,
+            unidad: unidad,
+            valorCalorico: valorCalorico,
+            factorEmisionCO2: factorEmisionCO2,
+            factorEmisionCH4: factorEmisionCH4,
+            factorEmisionN2O: factorEmisionN2O,
         }
 
-        const tipoPapel = await prisma.tipoPapel.update({
+        const tipoCombustible = await prisma.tipoCombustible.update({
             where: {
                 id: id,
             },
-            data: tipoPapelRequest,
+            data: tipoCombustibleRequest,
         });
 
         return NextResponse.json({
-            message: "Tipo de Papel actualizado correctamente",
-            tipoPapel: formatTipoPapel(tipoPapel),
+            message: "Tipo de Combustible actualizado correctamente",
+            tipoCombustible: formatTipoCombustible(tipoCombustible),
         });
     } catch (error) {
-        console.error("Error actualizando tipo de papel", error);
-        return new NextResponse("Error actualizando tipo de papel", {status: 500});
+        console.error("Error actualizando tipo de combustible", error);
+        return new NextResponse("Error actualizando tipo de combustible", {status: 500});
     }
 }
 
@@ -103,10 +101,10 @@ export async function DELETE(
         });
 
         return NextResponse.json({
-            message: "Tipo de papel eliminado correctamente",
+            message: "Tipo de Combustible eliminado correctamente",
         });
     } catch (error: any) {
-        console.error("Error eliminando tipo de combustible", error);
-        return new NextResponse("Error eliminando tipo de combustible", {status: 500});
+        console.error("Error eliminando Tipo de Combustible", error);
+        return new NextResponse("Error eliminando Tipo de Combustible", {status: 500});
     }
 }

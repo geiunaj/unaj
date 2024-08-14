@@ -48,40 +48,27 @@ export interface electricidadResource {
     numeroSuministro: string;
     consumo: number;
     mes_id: number;
-    sede_id: number;
     anio_id: number;
+    sede_id: number;
     created_at: Date;
     updated_at: Date;
-    anio: Anio;
+    area: ResponseResource;
+    mes: ResponseResource;
+    anio: ResponseResource;
     sede: Sede;
-    mes: Mes;
-    area: Area;
 }
 
-export interface Mes {
+interface ResponseResource {
     id: number;
     nombre: string;
     created_at: Date;
     updated_at: Date;
 }
 
-export interface Anio {
-    id: number;
-    nombre: string;
-    created_at: Date;
-    updated_at: Date;
-}
-
-export interface Sede {
+interface Sede {
     id: number;
     name: string;
 }
-
-export interface Area {
-    id: number;
-    name: string;
-}
-
 
 export interface electricidadRequest {
     area_id: number;

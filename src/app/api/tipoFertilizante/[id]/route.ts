@@ -45,11 +45,10 @@ export async function PUT(
             clase,
         } = body;
         if (
-
-            (nombre && typeof nombre !== "string") ||
-            (porcentaje_nitrogeno && typeof porcentaje_nitrogeno !== "number") ||
-            (unidad && typeof unidad !== "string")
-            (clase && typeof clase !== "string")
+            (nombre && (typeof nombre !== "string")) ||
+            (porcentaje_nitrogeno && (typeof porcentaje_nitrogeno !== "number")) ||
+            (unidad && (typeof unidad !== "string")) ||
+            (clase && (typeof clase !== "string"))
         ) {
             return new NextResponse("Missing or invalid required fields", {status: 404});
         }
@@ -60,7 +59,6 @@ export async function PUT(
             unidad: unidad,
             clase: clase,
         };
-
 
         const tipoFertilizante = await prisma.tipoFertilizante.update({
             where: {

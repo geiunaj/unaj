@@ -16,10 +16,6 @@ export async function getTiposPapel(): Promise<TipoPapelCollection[]> {
     }
 }
 
-export async function createTipoPapel(tipoPapel: TipoPapelRequest): Promise<AxiosResponse<Response>> {
-    return await api.post("/api/tipoPapel", tipoPapel);
-}
-
 export async function getTipoPapel(id: number): Promise<TipoPapelCollection> {
     try {
         const {data} = await api.get<TipoPapelCollection>(`/api/tipoPapel/${id}`);
@@ -28,6 +24,10 @@ export async function getTipoPapel(id: number): Promise<TipoPapelCollection> {
         console.error(error);
         throw new Error("Error al obtener el tipo de papel");
     }
+}
+
+export async function createTipoPapel(tipoPapel: TipoPapelRequest): Promise<AxiosResponse<Response>> {
+    return await api.post("/api/tipoPapel", tipoPapel);
 }
 
 export async function updateTipoPapel(id: number, tipoPapel: TipoPapelRequest): Promise<AxiosResponse<Response>> {

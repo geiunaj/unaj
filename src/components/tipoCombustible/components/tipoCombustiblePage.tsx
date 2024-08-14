@@ -33,11 +33,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {UpdateFormPapel} from "@/components/consumoPapel/components/UpdateFormPapelOficce";
 import {useTipoCombustible} from "../lib/tipoCombustible.hook";
 import {TipoCombustibleCollection} from "../services/tipoCombustible.interface";
 import {FromTipoCombustible} from "./FormTipoCombustiblePage";
-import {toast} from "sonner";
 import {deleteTipoCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";
 import {UpdateFormTipoCombustible} from "./UpdateFormTipoCombustible";
 import {errorToast, successToast} from "@/lib/utils/core.function";
@@ -71,7 +69,7 @@ export default function TipoCombustiblePage() {
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
-            errorToast(error.response?.data?.message);
+            errorToast(error.response.data);
         } finally {
             await tipoCombustibleQuery.refetch();
         }

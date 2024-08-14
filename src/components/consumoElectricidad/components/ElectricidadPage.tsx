@@ -56,6 +56,7 @@ import {
     MapPinned,
 } from "lucide-react";
 import CustomPagination from "@/components/pagination";
+import {UpdateFormElectricidad} from "@/components/consumoElectricidad/components/UpdateFormElectricidad";
 
 export default function ElectricidadPage() {
     //NAVIGATION
@@ -337,10 +338,10 @@ export default function ElectricidadPage() {
                         <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    {/* <UpdateFormFertilizantes
-            onClose={handleCloseUpdate}
-            id={idForUpdate}
-          /> */}
+                    <UpdateFormElectricidad
+                        onClose={handleCloseUpdate}
+                        id={idForUpdate}
+                    />
                 </DialogContent>
             </Dialog>
 

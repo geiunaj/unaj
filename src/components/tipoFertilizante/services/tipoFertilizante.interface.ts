@@ -21,6 +21,15 @@ export interface TipoFertilizanteCollection {
     updated_at: Date;
 }
 
+export interface TipoFertilizanteResource {
+    id: number;
+    clase: string;
+    nombre: string;
+    porcentajeNitrogeno: number;
+    unidad: string;
+}
+
+
 export interface TipoFertilizanteRequest {
     nombre: string;
     porcentajeNitrogeno: number;
@@ -30,4 +39,9 @@ export interface TipoFertilizanteRequest {
 
 export interface CreateTipoFertilizanteProps {
     onClose: () => void;
+}
+
+export interface UpdateTipoFertilizanteProps {
+    onClose: () => void;
+    id: number;
 }

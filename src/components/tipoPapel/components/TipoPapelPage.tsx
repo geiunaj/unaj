@@ -57,7 +57,7 @@ export default function TipoPapelPage() {
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
-            errorToast(error.response?.data?.message || "Error al eliminar el tipo de papel");
+            errorToast(error.response.data);
         } finally {
             await tiposPapelQuery.refetch();
         }

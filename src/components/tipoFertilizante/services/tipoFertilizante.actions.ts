@@ -4,7 +4,7 @@ import {
     ClaseFertilizante,
     TipoFertilizante,
     TipoFertilizanteCollection,
-    TipoFertilizanteRequest
+    TipoFertilizanteRequest, TipoFertilizanteResource
 } from "./tipoFertilizante.interface";
 import {AxiosRequestConfig, AxiosResponse} from "axios";
 
@@ -22,6 +22,11 @@ export async function getTiposFertilizante(clase?: string): Promise<TipoFertiliz
     return data;
 }
 
+export async function getTipoFertilizanteById(id: number): Promise<TipoFertilizanteResource> {
+    const {data} = await api.get<TipoFertilizanteResource>(`/api/tipoFertilizante/${id}`);
+    return data;
+}
+
 export async function getClaseFertilizante(): Promise<ClaseFertilizante[]> {
     try {
         const {data} = await api.get<ClaseFertilizante[]>("/api/tipoFertilizante/clase");
@@ -34,6 +39,10 @@ export async function getClaseFertilizante(): Promise<ClaseFertilizante[]> {
 
 export async function createTipoFertilizante(tipoFertilizante: TipoFertilizanteRequest): Promise<AxiosResponse<Response>> {
     return await api.post("/api/tipoFertilizante", tipoFertilizante);
+}
+
+export async function updateTipoFertilizante(id: number, tipoFertilizante: TipoFertilizanteRequest): Promise<AxiosResponse<Response>> {
+    return await api.put(`/api/tipoFertilizante/${id}`, tipoFertilizante);
 }
 
 export async function deleteTipoFertilizante(id: number): Promise<AxiosResponse<Response>> {

@@ -49,7 +49,7 @@ export function UpdateFormFertilizantes({
                                             id, onClose,
                                         }: UpdateFertilizanteProps) {
     const [isFicha, setIsFicha] = useState(false);
-    const [isFormLoaded, setIsFormLoaded] = useState(false); // Estado para controlar la carga del formulario
+    const [isFormLoaded, setIsFormLoaded] = useState(false);
 
     const form = useForm<z.infer<typeof Fertilizante>>({
         resolver: zodResolver(Fertilizante),
@@ -272,10 +272,7 @@ export function UpdateFormFertilizantes({
                                             <SelectContent>
                                                 <SelectGroup>
                                                     {anios.data!.map((anio) => (
-                                                        <SelectItem
-                                                            key={anio.id}
-                                                            value={anio.id.toString()}
-                                                        >
+                                                        <SelectItem key={anio.id} value={anio.id.toString()}>
                                                             {anio.nombre}
                                                         </SelectItem>
                                                     ))}

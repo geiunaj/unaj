@@ -1,6 +1,10 @@
 import api from "../../../../config/api";
-import {AxiosRequestConfig} from "axios";
+import {AxiosRequestConfig, AxiosResponse} from "axios";
 import {fertilizanteCollection, FertilizanteRequest, fertilizanteResource} from "./fertilizante.interface";
+
+interface Response {
+    message: string;
+}
 
 export async function getFertilizante(
     tipoFertilizanteId?: number,
@@ -30,36 +34,18 @@ export async function getFertilizante(
 }
 
 export async function getFertilizanteById(id: number): Promise<fertilizanteResource> {
-    try {
-        const {data} = await api.get(`/api/fertilizante/${id}`);
-        return data;
-    } catch (error) {
-        console.error("Error en getFertilizanteById: ", error);
-        throw error;
-    }
-}
-
-export async function createFertilizante(body: FertilizanteRequest) {
-    try {
-        const {data} = await api.post("/api/fertilizante", body);
-        return data;
-    } catch (error) {
-        console.error("Error en createFertilizante: ", error);
-        return null;
-    }
-}
-
-export async function updateFertilizante(id: number, body: FertilizanteRequest) {
-    try {
-        const {data} = await api.put(`/api/fertilizante/${id}`, body);
-        return data;
-    } catch (error) {
-        console.error("Error en updateFertilizante: ", error);
-        return null;
-    }
-}
-
-export async function deleteFertilizante(id: number) {
-    const {data} = await api.delete(`/api/fertilizante/${id}`);
+    const {data} = await api.get(`/api/fertilizante/${id}`);
     return data;
+}
+
+export async function createFertilizante(body: FertilizanteRequest): Promise<AxiosResponse<Response>> {
+    return await api.post("/api/fertilizante", body);
+}
+
+export async function updateFertilizante(id: number, body: FertilizanteRequest): Promise<AxiosResponse<Response>> {
+    return await api.put(`/api/fertilizante/${id}`, body);
+}
+
+export async function deleteFertilizante(id: number): Promise<AxiosResponse<Response>> {
+    return await api.delete(`/api/fertilizante/${id}`);
 }

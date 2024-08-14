@@ -24,14 +24,14 @@ import {
     CreateElectricidadProps,
     electricidadRequest,
 } from "../services/electricidad.interface";
-import { useQuery } from "@tanstack/react-query";
-import { getSedes } from "@/components/sede/services/sede.actions";
-import { getAnio } from "@/components/anio/services/anio.actions";
-import { getMes } from "@/components/mes/services/mes.actions";
-import { errorToast, successToast } from "@/lib/utils/core.function";
+import {useQuery} from "@tanstack/react-query";
+import {getSedes} from "@/components/sede/services/sede.actions";
+import {getAnio} from "@/components/anio/services/anio.actions";
+import {getMes} from "@/components/mes/services/mes.actions";
+import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonForm from "@/components/Layout/skeletonForm";
-import { createElectricidad } from "../services/electricidad.actions";
-import { getArea } from "@/components/area/services/area.actions";
+import {createElectricidad} from "../services/electricidad.actions";
+import {getArea} from "@/components/area/services/area.actions";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -86,7 +86,6 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
     });
 
 
-
     const onSubmit = async (data: z.infer<typeof Electricidad>) => {
         const ElectricidadRequest: electricidadRequest = {
             area_id: parseInt(data.area),
@@ -96,16 +95,16 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
             sede_id: parseInt(data.sede),
             anio_id: parseInt(data.anio),
         };
-        try{
+        try {
             const response = await createElectricidad(ElectricidadRequest);
             onClose();
             successToast(response.data.message);
-        } catch (error){
-            errorToast("Error al guardar el consumo de electricidad");
+        } catch (error: any) {
+            errorToast(error.respone.data.message);
         }
     };
 
-    if (sedes.isLoading  || anios.isLoading || meses.isLoading) {
+    if (sedes.isLoading || anios.isLoading || meses.isLoading) {
         return <SkeletonForm/>;
     }
 
@@ -169,7 +168,7 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                            {areas.data!.map((area) => (
+                                                {areas.data!.map((area) => (
                                                     <SelectItem key={area.id} value={area.id.toString()}>
                                                         {area.nombre}
                                                     </SelectItem>
@@ -243,11 +242,11 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                {meses.data!.map((meses) => (
-                                                    <SelectItem key={meses.id} value={meses.id.toString()}>
-                                                        {meses.nombre}
-                                                    </SelectItem>
-                                                ))}
+                                                    {meses.data!.map((meses) => (
+                                                        <SelectItem key={meses.id} value={meses.id.toString()}>
+                                                            {meses.nombre}
+                                                        </SelectItem>
+                                                    ))}
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
@@ -272,11 +271,11 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                {anios.data!.map((anios) => (
-                                                    <SelectItem key={anios.id} value={anios.id.toString()}>
-                                                        {anios.nombre}
-                                                    </SelectItem>
-                                                ))}
+                                                    {anios.data!.map((anios) => (
+                                                        <SelectItem key={anios.id} value={anios.id.toString()}>
+                                                            {anios.nombre}
+                                                        </SelectItem>
+                                                    ))}
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>

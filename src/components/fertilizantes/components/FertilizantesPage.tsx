@@ -46,6 +46,7 @@ import {deleteFertilizante} from "@/components/fertilizantes/services/fertilizan
 import {UpdateFormFertilizantes} from "@/components/fertilizantes/components/UpdateFormFertilizante";
 import ReactPaginate from "react-paginate";
 import CustomPagination from "@/components/pagination";
+import {errorToast, successToast} from "@/lib/utils/core.function";
 
 
 export default function FertilizantePage() {
@@ -98,7 +99,7 @@ export default function FertilizantePage() {
         setIsDeleteDialogOpen(true);
     };
 
-    const handleclaseFertilizanteChange = useCallback(async (value: string) => {
+    const handleClaseFertilizanteChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedClaseFertilizante(value);
         await setSelectedTipoFertilizanteId("");
@@ -139,8 +140,13 @@ export default function FertilizantePage() {
     }, [fertilizante]);
 
     const handleDelete = useCallback(async () => {
-        await deleteFertilizante(idForDelete);
-        setIsDeleteDialogOpen(false);
+        try {
+            const response = await deleteFertilizante(idForDelete);
+            setIsDeleteDialogOpen(false);
+            successToast(response.data.message);
+        } catch (error: any) {
+            errorToast(error.response.data.message);
+        }
         await fertilizante.refetch();
     }, [fertilizante, idForDelete]);
 
@@ -174,7 +180,7 @@ export default function FertilizantePage() {
                         <SelectFilter
                             list={claseFertilizante.data!}
                             itemSelected={selectedClaseFertilizante}
-                            handleItemSelect={handleclaseFertilizanteChange}
+                            handleItemSelect={handleClaseFertilizanteChange}
                             value={"nombre"}
                             nombre={"nombre"}
                             id={"nombre"}

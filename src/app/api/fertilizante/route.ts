@@ -112,9 +112,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             },
         });
 
-        const formattedFertilizantes = formaFertilizante(fertilizante);
-
-        return NextResponse.json(formattedFertilizantes);
+        return NextResponse.json({
+            message: "Fertilizante creado exitosamente",
+            fertilizante: formaFertilizante(fertilizante),
+        });
     } catch (error) {
         console.error("Error al crear el fertilizante", error);
         return new NextResponse("Error al crear el fertilizante", {status: 500});

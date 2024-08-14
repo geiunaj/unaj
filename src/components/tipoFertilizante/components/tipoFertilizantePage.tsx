@@ -40,10 +40,11 @@ import {
     useTipoFertilizante,
 } from "../lib/tipoFertilizante.hook";
 import {TipoFertilizanteCollection} from "../services/tipoFertilizante.interface";
-import {CreateFormTipoFertilizante} from "./formTipoFertilizante";
+import {CreateFormTipoFertilizante} from "./CreateFormTipoFertilizante";
 import {deleteFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
 import {deleteTipoFertilizante} from "../services/tipoFertilizante.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import {UpdateFormTipoFertilizante} from "@/components/tipoFertilizante/components/UpdateFormTipoFertilizante";
 
 export default function TipoFertilizantePage() {
     //DIALOGS
@@ -91,11 +92,6 @@ export default function TipoFertilizantePage() {
         tipoFertilizanteQuery.refetch();
     }, [tipoFertilizanteQuery]);
 
-    // const handleDelete = useCallback(async () => {
-    //     setIsDeleteDialogOpen(false);
-    //     await tipoFertilizanteQuery.refetch();
-    // }, [tipoFertilizanteQuery]);
-
     const handleDelete = useCallback(async () => {
         try {
             const response = await deleteTipoFertilizante(idForDelete);
@@ -103,7 +99,7 @@ export default function TipoFertilizantePage() {
             successToast(response.data.message);
         } catch (error: any) {
             errorToast(
-                error.response?.data?.message || "Error al eliminar el tipo de papel"
+                error.response?.data?.message || "Error al eliminar el tipo de fertilizante"
             );
         } finally {
             await tipoFertilizanteQuery.refetch();
@@ -241,7 +237,7 @@ export default function TipoFertilizantePage() {
                         <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <UpdateFormPapel onClose={handleCloseUpdate} id={idForUpdate}/>
+                    <UpdateFormTipoFertilizante onClose={handleCloseUpdate} id={idForUpdate}/>
                 </DialogContent>
             </Dialog>
 
