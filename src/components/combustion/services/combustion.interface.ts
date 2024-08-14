@@ -11,6 +11,11 @@ export interface UpdateCombustionProps {
 
 // PARA EL INDEX
 export interface CombustionCollection {
+    data: CombustionCollectionItem[];
+    meta: Meta;
+}
+
+export interface CombustionCollectionItem {
     id: number;
     tipo: string;
     tipoEquipo: string;
@@ -20,6 +25,13 @@ export interface CombustionCollection {
     tipoCombustible: string;
     unidad: string;
     sede: string;
+}
+
+export interface Meta {
+    page: number;
+    perPage: number;
+    totalRecords: number;
+    totalPages: number;
 }
 
 // PARA EL SHOW

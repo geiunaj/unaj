@@ -16,6 +16,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const sort = searchParams.get("sort") ?? undefined;
         const direction = searchParams.get("direction") ?? undefined;
 
+        const page = parseInt(searchParams.get("page") ?? "1");
+        const perPage = parseInt(searchParams.get("perPage") ?? "10");
 
         let anioId;
         if (anio) {
@@ -27,14 +29,19 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             anioId = anioRecord ? anioRecord.id : undefined;
         }
 
+        const whereOptions = {
+            tipo: tipo ? tipo : undefined,
+            tipoCombustible_id: tipoCombustibleId ? parseInt(tipoCombustibleId) : undefined,
+            sede_id: sedeId ? parseInt(sedeId) : undefined,
+            anio_id: anioId,
+            mes_id: mesId ? parseInt(mesId) : undefined,
+        };
+
+        const totalRecords = await prisma.combustible.count({where: whereOptions});
+        const totalPages = Math.ceil(totalRecords / perPage);
+
         const combustibles = await prisma.combustible.findMany({
-            where: {
-                tipo: tipo ? tipo : undefined,
-                tipoCombustible_id: tipoCombustibleId ? parseInt(tipoCombustibleId) : undefined,
-                sede_id: sedeId ? parseInt(sedeId) : undefined,
-                anio_id: anioId,
-                mes_id: mesId ? parseInt(mesId) : undefined,
-            },
+            where: whereOptions,
             include: {
                 tipoCombustible: true,
                 mes: true,
@@ -47,18 +54,26 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                     {anio_id: 'desc'},
                     {mes_id: 'desc'}
                 ],
+            skip: (page - 1) * perPage,
+            take: perPage,
         });
 
         const formattedCombustibles: Combustible[] = combustibles.map(
-            (combustible) => {
-                return formatCombustible(combustible);
-            }
+            (combustible) => formatCombustible(combustible)
         );
 
-        return NextResponse.json(formattedCombustibles);
+        return NextResponse.json({
+            data: formattedCombustibles,
+            meta: {
+                page,
+                perPage,
+                totalRecords,
+                totalPages,
+            },
+        });
     } catch (error) {
-        console.error("Error buscando combustibles", error);
-        return new NextResponse("Error buscando combustibles", {status: 500});
+        console.error("Error buscando consumos", error);
+        return new NextResponse("Error buscando consumos", {status: 500});
     }
 }
 
@@ -89,11 +104,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         });
 
         return NextResponse.json({
-            message: "Combustible registrado",
+            message: "Combustible regsistrado",
             combustible: formatCombustible(combustible),
         });
     } catch (error) {
-        console.error("Error registrando combustible", error);
-        return new NextResponse("Error registrando combustible", {status: 500});
+        console.error("Error registrando consumo", error);
+        return new NextResponse("Error registrando consumo", {status: 500});
     }
 }

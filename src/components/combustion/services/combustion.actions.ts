@@ -17,7 +17,8 @@ export async function getCombustion(
     mesId?: number,
     sort?: string,
     direction?: string,
-): Promise<CombustionCollection[]> {
+    page?: number,
+): Promise<CombustionCollection> {
     const config: AxiosRequestConfig = {
         params: {
             tipo,
@@ -27,9 +28,10 @@ export async function getCombustion(
             mesId,
             sort,
             direction,
+            page,
         },
     };
-    const {data} = await api.get<CombustionCollection[]>(
+    const {data} = await api.get<CombustionCollection>(
         "/api/combustion",
         config
     );

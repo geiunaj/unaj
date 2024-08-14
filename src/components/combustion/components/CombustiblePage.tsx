@@ -25,7 +25,7 @@ import {
     Building, Flame, Plus, Trash2, Calendar, CalendarDays, Pen,
 } from "lucide-react";
 import {
-    CombustionCollection,
+    CombustionCollection, CombustionCollectionItem,
     CombustionProps,
 } from "../services/combustion.interface";
 import {Badge} from "@/components/ui/badge";
@@ -51,9 +51,11 @@ import {
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {deleteCombustion} from "@/components/combustion/services/combustion.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import CustomPagination from "@/components/pagination";
 
 export default function CombustiblePage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
+    const [page, setPage] = useState<number>(1);
     //   NAVIGATION
     const {push} = useRouter();
 
@@ -78,6 +80,7 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         sedeId: selectedSede ? Number(selectedSede) : undefined,
         anio: selectedAnio ? Number(selectedAnio) : undefined,
         mesId: selectedMes ? Number(selectedMes) : undefined,
+        page,
     });
     const tiposCombustible = useTipoCombustible();
     const sedes = useSede();
@@ -99,21 +102,25 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
     };
 
     const handleTipoCombustibleChange = useCallback(async (value: string) => {
+        await setPage(1);
         await setSelectTipoCombustible(value);
         await combustible.refetch();
     }, [combustible]);
 
     const handleSedeChange = useCallback(async (value: string) => {
+        await setPage(1);
         await setSelectedSede(value);
         await combustible.refetch();
     }, [combustible]);
 
     const handleAnioChange = useCallback(async (value: string) => {
+        await setPage(1);
         await setSelectedAnio(value);
         await combustible.refetch();
     }, [combustible]);
 
     const handleMesChange = useCallback(async (value: string) => {
+        await setPage(1);
         await setSelectedMes(value);
         await combustible.refetch();
     }, [combustible]);
@@ -142,6 +149,11 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
     const handleCalculate = () => {
         push(`/combustion-${tipo}/calculos`);
     };
+
+    const handlePageChage = async (page: number) => {
+        await setPage(page);
+        await combustible.refetch();
+    }
 
     if (combustible.isLoading || tiposCombustible.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {
         return <SkeletonTable/>;
@@ -277,7 +289,7 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {combustible.data!.map((item: CombustionCollection, index: number) => (
+                        {combustible.data!.data.map((item: CombustionCollectionItem, index: number) => (
                             <TableRow key={item.id} className="text-center">
                                 <TableCell className="text-xs sm:text-sm">
                                     <Badge variant="secondary">{index + 1}</Badge>
@@ -324,6 +336,11 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
                         ))}
                     </TableBody>
                 </Table>
+                {
+                    combustible.data!.meta.totalPages > 1 && (
+                        <CustomPagination meta={combustible.data!.meta} onPageChange={handlePageChage}/>
+                    )
+                }
             </div>
 
             {/*MODAL UPDATE*/}

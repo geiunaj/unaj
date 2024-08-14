@@ -48,9 +48,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 sede: true,
                 tipoFertilizante: true,
             },
-            orderBy: {
-                [sort]: direction,
-            },
+            orderBy: sort
+                ? [{[sort]: direction || 'desc'}]
+                : [
+                    {anio_id: 'desc'},
+                ],
             skip: (page - 1) * perPage,
             take: perPage,
         });

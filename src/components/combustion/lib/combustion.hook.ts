@@ -13,13 +13,14 @@ interface getCombustibleInterface {
     mesId?: number;
     sort?: string;
     direction?: string;
+    page?: number;
 }
 
 export const useCombustible =
-    ({tipo, tipoCombustibleId, sedeId, anio, mesId, sort, direction}: getCombustibleInterface) => {
+    ({tipo, tipoCombustibleId, sedeId, anio, mesId, sort, direction, page}: getCombustibleInterface) => {
         return useQuery({
             queryKey: ['combustible'],
-            queryFn: () => getCombustion(tipo, tipoCombustibleId, sedeId, anio, mesId, sort, direction),
+            queryFn: () => getCombustion(tipo, tipoCombustibleId, sedeId, anio, mesId, sort, direction, page),
             refetchOnWindowFocus: false,
         });
     }
