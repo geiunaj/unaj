@@ -52,8 +52,6 @@ export async function updateElectricidad(id: number, body: electricidadRequest):
     return await api.put(`/api/electricidad/${id}`, body);
 }
 
-
 export async function deleteElectricidad(id: number): Promise<AxiosResponse<Response>> {
     return await api.delete(`/api/electricidad/${id}`);
-
 }

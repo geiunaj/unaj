@@ -9,7 +9,8 @@ import {
     Car,
     Scroll,
     Sprout,
-    Settings
+    Settings,
+    MapPinned
 } from "lucide-react";
 
 export interface MenuItem {
@@ -30,7 +31,8 @@ export const iconComponents: Record<string, any> = {
     Car,
     Scroll,
     Sprout,
-    Settings
+    Settings,
+    MapPinned
 };
 
 export const menu: MenuItem[] = [
@@ -88,6 +90,11 @@ export const menu: MenuItem[] = [
                 title: "Tipos de Fertilizantes",
                 icon: "Sprout",
                 href: "/tipoFertilizante",
+            },
+            {
+                title: "Area",
+                icon: "MapPinned",
+                href: "/area",
             },
         ]
     },
