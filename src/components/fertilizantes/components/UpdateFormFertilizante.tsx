@@ -33,6 +33,7 @@ import {
 import {updateFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {useAnio, useFertilizanteId, useSede} from "@/components/fertilizantes/lib/fertilizante.hook";
+import {successToast} from "@/lib/utils/core.function";
 
 const Fertilizante = z.object({
     clase: z.string().min(1, "Seleccione una clase de fertilizante"),
@@ -49,7 +50,6 @@ export function UpdateFormFertilizantes({
                                             id, onClose,
                                         }: UpdateFertilizanteProps) {
     const [isFicha, setIsFicha] = useState(false);
-    const [isFormLoaded, setIsFormLoaded] = useState(false);
 
     const form = useForm<z.infer<typeof Fertilizante>>({
         resolver: zodResolver(Fertilizante),
@@ -80,9 +80,8 @@ export function UpdateFormFertilizantes({
     });
 
     const loadForm = useCallback(async () => {
-        if (fertilizante.data && !isFormLoaded) {
-            await fertilizante.refetch();
-            const fertilizanteData = fertilizante.data;
+        if (fertilizante.data) {
+            const fertilizanteData = await fertilizante.data;
             form.reset({
                 clase: fertilizanteData.tipoFertilizante.clase,
                 tipoFertilizante_id: fertilizanteData.tipoFertilizante.id.toString(),
@@ -91,19 +90,12 @@ export function UpdateFormFertilizantes({
                 sede: fertilizanteData.sede.id.toString(),
                 anio: fertilizanteData.anio.id.toString(),
             });
-            tiposFertilizante.refetch();
-            setIsFormLoaded(true);
         }
-    }, [fertilizante, isFormLoaded, form, tiposFertilizante]);
+    }, [fertilizante.data, id]);
 
     useEffect(() => {
         loadForm();
-    }, [loadForm]);
-
-    const handleClose = useCallback(() => {
-        setIsFormLoaded(false);
-        onClose();
-    }, [onClose]);
+    }, [loadForm, id]);
 
     const onSubmit = async (data: z.infer<typeof Fertilizante>) => {
         const fertilizanteRequest: FertilizanteRequest = {
@@ -113,9 +105,13 @@ export function UpdateFormFertilizantes({
             is_ficha: data.is_ficha,
             anio_id: parseInt(data.anio),
         };
-        console.log(fertilizanteRequest);
-        await updateFertilizante(id, fertilizanteRequest);
-        handleClose();
+        try {
+            const response = await updateFertilizante(id, fertilizanteRequest);
+            onClose();
+            successToast(response.data.message);
+        } catch (error: any) {
+            console.log(error.response.data);
+        }
     };
 
     const onClaseChange = useCallback(() => {
@@ -123,7 +119,7 @@ export function UpdateFormFertilizantes({
         tiposFertilizante.refetch();
     }, [form, tiposFertilizante]);
 
-    if (!isFormLoaded || fertilizante.isLoading || sedes.isLoading || anios.isLoading || tiposFertilizante.isLoading || claseFertilizante.isLoading) {
+    if (fertilizante.isLoading || sedes.isLoading || anios.isLoading || tiposFertilizante.isLoading || claseFertilizante.isLoading) {
         return <SkeletonForm/>;
     }
 

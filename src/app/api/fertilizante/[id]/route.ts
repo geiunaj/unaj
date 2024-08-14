@@ -86,7 +86,10 @@ export async function PUT(
             },
         });
 
-        return NextResponse.json(formaFertilizante(fertilizante));
+        return NextResponse.json({
+            message: "Fertilizante actualizado",
+            fertilizante: formaFertilizante(fertilizante),
+        });
     } catch (error) {
         console.error("Error updating fertilizante", error);
         return new NextResponse("Error updating fertilizante", {status: 500});
@@ -110,7 +113,9 @@ export async function DELETE(
             },
         });
 
-        return NextResponse.json(fertilizante);
+        return NextResponse.json({
+            message: "Fertilizante eliminado",
+        });
     } catch (error) {
         console.error("Error deleting fertilizante", error);
         return new NextResponse("Error deleting fertilizante", {status: 500});
