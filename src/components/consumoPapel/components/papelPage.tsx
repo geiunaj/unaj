@@ -21,7 +21,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
-import {getSedes} from "@/components/sede/services/sede.actions";
 import {Badge} from "@/components/ui/badge";
 import {CollectionConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.interface";
 import {FormPapel} from "@/components/consumoPapel/components/FormPapelOficce";
