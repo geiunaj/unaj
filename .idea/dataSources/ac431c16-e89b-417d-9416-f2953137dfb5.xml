@@ -2,196 +2,9 @@
 <dataSource name="@localhost">
   <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.52">
     <root id="1">
-      <DefaultCasing>lower/lower</DefaultCasing>
       <DefaultEngine>InnoDB</DefaultEngine>
       <DefaultTmpEngine>InnoDB</DefaultTmpEngine>
-      <Grants>|root||root|localhost|ALLOW_NONEXISTENT_DEFINER|G
-|root||user_ferreteria||ALLOW_NONEXISTENT_DEFINER|G
-|root||root|localhost|ALTER|G
-|root||user_ferreteria||ALTER|G
-|root||user_portal||ALTER|G
-|root||root|localhost|ALTER ROUTINE|G
-|root||user_ferreteria||ALTER ROUTINE|G
-|root||user_portal||ALTER ROUTINE|G
-|root||root|localhost|APPLICATION_PASSWORD_ADMIN|G
-|root||user_ferreteria||APPLICATION_PASSWORD_ADMIN|G
-|root||mysql.infoschema|localhost|AUDIT_ABORT_EXEMPT|G
-|root||mysql.session|localhost|AUDIT_ABORT_EXEMPT|G
-|root||mysql.sys|localhost|AUDIT_ABORT_EXEMPT|G
-|root||root|localhost|AUDIT_ABORT_EXEMPT|G
-|root||user_ferreteria||AUDIT_ABORT_EXEMPT|G
-|root||root|localhost|AUDIT_ADMIN|G
-|root||user_ferreteria||AUDIT_ADMIN|G
-|root||mysql.session|localhost|AUTHENTICATION_POLICY_ADMIN|G
-|root||root|localhost|AUTHENTICATION_POLICY_ADMIN|G
-|root||user_ferreteria||AUTHENTICATION_POLICY_ADMIN|G
-|root||mysql.session|localhost|BACKUP_ADMIN|G
-|root||root|localhost|BACKUP_ADMIN|G
-|root||user_ferreteria||BACKUP_ADMIN|G
-|root||root|localhost|BINLOG_ADMIN|G
-|root||user_ferreteria||BINLOG_ADMIN|G
-|root||root|localhost|BINLOG_ENCRYPTION_ADMIN|G
-|root||user_ferreteria||BINLOG_ENCRYPTION_ADMIN|G
-|root||mysql.session|localhost|CLONE_ADMIN|G
-|root||root|localhost|CLONE_ADMIN|G
-|root||user_ferreteria||CLONE_ADMIN|G
-|root||mysql.session|localhost|CONNECTION_ADMIN|G
-|root||root|localhost|CONNECTION_ADMIN|G
-|root||user_ferreteria||CONNECTION_ADMIN|G
-|root||root|localhost|CREATE|G
-|root||user_ferreteria||CREATE|G
-|root||user_portal||CREATE|G
-|root||root|localhost|CREATE ROLE|G
-|root||user_ferreteria||CREATE ROLE|G
-|root||root|localhost|CREATE ROUTINE|G
-|root||user_ferreteria||CREATE ROUTINE|G
-|root||user_portal||CREATE ROUTINE|G
-|root||root|localhost|CREATE TABLESPACE|G
-|root||user_ferreteria||CREATE TABLESPACE|G
-|root||user_portal||CREATE TABLESPACE|G
-|root||root|localhost|CREATE TEMPORARY TABLES|G
-|root||user_ferreteria||CREATE TEMPORARY TABLES|G
-|root||user_portal||CREATE TEMPORARY TABLES|G
-|root||root|localhost|CREATE USER|G
-|root||user_ferreteria||CREATE USER|G
-|root||user_portal||CREATE USER|G
-|root||root|localhost|CREATE VIEW|G
-|root||user_ferreteria||CREATE VIEW|G
-|root||user_portal||CREATE VIEW|G
-|root||root|localhost|DELETE|G
-|root||user_ferreteria||DELETE|G
-|root||user_portal||DELETE|G
-|root||root|localhost|DROP|G
-|root||user_ferreteria||DROP|G
-|root||user_portal||DROP|G
-|root||root|localhost|DROP ROLE|G
-|root||user_ferreteria||DROP ROLE|G
-|root||root|localhost|ENCRYPTION_KEY_ADMIN|G
-|root||user_ferreteria||ENCRYPTION_KEY_ADMIN|G
-|root||root|localhost|EVENT|G
-|root||user_ferreteria||EVENT|G
-|root||user_portal||EVENT|G
-|root||root|localhost|EXECUTE|G
-|root||user_ferreteria||EXECUTE|G
-|root||user_portal||EXECUTE|G
-|root||root|localhost|FILE|G
-|root||user_ferreteria||FILE|G
-|root||user_portal||FILE|G
-|root||mysql.infoschema|localhost|FIREWALL_EXEMPT|G
-|root||mysql.session|localhost|FIREWALL_EXEMPT|G
-|root||mysql.sys|localhost|FIREWALL_EXEMPT|G
-|root||root|localhost|FIREWALL_EXEMPT|G
-|root||user_ferreteria||FIREWALL_EXEMPT|G
-|root||root|localhost|FLUSH_OPTIMIZER_COSTS|G
-|root||user_ferreteria||FLUSH_OPTIMIZER_COSTS|G
-|root||root|localhost|FLUSH_STATUS|G
-|root||user_ferreteria||FLUSH_STATUS|G
-|root||root|localhost|FLUSH_TABLES|G
-|root||user_ferreteria||FLUSH_TABLES|G
-|root||root|localhost|FLUSH_USER_RESOURCES|G
-|root||user_ferreteria||FLUSH_USER_RESOURCES|G
-|root||root|localhost|GROUP_REPLICATION_ADMIN|G
-|root||user_ferreteria||GROUP_REPLICATION_ADMIN|G
-|root||root|localhost|GROUP_REPLICATION_STREAM|G
-|root||user_ferreteria||GROUP_REPLICATION_STREAM|G
-|root||root|localhost|INDEX|G
-|root||user_ferreteria||INDEX|G
-|root||user_portal||INDEX|G
-|root||root|localhost|INNODB_REDO_LOG_ARCHIVE|G
-|root||user_ferreteria||INNODB_REDO_LOG_ARCHIVE|G
-|root||root|localhost|INNODB_REDO_LOG_ENABLE|G
-|root||user_ferreteria||INNODB_REDO_LOG_ENABLE|G
-|root||root|localhost|INSERT|G
-|root||user_ferreteria||INSERT|G
-|root||user_portal||INSERT|G
-|root||root|localhost|LOCK TABLES|G
-|root||user_ferreteria||LOCK TABLES|G
-|root||user_portal||LOCK TABLES|G
-|root||root|localhost|PASSWORDLESS_USER_ADMIN|G
-|root||user_ferreteria||PASSWORDLESS_USER_ADMIN|G
-|root||mysql.session|localhost|PERSIST_RO_VARIABLES_ADMIN|G
-|root||root|localhost|PERSIST_RO_VARIABLES_ADMIN|G
-|root||user_ferreteria||PERSIST_RO_VARIABLES_ADMIN|G
-|root||root|localhost|PROCESS|G
-|root||user_ferreteria||PROCESS|G
-|root||user_portal||PROCESS|G
-|root||root|localhost|REFERENCES|G
-|root||user_ferreteria||REFERENCES|G
-|root||user_portal||REFERENCES|G
-|root||root|localhost|RELOAD|G
-|root||user_ferreteria||RELOAD|G
-|root||user_portal||RELOAD|G
-|root||root|localhost|REPLICATION CLIENT|G
-|root||user_ferreteria||REPLICATION CLIENT|G
-|root||user_portal||REPLICATION CLIENT|G
-|root||root|localhost|REPLICATION SLAVE|G
-|root||user_ferreteria||REPLICATION SLAVE|G
-|root||user_portal||REPLICATION SLAVE|G
-|root||root|localhost|REPLICATION_APPLIER|G
-|root||user_ferreteria||REPLICATION_APPLIER|G
-|root||root|localhost|REPLICATION_SLAVE_ADMIN|G
-|root||user_ferreteria||REPLICATION_SLAVE_ADMIN|G
-|root||root|localhost|RESOURCE_GROUP_ADMIN|G
-|root||user_ferreteria||RESOURCE_GROUP_ADMIN|G
-|root||root|localhost|RESOURCE_GROUP_USER|G
-|root||user_ferreteria||RESOURCE_GROUP_USER|G
-|root||root|localhost|ROLE_ADMIN|G
-|root||user_ferreteria||ROLE_ADMIN|G
-|root||mysql.infoschema|localhost|SELECT|G
-|root||root|localhost|SELECT|G
-|root||user_ferreteria||SELECT|G
-|root||user_portal||SELECT|G
-|root||root|localhost|SENSITIVE_VARIABLES_OBSERVER|G
-|root||user_ferreteria||SENSITIVE_VARIABLES_OBSERVER|G
-|root||root|localhost|SERVICE_CONNECTION_ADMIN|G
-|root||user_ferreteria||SERVICE_CONNECTION_ADMIN|G
-|root||mysql.session|localhost|SESSION_VARIABLES_ADMIN|G
-|root||root|localhost|SESSION_VARIABLES_ADMIN|G
-|root||user_ferreteria||SESSION_VARIABLES_ADMIN|G
-|root||root|localhost|SET_ANY_DEFINER|G
-|root||user_ferreteria||SET_ANY_DEFINER|G
-|root||root|localhost|SHOW DATABASES|G
-|root||user_ferreteria||SHOW DATABASES|G
-|root||user_portal||SHOW DATABASES|G
-|root||root|localhost|SHOW VIEW|G
-|root||user_ferreteria||SHOW VIEW|G
-|root||user_portal||SHOW VIEW|G
-|root||root|localhost|SHOW_ROUTINE|G
-|root||user_ferreteria||SHOW_ROUTINE|G
-|root||mysql.session|localhost|SHUTDOWN|G
-|root||root|localhost|SHUTDOWN|G
-|root||user_ferreteria||SHUTDOWN|G
-|root||user_portal||SHUTDOWN|G
-|root||mysql.session|localhost|SUPER|G
-|root||root|localhost|SUPER|G
-|root||user_ferreteria||SUPER|G
-|root||user_portal||SUPER|G
-|root||mysql.infoschema|localhost|SYSTEM_USER|G
-|root||mysql.session|localhost|SYSTEM_USER|G
-|root||mysql.sys|localhost|SYSTEM_USER|G
-|root||root|localhost|SYSTEM_USER|G
-|root||user_ferreteria||SYSTEM_USER|G
-|root||mysql.session|localhost|SYSTEM_VARIABLES_ADMIN|G
-|root||root|localhost|SYSTEM_VARIABLES_ADMIN|G
-|root||user_ferreteria||SYSTEM_VARIABLES_ADMIN|G
-|root||root|localhost|TABLE_ENCRYPTION_ADMIN|G
-|root||user_ferreteria||TABLE_ENCRYPTION_ADMIN|G
-|root||root|localhost|TELEMETRY_LOG_ADMIN|G
-|root||user_ferreteria||TELEMETRY_LOG_ADMIN|G
-|root||root|localhost|TRIGGER|G
-|root||user_ferreteria||TRIGGER|G
-|root||user_portal||TRIGGER|G
-|root||root|localhost|UPDATE|G
-|root||user_ferreteria||UPDATE|G
-|root||user_portal||UPDATE|G
-|root||root|localhost|XA_RECOVER_ADMIN|G
-|root||user_ferreteria||XA_RECOVER_ADMIN|G
-|root||root|localhost|grant option|G
-|root||user_ferreteria||grant option|G
-|root||user_portal||grant option|G
-performance_schema|schema||mysql.session|localhost|SELECT|G
-sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
-      <ServerVersion>8.2.0</ServerVersion>
+      <ServerVersion>8.0.37</ServerVersion>
     </root>
     <collation id="2" parent="1" name="armscii8_general_ci">
       <Charset>armscii8</Charset>
@@ -1153,7 +966,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <CollationName>utf8mb4_unicode_ci</CollationName>
     </schema>
     <schema id="308" parent="1" name="db_unaj">
-      <LastIntrospectionLocalTimestamp>2024-08-14.18:35:14</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-08-14.23:15:56</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <user id="309" parent="1" name="user_ferreteria"/>
@@ -1411,7 +1224,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="365" parent="319" name="id">
-      <AutoIncrement>607</AutoIncrement>
+      <AutoIncrement>601</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1512,7 +1325,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="385" parent="320" name="id">
-      <AutoIncrement>18</AutoIncrement>
+      <AutoIncrement>1</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1624,7 +1437,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="407" parent="321" name="id">
-      <AutoIncrement>1502</AutoIncrement>
+      <AutoIncrement>1501</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1802,7 +1615,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="442" parent="323" name="id">
-      <AutoIncrement>100</AutoIncrement>
+      <AutoIncrement>101</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1946,7 +1759,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="470" parent="325" name="id">
-      <AutoIncrement>5</AutoIncrement>
+      <AutoIncrement>6</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -2003,7 +1816,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="481" parent="326" name="id">
-      <AutoIncrement>253</AutoIncrement>
+      <AutoIncrement>251</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -2105,7 +1918,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>Fertilizante_ficha_id_key</UnderlyingIndexName>
     </key>
     <column id="501" parent="327" name="id">
-      <AutoIncrement>267</AutoIncrement>
+      <AutoIncrement>1</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -2387,7 +2200,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="556" parent="332" name="id">
-      <AutoIncrement>32</AutoIncrement>
+      <AutoIncrement>18</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -2448,7 +2261,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="568" parent="333" name="id">
-      <AutoIncrement>15</AutoIncrement>
+      <AutoIncrement>11</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -2495,7 +2308,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="577" parent="334" name="id">
-      <AutoIncrement>30</AutoIncrement>
+      <AutoIncrement>9</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -2557,7 +2370,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="589" parent="335" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>2</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -2578,7 +2391,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="593" parent="336" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>2</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>

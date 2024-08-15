@@ -1,7 +1,7 @@
 "use client";
 
 import {useCallback, useState} from "react";
-import {CircleCheck, CircleX, Pen, Plus, Trash2} from "lucide-react";
+import {Pen, Plus, Trash2} from "lucide-react";
 import {
     Dialog, DialogClose,
     DialogContent,
@@ -21,12 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {useTipoPapel} from "@/components/tipoPapel/lib/tipoPapel.hook";
-import {TipoPapelCollection} from "@/components/tipoPapel/services/tipoPapel.interface";
 import {CreateFormTipoPapel} from "@/components/tipoPapel/components/CreateFormTipoPapel";
-import {UpdateFormTipoPapel} from "@/components/tipoPapel/components/UpdateFormTipoPapel";
-import {toast} from "sonner";
-import {deleteTipoPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {UpdateFormArea} from "@/components/area/components/UpdateFormArea";
 import {useArea} from "@/components/consumoElectricidad/lib/electricidad.hooks";
@@ -66,7 +61,6 @@ export default function AreaPage() {
             await areas.refetch();
         }
     }, [areas]);
-
 
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);

@@ -506,6 +506,7 @@ async function main() {
             nombre_certificado: null,
         },
     ];
+
     for (const tipo of tipoPapel) {
         await prisma.tipoPapel.create({
             data: {
@@ -524,20 +525,22 @@ async function main() {
 
     const allTiposPapel = await prisma.tipoPapel.findMany();
 
-    for (let i = 0; i < 50; i++) {
-        await prisma.consumoPapel.create({
-            data: {
-                tipoPapel_id:
-                allTiposPapel[Math.floor(Math.random() * allTiposPapel.length)].id,
+    for (const tipoPapel of allTiposPapel) {
+        for (const sede of allSedes) {
+            for (const anio of allAnios) {
+                await prisma.consumoPapel.create({
+                    data: {
+                        tipoPapel_id: tipoPapel.id,
+                        cantidad_paquete: faker.number.float({min: 1, max: 50}),
+                        anio_id: anio.id,
+                        sede_id: sede.id,
 
-                cantidad_paquete: faker.number.float({min: 1, max: 50}),
-                anio_id: allAnios[Math.floor(Math.random() * allAnios.length)].id,
-                sede_id: allSedes[Math.floor(Math.random() * allSedes.length)].id,
-
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                    },
+                });
+            }
+        }
     }
 
     for (let i = 0; i < 50; i++) {

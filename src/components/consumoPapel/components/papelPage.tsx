@@ -107,6 +107,10 @@ export default function PapelPage() {
         return <SkeletonTable/>
     }
 
+    if (sedeQuery.isError || consumoPapelQuery.isError || tiposPapelQuery.isError) {
+        return <div>Error</div>
+    }
+
     return (
         <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
