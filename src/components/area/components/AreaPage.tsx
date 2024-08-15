@@ -27,6 +27,7 @@ import {UpdateFormArea} from "@/components/area/components/UpdateFormArea";
 import {useArea} from "@/components/consumoElectricidad/lib/electricidad.hooks";
 import {deleteArea} from "@/components/area/services/area.actions";
 import {Area} from "@/components/area/services/area.interface";
+import {CreateFormArea} from "@/components/area/components/CreateFormArea";
 
 export default function AreaPage() {
     // DIALOGS
@@ -102,7 +103,7 @@ export default function AreaPage() {
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                <CreateFormTipoPapel onClose={handleClose}/>
+                                <CreateFormArea onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>

@@ -27,9 +27,9 @@ import {CollectionConsumoPapel} from "@/components/consumoPapel/services/consumo
 import {FormPapel} from "@/components/consumoPapel/components/FormPapelOficce";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {UpdateFormPapel} from "@/components/consumoPapel/components/UpdateFormPapelOficce";
-import {useAnios, useConsumosPapel, useSedes, useTipoPapel} from "@/components/consumoPapel/lib/consumoPapel.store";
-import { deleteConsumoPapel } from "../services/consumoPapel.actions";
-import { errorToast, successToast } from "@/lib/utils/core.function";
+import {useAnios, useConsumosPapel, useSedes, useTipoPapel} from "@/components/consumoPapel/lib/consumoPapel.hook";
+import {deleteConsumoPapel} from "../services/consumoPapel.actions";
+import {errorToast, successToast} from "@/lib/utils/core.function";
 
 export default function PapelPage() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
