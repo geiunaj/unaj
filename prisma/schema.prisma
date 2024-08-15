@@ -261,11 +261,12 @@ model consumoEnergia {
 }
 
 model area {
-  id             Int              @id @default(autoincrement())
-  nombre         String           @db.VarChar(45)
-  created_at     DateTime         @default(now())
-  updated_at     DateTime         @updatedAt
-  consumoEnergia consumoEnergia[]
+  id              Int               @id @default(autoincrement())
+  nombre          String            @db.VarChar(45)
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  consumoEnergia  consumoEnergia[]
+  energiaCalculos energiaCalculos[]
 }
 
 model energiaCalculos {
@@ -280,6 +281,7 @@ model energiaCalculos {
   totalGEI         Float @db.Float
   anioId           Int
   sedeId           Int
+  areaId           Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -287,6 +289,7 @@ model energiaCalculos {
   factor factorConversionSEIN? @relation(fields: [factorId], references: [id])
   anio   Anio?                 @relation(fields: [anioId], references: [id])
   sede   Sede?                 @relation(fields: [sedeId], references: [id])
+  area   area?                 @relation(fields: [areaId], references: [id])
 }
 
 model factorConversionSEIN {
@@ -294,7 +297,7 @@ model factorConversionSEIN {
   factorCO2  Float    @db.Float
   factorCH4  Float    @db.Float
   factorN2O  Float    @db.Float
-  anioId     Int
+  anioId     Int      @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 

@@ -966,7 +966,7 @@
       <CollationName>utf8mb4_unicode_ci</CollationName>
     </schema>
     <schema id="308" parent="1" name="db_unaj">
-      <LastIntrospectionLocalTimestamp>2024-08-14.23:15:56</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-08-15.02:59:36</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <user id="309" parent="1" name="user_ferreteria"/>
@@ -1192,7 +1192,7 @@
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="359" parent="318" name="id">
-      <AutoIncrement>6</AutoIncrement>
+      <AutoIncrement>8</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1534,7 +1534,7 @@
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="426" parent="322" name="id">
-      <AutoIncrement>51</AutoIncrement>
+      <AutoIncrement>201</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>

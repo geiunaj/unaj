@@ -1,4 +1,3 @@
-import {Anio} from "@prisma/client";
 import api from "../../../../config/api";
 import {Area, AreaRequest} from "@/components/area/services/area.interface";
 import {AxiosResponse} from "axios";
