@@ -88,7 +88,7 @@ export async function PUT(
     }
 }
 
-export async function DELETE({params}: { params: { id: string } }): Promise<NextResponse> {
+export async function DELETE(req: NextRequest,{params}: { params: { id: string } }): Promise<NextResponse> {
     try {
         const id = parseInt(params.id, 10);
         if (isNaN(id)) return new NextResponse("ID inválido", {status: 400});

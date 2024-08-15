@@ -6,6 +6,17 @@ export interface ConsumoPapelRequest {
     comentario?: string;
 }
 
+export interface ConsumoPapelResource {
+    id: number;
+    nombre: string;
+    cantidad_paquete: number;
+    comentario: null | string;
+    anio: string;
+    seded: string;
+    
+}
+
+
 export interface CollectionConsumoPapel {
     id: number;
     nombre: string;

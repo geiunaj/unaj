@@ -1,7 +1,7 @@
 import api from "../../../../config/api";
 
 import {AxiosRequestConfig} from "axios";
-import {CollectionConsumoPapel, ConsumoPapelRequest} from "./consumoPapel.interface";
+import {CollectionConsumoPapel, ConsumoPapelRequest, ConsumoPapelResource} from "./consumoPapel.interface";
 
 export async function getConsumoPapel(
     sedeId?: string,
@@ -32,21 +32,19 @@ export async function getConsumoPapel(
 }
 
 export async function createConsumoPapel(body: ConsumoPapelRequest): Promise<any> {
-    const {data} = await api.post("/api/consumoPapel", body);
-    return data;
+    return await api.post("/api/consumoPapel", body);
 }
 
-export async function showConsumoPapel(id: number): Promise<any> {
-    const {data} = await api.get(`/api/consumoPapel/${id}`);
+
+export async function getConsumoPapelById(id: number): Promise<ConsumoPapelResource> {
+    const {data} = await api.get<ConsumoPapelResource>(`/api/consumoPapel/${id}`);
     return data;
 }
 
 export async function updateConsumoPapel(id: number, body: ConsumoPapelRequest): Promise<any> {
-    const {data} = await api.put(`/api/consumoPapel/${id}`, body);
-    return data;
+    return await api.put(`/api/consumoPapel/${id}`, body);
 }
 
 export async function deleteConsumoPapel(id: number): Promise<any> {
-    const {data} = await api.delete(`/api/consumoPapel/${id}`);
-    return data;
+    return await api.delete(`/api/consumoPapel/${id}`);
 }
