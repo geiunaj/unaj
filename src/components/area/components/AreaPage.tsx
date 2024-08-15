@@ -21,13 +21,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {CreateFormTipoPapel} from "@/components/tipoPapel/components/CreateFormTipoPapel";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {UpdateFormArea} from "@/components/area/components/UpdateFormArea";
-import {useArea} from "@/components/consumoElectricidad/lib/electricidad.hooks";
 import {deleteArea} from "@/components/area/services/area.actions";
 import {Area} from "@/components/area/services/area.interface";
 import {CreateFormArea} from "@/components/area/components/CreateFormArea";
+import {useArea} from "@/components/area/lib/area.hook";
 
 export default function AreaPage() {
     // DIALOGS

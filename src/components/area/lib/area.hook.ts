@@ -1,10 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
-import {getTiposPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
+import {getArea} from "@/components/area/services/area.actions";
 
-export const useTipoPapel = () => {
+export const useArea = () => {
     return useQuery({
-        queryKey: ['tiposPapel'],
-        queryFn: () => getTiposPapel(),
+        queryKey: ['area'],
+        queryFn: () => getArea(),
         refetchOnWindowFocus: false,
     });
 }

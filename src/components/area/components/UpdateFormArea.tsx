@@ -13,104 +13,60 @@ import {
 
 import {Input} from "@/components/ui/input";
 import {Button} from "../../ui/button";
-import {
-    TipoPapelRequest,
-    UpdateTipoPapelProps
-} from "@/components/tipoPapel/services/tipoPapel.interface";
-import {createTipoPapel, getTipoPapel, updateTipoPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
-import {Switch} from "@/components/ui/switch";
 import {useQuery} from "@tanstack/react-query";
 import SkeletonForm from "@/components/Layout/skeletonForm";
-import {toast} from "sonner";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import {AreaRequest, UpdateAreaProps} from "@/components/area/services/area.interface";
+import {getAreaById, updateArea} from "@/components/area/services/area.actions";
 
-const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
-const TipoPapel = z.object({
-    nombre: z.string().min(1, requiredMessage("nombre")),
-    gramaje: z.preprocess(parseNumber, z.number().min(1, requiredMessage("gramaje mayor a 1"))),
-    unidad_paquete: z.string().min(1, requiredMessage("unidad")),
-    is_certificado: z.boolean().optional(),
-    is_reciclable: z.boolean().optional(),
-    porcentaje_reciclado: z.preprocess(parseNumber, z.number().min(1, requiredMessage("valor mayor a 1"))).optional(),
-    nombre_certificado: z.string().optional(),
-})
-    .refine(
-        (data) => !data.is_reciclable || data.porcentaje_reciclado !== undefined,
-        {
-            message: "Ingrese un porcentaje de reciclado",
-            path: ["porcentaje_reciclado"],
-        }
-    )
-    .refine(
-        (data) => !data.is_certificado || data.nombre_certificado?.trim() !== "",
-        {
-            message: "Ingrese un certificado",
-            path: ["nombre_certificado"],
-        }
-    );
+const Area = z.object({
+    nombre: z.string().min(1, requiredMessage("nombre"))
+});
 
-export function UpdateFormArea({id, onClose}: UpdateTipoPapelProps) {
+export function UpdateFormArea({id, onClose}: UpdateAreaProps) {
 
-    const form = useForm<z.infer<typeof TipoPapel>>({
-        resolver: zodResolver(TipoPapel),
+    const form = useForm<z.infer<typeof Area>>({
+        resolver: zodResolver(Area),
         defaultValues: {
             nombre: "",
-            gramaje: 0,
-            unidad_paquete: "",
-            is_certificado: false,
-            is_reciclable: false,
-            porcentaje_reciclado: 0,
-            nombre_certificado: "",
         },
     });
 
-    const tipoPapel = useQuery({
-        queryKey: ['tipoPapel'],
-        queryFn: () => getTipoPapel(id),
+    const area = useQuery({
+        queryKey: ['areaForm'],
+        queryFn: () => getAreaById(id),
         refetchOnWindowFocus: false,
     });
 
     const loadForm = useCallback(async () => {
-        if (tipoPapel.data) {
-            const tipoPapelData = tipoPapel.data;
+        if (area.data) {
+            const areaData = area.data;
             form.reset({
-                nombre: tipoPapelData.nombre,
-                gramaje: tipoPapelData.gramaje,
-                unidad_paquete: tipoPapelData.unidad_paquete,
-                is_certificado: tipoPapelData.is_certificado,
-                is_reciclable: tipoPapelData.is_reciclable,
-                porcentaje_reciclado: tipoPapelData.porcentaje_reciclado ?? 0,
-                nombre_certificado: tipoPapelData.nombre_certificado ?? "",
+                nombre: areaData.nombre,
             });
         }
-    }, [tipoPapel.data, id]);
+    }, [area.data, id]);
 
     useEffect(() => {
         loadForm();
     }, [loadForm, id]);
 
-    const onSubmit = async (data: z.infer<typeof TipoPapel>) => {
-        const tipoPapelRequest: TipoPapelRequest = {
+    const onSubmit = async (data: z.infer<typeof Area>) => {
+        const areaRequest: AreaRequest = {
             nombre: data.nombre,
-            gramaje: data.gramaje,
-            unidad_paquete: data.unidad_paquete,
-            is_certificado: data.is_certificado,
-            is_reciclable: data.is_reciclable,
-            porcentaje_reciclado: data.is_reciclable ? data.porcentaje_reciclado : 0,
-            nombre_certificado: data.is_certificado ? data.nombre_certificado : "",
         };
         try {
-            const response = await updateTipoPapel(id, tipoPapelRequest);
+            const response = await updateArea(id, areaRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
-            errorToast(error.response?.data?.message);
+            errorToast(error.response.data);
         }
     };
 
-    if (tipoPapel.isLoading) {
+    if (area.isLoading) {
         return <SkeletonForm/>;
     }
 
