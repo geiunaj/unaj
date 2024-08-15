@@ -1,14 +1,21 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {formatConsumoPapel} from "@/lib/resources/papelResource";
+import { ConsumoPapelRequest } from "@/components/consumoPapel/services/consumoPapel.interface";
 
+
+// SHOW ROUTE -> PARAM [ID]
 export async function GET(
     req: NextRequest,
     {params}: { params: { id: string } }
 ): Promise<NextResponse> {
     console.log(params.id);
     try {
-        const id = parseInt(params.id);
+        const id = parseInt(params.id,10);
+        if (isNaN(id)) {
+            return new NextResponse("Invalid ID", {status: 404});
+        }   
+        
         const consumoPapel = await prisma.consumoPapel.findUnique({
             where: {
                 id: id,
@@ -28,5 +35,73 @@ export async function GET(
     } catch (error) {
         console.error("Error finding combustible", error);
         return new NextResponse("Error finding combustible", {status: 500});
+    }
+}
+
+// UPDATE ROUTE -> PARAM [ID]
+export async function PUT(
+    req: NextRequest,
+    {params}: { params: { id: string } }
+): Promise<NextResponse> {
+    try {
+        const id = parseInt(params.id, 10);
+        if (isNaN(id)) {
+            return new NextResponse("Invalid ID", {status: 400});
+        }
+
+        const {cantidad_paquete, tipoPapel_id, anio_id, sede_id}: ConsumoPapelRequest = await req.json(); 
+        if (
+            (cantidad_paquete && typeof cantidad_paquete !== "number") ||
+            (tipoPapel_id && typeof tipoPapel_id !== "number") ||
+            (anio_id && typeof anio_id !== "number") ||
+            (sede_id && typeof sede_id !== "number")
+        ) {
+            return new NextResponse("Invalid body", {status: 400});
+        }
+
+        const updatedConsumoPapel = await prisma.consumoPapel.update({
+            where: {
+                id: id,
+            },
+            data: {
+                cantidad_paquete,
+                tipoPapel_id,
+                anio_id,
+                sede_id,
+            },
+            include: {
+                tipoPapel: true,
+                anio: true,
+                sede: true,
+            },
+        });
+
+        return NextResponse.json({
+            message: "Consumo de Papel actualizado corectamente",
+            consumoPapel: updatedConsumoPapel,
+
+        });
+
+    } catch (error) {
+        console.error("Error updating consumo papel", error);
+        return new NextResponse("Error updating consumo papel", {status: 500});
+    }
+}
+
+export async function DELETE({params}: { params: { id: string } }): Promise<NextResponse> {
+    try {
+        const id = parseInt(params.id, 10);
+        if (isNaN(id)) return new NextResponse("ID inválido", {status: 400});
+
+        await prisma.consumoPapel.delete({
+            where: {id},
+        });
+
+        return NextResponse.json({
+            message: "Consumo de papel eliminada correctamente",
+        });
+    } catch (error: any) {
+        console.error("Error eliminando Consumo de papel", error);
+        return new NextResponse("Error eliminando Consumo de papel", {status: 500});
     }
 }

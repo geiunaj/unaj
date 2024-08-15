@@ -28,6 +28,8 @@ import {FormPapel} from "@/components/consumoPapel/components/FormPapelOficce";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {UpdateFormPapel} from "@/components/consumoPapel/components/UpdateFormPapelOficce";
 import {useAnios, useConsumosPapel, useSedes, useTipoPapel} from "@/components/consumoPapel/lib/consumoPapel.store";
+import { deleteConsumoPapel } from "../services/consumoPapel.actions";
+import { errorToast, successToast } from "@/lib/utils/core.function";
 
 export default function PapelPage() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -76,9 +78,19 @@ export default function PapelPage() {
         consumoPapelQuery.refetch();
     }, [consumoPapelQuery]);
 
+
     const handleDelete = useCallback(async () => {
-        setIsDeleteDialogOpen(false);
-        await consumoPapelQuery.refetch();
+        try {
+            const response = await deleteConsumoPapel(idForDelete);
+            setIsDeleteDialogOpen(false);
+            successToast(response.data.message);
+        } catch (error: any) {
+            errorToast(
+                error.response?.data?.message || "Error al eliminar el consumo de papel"
+            );
+        } finally {
+            await consumoPapelQuery.refetch();
+        }
     }, [consumoPapelQuery]);
 
     const handleClickUpdate = (id: number) => {
@@ -127,6 +139,7 @@ export default function PapelPage() {
                             nombre={"name"}
                             id={"id"}
                             icon={<Building className="h-3 w-3"/>}
+                            all={true}
                         />
 
                         <SelectFilter

@@ -23,6 +23,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             anioId = anioRecord ? anioRecord.id : undefined;
         }
 
+
         const consumopapel = await prisma.consumoPapel.findMany({
             where: {
                 sede_id: sedeId ? parseInt(sedeId) : undefined,
@@ -66,7 +67,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             },
         });
 
-        return NextResponse.json(consumopapel);
+        return NextResponse.json({
+            message: "Tipo de consumo de papel creado correctamente",
+            consumopapel: formatConsumoPapel(consumopapel),
+        });
     } catch (error) {
         console.error("Error creating combustible", error);
         return new NextResponse("Error creating combustible", {status: 500});
