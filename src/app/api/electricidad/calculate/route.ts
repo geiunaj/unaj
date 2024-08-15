@@ -2,179 +2,156 @@ import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {
     CombustionCalcRequest,
-    CombustionCalc,
 } from "@/components/combustion/services/combustionCalculate.interface";
-import {formatCombustibleCalculo} from "@/lib/resources/combustionCalculateResource";
+import {electricidadCalculosRequest} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
+import {formatElectricidadCalculo} from "@/lib/resources/electricidadCalculateResource";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
         const sedeId = searchParams.get("sedeId");
-        let anioId = searchParams.get("anioId");
-        const tipo = searchParams.get("tipo");
+        const anio = searchParams.get("anio");
 
-        if (!sedeId || !anioId || !tipo) {
-            return NextResponse.json([{error: "Missing sedeId or anioId"}]);
+        const sort = searchParams.get("sort") ?? undefined;
+        const direction = searchParams.get("direction") ?? undefined;
+
+        const page = parseInt(searchParams.get("page") ?? "1");
+        const perPage = parseInt(searchParams.get("perPage") ?? "10");
+
+        let anioId;
+
+        if (anio) {
+            const searchAnio = await prisma.anio.findFirst({
+                where: {
+                    nombre: anio,
+                },
+            });
+            if (!searchAnio) return NextResponse.json([{error: "Anio not found"}]);
+            anioId = searchAnio.id;
         }
+        if (!sedeId || !anioId) return NextResponse.json([{error: "Missing sedeId or anioId"}]);
 
-        const searchAnio = await prisma.anio.findFirst({
-            where: {
-                nombre: anioId,
-            },
+        const whereOptions = {
+            sedeId: parseInt(sedeId),
+            anioId: anioId,
+        };
+
+        const totalRecords = await prisma.energiaCalculos.count({
+            where: whereOptions
         });
+        const totalPages = Math.ceil(totalRecords / perPage);
 
-        if (!searchAnio) {
-            return NextResponse.json([{error: "Anio not found"}]);
-        }
-
-        const combustibleCalculos = await prisma.combustibleCalculos.findMany({
+        const electricidadCalculos = await prisma.energiaCalculos.findMany({
             where: {
                 sedeId: parseInt(sedeId),
-                anioId: searchAnio.id,
-                tipo: tipo,
+                anioId: anioId,
             },
             include: {
-                tipoCombustible: true,
-                // sede: true,
-                // anio: true
+                sede: true,
+                anio: true,
+                factor: true,
             },
+            orderBy: sort
+                ? [{[sort]: direction || 'desc'}]
+                : [
+                    {anioId: 'desc'},
+                ],
+            skip: (page - 1) * perPage,
+            take: perPage,
         });
 
-        const formattedCombustibleCalculos: any[] = combustibleCalculos
-            .map((combustibleCalculo) => {
-                if (combustibleCalculo.consumo !== 0) {
-                    return formatCombustibleCalculo(combustibleCalculo);
+        const formattedElectricidadCalculos: any[] = electricidadCalculos
+            .map((electricidadCalculo: any) => {
+                if (electricidadCalculo.consumo !== 0) {
+                    return formatElectricidadCalculo(electricidadCalculo);
                 }
                 return null;
             })
             .filter((combustibleCalculo) => combustibleCalculo !== null);
 
-        return NextResponse.json(formattedCombustibleCalculos);
-    } catch (error) {
-        console.error("Error finding combustion calculations", error);
-        return new NextResponse("Error finding combustion calculations", {
-            status: 500,
+        return NextResponse.json({
+            data: formattedElectricidadCalculos,
+            meta: {
+                page,
+                perPage,
+                totalPages,
+                totalRecords,
+            },
         });
+    } catch (error) {
+        console.error("Error buscando calculos", error);
+        return new NextResponse("Error buscando calculos", {status: 500,});
     }
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
-        // PRIMERO DEFINO UNA VARIABLE PARA ALMACENAR LOS CALCULOS DE COMBUSTIBLE
-        const combustibleCalculos = [];
+        const electricidadCalculos = [];
 
-        // LUEGO OBTENGO EL CUERPO DE LA PETICION QUE DEBE SER DE TIPO CombustionCalcRequest
         const body: CombustionCalcRequest = await req.json();
 
-        // OBTENGO LOS DATOS DE LA PETICION QUE NECESITO PARA REALIZAR LOS CALCULOS COMO
-        // EL ID DE LA SEDE, EL ID DEL AÑO Y EL TIPO DE COMBUSTIBLE
         const sedeId = body.sedeId;
-        let anioId = body.anioId; // AQUI LE PONGO LET PORQUE LUEGO CAMBIO EL VALOR DE ESTA VARIABLE, YA QUE RECIBO 2024 Y NECESITO EL ID DE ESE AÑO
-        const tipo = body.tipo;
+        let anioId = body.anioId;
 
-        /*
-        findFirst: Busca la primera instancia que cumpla con las condiciones que le paso en el where
-        findUnique: Busca una instancia unica que cumpla con las condiciones que le paso en el where
-        findMany: Busca todas las instancias que cumplan con las condiciones que le paso
-        */
-
-        // AQUI BUSCO EL AÑO QUE ME PASARON EN LA PETICION POR ESO USO prisma.anio.findFirst
-        // POR ESO EN EL WHERE LE PASO EL NOMBRE DEL AÑO QUE ME PASARON
-        // LE COLOCO .toString() PORQUE EL VALOR QUE ME PASAN NO ES UN STRING Y NECESITO QUE SEA UN STRING
         const searchAnio = await prisma.anio.findFirst({
             where: {
                 nombre: anioId.toString(),
             },
         });
 
-        // SI NO ENCUENTRO EL AÑO QUE ME PASARON EN LA PETICION DEVUELVO UN MENSAJE DE ERROR
         if (!searchAnio) {
             return NextResponse.json([{error: "Anio not found"}]);
         } else {
-            // SI ENCUENTRO EL AÑO QUE ME PASARON EN LA PETICION CAMBIO EL VALOR DE LA VARIABLE ANIOID
             anioId = searchAnio.id;
         }
 
-        //
-        //
-        //
-        // A PARTIR DE AQUI EMPIEZO A REALIZAR LOS CALCULOS DE COMBUSTIBLE
-        //
-        //
-        //
+        const areas = await prisma.area.findMany();
 
-        // OBTENGO LOS TIPOS DE COMBUSTIBLE QUE TENGO EN LA BASE DE DATOS, USO prisma.tipoCombustible.findMany
-        const tiposCombustible = await prisma.tipoCombustible.findMany();
-
-        // OBTENGO LOS CONSUMOS DE COMBUSTIBLE DE LA SEDE QUE ME PASARON EN LA PETICION, USO prisma.combustible.findMany
-        const combustibles = await prisma.combustible.findMany({
+        const electricidad = await prisma.consumoEnergia.findMany({
             where: {
-                // AQUI LE PASO LAS CONDICIONES QUE NECESITO PARA OBTENER LOS CONSUMOS DE COMBUSTIBLE
                 sede_id: sedeId,
                 anio_id: anioId,
-                tipo: tipo,
             },
         });
 
-        // ELIMINO LOS CALCULOS DE COMBUSTIBLE QUE YA ESTAN EN LA BASE DE DATOS
-        await prisma.combustibleCalculos.deleteMany({
+        await prisma.energiaCalculos.deleteMany({
             where: {
                 anioId: anioId,
                 sedeId: sedeId,
-                tipo: tipo,
             },
         });
 
-        // RECORRO LOS TIPOS DE COMBUSTIBLE QUE OBTUVE DE LA BASE DE DATOS
-        for (const tipoCombustible of tiposCombustible) {
-            // (1)
-            // COMIENZO A REALIZAR LOS CALCULOS DE COMBUSTIBLE
+        const factorSEIN = await prisma.factorConversionSEIN.findFirst({
+            where: {
+                anioId: anioId,
+            },
+        });
 
-            //   HAGO UNA CONSTANTE PARA ALMACENAR EL CONSUMO TOTAL DE COMBUSTIBLE
-            //   EL CONSUMO TOTAL DE COMBUSTIBLE ES LA SUMA DE TODOS LOS CONSUMOS DE COMBUSTIBLE QUE TENGO
-            //   EN LA BASE DE DATOS, POR ESO USO EL METODO reduce, QUE ME PERMITE REDUCIR UN ARRAY A UN SOLO VALOR
-            const totalConsumo: number = combustibles.reduce((acc, combustible) => {
-                // ACC ES EL ACUMULADOR, ES DECIR EL VALOR QUE SE VA ACUMULANDO
-                // COMBUSTIBLE ES EL VALOR ACTUAL QUE ESTOY RECORRIENDO DEL ARRAY DE COMBUSTIBLES
+        if (!factorSEIN) return NextResponse.json([{error: "Factor SEIN not found"}]);
 
-                // AQUI PREGUNTO SI EL TIPO DE COMBUSTIBLE DEL CONSUMIBLE QUE ESTOY RECORRIENDO
-                // ES IGUAL AL TIPO DE COMBUSTIBLE QUE ESTOY RECORRIENDO EN EL ARRAY DE TIPOS DE COMBUSTIBLE (1)
-                if (combustible.tipoCombustible_id === tipoCombustible.id) {
-                    // SI EL TIPO DE COMBUSTIBLE DEL CONSUMIBLE QUE ESTOY RECORRIENDO
-                    // ES IGUAL AL TIPO DE COMBUSTIBLE QUE ESTOY RECORRIENDO EN EL ARRAY DE TIPOS DE COMBUSTIBLE
-                    // SUMO EL CONSUMO DEL CONSUMIBLE AL ACUMULADOR
-                    return acc + combustible.consumo;
+        const factorConversion: number = 277.7778;
+
+
+        for (const area of areas) {
+            const totalConsumo: number = electricidad.reduce((acc, electricidad) => {
+                if (electricidad.areaId === area.id) {
+                    return acc + electricidad.consumo;
                 }
-
-                // FINALMENTE RETORNO EL ACUMULADOR
                 return acc;
-
-                // AQUI LE PASO 0 COMO VALOR INICIAL DEL ACUMULADOR
             }, 0);
-
-            // LUEGO ALMACENO EL VALOR CALORICO DEL TIPO DE COMBUSTIBLE QUE ESTOY RECORRIENDO
-            const valorCalorico = tipoCombustible.valorCalorico;
-
-            //   Y AHORA SI CALCULO EL CONSUMO DE COMBUSTIBLE QUE ES EL PRODUCTO DEL
-            //   VALOR CALORICO POR EL CONSUMO TOTAL DE TODOS LOS CONSUMOS DE COMBUSTIBLE
-            const consumo = valorCalorico * totalConsumo;
-
-            // LUEGO CALCULO LAS EMISIONES DE CO2, CH4 Y N2O PARA EL TIPO DE COMBUSTIBLE QUE ESTOY RECORRIENDO
+            const consumo = factorConversion * totalConsumo;
             const totalEmisionCO2: number =
-                tipoCombustible.factorEmisionCO2 * consumo;
+                factorSEIN.factorCO2 * consumo;
             const totalEmisionCH4: number =
-                tipoCombustible.factorEmisionCH4 * consumo;
+                factorSEIN.factorCH4 * consumo;
             const totalEmisionN2O: number =
-                tipoCombustible.factorEmisionN2O * consumo;
+                factorSEIN.factorN2O * consumo;
             const totalGEI: number =
                 totalEmisionCO2 + totalEmisionCH4 + totalEmisionN2O;
-
-            // POR ULTIMO GUARDO LOS CALCULOS DE COMBUSTIBLE EN  UNA VARIABLE DE TIPO CombustionCalc
-            const calculoCombustible: CombustionCalc = {
-                tipo: tipo,
-                tipoCombustibleId: tipoCombustible.id,
+            const calculoElectricidad: electricidadCalculosRequest = {
+                areaId: area.id,
                 consumoTotal: totalConsumo,
-                valorCalorico: valorCalorico,
+                factorConversion: factorConversion,
                 consumo: consumo,
                 emisionCO2: totalEmisionCO2,
                 emisionCH4: totalEmisionCH4,
@@ -183,31 +160,35 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 anioId: anioId,
                 sedeId: sedeId,
             };
+            const electridadCalculoCreate = await prisma.energiaCalculos.create({
+                data: {
+                    consumoArea: calculoElectricidad.consumo,
+                    factorConversion: calculoElectricidad.factorConversion,
+                    factorId: factorSEIN.id,
+                    consumoTotal: calculoElectricidad.consumoTotal,
+                    emisionCO2: calculoElectricidad.emisionCO2,
+                    emisionCH4: calculoElectricidad.emisionCH4,
+                    emisionN2O: calculoElectricidad.emisionN2O,
+                    totalGEI: calculoElectricidad.totalGEI,
+                    areaId: calculoElectricidad.areaId,
+                    anioId: calculoElectricidad.anioId,
+                    sedeId: calculoElectricidad.sedeId,
 
-            //   AQUI GUARDO LOS CALCULOS DE COMBUSTIBLE EN LA BASE DE DATOS
-            const tipoCombustibleCreate = await prisma.combustibleCalculos.create({
-                data: calculoCombustible,
-                // CONSIDERO EL INCLUDE PARA QUE ME DEVUELVA LOS DATOS DE TIPO COMBUSTIBLE, SEDE Y AÑO SI LO NECESITO
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
                 include: {
-                    tipoCombustible: true,
-                    // sede: true,
-                    // anio: true,
+                    sede: true,
+                    anio: true,
+                    factor: true
                 },
             });
 
-            //   AQUI AGREGO LOS CALCULOS DE COMBUSTIBLE A LA VARIABLE QUE CREE AL PRINCIPIO
-            combustibleCalculos.push(tipoCombustibleCreate);
+            electricidadCalculos.push(electridadCalculoCreate);
         }
 
-        // AQUI FORMATEO LOS CALCULOS DE COMBUSTIBLE PARA QUE SEAN MAS FACILES DE LEER
-        const formattedCombustibleCalculos: any[] = combustibleCalculos.map(
-            // AQUI LE PASO CADA CALCULO DE COMBUSTIBLE A LA FUNCION formatCombustibleCalculo
-            // PARA QUE ME DEVUELVA LOS DATOS DE UNA FORMA MAS FACIL DE LEER
-            (combustibleCalculo) => formatCombustibleCalculo(combustibleCalculo)
-        );
-
-        // POR ULTIMO DEVUELVO LOS CALCULOS DE COMBUSTIBLE FORMATEADOS
-        return NextResponse.json(formattedCombustibleCalculos);
+        const formattedElectricidadCalculos: any[] = electricidadCalculos.map(formatElectricidadCalculo);
+        return NextResponse.json(formattedElectricidadCalculos);
     } catch (error) {
         console.error("Error calculating combustion", error);
         return new NextResponse("Error calculating combustion", {status: 500});

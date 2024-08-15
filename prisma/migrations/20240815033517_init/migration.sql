@@ -246,6 +246,7 @@ CREATE TABLE `energiaCalculos` (
     `totalGEI` FLOAT NOT NULL,
     `anioId` INTEGER NOT NULL,
     `sedeId` INTEGER NOT NULL,
+    `areaId` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -262,6 +263,7 @@ CREATE TABLE `factorConversionSEIN` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `factorConversionSEIN_anioId_key`(`anioId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -358,6 +360,9 @@ ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_anioId_fkey` FOREI
 
 -- AddForeignKey
 ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_sedeId_fkey` FOREIGN KEY (`sedeId`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_areaId_fkey` FOREIGN KEY (`areaId`) REFERENCES `area`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `factorConversionSEIN` ADD CONSTRAINT `factorConversionSEIN_anioId_fkey` FOREIGN KEY (`anioId`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
