@@ -7,8 +7,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import {useCallback, useState} from "react";
-import {Bean, Building, Calendar, LeafyGreen, Pen, Plus, Trash2} from "lucide-react";
+import {Bean, Building, Calendar, FileSpreadsheet, LeafyGreen, Pen, Plus, Trash2} from "lucide-react";
 import {FormFertilizantes} from "./FormFertilizantes";
 import {
     Dialog,
@@ -44,9 +49,11 @@ import {
 } from "@/components/fertilizantes/lib/fertilizante.hook";
 import {deleteFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
 import {UpdateFormFertilizantes} from "@/components/fertilizantes/components/UpdateFormFertilizante";
-import ReactPaginate from "react-paginate";
 import CustomPagination from "@/components/pagination";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import {Label} from "@/components/ui/label";
+import {Input} from "@/components/ui/input";
+import ReportPopover from "@/components/ReportPopover";
 
 
 export default function FertilizantePage() {
@@ -220,6 +227,25 @@ export default function FertilizantePage() {
                         />
                     </div>
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    size="sm"
+                                    className="h-7 gap-1"
+                                    variant="outline"
+                                >
+                                    <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                    Reporte
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                                <ReportPopover
+                                    onClick={(data) => console.log(data)}
+                                    text={"Generar reporte"}
+                                />
+                            </PopoverContent>
+                        </Popover>
                         <ButtonCalculate onClick={handleCalculate}/>
 
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

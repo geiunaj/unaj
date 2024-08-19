@@ -1,22 +1,22 @@
 import api from "../../../../config/api";
 
 import {AxiosRequestConfig} from "axios";
-import { TaxiCollection, TaxiRequest } from "./taxi.interface";
+import {TaxiCollection, TaxiRequest} from "./taxi.interface";
 
 export async function getTaxi(
     sedeId?: string,
+    anioId?: string,
     mesId?: string,
     sort?: string,
     direction?: string,
-    anioId?: string,
 ): Promise<TaxiCollection[]> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
+            anioId,
             mesId,
             sort,
             direction,
-            anioId,
         },
     };
     const {data} = await api.get<TaxiCollection[]>(
