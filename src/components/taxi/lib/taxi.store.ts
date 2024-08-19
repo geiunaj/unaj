@@ -19,10 +19,10 @@ interface TaxiStore {
     taxi: TaxiCollection[];
     loadtaxi: (options?: {
         tipo?: tipoForm;
-        sedeId?: number;
+        sedeId?: number | undefined;
         sort?: sort;
         direction?: direction;
-        anioId?: number;
+        anioId?: number | undefined;
         tipoCombustibleId?: number;
     }) => void;
     createtaxi: (taxi: TaxiRequest) => Promise<void>;
@@ -35,20 +35,19 @@ export const usetaxiStore = create<TaxiStore>((set) => ({
     taxi: [],
     loadtaxi: async ({
                          sedeId,
-                         sort,
+                        //  sort,
                          direction,
                          anioId,
                          mesId,
                      }: {
-        tipo?: tipoForm;
-        sedeId?: number;
-        sort?: sort;
+        sedeId?: number | undefined;
+        // sort?: sort;
         direction?: direction;
-        anioId?: number;
+        anioId?: number | undefined;
         mesId?: number;
     } = {}) => {
         try {
-            const data = await getTaxi(sedeId, mesId, sort as string, direction as string, anioId);
+            const data = await getTaxi(sedeId, direction as string, anioId, mesId);
             set({taxi: data});
         } catch (error) {
             console.error("Error loading taxi data:", error);

@@ -4,11 +4,11 @@ import {AxiosRequestConfig} from "axios";
 import { TaxiCollection, TaxiRequest } from "./taxi.interface";
 
 export async function getTaxi(
-    sedeId?: number,
-    mesId?: number,
+    sedeId?: string,
+    mesId?: string,
     sort?: string,
     direction?: string,
-    anioId?: number,
+    anioId?: string,
 ): Promise<TaxiCollection[]> {
     const config: AxiosRequestConfig = {
         params: {

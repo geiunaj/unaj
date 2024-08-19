@@ -37,7 +37,7 @@ import { Badge } from "@/components/ui/badge";
 import { CollectionConsumoPapel } from "@/components/consumoPapel/services/consumoPapel.interface";
 import { FormPapel } from "@/components/consumoPapel/components/FormPapelOficce";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import { UpdateFormPapel } from "@/components/consumoPapel/components/UpdateFormPapelOficce";
+// import { UpdateFormPapel } from "@/components/consumoPapel/components/UpdateFormPapelOficce";
 import {
   useAnios,
   useConsumosPapel,
@@ -319,7 +319,7 @@ export default function PapelPage() {
             <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <UpdateFormPapel onClose={handleCloseUpdate} id={idForUpdate} />
+          {/* <UpdateFormPapel onClose={handleCloseUpdate} id={idForUpdate} /> */}
         </DialogContent>
       </Dialog>
 

@@ -1,307 +1,323 @@
 "use client";
-import {useEffect, useState, useCallback} from "react";
-import {Button, buttonVariants} from "@/components/ui/button";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import {Pencil1Icon} from "@radix-ui/react-icons";
-import {Pen, Plus, Trash2} from "lucide-react";
+import { useState, useCallback } from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
 
-import {useSedeStore} from "@/components/sede/lib/sede.store";
+import { Building, Calendar, File, Pen, Plus, Trash2 } from "lucide-react";
+
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import { useSedeStore } from "@/components/sede/lib/sede.store";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import {useAnioStore} from "@/components/anio/lib/anio.store";
+import { useAnioStore } from "@/components/anio/lib/anio.store";
 import SelectFilter from "@/components/selectFilter";
-import {TaxiCollection} from "../service/taxi.interface";
-import {usetaxiStore} from "../lib/taxi.store";
-import {deleteTaxi} from "../service/taxi.actions";
+import { TaxiCollection } from "../service/taxi.interface";
+import { usetaxiStore } from "../lib/taxi.store";
+import { deleteTaxi } from "../service/taxi.actions";
+import {
+  useAnios,
+  useSedes,
+} from "@/components/consumoPapel/lib/consumoPapel.hook";
+import { useMeses } from "@/components/consumoElectricidad/lib/electricidadCalculos.hooks";
+import { useTaxi } from "../lib/taxi.hook";
+import { errorToast, successToast } from "@/lib/utils/core.function";
+import SkeletonTable from "@/components/Layout/skeletonTable";
+import { Badge } from "@/components/ui/badge";
+import { FormTaxi } from "./FormTaxi";
 
 export default function TaxiPage() {
+  // DIALOGS
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-    // DIALOGS
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
-    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [idForUpdate, setIdForUpdate] = useState<number>(0);
+  const [idForDelete, setIdForDelete] = useState<number>(0);
 
-    // STORES
-    const {taxi, loadtaxi, deletetaxi} = usetaxiStore();
-    const {sedes, loadSedes} = useSedeStore();
-    const {anios, loadAnios} = useAnioStore();
+  // SELECTS - FILTERS
+  const [selectedSede, setSelectedSede] = useState<string>("1");
+  const [selectedAnio, setSelectedAnio] = useState<string>(
+    new Date().getFullYear().toString()
+  );
+  const [selectedMes, setSelectedMes] = useState<string>(
+    new Date().getMonth().toString()
+  );
 
-    // SELECTS - FILTERS
-    const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [selectedAnio, setSelectedAnio] = useState<string>(new Date().getFullYear().toString());
-    // const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">("desc");
+  const sedeQuery = useSedes();
+  const mesQuery = useMeses();
+  const anioQuery = useAnios();
+  const taxiQuery = useTaxi(selectedSede, selectedAnio, selectedMes);
 
+  // HANDLES
+  const handleSedeChange = useCallback(
+    async (value: string) => {
+      await setSelectedSede(value);
+      await taxiQuery.refetch();
+    },
+    [taxiQuery]
+  );
 
-    // IDS
-    const [idForUpdate, setIdForUpdate] = useState<number>(0);
-    const [idForDelete, setIdForDelete] = useState<number>(0);
+  const handleAnioChange = useCallback(
+    async (value: string) => {
+      await setSelectedAnio(value);
+      await taxiQuery.refetch();
+    },
+    [taxiQuery]
+  );
 
-    const handleClickUpdate = (id: number) => {
-        setIdForUpdate(id);
-        setIsUpdateDialogOpen(true);
-    };
+  const handleClose = useCallback(() => {
+    setIsDialogOpen(false);
+    taxiQuery.refetch();
+  }, [taxiQuery]);
 
-    const handleCLickDelete = (id: number) => {
-        setIdForDelete(id);
-        setIsDeleteDialogOpen(true);
+  const handleCloseUpdate = useCallback(() => {
+    setIsUpdateDialogOpen(false);
+    taxiQuery.refetch();
+  }, [taxiQuery]);
+
+  const handleDelete = useCallback(async () => {
+    try {
+      const response = await deleteTaxi(idForDelete);
+      setIsDeleteDialogOpen(false);
+      successToast(response.data.message);
+    } catch (error: any) {
+      errorToast(error.response.data);
+    } finally {
+      await taxiQuery.refetch();
     }
+  }, [taxiQuery]);
 
-    useEffect(() => {
-        if (sedes.length === 0) loadSedes();
-        if (anios.length === 0) loadAnios();
-    }, [loadSedes, loadAnios, sedes.length, anios.length,]);
+  const handleClickUpdate = (id: number) => {
+    setIdForUpdate(id);
+    setIsUpdateDialogOpen(true);
+  };
 
-    useEffect(() => {
-        const currentYear = new Date().getFullYear().toString();
+  const handleCLickDelete = (id: number) => {
+    setIdForDelete(id);
+    setIsDeleteDialogOpen(true);
+  };
 
-        if (anios.length > 0 && !selectedAnio) {
-            const currentAnio = anios.find((anio) => anio.nombre === currentYear);
-            if (currentAnio) {
-                setSelectedAnio(currentAnio.id.toString());
-            }
-        }
-        loadtaxi({
-            sedeId: Number(selectedSede),
-            anioId: selectedAnio ? Number(selectedAnio) : undefined,
-        });
-    }, [anios, selectedSede, selectedAnio, loadtaxi]);
+  if (
+    sedeQuery.isLoading ||
+    anioQuery.isLoading ||
+    mesQuery.isLoading ||
+    taxiQuery.isLoading
+  ) {
+    return <SkeletonTable />;
+  }
 
-    const handleSedeChange = useCallback((value: string) => {
-        setSelectedSede(value);
-    }, []);
+  if (
+    sedeQuery.isError ||
+    anioQuery.isError ||
+    mesQuery.isError ||
+    taxiQuery.isError
+  ) {
+    return <div>Error</div>;
+  }
 
-    const handleAnioChange = useCallback((value: string) => {
-        setSelectedAnio(value);
-    }, []);
+  return (
+    <div className="w-full max-w-[1150px] h-full">
+      <div className="flex flex-row justify-between items-start mb-6">
+        <div className="font-Manrope">
+          <h1 className="text-xl text-gray-800 font-bold">Taxi Contratados</h1>
+          <h2 className="text-base text-gray-500">Huella de carbono</h2>
+        </div>
+        <div className="flex justify-end gap-5">
+          <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
+            <SelectFilter
+              list={sedeQuery.data!}
+              itemSelected={selectedSede}
+              handleItemSelect={handleSedeChange}
+              value={"id"}
+              nombre={"name"}
+              id={"id"}
+              icon={<Building className="h-3 w-3" />}
+              all={true}
+            />
 
-    // const handleToggleConsumoSort = useCallback(() => {
-    //     setConsumoDirection((prevDirection) => {
-    //         const newDirection = prevDirection === "asc" ? "desc" : "asc";
-    //         loadCombustion({
-    //             tipo,
-    //             sedeId: Number(selectedSede),
-    //             sort: "consumo",
-    //             direction: newDirection,
-    //         });
-    //         return newDirection;
-    //     });
-    // }, [loadCombustion, tipo, selectedSede]);
+            <SelectFilter
+              list={anioQuery.data!}
+              itemSelected={selectedAnio}
+              handleItemSelect={handleAnioChange}
+              value={"anio"}
+              nombre={"anio"}
+              id={"anio"}
+              icon={<Calendar className="h-3 w-3" />}
+              all={true}
+            />
+            <SelectFilter
+              list={mesQuery.data!}
+              itemSelected={selectedMes}
+              handleItemSelect={setSelectedMes}
+              value={"id"}
+              nombre={"nombre"}
+              id={"id"}
+              icon={<Calendar className="h-3 w-3" />}
+              all={true}
+            />
+          </div>
 
-    const handleClose = useCallback(() => {
-        setIsDialogOpen(false);
-        loadtaxi({
-            sedeId: Number(selectedSede),
-            anioId: Number(selectedAnio),
-        });
-    }, [loadtaxi, selectedSede, selectedAnio]);
+          <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+            {/* <ButtonCalculate onClick={handleCalculate} /> */}
 
-    const handleCloseUpdate = useCallback(() => {
-        setIsUpdateDialogOpen(false);
-        loadtaxi({
-            sedeId: Number(selectedSede),
-            anioId: Number(selectedAnio),
-        });
-    }, [loadtaxi, selectedSede, selectedAnio]);
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" className="h-7 gap-1">
+                  <Plus className="h-3.5 w-3.5" />
+                  Registrar
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-lg border-2">
+                <DialogHeader>
+                  <DialogTitle> TAXI CONTRATADOS</DialogTitle>
+                  <DialogDescription>
+                    Registrar el taxi contratado.
+                  </DialogDescription>
+                  <DialogClose />
+                </DialogHeader>
+                <FormTaxi onClose={handleClose} />
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+      </div>
 
-    const handleDelete = useCallback(async () => {
-        await deleteTaxi(idForDelete);
-        setIsDeleteDialogOpen(false);
-        loadtaxi({
-            sedeId: Number(selectedSede),
-            anioId: Number(selectedAnio),
-        });
-    }, [deleteTaxi, idForDelete, loadtaxi, selectedSede, selectedAnio]);
+      <div className="rounded-lg overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
+                N°
+              </TableHead>
+              <TableHead className="font-Manrope text-sm font-bold text-center">
+                UNIDAD CONTRATANTE
+              </TableHead>
+              <TableHead className="font-Manrope text-sm font-bold text-center">
+                LUGAR DE SALIDA
+              </TableHead>
+              <TableHead className="font-Manrope text-sm font-bold text-center">
+                LUGAR DE DESTINO
+              </TableHead>
+              <TableHead className="font-Manrope text-sm font-bold text-center">
+                MONTO GASTADO
+              </TableHead>
+              <TableHead className="font-Manrope text-sm font-bold text-center">
+                MES
+              </TableHead>
+              {/*<TableHead className="font-Manrope text-sm font-bold text-center">AÑO</TableHead>*/}
+              <TableHead className="font-Manrope text-sm font-bold text-center">
+                ACCIONES
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {taxiQuery.data!.map((item: TaxiCollection, index: number) => (
+              <TableRow key={item.id} className="text-center">
+                <TableCell className="text-xs sm:text-sm">
+                  <Badge variant="secondary">{index + 1}</Badge>
+                </TableCell>
+                <TableCell>{item.unidadContratante}</TableCell>
+                <TableCell>{item.lugarSalida}</TableCell>
+                <TableCell>{item.lugarDestino}</TableCell>
+                <TableCell>
+                  <Badge variant="default">{item.monto}</Badge>
+                </TableCell>
+                <TableCell>{item.mes}</TableCell>
 
-    if (!taxi) {
-        return <p>Cargando...</p>;
-    }
+                <TableCell>
+                  <div className="flex justify-center gap-4">
+                    {/*UPDATE*/}
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => handleClickUpdate(item.id)}
+                    >
+                      <Pen className="h-3.5 text-blue-700" />
+                    </Button>
 
-    return (
-        <div className="w-full max-w-[1150px] h-full">
-            <div className="flex flex-row justify-between items-start mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-xl text-gray-800 font-bold">
-                        Taxi Contratados
-                    </h1>
-                    <h2 className="text-base text-gray-500">Huella de carbono</h2>
-                </div>
-                <div className="flex justify-end gap-5">
-                    <div className="flex flex-row space-x-4 mb-6 font-normal justify-end items-end">
+                    {/*DELETE*/}
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => handleCLickDelete(item.id)}
+                    >
+                      <Trash2 className="h-3.5 text-gray-500" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
-                        <SelectFilter
-                            list={sedes}
-                            itemSelected={selectedSede}
-                            handleItemSelect={handleSedeChange}
-                            value={"id"}
-                            nombre={"name"}
-                            id={"id"}
-                        />
-
-                        <SelectFilter
-                            list={anios}
-                            itemSelected={selectedAnio}
-                            handleItemSelect={handleAnioChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"id"}
-                        />
-
-                    </div>
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button variant="default">
-                                <Plus/> Registrar
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>
-                                    Registro de taxi Contratados
-                                </DialogTitle>
-                                <DialogDescription>
-                                    Indicar el historial de taxi contratados.
-                                </DialogDescription>
-                            </DialogHeader>
-                            {/* <FormCombustible onClose={handleClose} /> */}
-                        </DialogContent>
-                    </Dialog>
-                </div>
-            </div>
-
-            <div className="rounded-lg overflow-hidden">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                UNIDAD CONTRATANTE
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                LUGAR DE SALIDA
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                LUGAR DE DESTINO
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                MONTO GASTADO
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                MES
-                            </TableHead>
-                            {/*<TableHead className="font-Manrope text-sm font-bold text-center">AÑO</TableHead>*/}
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                ACCIONES
-                            </TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {taxi.map((item: TaxiCollection) => (
-                            <TableRow key={item.id} className="text-center">
-                                <TableCell>{item.unidadContratante}</TableCell>
-                                <TableCell>{item.lugarSalida}</TableCell>
-                                <TableCell>{item.lugarDestino}</TableCell>
-                                <TableCell>{item.monto}</TableCell>
-                                <TableCell>{item.mes}</TableCell>
-
-                                <TableCell>
-                                    <div className="flex justify-center gap-4">
-                                        {/*UPDATE*/}
-                                        <Button
-                                            size="icon"
-                                            variant="outline"
-                                            onClick={() => handleClickUpdate(item.id)}
-                                        >
-                                            <Pen className="h-3.5 text-blue-700"/>
-                                        </Button>
-
-                                        {/*DELETE*/}
-                                        <Button
-                                            size="icon"
-                                            variant="outline"
-                                            onClick={() => handleCLickDelete(item.id)}
-                                        >
-                                            <Trash2 className="h-3.5 text-gray-500"/>
-                                        </Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
-
-            {/*MODAL UPDATE*/}
-            <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
-                <DialogTrigger asChild></DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>
-                            Actualizar registro de taxi contratados
-                        </DialogTitle>
-                        <DialogDescription>
-                            Indicar el historial de taxi contratados.
-                        </DialogDescription>
-                    </DialogHeader>
-                    {/* <UpdateFormCombustible
+      {/*MODAL UPDATE*/}
+      <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Actualizar registro de taxi contratados</DialogTitle>
+            <DialogDescription>
+              Indicar el historial de taxi contratados.
+            </DialogDescription>
+          </DialogHeader>
+          {/* <UpdateFormCombustible
                         onClose={handleCloseUpdate}
                         id={idForUpdate}
                     /> */}
-                </DialogContent>
-            </Dialog>
+        </DialogContent>
+      </Dialog>
 
-            {/*    MODAL DELETE*/}
-            <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                <AlertDialogTrigger asChild></AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Eliminar registro</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Esta acción no se puede deshacer, ¿Estás seguro de eliminar este registro?
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction
-                            className={buttonVariants({variant: "destructive"})}
-                            onClick={handleDelete}
-                        >
-                            Eliminar
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-        </div>
-    );
+      {/*    MODAL DELETE*/}
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogTrigger asChild></AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Eliminar registro</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer, ¿Estás seguro de eliminar este
+              registro?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className={buttonVariants({ variant: "destructive" })}
+              onClick={handleDelete}
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
 }
-
