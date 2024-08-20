@@ -53,7 +53,8 @@ import CustomPagination from "@/components/pagination";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import ReportPopover from "@/components/ReportPopover";
+import ReportPopover, {ReportRequest} from "@/components/ReportPopover";
+import GenerateReport from "@/lib/utils/generateReport";
 
 
 export default function FertilizantePage() {
@@ -162,6 +163,29 @@ export default function FertilizantePage() {
         await fertilizante.refetch();
     }
 
+    const handleClickReport = (data: ReportRequest) => {
+        /**
+         *     id: number;
+         *     cantidad: number;
+         *     is_ficha: boolean;
+         *     ficha_id: null;
+         *     anio: number;
+         *     sede: string;
+         *     clase: string;
+         *     tipoFertilizante: string;
+         *     porcentajeNit: number;
+         */
+        GenerateReport(fertilizante.data!.data, [
+            "N°",
+            "TIPO",
+            "FERTILIZANTE",
+            "CANTIDAD",
+            "% DE NITROGENO",
+            "FICHA TECNICA",
+            "AÑO",
+        ]);
+    }
+
     if (fertilizante.isLoading || claseFertilizante.isLoading || tipoFertilizante.isLoading
         || sedes.isLoading || anios.isLoading) {
         return <SkeletonTable/>;
@@ -241,11 +265,12 @@ export default function FertilizantePage() {
                             </PopoverTrigger>
                             <PopoverContent className="w-80">
                                 <ReportPopover
-                                    onClick={(data) => console.log(data)}
+                                    onClick={(data) => handleClickReport(data)}
                                     text={"Generar reporte"}
                                 />
                             </PopoverContent>
                         </Popover>
+
                         <ButtonCalculate onClick={handleCalculate}/>
 
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

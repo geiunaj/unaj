@@ -1,5 +1,5 @@
 import {Button} from "@/components/ui/button";
-import React from "react";
+import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -12,55 +12,50 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import {CalendarIcon, FileSpreadsheet, FileText} from "lucide-react";
-import {addDays, addYears, format} from "date-fns"
-import {DateRange, Matcher} from "react-day-picker"
-import {Calendar} from "@/components/ui/calendar"
-import {cn} from "@/lib/utils"
+import {FileSpreadsheet, FileText} from "lucide-react";
+import {addYears, format} from "date-fns"
+import {Input} from "@/components/ui/input";
+import Exceljs from "exceljs";
 
 interface ReportPopoverProps {
     onClick: (data: ReportRequest) => void;
     text?: string;
 }
 
-interface ReportRequest {
-    date: DateRange;
+export interface ReportRequest {
+    from?: string;
+    to?: string;
 }
 
 const Report = z.object({
-    date: z.object({
-        from: z.date(),
-        to: z.date().optional(),
-    } as DateRange),
+    from: z.string().optional(),
+    to: z.string().optional(),
 });
+
 
 export default function ReportPopover({
                                           onClick,
                                           text
                                       }: ReportPopoverProps) {
 
-    const [date, setDate] = React.useState<DateRange | undefined>({
-        from: addYears(new Date(), -1) ?? new Date(),
-        to: new Date(),
-    })
+    const [from, setFrom] = useState(format(addYears(new Date(), -1), "yyyy-MM"));
+    const [to, setTo] = useState(format(new Date(), "yyyy-MM"));
 
     const form = useForm<z.infer<typeof Report>>({
         resolver: zodResolver(Report),
         defaultValues: {
-            date: date,
+            from: "",
+            to: "",
+
         },
     });
 
     const onSubmit = async (data: z.infer<typeof Report>) => {
         const reportRequest: ReportRequest = {
-            date: data.date
+            from: data.from,
+            to: data.to,
         };
-        console.log(reportRequest);
+        onClick(reportRequest);
     };
 
 
@@ -74,55 +69,43 @@ export default function ReportPopover({
                     >
                         <FormField
                             control={form.control}
-                            name="date"
+                            name="from"
                             render={({field}) => (
-                                <FormItem className="flex flex-col">
-                                    <FormLabel>Rango de Fechas</FormLabel>
-                                    <div className={cn("grid gap-2")}>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <Button
-                                                    id="date"
-                                                    variant={"outline"}
-                                                    className={cn(
-                                                        "w-[300px] justify-start text-left font-normal",
-                                                        !date && "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    <CalendarIcon className="mr-2 h-4 w-4"/>
-                                                    {date?.from ? (
-                                                        date.to ? (
-                                                            <>
-                                                                {format(date.from, "LLL dd, y")} -{" "}
-                                                                {format(date.to, "LLL dd, y")}
-                                                            </>
-                                                        ) : (
-                                                            format(date.from, "LLL dd, y")
-                                                        )
-                                                    ) : (
-                                                        <span>Pick a date</span>
-                                                    )}
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="start">
-                                                <Calendar
-                                                    initialFocus
-                                                    mode="range"
-                                                    defaultMonth={date?.from}
-                                                    selected={field.value as DateRange | undefined}
-                                                    onSelect={setDate}
-                                                    numberOfMonths={2}
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
-                                    </div>
+                                <FormItem className="grid grid-cols-4 space-y-0 items-center">
+                                    <FormLabel>Desde</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            className="col-span-3"
+                                            placeholder="Enero del 2023"
+                                            type="month"
+                                            {...field}
+                                        />
+                                    </FormControl>
                                     <FormMessage/>
                                 </FormItem>
                             )}
                         />
 
+                        <FormField
+                            control={form.control}
+                            name="to"
+                            render={({field}) => (
+                                <FormItem className="grid grid-cols-4 space-y-0 items-center">
+                                    <FormLabel>Hasta</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            className="col-span-3"
+                                            placeholder="Enero del 2024"
+                                            type="month"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
-                        <div className="flex justify-end w-full gap-2">
+                        <div className="flex justify-end w-full gap-4">
                             <Button
                                 variant="secondary"
                                 type="submit"
