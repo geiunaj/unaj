@@ -1,5 +1,6 @@
 export function formatArea(area: any) {
     const {
+        sede,
         ...rest
     } = area;
 
@@ -7,5 +8,6 @@ export function formatArea(area: any) {
         ...rest,
         created_at: undefined,
         updated_at: undefined,
+        sede: sede.name,
     };
 }

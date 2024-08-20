@@ -45,6 +45,7 @@ model Sede {
   fertilizanteCalculos fertilizanteCalculos[]
   consumoEnergia       consumoEnergia[]
   energiaCalculos      energiaCalculos[]
+  area                 area[]
 }
 
 model tipoCombustible {
@@ -261,10 +262,14 @@ model consumoEnergia {
 }
 
 model area {
-  id              Int               @id @default(autoincrement())
-  nombre          String            @db.VarChar(45)
-  created_at      DateTime          @default(now())
-  updated_at      DateTime          @updatedAt
+  id         Int      @id @default(autoincrement())
+  nombre     String   @db.VarChar(45)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  sede_id    Int?
+
+  sede Sede? @relation(fields: [sede_id], references: [id])
+
   consumoEnergia  consumoEnergia[]
   energiaCalculos energiaCalculos[]
 }
@@ -322,3 +327,5 @@ model Taxi {
   anio Anio? @relation(fields: [anio_id], references: [id])
   sede Sede? @relation(fields: [sede_id], references: [id])
 }
+
+// AGUA A3_5

@@ -606,35 +606,43 @@ async function main() {
     }
 
     //Datos prueba para area
-    for (let i = 0; i < 5; i++) {
-        await prisma.area.create({
-            data: {
-                nombre: `Area ${i + 1}`,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
-    }
-
-    const allAreas = await prisma.area.findMany();
 
     for (const sede of allSedes) {
-        for (const area of allAreas) {
-            for (const anio of allAnios) {
-                for (const mes of allMeses) {
-                    await prisma.consumoEnergia.create({
-                        data: {
-                            areaId: area.id,
-                            numeroSuministro: (faker.number.int({min: 10000000, max: 99999999})).toString(),
-                            consumo: faker.number.float({min: 1, max: 200}),
-                            mes_id: mes.id,
-                            anio_id: anio.id,
-                            sede_id: sede.id,
-                            created_at: new Date(),
-                            updated_at: new Date(),
-                        },
-                    });
-                }
+        for (let i = 0; i < 5; i++) {
+            await prisma.area.create({
+                data: {
+                    nombre: `Area ${i + 1} de ${sede.name}`,
+                    sede_id: sede.id,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+        }
+    }
+
+    const allAreas = await prisma.area.findMany(
+        {
+            include: {
+                sede: true,
+            },
+        },
+    );
+
+    for (const area of allAreas) {
+        for (const anio of allAnios) {
+            for (const mes of allMeses) {
+                await prisma.consumoEnergia.create({
+                    data: {
+                        areaId: area.id,
+                        numeroSuministro: (faker.number.int({min: 10000000, max: 99999999})).toString(),
+                        consumo: faker.number.float({min: 1, max: 200}),
+                        mes_id: mes.id,
+                        anio_id: anio.id,
+                        sede_id: area.sede.id,
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                    },
+                });
             }
         }
     }

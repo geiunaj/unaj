@@ -6,7 +6,13 @@ import {AreaRequest} from "@/components/area/services/area.interface";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
-        const areas = await prisma.area.findMany();
+        const areas = await prisma.area.findMany(
+            {
+                include: {
+                    sede: true,
+                }
+            }
+        );
 
         const formattedAreas: Fertilizante[] = areas.map(formatArea);
 

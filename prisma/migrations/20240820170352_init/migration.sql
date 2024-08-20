@@ -229,6 +229,7 @@ CREATE TABLE `area` (
     `nombre` VARCHAR(45) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
+    `sede_id` INTEGER NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -246,6 +247,7 @@ CREATE TABLE `energiaCalculos` (
     `totalGEI` FLOAT NOT NULL,
     `anioId` INTEGER NOT NULL,
     `sedeId` INTEGER NOT NULL,
+    `areaId` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -262,6 +264,7 @@ CREATE TABLE `factorConversionSEIN` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `factorConversionSEIN_anioId_key`(`anioId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -351,6 +354,9 @@ ALTER TABLE `consumoEnergia` ADD CONSTRAINT `consumoEnergia_sede_id_fkey` FOREIG
 ALTER TABLE `consumoEnergia` ADD CONSTRAINT `consumoEnergia_areaId_fkey` FOREIGN KEY (`areaId`) REFERENCES `area`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `area` ADD CONSTRAINT `area_sede_id_fkey` FOREIGN KEY (`sede_id`) REFERENCES `Sede`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_factorId_fkey` FOREIGN KEY (`factorId`) REFERENCES `factorConversionSEIN`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -358,6 +364,9 @@ ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_anioId_fkey` FOREI
 
 -- AddForeignKey
 ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_sedeId_fkey` FOREIGN KEY (`sedeId`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_areaId_fkey` FOREIGN KEY (`areaId`) REFERENCES `area`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `factorConversionSEIN` ADD CONSTRAINT `factorConversionSEIN_anioId_fkey` FOREIGN KEY (`anioId`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
