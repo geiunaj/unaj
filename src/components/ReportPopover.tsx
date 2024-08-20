@@ -28,6 +28,7 @@ export interface ReportRequest {
 }
 
 const Report = z.object({
+    // format yyyy-MM
     from: z.string().optional(),
     to: z.string().optional(),
 });
@@ -76,7 +77,7 @@ export default function ReportPopover({
                                     <FormControl>
                                         <Input
                                             className="col-span-3"
-                                            placeholder="Enero del 2023"
+                                            placeholder="2023-01"
                                             type="month"
                                             {...field}
                                         />
@@ -95,7 +96,7 @@ export default function ReportPopover({
                                     <FormControl>
                                         <Input
                                             className="col-span-3"
-                                            placeholder="Enero del 2024"
+                                            placeholder="2024-01"
                                             type="month"
                                             {...field}
                                         />

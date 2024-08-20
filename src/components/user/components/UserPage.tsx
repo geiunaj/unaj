@@ -22,8 +22,9 @@ import {
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import { User } from "@prisma/client";
-import { useUser } from "../lib/user.hook";
+import {User} from "@prisma/client";
+import {useUser} from "../lib/user.hook";
+import {UserCollectionItem} from "@/components/user/services/user.interface";
 
 
 export default function UsuarioPage() {
@@ -132,7 +133,7 @@ export default function UsuarioPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {user.data!.map((item: User, index: number) => (
+                        {user.data!.data.map((item: UserCollectionItem, index: number) => (
                             <TableRow key={item.id} className="text-center">
                                 <TableCell className="text-xs sm:text-sm">
                                     <Badge variant="secondary">{index + 1}</Badge>
@@ -140,7 +141,7 @@ export default function UsuarioPage() {
                                 <TableCell className="text-xs sm:text-sm">{item.name}</TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.email}</TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.telefono}</TableCell>
-                                <TableCell className="text-xs sm:text-sm">{item.type_user_id}</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.type_user.type_name}</TableCell>
 
 
                                 <TableCell className="text-xs sm:text-sm p-1">
