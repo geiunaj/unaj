@@ -1,51 +1,54 @@
 import Exceljs from "exceljs";
 
-export default async function GenerateReport<T>(data: T[], columns: string[]) {
+export interface Column {
+    header: string;
+    key: string;
+    width: number;
+}
+
+export default async function GenerateReport<T>(data: T[], columns: Column[]) {
     const workbook = new Exceljs.Workbook();
     const sheet = workbook.addWorksheet('PRUEBA');
     sheet.properties.defaultRowHeight = 25;
     sheet.properties.showGridLines = false;
 
-
-    sheet.columns = columns.map((column) => {
-        return {header: column, key: column, width: 20};
+    sheet.columns = columns.map((column: Column) => {
+        return {header: column.header, key: column.key, width: column.width};
     });
 
     columns.forEach((column, index) => {
-        sheet.getCell(1, index + 1).fill = {
+        const cell = sheet.getCell(1, index + 1);
+        cell.fill = {
             type: 'pattern',
             pattern: 'solid',
             fgColor: {argb: '2563EB'},
         };
-
-        sheet.getCell(1, index + 1).font = {
+        cell.font = {
             color: {argb: 'FFFFFF'},
-            size: 14,
+            size: 12,
+            bold: true,
         };
-
-        sheet.getCell(1, index + 1).alignment = {
+        cell.alignment = {
             vertical: 'middle',
             horizontal: 'center',
         };
     });
 
     data.forEach((row: any, rowIndex) => {
+        const excelRow = sheet.getRow(rowIndex + 2);
         columns.forEach((column, columnIndex) => {
+            const cell = excelRow.getCell(columnIndex + 1);
             if (columnIndex === 0) {
-                sheet.getCell(rowIndex, columnIndex).value = rowIndex + 1;
-                sheet.getCell(rowIndex, columnIndex).alignment = {
-                    vertical: 'middle',
-                    horizontal: 'center',
-                };
+                cell.value = rowIndex + 1;
+            } else {
+                cell.value = row[column.key];
             }
-            sheet.getCell(rowIndex, columnIndex).value = row[columnIndex];
-            sheet.getCell(rowIndex, columnIndex).alignment = {
+            cell.alignment = {
                 vertical: 'middle',
                 horizontal: 'center',
             };
         });
     });
-
 
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});

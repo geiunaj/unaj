@@ -164,26 +164,18 @@ export default function FertilizantePage() {
     }
 
     const handleClickReport = (data: ReportRequest) => {
-        /**
-         *     id: number;
-         *     cantidad: number;
-         *     is_ficha: boolean;
-         *     ficha_id: null;
-         *     anio: number;
-         *     sede: string;
-         *     clase: string;
-         *     tipoFertilizante: string;
-         *     porcentajeNit: number;
-         */
-        GenerateReport(fertilizante.data!.data, [
-            "N°",
-            "TIPO",
-            "FERTILIZANTE",
-            "CANTIDAD",
-            "% DE NITROGENO",
-            "FICHA TECNICA",
-            "AÑO",
-        ]);
+        const columns = [
+            {header: "N°", key: "id", width: 10,},
+            {header: "TIPO", key: "clase", width: 20,},
+            {header: "FERTILIZANTE", key: "tipoFertilizante", width: 20,},
+            {header: "CANTIDAD", key: "cantidad", width: 20,},
+            {header: "% DE NITROGENO", key: "porcentajeNit", width: 20,},
+            {header: "FICHA TECNICA", key: "is_ficha", width: 20,},
+            {header: "AÑO", key: "anio", width: 20,},
+            {header: "SEDE", key: "sede", width: 20,}
+        ];
+
+        GenerateReport(fertilizante.data!.data, columns);
     }
 
     if (fertilizante.isLoading || claseFertilizante.isLoading || tipoFertilizante.isLoading
