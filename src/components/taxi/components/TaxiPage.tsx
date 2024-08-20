@@ -243,7 +243,7 @@ export default function TaxiPage() {
                                 <TableCell>{item.lugarSalida}</TableCell>
                                 <TableCell>{item.lugarDestino}</TableCell>
                                 <TableCell>
-                                    <Badge variant="default">{item.monto}</Badge>
+                                    <Badge variant="default">{item.montoGastado}</Badge>
                                 </TableCell>
                                 <TableCell>{item.mes}</TableCell>
 

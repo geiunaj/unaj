@@ -40,7 +40,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 [sort]: direction,
             },
         });
-
+        console.log(taxi);
         const formattedTaxi = taxi.map(formatTaxi);
 
         return NextResponse.json(formattedTaxi);
