@@ -8,6 +8,15 @@ export interface User {
   type_user: TypeUser;
 }
 
+export interface UserCollectionItem {
+  id: number;
+  nombre: string;
+  email: string;
+  telefono: string;
+  password: string;
+  type_user: string
+}
+
 export interface UserRequest {
   nombre: string;
   email: string;
@@ -28,4 +37,19 @@ export interface UpdateUserProps {
 export interface TypeUser {
   id: number;
   type_name: string;
+}
+
+
+
+export interface UserCollection {
+  data: UserCollectionItem[];
+  meta: Meta;
+}
+
+
+export interface Meta {
+  page: number;
+  perPage: number;
+  totalRecords: number;
+  totalPages: number;
 }

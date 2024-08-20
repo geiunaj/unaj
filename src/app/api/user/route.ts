@@ -1,96 +1,81 @@
-// import { NextRequest, NextResponse } from "next/server";
-// import prisma from "@/lib/prisma";
-// import { User } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import bcrypt from "bcrypt";
+import { User } from "@prisma/client";
 
-// export async function GET(req: NextRequest): Promise<NextResponse> {
-//   try {
-//     const { searchParams } = new URL(req.url);
-//     const type_userId = searchParams.get("type_userId") ?? undefined;
+// INDEX (GET)
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  try {
+    const { searchParams } = new URL(req.url);
+    const name = searchParams.get("name") ?? undefined;
+    const email = searchParams.get("email") ?? undefined;
+    const typeUserId = searchParams.get("typeUserId") ?? undefined;
 
-//     const page = parseInt(searchParams.get("page") ?? "1");
-//     const perPage = parseInt(searchParams.get("perPage") ?? "10");
+    const page = parseInt(searchParams.get("page") ?? "1");
+    const perPage = parseInt(searchParams.get("perPage") ?? "10");
 
-//   let type_user_id;
-//         if (type_userId) {
-//             const anioRecord = await prisma.typeUser.findFirst({
-//                 where: {
-//                     type_name: type_userId,
-//                 },
-//             });
-//             type_user_id = anioRecord ? anioRecord.id : undefined;
-//         }
+    const whereOptions = {
+      name: name ? { contains: name } : undefined,
+      email: email ? { contains: email } : undefined,
+      type_user_id: typeUserId ? parseInt(typeUserId) : undefined,
+    };
 
-//         // const whereOptions = {
-//         //     type_user_id: type_user_id,
-//         // };
+    const totalRecords = await prisma.user.count({ where: whereOptions });
+    const totalPages = Math.ceil(totalRecords / perPage);
 
-//         // const totalRecords = await prisma.combustible.count({where: whereOptions});
-//         // const totalPages = Math.ceil(totalRecords / perPage);
+    const users = await prisma.user.findMany({
+      where: whereOptions,
+      include: {
+        type_user: true,
+      },
+      orderBy: { id: "asc" },
+      skip: (page - 1) * perPage,
+      take: perPage,
+    });
 
-//         // const user = await prisma.user.findMany({
-//         //     where: 
-//         //     include: {
-//         //         type_user: true,
-//         //     },
-//         //     // orderBy: sort
-//         //     //     ? [{[sort]: direction || 'desc'}]
-//         //     //     : [
-//         //     //         {anio_id: 'desc'},
-//         //     //         {mes_id: 'desc'}
-//         //     //     ],
-//         //     skip: (page - 1) * perPage,
-//         //     take: perPage,
-//         // });
+    return NextResponse.json({
+      data: users,
+      meta: {
+        page,
+        perPage,
+        totalRecords,
+        totalPages,
+      },
+    });
+  } catch (error) {
+    console.error("Error buscando usuarios", error);
+    return new NextResponse("Error buscando usuarios", { status: 500 });
+  }
+}
 
-//         const formattedCombustibles: User[] = combustibles.map(
-//             (user) => formatCombustible(combustible)
-//         );
+// CREATE (POST)
+export async function POST(req: NextRequest): Promise<NextResponse> {
+  try {
+    const body: Omit<User, "id"> = await req.json();
 
-//         return NextResponse.json({
-//             data: formattedCombustibles,
-//             meta: {
-//                 page,
-//                 perPage,
-//                 totalRecords,
-//                 totalPages,
-//             },
-//         });
-//     } catch (error) {
-//         console.error("Error buscando consumos", error);
-//         return new NextResponse("Error buscando consumos", {status: 500});
-//     }
-// }
+    // Encriptar la contraseña
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(body.password, saltRounds);
 
-// export async function POST(req: NextRequest): Promise<NextResponse> {
-//   try {
-//     const body = await req.json();
-//     const { nombre, porcentajeNitrogeno, unidad, clase } = body;
-//     if (
-//       !nombre ||
-//       !porcentajeNitrogeno ||
-//       !unidad ||
-//       !clase
-//     ) {
-//       return new NextResponse("Missing or invalid required fields", { status: 400 });
-//     }
+    const user = await prisma.user.create({
+      data: {
+        name: body.name,
+        email: body.email,
+        telefono: body.telefono,
+        password: hashedPassword,
+        type_user_id: body.type_user_id,
+      },
+      include: {
+        type_user: true,
+      },
+    });
 
-//     const tipoFertilizante = await prisma.tipoFertilizante.create({
-//       data: {
-//         nombre,
-//         porcentajeNitrogeno,
-//         unidad,
-//         clase,
-//       },
-//     });
-
-    
-//     return NextResponse.json({
-//       message: "Tipo de Fertilizante creado",
-//       tipoFertilizante: tipoFertilizante,
-//   });
-
-//   } catch (error) {
-//     console.error("Error creating tipo de fertilizante", error);
-//     return new NextResponse("Error creating tipo de fertilizante", { status: 500 });
-//   }
-// }
+    return NextResponse.json({
+      message: "Usuario registrado",
+      user,
+    });
+  } catch (error) {
+    console.error("Error registrando usuario", error);
+    return new NextResponse("Error registrando usuario", { status: 500 });
+  }
+}

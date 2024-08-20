@@ -96,6 +96,11 @@ export const menu: MenuItem[] = [
                 icon: "MapPinned",
                 href: "/area",
             },
+            {
+                title: "Usuarios",
+                icon: "MapPinned",
+                href: "/user",
+            },
         ]
     },
 

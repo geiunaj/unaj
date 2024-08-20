@@ -22,13 +22,11 @@ import {
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import {UpdateFormArea} from "@/components/area/components/UpdateFormArea";
-import {deleteArea} from "@/components/area/services/area.actions";
-import {Area} from "@/components/area/services/area.interface";
-import {CreateFormArea} from "@/components/area/components/CreateFormArea";
-import {useArea} from "@/components/area/lib/area.hook";
+import { User } from "@prisma/client";
+import { useUser } from "../lib/user.hook";
 
-export default function AreaPage() {
+
+export default function UsuarioPage() {
     // DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -37,30 +35,30 @@ export default function AreaPage() {
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
     // USE QUERY
-    const areas = useArea();
+    const user = useUser();
 
     // HANDLES
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
-        areas.refetch();
-    }, [areas]);
+        user.refetch();
+    }, [user]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
-        areas.refetch();
-    }, [areas]);
+        user.refetch();
+    }, [user]);
 
-    const handleDelete = useCallback(async () => {
-        try {
-            const response = await deleteArea(idForDelete);
-            setIsDeleteDialogOpen(false);
-            successToast(response.data.message);
-        } catch (error: any) {
-            errorToast(error.response.data);
-        } finally {
-            await areas.refetch();
-        }
-    }, [areas]);
+    // const handleDelete = useCallback(async () => {
+    //     try {
+    //         const response = await deleteUsuario(idForDelete);
+    //         setIsDeleteDialogOpen(false);
+    //         successToast(response.data.message);
+    //     } catch (error: any) {
+    //         errorToast(error.response.data);
+    //     } finally {
+    //         await user.refetch();
+    //     }
+    // }, [user]);
 
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
@@ -72,7 +70,7 @@ export default function AreaPage() {
         setIsDeleteDialogOpen(true);
     };
 
-    if (areas.isLoading) {
+    if (user.isLoading) {
         return <SkeletonTable/>
     }
 
@@ -80,9 +78,9 @@ export default function AreaPage() {
         <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="font-Manrope">
-                    <h1 className="text-base text-gray-800 font-bold">Area</h1>
+                    <h1 className="text-base text-gray-800 font-bold">Usuarios</h1>
                     <h2 className="text-xs sm:text-sm text-gray-500">
-                        Areas de las Sedes
+                        Usuarios
                     </h2>
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
@@ -96,13 +94,13 @@ export default function AreaPage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle>Area</DialogTitle>
+                                    <DialogTitle>Usuario</DialogTitle>
                                     <DialogDescription>
-                                        Agregar Area
+                                        Agregar Usuario
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                <CreateFormArea onClose={handleClose}/>
+                                {/* <CreateFormUsuario onClose={handleClose}/> */}
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -120,17 +118,31 @@ export default function AreaPage() {
                                 NOMBRE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                EMAIL
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                TELEFONO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                TIPO DE USUARIO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 ACCIONES
                             </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {areas.data!.map((item: Area, index: number) => (
+                        {user.data!.map((item: User, index: number) => (
                             <TableRow key={item.id} className="text-center">
                                 <TableCell className="text-xs sm:text-sm">
                                     <Badge variant="secondary">{index + 1}</Badge>
                                 </TableCell>
-                                <TableCell className="text-xs sm:text-sm">{item.nombre}</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.name}</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.email}</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.telefono}</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.type_user_id}</TableCell>
+
+
                                 <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">
                                         {/*UPDATE*/}
@@ -168,7 +180,7 @@ export default function AreaPage() {
                         <DialogTitle>Actualizar Registro de Tipo de Papel</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <UpdateFormArea onClose={handleCloseUpdate} id={idForUpdate}/>
+                    {/* <UpdateFormUsuario onClose={handleCloseUpdate} id={idForUpdate}/> */}
                 </DialogContent>
             </Dialog>
 
@@ -190,7 +202,7 @@ export default function AreaPage() {
                         <AlertDialogCancel>Cancelar</AlertDialogCancel>
                         <AlertDialogAction
                             className={buttonVariants({variant: "destructive"})}
-                            onClick={handleDelete}
+                            // onClick={handleDelete}
                         >
                             Eliminar
                         </AlertDialogAction>
