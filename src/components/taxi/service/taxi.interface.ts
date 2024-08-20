@@ -10,7 +10,6 @@ export interface CreateTaxiProps {
 
 export interface UpdateTaxiProps {
     id: number;
-    tipo: string;
     onClose: () => void;
 }
 

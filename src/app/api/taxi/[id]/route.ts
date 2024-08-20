@@ -1,86 +1,139 @@
-import {NextRequest, NextResponse} from "next/server";
-import prisma from "@/lib/prisma"; // Asegúrate de que la ruta sea correcta
-import { formatTaxi } from "@/lib/resources/taxiResorce";
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 import { TaxiRequest } from "@/components/taxi/service/taxi.interface";
-import { Taxi } from "@prisma/client";
+import { formatTaxi } from "@/lib/resources/taxiResorce";
 
-// INDEX
-export async function GET(req: NextRequest): Promise<NextResponse> {
-    try {
-        const {searchParams} = new URL(req.url);
-        const sedeId = searchParams.get("sedeId") ?? undefined;
-        const sort = searchParams.get("sort") ?? undefined;
-        const direction = searchParams.get("direction") ?? undefined;
-        const anio = searchParams.get("anioId") ?? undefined;
-        const mesId = searchParams.get("mesId") ?? undefined;
-
-
-        let anioId;
-        if (anio) {
-            const anioRecord = await prisma.anio.findFirst({
-                where: {
-                    nombre: anio,
-                },
-            });
-            anioId = anioRecord ? anioRecord.id : undefined;
-        }
-
-        const taxi = await prisma.taxi.findMany({
-            where: {
-                sede_id: sedeId ? parseInt(sedeId) : undefined,
-                anio_id: anioId,
-                mes_id: mesId ? parseInt(mesId) : undefined,
-            },
-            include: {
-                mes: true,
-                anio: true,
-                sede: true,
-            },
-            orderBy: {
-                [sort ?? "id"]: direction ?? "desc",
-            },
-        });
-
-        const formattedTaxi: Taxi[] = taxi.map(
-            (taxi) => formatTaxi(taxi)
-        );
-
-        return NextResponse.json(formattedTaxi);
-    } catch (error) {
-        console.error("Error finding taxi", error);
-        return new NextResponse("Error finding taxi", {status: 500});
+// SHOW ROUTE -> PARAM [ID]
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
+  console.log(params.id);
+  try {
+    const id = parseInt(params.id, 10);
+    if (isNaN(id)) {
+      return new NextResponse("Invalid ID", { status: 400 });
     }
+
+    const taxi = await prisma.taxi.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        anio: true,
+        sede: true,
+        mes: true,
+      },
+    });
+
+    if (!taxi) {
+      return new NextResponse("Taxi not found", { status: 404 });
+    }
+
+    return NextResponse.json(taxi);
+  } catch (error) {
+    console.error("Error finding taxi", error);
+    return new NextResponse("Error finding taxi", { status: 500 });
+  }
 }
 
-// CREATE
-export async function POST(req: NextRequest): Promise<NextResponse> {
-    try {
-        const body: TaxiRequest = await req.json();
-        const taxi = await prisma.taxi.create({
-            data: {
-                unidadContratante: body.unidadContratante,
-                lugarSalida: body.lugarSalida,
-                lugarDestino: body.lugarDestino,
-                montoGastado: body.monto,
-                sede_id: body.sede_id,
-                anio_id: body.anio_id,
-                mes_id: body.mes_id,
-
-                // created_at: new Date(),
-                // updated_at: new Date(),
-            },
-            include: {
-                mes: true,
-                anio: true,
-                sede: true,
-            },
-        });
-
-        const formattedTaxi = formatTaxi(taxi);
-
-        return NextResponse.json(formattedTaxi);
-    } catch (error) {
-        console.error("Error creating taxi", error);
-        return new NextResponse("Error creating taxi", {status: 500});
+// UPDATE ROUTE -> PARAM [ID]
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
+  try {
+    const id = parseInt(params.id, 10);
+    if (isNaN(id)) {
+      return new NextResponse("Invalid ID", { status: 400 });
     }
+
+    const body = await req.json();
+    console.log(body);
+
+    // Validate required fields
+    const {
+      unidadContratante,
+      lugarSalida,
+      lugarDestino,
+      monto,
+      anio_id,
+      sede_id,
+      mes_id,
+      created_at,
+      updated_at,
+    } = body;
+    if (
+      typeof monto !== "number" ||
+      typeof unidadContratante !== "string" ||
+      typeof lugarSalida !== "string" ||
+      typeof lugarDestino !== "string" ||
+      typeof mes_id !== "number" ||
+      typeof anio_id !== "number" ||
+      typeof sede_id !== "number" ||
+      created_at !== "Date" ||
+      updated_at !== "Date"
+    ) {
+      return new NextResponse("Missing or invalid required fields", {
+        status: 400,
+      });
+    }
+
+    const taxiRequest: TaxiRequest = {
+      unidadContratante,
+      lugarSalida,
+      lugarDestino,
+      monto,
+      mes_id,
+      sede_id,
+      anio_id,
+      created_at,
+      updated_at,
+    };
+
+    const taxi = await prisma.taxi.update({
+      where: {
+        id: id,
+      },
+      data: taxiRequest,
+      include: {
+        anio: true,
+        sede: true,
+      },
+    });
+
+    return NextResponse.json({
+      message: "Registro de taxi actualizado",
+      taxi: formatTaxi(taxi),
+    });
+  } catch (error) {
+    console.error("Error updating taxi", error);
+    return new NextResponse("Error updating taxi", { status: 500 });
+  }
+}
+
+// DELETE ROUTE -> PARAM [ID]
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
+  try {
+    const id = parseInt(params.id, 10);
+    if (isNaN(id)) {
+      return new NextResponse("Invalid ID", { status: 400 });
+    }
+
+    const taxi = await prisma.taxi.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return NextResponse.json({
+      message: "Registro de taxi eliminado",
+    });
+  } catch (error) {
+    console.error("Error deleting taxi", error);
+    return new NextResponse("Error deleting taxi", { status: 500 });
+  }
 }

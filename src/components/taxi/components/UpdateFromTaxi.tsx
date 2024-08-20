@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,9 +25,14 @@ import { getSedes } from "@/components/sede/services/sede.actions";
 import { getAnio } from "@/components/anio/services/anio.actions";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import { getMes } from "@/components/mes/services/mes.actions";
-import { CreateTaxiProps, TaxiRequest } from "../service/taxi.interface";
-import { createTaxi } from "../service/taxi.actions";
-import { errorToast, successToast } from "@/lib/utils/core.function";
+import {
+  CreateTaxiProps,
+  TaxiRequest,
+  UpdateTaxiProps,
+} from "../service/taxi.interface";
+import { createTaxi, updateTaxi } from "../service/taxi.actions";
+import { useTaxiId } from "../lib/taxi.hook";
+import { successToast } from "@/lib/utils/core.function";
 
 const Taxi = z.object({
   unidad_contratante: z.string().min(1, "Seleccione un tipo de hoja"),
@@ -42,7 +47,7 @@ const Taxi = z.object({
   mes: z.string().min(1, "Selecciona un Mes"),
 });
 
-export function FormTaxi({ onClose }: CreateTaxiProps) {
+export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
   const form = useForm<z.infer<typeof Taxi>>({
     resolver: zodResolver(Taxi),
     defaultValues: {
@@ -56,6 +61,8 @@ export function FormTaxi({ onClose }: CreateTaxiProps) {
     },
   });
 
+  //HOOKS
+  const taxis = useTaxiId(id);
   const sedeQuery = useQuery({
     queryKey: ["sedes"],
     queryFn: () => getSedes(),
@@ -74,6 +81,24 @@ export function FormTaxi({ onClose }: CreateTaxiProps) {
     refetchOnWindowFocus: false,
   });
 
+  const loadForm = useCallback(async () => {
+    if (taxis.data) {
+      const taxisData = await taxis.data;
+      form.reset({
+        unidad_contratante: taxisData.unidad_contratante,
+        lugar_salida: taxisData.lugar_salida,
+        lugar_destino: taxisData.lugar_destino,
+        monto: taxisData.monto,
+        sede: taxisData.sede.id.toString(),
+        anio: taxisData.anio.id.toString(),
+      });
+    }
+  }, [taxis.data, id]);
+
+  useEffect(() => {
+    loadForm();
+  }, [loadForm, id]);
+
   const onSubmit = async (data: z.infer<typeof Taxi>) => {
     const TaxiRequest: TaxiRequest = {
       unidadContratante: data.unidad_contratante,
@@ -87,11 +112,11 @@ export function FormTaxi({ onClose }: CreateTaxiProps) {
       updated_at: new Date(),
     };
     try {
-      const response = await createTaxi(TaxiRequest);
+      const response = await updateTaxi(id, TaxiRequest);
       onClose();
       successToast(response.data.message);
   } catch (error: any) {
-      errorToast(error.response.data.message);
+      console.log(error.response.data);
   }
   };
 
@@ -212,24 +237,6 @@ export function FormTaxi({ onClose }: CreateTaxiProps) {
             </div>
 
             {/* Unidad contratante */}
-            <FormField
-              control={form.control}
-              name="unidad_contratante"
-              render={({ field }) => (
-                <FormItem className="pt-2">
-                  <FormLabel>Unidad Contratante</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                      placeholder="Unidad contratante"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <div className="flex gap-5">
               {/* lugar_salida */}
@@ -258,16 +265,20 @@ export function FormTaxi({ onClose }: CreateTaxiProps) {
                 render={({ field }) => (
                   <FormItem className="pt-2 w-1/2">
                     <FormLabel>Lugar de Destino</FormLabel>
-
-                    <FormControl>
-                      <Input
-                        type="text"
-                        className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                        placeholder="Lugar de destino"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <Input
+                          type="text"
+                          className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                          placeholder="Lugar de destino"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </Select>
                   </FormItem>
                 )}
               />

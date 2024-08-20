@@ -49,6 +49,7 @@ import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {Badge} from "@/components/ui/badge";
 import {FormTaxi} from "./FormTaxi";
+import { UpdateFormTaxi } from "./UpdateFromTaxi";
 
 export default function TaxiPage() {
     // DIALOGS
@@ -284,10 +285,10 @@ export default function TaxiPage() {
                             Indicar el historial de taxi contratados.
                         </DialogDescription>
                     </DialogHeader>
-                    {/* <UpdateFormCombustible
+                    <UpdateFormTaxi
                         onClose={handleCloseUpdate}
                         id={idForUpdate}
-                    /> */}
+                    />
                 </DialogContent>
             </Dialog>
 

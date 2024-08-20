@@ -29,7 +29,9 @@ model User {
   telefono     String   @db.VarChar(45)
   password     String   @db.VarChar(255)
   type_user_id Int
+  sede_id      Int?
   type_user    TypeUser @relation(fields: [type_user_id], references: [id])
+  sede         Sede?    @relation(fields: [sede_id], references: [id])
 
   @@index([type_user_id])
 }
@@ -46,6 +48,7 @@ model Sede {
   consumoEnergia       consumoEnergia[]
   energiaCalculos      energiaCalculos[]
   area                 area[]
+  User                 User[]
 }
 
 model tipoCombustible {

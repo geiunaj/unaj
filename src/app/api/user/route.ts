@@ -10,6 +10,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const name = searchParams.get("name") ?? undefined;
     const email = searchParams.get("email") ?? undefined;
     const typeUserId = searchParams.get("typeUserId") ?? undefined;
+    const sedeId = searchParams.get("sedeId") ?? undefined;
 
     const page = parseInt(searchParams.get("page") ?? "1");
     const perPage = parseInt(searchParams.get("perPage") ?? "10");
@@ -27,6 +28,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       where: whereOptions,
       include: {
         type_user: true,
+        sede: true,
       },
       orderBy: { id: "asc" },
       skip: (page - 1) * perPage,
@@ -63,6 +65,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         email: body.email,
         telefono: body.telefono,
         password: hashedPassword,
+        sede_id: body.sede_id,
         type_user_id: body.type_user_id,
       },
       include: {

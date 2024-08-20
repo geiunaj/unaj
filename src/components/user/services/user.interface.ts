@@ -1,3 +1,5 @@
+import { Sede } from "@/components/sede/services/sede.interface";
+
 export interface User {
     id: number;
     nombre: string;
@@ -16,6 +18,8 @@ export interface UserCollectionItem {
     password: string;
     type_user_id: number;
     type_user: TypeUser;
+    sede_id: number;
+    sede: Sede;
 }
 
 export interface TypeUser {

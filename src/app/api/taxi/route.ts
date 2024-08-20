@@ -65,7 +65,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             },
         });
 
-        return NextResponse.json(taxi);
+        return NextResponse.json({
+            message: "Taxi creado exitosamente",
+            fertilizante: formatTaxi(taxi),
+        });
     } catch (error) {
         console.error("Error creating taxi", error);
         return new NextResponse("Error creating taxi", {status: 500});

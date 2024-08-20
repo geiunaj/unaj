@@ -23,6 +23,7 @@ CREATE TABLE `User` (
     `telefono` VARCHAR(45) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `type_user_id` INTEGER NOT NULL,
+    `sede_id` INTEGER NULL,
 
     UNIQUE INDEX `User_email_key`(`email`),
     INDEX `User_type_user_id_idx`(`type_user_id`),
@@ -289,6 +290,9 @@ ALTER TABLE `Access` ADD CONSTRAINT `Access_type_user_id_fkey` FOREIGN KEY (`typ
 
 -- AddForeignKey
 ALTER TABLE `User` ADD CONSTRAINT `User_type_user_id_fkey` FOREIGN KEY (`type_user_id`) REFERENCES `TypeUser`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `User` ADD CONSTRAINT `User_sede_id_fkey` FOREIGN KEY (`sede_id`) REFERENCES `Sede`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Combustible` ADD CONSTRAINT `Combustible_tipoCombustible_id_fkey` FOREIGN KEY (`tipoCombustible_id`) REFERENCES `tipoCombustible`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

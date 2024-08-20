@@ -9,12 +9,14 @@ interface Response {
 
 export async function getUser(
     page?: number,
-    type_user_id?: number
+    type_user_id?: number,
+    sedeId?: number,
 ): Promise<UserCollection> {
     const config: AxiosRequestConfig = {
         params: {
             page,
             type_user_id,
+            sedeId,
         },
     };
     const {data} = await api.get<UserCollection>("/api/user", config);
