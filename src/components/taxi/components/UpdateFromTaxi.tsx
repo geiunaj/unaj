@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { z } from "zod";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -20,21 +20,18 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "../../ui/button";
-import { useQuery } from "@tanstack/react-query";
-import { getSedes } from "@/components/sede/services/sede.actions";
-import { getAnio } from "@/components/anio/services/anio.actions";
 import SkeletonForm from "@/components/Layout/skeletonForm";
-import { getMes } from "@/components/mes/services/mes.actions";
-import {
-  CreateTaxiProps,
-  TaxiRequest,
-  UpdateTaxiProps,
-} from "../service/taxi.interface";
-import { createTaxi, updateTaxi } from "../service/taxi.actions";
 import { useTaxiId } from "../lib/taxi.hook";
 import { successToast } from "@/lib/utils/core.function";
+import {
+  useAnio,
+  useMes,
+  useSede,
+} from "@/components/combustion/lib/combustion.hook";
+import { updateTaxi } from "../service/taxi.actions";
+import { TaxiRequest, UpdateTaxiProps } from "../service/taxi.interface";
 
-const Taxi = z.object({
+const TaxiSchema = z.object({
   unidad_contratante: z.string().min(1, "Seleccione un tipo de hoja"),
   lugar_salida: z.string().min(1, "Seleccione un tipo de hoja"),
   lugar_destino: z.string().min(1, "Seleccione un tipo de hoja"),
@@ -48,8 +45,8 @@ const Taxi = z.object({
 });
 
 export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
-  const form = useForm<z.infer<typeof Taxi>>({
-    resolver: zodResolver(Taxi),
+  const form = useForm<z.infer<typeof TaxiSchema>>({
+    resolver: zodResolver(TaxiSchema),
     defaultValues: {
       unidad_contratante: "",
       lugar_salida: "",
@@ -61,45 +58,30 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
     },
   });
 
-  //HOOKS
   const taxis = useTaxiId(id);
-  const sedeQuery = useQuery({
-    queryKey: ["sedes"],
-    queryFn: () => getSedes(),
-    refetchOnWindowFocus: false,
-  });
+  const sedes = useSede();
+  const anios = useAnio();
+  const meses = useMes();
 
-  const mesQuery = useQuery({
-    queryKey: ["meses"],
-    queryFn: () => getMes(),
-    refetchOnWindowFocus: false,
-  });
-
-  const anioQuery = useQuery({
-    queryKey: ["anios"],
-    queryFn: () => getAnio(),
-    refetchOnWindowFocus: false,
-  });
-
-  const loadForm = useCallback(async () => {
+  const loadForm = useCallback(() => {
     if (taxis.data) {
-      const taxisData = await taxis.data;
       form.reset({
-        unidad_contratante: taxisData.unidad_contratante,
-        lugar_salida: taxisData.lugar_salida,
-        lugar_destino: taxisData.lugar_destino,
-        monto: taxisData.monto,
-        sede: taxisData.sede.id.toString(),
-        anio: taxisData.anio.id.toString(),
+        unidad_contratante: taxis.data.unidad_contratante,
+        lugar_salida: taxis.data.lugar_salida,
+        lugar_destino: taxis.data.lugar_destino,
+        monto: taxis.data.monto,
+        sede: taxis.data.sede.id.toString(),
+        anio: taxis.data.anio.id.toString(),
+        mes: taxis.data.mes.id.toString(),
       });
     }
-  }, [taxis.data, id]);
+  }, [taxis.data, form]);
 
   useEffect(() => {
     loadForm();
-  }, [loadForm, id]);
+  }, [loadForm]);
 
-  const onSubmit = async (data: z.infer<typeof Taxi>) => {
+  const onSubmit = async (data: z.infer<typeof TaxiSchema>) => {
     const TaxiRequest: TaxiRequest = {
       unidadContratante: data.unidad_contratante,
       lugarSalida: data.lugar_salida,
@@ -115,18 +97,18 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
       const response = await updateTaxi(id, TaxiRequest);
       onClose();
       successToast(response.data.message);
-  } catch (error: any) {
+    } catch (error: any) {
       console.log(error.response.data);
-  }
+    }
   };
 
   if (
-    sedeQuery.isFetching ||
-    anioQuery.isFetching ||
-    mesQuery.isFetching ||
-    sedeQuery.isError ||
-    anioQuery.isError ||
-    mesQuery.isError
+    sedes.isFetching ||
+    anios.isFetching ||
+    meses.isFetching ||
+    sedes.isError ||
+    anios.isError ||
+    meses.isError
   ) {
     return <SkeletonForm />;
   }
@@ -144,21 +126,17 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
               name="sede"
               control={form.control}
               render={({ field }) => (
-                <FormItem className="pt-2 w-full">
+                <FormItem className="pt-2">
                   <FormLabel>Sede</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl className="w-full">
                       <SelectTrigger>
-                        <SelectValue placeholder="Seleciona tu sede" />
+                        <SelectValue placeholder="Selecciona tu sede" />
                       </SelectTrigger>
                     </FormControl>
-                    <FormMessage />
                     <SelectContent>
                       <SelectGroup>
-                        {sedeQuery.data!.map((sede) => (
+                        {sedes.data!.map((sede) => (
                           <SelectItem key={sede.id} value={sede.id.toString()}>
                             {sede.name}
                           </SelectItem>
@@ -172,24 +150,24 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
             <div className="flex gap-5">
               {/* Anio */}
               <FormField
-                name="anio"
                 control={form.control}
+                name="anio"
                 render={({ field }) => (
                   <FormItem className="pt-2 w-1/2">
                     <FormLabel>Año</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl className="w-full">
                         <SelectTrigger>
-                          <SelectValue placeholder="Año" />
+                          <SelectValue placeholder="Selecciona el año" />
                         </SelectTrigger>
                       </FormControl>
-                      <FormMessage />
                       <SelectContent>
                         <SelectGroup>
-                          {anioQuery.data!.map((anio) => (
+                          {anios.data!.map((anio) => (
                             <SelectItem
                               key={anio.id}
                               value={anio.id.toString()}
@@ -206,25 +184,28 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
 
               {/* Mes */}
               <FormField
-                name="mes"
                 control={form.control}
+                name="mes"
                 render={({ field }) => (
                   <FormItem className="pt-2 w-1/2">
                     <FormLabel>Mes</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl className="w-full">
                         <SelectTrigger>
-                          <SelectValue placeholder="Mes" />
+                          <SelectValue placeholder="Selecciona el mes" />
                         </SelectTrigger>
                       </FormControl>
-                      <FormMessage />
                       <SelectContent>
                         <SelectGroup>
-                          {mesQuery.data!.map((mes) => (
-                            <SelectItem key={mes.id} value={mes.id.toString()}>
+                          {meses.data!.map((mes) => (
+                            <SelectItem
+                              key={mes.id}
+                              value={mes.id.toString()}
+                            >
                               {mes.nombre}
                             </SelectItem>
                           ))}
@@ -265,36 +246,32 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
                 render={({ field }) => (
                   <FormItem className="pt-2 w-1/2">
                     <FormLabel>Lugar de Destino</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <Input
-                          type="text"
-                          className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                          placeholder="Lugar de destino"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </Select>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                        placeholder="Lugar de destino"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            {/* monto */}
+
+            {/* Monto */}
             <FormField
               control={form.control}
               name="monto"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="pt-2">
                   <FormLabel>Monto</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                      placeholder="S/10.0"
+                      placeholder="Ingresa el monto"
                       {...field}
                     />
                   </FormControl>
@@ -302,15 +279,16 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
                 </FormItem>
               )}
             />
-            <div className="flex gap-3 w-full pt-4">
-              <Button type="submit" className="w-full bg-blue-700">
-                Guardar
+
+            {/* Button */}
+            <div className="w-full flex justify-center items-center pt-6">
+              <Button className="w-[300px]" type="submit">
+                Actualizar Registro
               </Button>
             </div>
           </form>
         </Form>
       </div>
     </div>
-    // </div>
   );
 }

@@ -3,6 +3,11 @@ import api from "../../../../config/api";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { TaxiCollection, TaxiRequest } from "./taxi.interface";
 
+interface Response {
+    message: string;
+}
+
+
 export async function getTaxi(
   sedeId?: string,
   anioId?: string,
