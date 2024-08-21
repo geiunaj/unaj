@@ -647,6 +647,28 @@ async function main() {
         }
     }
 
+// Datos prueba para consumo de Agua
+for (const area of allAreas) {
+    for (const anio of allAnios) {
+        for (const mes of allMeses) {
+            await prisma.consumoAgua.create({
+                data: {
+                    aerea_id: area.id,
+                    codigoMedidor: (faker.number.int({ min: 10000000, max: 99999999 })).toString(),
+                    consumo: faker.number.float({ min: 1, max: 10000 }),
+                    fuenteAgua: faker.helpers.arrayElement(['RED PUBLICA', 'POZO']), 
+                    mes_id: mes.id,
+                    anio_id: anio.id,
+                    // sede_id: area.sede?.id,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+        }
+    }
+}
+
+
     console.log({adminType, user});
 }
 

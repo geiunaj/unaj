@@ -74,6 +74,7 @@ model Mes {
   combustibles   Combustible[]
   Taxi           Taxi[]
   consumoEnergia consumoEnergia[]
+  ConsumoAgua    ConsumoAgua[]
 }
 
 model Anio {
@@ -90,6 +91,7 @@ model Anio {
   consumoEnergia       consumoEnergia[]
   factorConversionSEIN factorConversionSEIN[]
   energiaCalculos      energiaCalculos[]
+  ConsumoAgua          ConsumoAgua[]
 }
 
 model Combustible {
@@ -275,6 +277,7 @@ model area {
 
   consumoEnergia  consumoEnergia[]
   energiaCalculos energiaCalculos[]
+  ConsumoAgua     ConsumoAgua[]
 }
 
 model energiaCalculos {
@@ -332,3 +335,21 @@ model Taxi {
 }
 
 // AGUA A3_5
+model ConsumoAgua {
+  id            Int     @id @default(autoincrement())
+  consumo       Float   @db.Float
+  codigoMedidor String? @db.VarChar(45)
+  fuenteAgua    String  @db.VarChar(45) //Red Publica o Pozo
+  aerea_id      Int?
+  mes_id        Int
+  anio_id       Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  anio   Anio  @relation(fields: [anio_id], references: [id])
+  mes    Mes   @relation(fields: [mes_id], references: [id])
+  area   area? @relation(fields: [aerea_id], references: [id])
+}
+
+

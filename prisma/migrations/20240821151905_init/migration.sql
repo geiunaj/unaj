@@ -285,6 +285,21 @@ CREATE TABLE `Taxi` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `ConsumoAgua` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `consumo` FLOAT NOT NULL,
+    `codigoMedidor` VARCHAR(45) NULL,
+    `fuenteAgua` VARCHAR(45) NOT NULL,
+    `aerea_id` INTEGER NULL,
+    `mes_id` INTEGER NOT NULL,
+    `anio_id` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `Access` ADD CONSTRAINT `Access_type_user_id_fkey` FOREIGN KEY (`type_user_id`) REFERENCES `TypeUser`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -383,3 +398,12 @@ ALTER TABLE `Taxi` ADD CONSTRAINT `Taxi_anio_id_fkey` FOREIGN KEY (`anio_id`) RE
 
 -- AddForeignKey
 ALTER TABLE `Taxi` ADD CONSTRAINT `Taxi_sede_id_fkey` FOREIGN KEY (`sede_id`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ConsumoAgua` ADD CONSTRAINT `ConsumoAgua_anio_id_fkey` FOREIGN KEY (`anio_id`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ConsumoAgua` ADD CONSTRAINT `ConsumoAgua_mes_id_fkey` FOREIGN KEY (`mes_id`) REFERENCES `Mes`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ConsumoAgua` ADD CONSTRAINT `ConsumoAgua_aerea_id_fkey` FOREIGN KEY (`aerea_id`) REFERENCES `area`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
