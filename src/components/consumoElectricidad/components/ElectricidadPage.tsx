@@ -19,7 +19,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
 import SelectFilter from "@/components/selectFilter";
 import ButtonCalculate from "@/components/buttonCalculate";
@@ -91,7 +91,7 @@ export default function ElectricidadPage() {
     const sedes = useSede();
     const anios = useAnio();
     const meses = useMes();
-    const areas = useArea();
+    const areas = useArea(Number(selectedSede));
 
     // IDS
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
@@ -110,8 +110,13 @@ export default function ElectricidadPage() {
     const handleSedeChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedSede(value);
-        await electricidad.refetch();
-    }, [electricidad]);
+        const refetchData = await areas.refetch();
+        setSelectedArea(refetchData.data![0].id.toString());
+    }, [areas, electricidad]);
+
+    useEffect(() => {
+        electricidad.refetch();
+    }, [selectedArea]);
 
     const handleAnioChange = useCallback(async (value: string) => {
         await setPage(1);

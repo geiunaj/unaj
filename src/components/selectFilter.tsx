@@ -31,7 +31,7 @@ export default function SelectFilter({
                                      }: SelectFilterProps<any>) {
     return (
         <Select onValueChange={(selectedValue) => handleItemSelect(selectedValue === "all" ? "" : selectedValue)}
-                defaultValue={itemSelected}>
+                value={itemSelected}>
             <SelectTrigger className="rounded-sm h-7 text-xs w-auto gap-2 focus:outline-none focus-visible:ring-0">
                 {icon && <span>{icon}</span>}
                 <SelectValue placeholder="Seleccionar"/>

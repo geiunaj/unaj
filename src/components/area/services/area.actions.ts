@@ -1,13 +1,20 @@
 import api from "../../../../config/api";
 import {Area, AreaRequest} from "@/components/area/services/area.interface";
-import {AxiosResponse} from "axios";
+import {AxiosRequestConfig, AxiosResponse} from "axios";
 
 interface Response {
     message: string;
 }
 
-export async function getArea(): Promise<Area[]> {
-    const {data} = await api.get<Area[]>("/api/area");
+export async function getArea(
+    sedeId?: number
+): Promise<Area[]> {
+    const config: AxiosRequestConfig = {
+        params: {
+            sedeId,
+        },
+    }
+    const {data} = await api.get<Area[]>("/api/area", config);
     return data;
 }
 

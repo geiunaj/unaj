@@ -53,7 +53,7 @@ import CustomPagination from "@/components/pagination";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import ReportPopover, {ReportRequest} from "@/components/ReportPopover";
+import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 
 
@@ -163,19 +163,19 @@ export default function FertilizantePage() {
         await fertilizante.refetch();
     }
 
-    const handleClickReport = (data: ReportRequest) => {
+    const handleClickReport = (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10,},
-            {header: "TIPO", key: "clase", width: 20,},
-            {header: "FERTILIZANTE", key: "tipoFertilizante", width: 20,},
-            {header: "CANTIDAD", key: "cantidad", width: 20,},
-            {header: "% DE NITROGENO", key: "porcentajeNit", width: 20,},
-            {header: "FICHA TECNICA", key: "is_ficha", width: 20,},
-            {header: "AÑO", key: "anio", width: 20,},
+            {header: "TIPO", key: "clase", width: 15,},
+            {header: "FERTILIZANTE", key: "tipoFertilizante", width: 40,},
+            {header: "CANTIDAD", key: "cantidad", width: 15,},
+            {header: "NITRÓGENO %", key: "porcentajeNit", width: 20,},
+            {header: "FICHA TECNICA", key: "is_ficha", width: 15,},
+            {header: "AÑO", key: "anio", width: 15,},
             {header: "SEDE", key: "sede", width: 20,}
         ];
 
-        GenerateReport(fertilizante.data!.data, columns);
+        GenerateReport(fertilizante.data!.data, columns, formatPeriod(period), "Reporte de Fertilizantes");
     }
 
     if (fertilizante.isLoading || claseFertilizante.isLoading || tipoFertilizante.isLoading
@@ -334,7 +334,7 @@ export default function FertilizantePage() {
                                     <Badge variant="default">{item.cantidad}</Badge>
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.porcentajeNit} %</TableCell>
-                                <TableCell className="text-xs sm:text-sm">{item.is_ficha ? "SI" : "NO"}</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.is_ficha}</TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.anio}</TableCell>
                                 <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">

@@ -16,6 +16,8 @@ import {FileSpreadsheet, FileText} from "lucide-react";
 import {addYears, format} from "date-fns"
 import {Input} from "@/components/ui/input";
 import Exceljs from "exceljs";
+import {Switch} from "@/components/ui/switch";
+import {Label} from "@/components/ui/label";
 
 interface ReportPopoverProps {
     onClick: (data: ReportRequest) => void;
@@ -25,6 +27,19 @@ interface ReportPopoverProps {
 export interface ReportRequest {
     from?: string;
     to?: string;
+}
+
+export const formatPeriod = (period: ReportRequest): string => {
+    if (period.from && period.to) {
+        return `Desde ${period.from} hasta ${period.to}`;
+    }
+    if (period.from) {
+        return `Desde ${period.from}`;
+    }
+    if (period.to) {
+        return `Hasta ${period.to}`;
+    }
+    return "-";
 }
 
 const Report = z.object({
@@ -105,6 +120,10 @@ export default function ReportPopover({
                                 </FormItem>
                             )}
                         />
+                        <div className="flex items-center gap-4">
+                            <Switch id="airplane-mode"/>
+                            <Label htmlFor="airplane-mode">Usar Filtros activos</Label>
+                        </div>
 
                         <div className="flex justify-end w-full gap-4">
                             <Button

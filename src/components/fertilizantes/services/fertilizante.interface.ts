@@ -23,8 +23,8 @@ export interface Meta {
 export interface fertilizanteCollectionItem {
     id: number;
     cantidad: number;
-    is_ficha: boolean;
-    ficha_id: null;
+    is_ficha: string;
+    ficha_id: number;
     anio: number;
     sede: string;
     clase: string;

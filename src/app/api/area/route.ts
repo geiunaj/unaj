@@ -6,8 +6,13 @@ import {AreaRequest} from "@/components/area/services/area.interface";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
+        const {searchParams} = new URL(req.url);
+        const sedeId = searchParams.get("sedeId") ?? undefined;
         const areas = await prisma.area.findMany(
             {
+                where: {
+                    sede_id: sedeId ? parseInt(sedeId) : undefined,
+                },
                 include: {
                     sede: true,
                 }

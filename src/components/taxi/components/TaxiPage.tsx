@@ -2,7 +2,7 @@
 import {useState, useCallback} from "react";
 import {Button, buttonVariants} from "@/components/ui/button";
 
-import {Building, Calendar, File, Pen, Plus, Trash2} from "lucide-react";
+import {Building, Calendar, File, FileSpreadsheet, Pen, Plus, Trash2} from "lucide-react";
 
 import {
     AlertDialog,
@@ -49,7 +49,10 @@ import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {Badge} from "@/components/ui/badge";
 import {FormTaxi} from "./FormTaxi";
-import { UpdateFormTaxi } from "./UpdateFromTaxi";
+import {UpdateFormTaxi} from "./UpdateFromTaxi";
+import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
+import GenerateReport from "@/lib/utils/generateReport";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 
 export default function TaxiPage() {
     // DIALOGS
@@ -121,6 +124,21 @@ export default function TaxiPage() {
         setIsDeleteDialogOpen(true);
     };
 
+    const handleClickReport = (period: ReportRequest) => {
+        const columns = [
+            {header: "N°", key: "id", width: 10,},
+            {header: "UNIDAD CONTRATANTE", key: "unidadContratante", width: 15,},
+            {header: "LUGAR SALIDA", key: "lugarSalida", width: 40,},
+            {header: "LUGAR DESTINO", key: "lugarDestino", width: 15,},
+            {header: "MONTO GASTADO", key: "montoGastado", width: 20,},
+            {header: "SEDE", key: "sede", width: 15,},
+            {header: "AÑO", key: "anio", width: 15,},
+            {header: "MESS", key: "mes", width: 20,}
+        ];
+
+        GenerateReport(taxiQuery.data!, columns, formatPeriod(period), "REPORTE DE TAXIS CONTRATADOS");
+    }
+
     if (
         sedeQuery.isLoading ||
         anioQuery.isLoading ||
@@ -182,6 +200,24 @@ export default function TaxiPage() {
                     </div>
 
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    size="sm"
+                                    className="h-7 gap-1"
+                                    variant="outline"
+                                >
+                                    <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                    Reporte
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                                <ReportPopover
+                                    onClick={(data) => handleClickReport(data)}
+                                    text={"Generar reporte"}
+                                />
+                            </PopoverContent>
+                        </Popover>
                         {/* <ButtonCalculate onClick={handleCalculate} /> */}
 
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

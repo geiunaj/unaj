@@ -49,10 +49,10 @@ export const useMes = () => {
     });
 }
 
-export const useArea = () => {
+export const useArea = (sedeId: number) => {
     return useQuery({
         queryKey: ['area'],
-        queryFn: () => getArea(),
+        queryFn: () => getArea(sedeId),
         refetchOnWindowFocus: false,
     });
 }

@@ -608,10 +608,10 @@ async function main() {
     //Datos prueba para area
 
     for (const sede of allSedes) {
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 3; i++) {
             await prisma.area.create({
                 data: {
-                    nombre: `Area ${i + 1} de ${sede.name}`,
+                    nombre: `Area ${sede.id}${i + 1}`,
                     sede_id: sede.id,
                     created_at: new Date(),
                     updated_at: new Date(),

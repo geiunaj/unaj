@@ -1,19 +1,19 @@
-import { number } from "zod";
+import {number} from "zod";
 
 type TipoFertilizante = {
-  id: number;
-  clase: string;
-  nombre: string;
-  porcentajeNitrogeno: number;
-  created_at: Date;
-  updated_at: Date;
+    id: number;
+    clase: string;
+    nombre: string;
+    porcentajeNitrogeno: number;
+    created_at: Date;
+    updated_at: Date;
 };
 
 type Sede = {
-  id: number;
-  name: string;
-  created_at?: Date;
-  updated_at?: Date;
+    id: number;
+    name: string;
+    created_at?: Date;
+    updated_at?: Date;
 };
 
 // type Fertilizante = {
@@ -30,21 +30,21 @@ type Sede = {
 // };
 
 export function formaFertilizante(fertilizante: any) {
-  const { created_at, updated_at, tipoFertilizante, anio, sede, ...rest } =
-    fertilizante;
+    const {created_at, updated_at, tipoFertilizante, anio, sede, is_ficha, ...rest} =
+        fertilizante;
 
-  return {
-    ...rest,
-
-    created_at: undefined,
-    updated_at: undefined,
-    anio_id: undefined,
-    sede_id: number,
-    tipoFertilizante_id: undefined,
-    anio: Number(anio?.nombre),
-    sede: sede?.name,
-    clase: tipoFertilizante?.clase,
-    tipoFertilizante: tipoFertilizante?.nombre,
-    porcentajeNit: tipoFertilizante?.porcentajeNitrogeno,
-  };
+    return {
+        ...rest,
+        created_at: undefined,
+        updated_at: undefined,
+        anio_id: undefined,
+        sede_id: number,
+        tipoFertilizante_id: undefined,
+        anio: Number(anio?.nombre),
+        sede: sede?.name,
+        is_ficha: is_ficha ? "Si" : "No",
+        clase: tipoFertilizante?.clase,
+        tipoFertilizante: tipoFertilizante?.nombre,
+        porcentajeNit: tipoFertilizante?.porcentajeNitrogeno,
+    };
 }

@@ -6,18 +6,53 @@ export interface Column {
     width: number;
 }
 
-export default async function GenerateReport<T>(data: T[], columns: Column[]) {
+export default async function GenerateReport<T>(data: T[], columns: Column[], period: string, title: string) {
     const workbook = new Exceljs.Workbook();
     const sheet = workbook.addWorksheet('PRUEBA');
-    sheet.properties.defaultRowHeight = 25;
+    sheet.properties.defaultRowHeight = 22;
     sheet.properties.showGridLines = false;
 
-    sheet.columns = columns.map((column: Column) => {
-        return {header: column.header, key: column.key, width: column.width};
-    });
+    sheet.mergeCells(1, 1, 1, columns.length);
+    sheet.mergeCells(2, 2, 2, 3);
+    const cellPeriodTitle = sheet.getRow(2).getCell(1);
+    cellPeriodTitle.value = 'Periodo:';
+    cellPeriodTitle.font = {
+        color: {argb: '0A2A70'},
+        size: 12,
+        bold: true,
+    };
+    cellPeriodTitle.alignment = {
+        vertical: 'middle',
+        horizontal: 'center',
+    };
+    const cellPeriod = sheet.getRow(2).getCell(2);
+    cellPeriod.value = period;
+    cellPeriod.font = {
+        color: {argb: '000000'},
+        size: 12,
+        bold: true,
+    };
+    cellPeriod.alignment = {
+        vertical: 'middle',
+        horizontal: 'center',
+    };
+    const cellTitle = sheet.getRow(1).getCell(1);
+    cellTitle.value = title;
+    cellTitle.font = {
+        color: {argb: '0A2A70'},
+        size: 18,
+        bold: true,
+    };
+    cellTitle.alignment = {
+        vertical: 'middle',
+        horizontal: 'center',
+    };
 
     columns.forEach((column, index) => {
-        const cell = sheet.getCell(1, index + 1);
+        sheet.getColumn(index + 1).width = column.width;
+        const headerRow = sheet.getRow(3);
+        const cell = headerRow.getCell(index + 1);
+        cell.value = column.header;
         cell.fill = {
             type: 'pattern',
             pattern: 'solid',
@@ -35,7 +70,7 @@ export default async function GenerateReport<T>(data: T[], columns: Column[]) {
     });
 
     data.forEach((row: any, rowIndex) => {
-        const excelRow = sheet.getRow(rowIndex + 2);
+        const excelRow = sheet.getRow(rowIndex + 4);
         columns.forEach((column, columnIndex) => {
             const cell = excelRow.getCell(columnIndex + 1);
             if (columnIndex === 0) {
@@ -46,6 +81,12 @@ export default async function GenerateReport<T>(data: T[], columns: Column[]) {
             cell.alignment = {
                 vertical: 'middle',
                 horizontal: 'center',
+            };
+            cell.border = {
+                top: {style: 'thin', color: {argb: 'e2e8f0'}},
+                left: {style: 'thin', color: {argb: 'e2e8f0'}},
+                bottom: {style: 'thin', color: {argb: 'e2e8f0'}},
+                right: {style: 'thin', color: {argb: 'e2e8f0'}}
             };
         });
     });
