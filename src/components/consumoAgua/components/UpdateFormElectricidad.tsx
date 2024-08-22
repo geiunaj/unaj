@@ -259,48 +259,28 @@ export function UpdateFormconsumoAgua({
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="codigoMedidor"
-                render={({ field }) => (
-                  <FormItem className="pt-2 w-1/2">
-                    <FormLabel>Codigo del Medidor</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                        placeholder="1234567"
-                        type="text"
-                        maxLength={8}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Cantidad */}
-              <FormField
-                control={form.control}
-                name="consumo"
-                render={({ field }) => (
-                  <FormItem className="pt-2 w-1/2">
-                    <FormLabel>Consumo</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                        placeholder="kw/h"
-                        type="number"
-                        step="0.01"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
+
+            {/* COSUMOS */}
+            <FormField
+              control={form.control}
+              name="consumo"
+              render={({ field }) => (
+                <FormItem className="pt-2 w-1/2">
+                  <FormLabel>Consumo</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                      placeholder="kw/h"
+                      type="number"
+                      step="0.01"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="flex gap-4">
               {/* Mes */}
