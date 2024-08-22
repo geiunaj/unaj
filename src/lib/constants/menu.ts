@@ -10,7 +10,10 @@ import {
     Scroll,
     Sprout,
     Settings,
-    MapPinned
+    MapPinned,
+    Droplets,
+    CarTaxiFront 
+    
 } from "lucide-react";
 
 export interface MenuItem {
@@ -32,7 +35,9 @@ export const iconComponents: Record<string, any> = {
     Scroll,
     Sprout,
     Settings,
-    MapPinned
+    MapPinned,
+    Droplets,
+    CarTaxiFront 
 };
 
 export const menu: MenuItem[] = [
@@ -62,13 +67,18 @@ export const menu: MenuItem[] = [
         href: "/electricidad",
     },
     {
+        title: "Consumo de Agua",
+        icon: "Droplets",
+        href: "/consumoAgua",
+    },
+    {
         title: "Consumo de Papel",
         icon: "FileText",
         href: "/papel",
     },
     {
         title: "Taxis Contratados",
-        icon: "FileText",
+        icon: "CarTaxiFront",
         href: "/taxi",
     },
     {

@@ -14,20 +14,43 @@ interface getConsumoAguaInterface {
   page?: number;
 }
 
+// export const useConsumoAgua = ({
+//   anioId,
+//   mesId,
+//   areaId,
+//   sort,
+//   direction,
+//   page,
+// }: getConsumoAguaInterface) => {
+//   return useQuery({
+//     queryKey: ["ConsumoAgua"],
+//     queryFn: () => getConsumoAgua(anioId, areaId, sort, mesId, direction, page),
+//     refetchOnWindowFocus: false,
+//   });
+// };
+
 export const useConsumoAgua = ({
-  anioId,
-  mesId,
-  areaId,
-  sort,
-  direction,
-  page,
-}: getConsumoAguaInterface) => {
-  return useQuery({
-    queryKey: ["ConsumoAgua"],
-    queryFn: () => getConsumoAgua(anioId, areaId, sort, mesId, direction, page),
-    refetchOnWindowFocus: false,
-  });
-};
+    anioId,
+    mesId,
+    areaId,
+    sort,
+    direction,
+    page,
+  }: getConsumoAguaInterface) => {
+    return useQuery({
+      queryKey: ["ConsumoAgua"],
+      queryFn: () => 
+        getConsumoAgua(
+          anioId ? Number(anioId) : undefined,
+          areaId ? Number(areaId) : undefined,
+          mesId ? Number(mesId) : undefined,
+          sort,
+          direction,
+          page ? Number(page) : undefined
+        ),
+      refetchOnWindowFocus: false,
+    });
+  };
 
 // export const useSede = () => {
 //     return useQuery({

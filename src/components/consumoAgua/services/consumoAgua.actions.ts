@@ -9,7 +9,7 @@ interface Response {
 }
 
 export async function getConsumoAgua(
-    sedeId?: number,
+    // sedeId?: number,
     anioId?: number,
     areaId?: number,
     mesId?: number,
