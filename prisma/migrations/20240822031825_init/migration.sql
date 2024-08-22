@@ -291,7 +291,7 @@ CREATE TABLE `ConsumoAgua` (
     `consumo` FLOAT NOT NULL,
     `codigoMedidor` VARCHAR(45) NULL,
     `fuenteAgua` VARCHAR(45) NOT NULL,
-    `aerea_id` INTEGER NULL,
+    `area_id` INTEGER NULL,
     `mes_id` INTEGER NOT NULL,
     `anio_id` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -406,4 +406,4 @@ ALTER TABLE `ConsumoAgua` ADD CONSTRAINT `ConsumoAgua_anio_id_fkey` FOREIGN KEY 
 ALTER TABLE `ConsumoAgua` ADD CONSTRAINT `ConsumoAgua_mes_id_fkey` FOREIGN KEY (`mes_id`) REFERENCES `Mes`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `ConsumoAgua` ADD CONSTRAINT `ConsumoAgua_aerea_id_fkey` FOREIGN KEY (`aerea_id`) REFERENCES `area`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `ConsumoAgua` ADD CONSTRAINT `ConsumoAgua_area_id_fkey` FOREIGN KEY (`area_id`) REFERENCES `area`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

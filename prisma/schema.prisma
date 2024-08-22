@@ -340,7 +340,7 @@ model ConsumoAgua {
   consumo       Float   @db.Float
   codigoMedidor String? @db.VarChar(45)
   fuenteAgua    String  @db.VarChar(45) //Red Publica o Pozo
-  aerea_id      Int?
+  area_id      Int?
   mes_id        Int
   anio_id       Int
 
@@ -349,7 +349,7 @@ model ConsumoAgua {
 
   anio   Anio  @relation(fields: [anio_id], references: [id])
   mes    Mes   @relation(fields: [mes_id], references: [id])
-  area   area? @relation(fields: [aerea_id], references: [id])
+  area   area? @relation(fields: [area_id], references: [id])
 }
 
 
