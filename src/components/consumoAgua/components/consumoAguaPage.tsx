@@ -55,6 +55,8 @@ import {
 import CustomPagination from "@/components/pagination";
 import { useSede } from "@/components/consumoElectricidad/lib/electricidad.hooks";
 import { deleteConsumoAgua } from "../services/consumoAgua.actions";
+import { FormconsumoAgua } from "./FormConsumoAgua";
+import { UpdateFormconsumoAgua } from "./UpdateFormElectricidad";
 
 export default function ConsumoAguaPage() {
     //NAVIGATION
@@ -246,7 +248,7 @@ export default function ConsumoAguaPage() {
                                     </DialogDescription>
                                     <DialogClose></DialogClose>
                                 </DialogHeader>
-                                {/* <FormconsumoAgua onClose={handleClose}/> */}
+                                <FormconsumoAgua onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -347,10 +349,10 @@ export default function ConsumoAguaPage() {
                         <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    {/* <UpdateFormconsumoAgua
+                    <UpdateFormconsumoAgua
                         onClose={handleCloseUpdate}
                         id={idForUpdate}
-                    /> */}
+                    />
                 </DialogContent>
             </Dialog>
 
