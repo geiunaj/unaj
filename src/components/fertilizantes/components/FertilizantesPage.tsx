@@ -44,7 +44,7 @@ import SkeletonTable from "@/components/Layout/skeletonTable";
 import {
     useAnio,
     useClaseFertilizante,
-    useFertilizante,
+    useFertilizante, useFertilizanteReport,
     useSede, useTipoFertilizante
 } from "@/components/fertilizantes/lib/fertilizante.hook";
 import {deleteFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
@@ -55,6 +55,7 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
+import {useQuery} from "@tanstack/react-query";
 
 
 export default function FertilizantePage() {
@@ -163,7 +164,17 @@ export default function FertilizantePage() {
         await fertilizante.refetch();
     }
 
-    const handleClickReport = (period: ReportRequest) => {
+    const fertilizanteReport = useFertilizanteReport(
+        {
+            tipoFertilizanteId: selectedTipoFertilizanteId ? parseInt(selectedTipoFertilizanteId) : undefined,
+            claseFertilizante: selectedClaseFertilizante,
+            sedeId: parseInt(selectedSede),
+            anio: selectedAnio,
+            page: page
+        }
+    );
+
+    const handleClickReport = async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10,},
             {header: "TIPO", key: "clase", width: 15,},
@@ -174,8 +185,9 @@ export default function FertilizantePage() {
             {header: "AÑO", key: "anio", width: 15,},
             {header: "SEDE", key: "sede", width: 20,}
         ];
+        const data = await fertilizanteReport.refetch();
+        GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE FERTILIZANTES");
 
-        GenerateReport(fertilizante.data!.data, columns, formatPeriod(period), "Reporte de Fertilizantes");
     }
 
     if (fertilizante.isLoading || claseFertilizante.isLoading || tipoFertilizante.isLoading
@@ -257,8 +269,8 @@ export default function FertilizantePage() {
                             </PopoverTrigger>
                             <PopoverContent className="w-80">
                                 <ReportPopover
-                                    onClick={(data) => handleClickReport(data)}
-                                    text={"Generar reporte"}
+                                    onClick={(data: ReportRequest) => handleClickReport(data)}
+                                    withMonth={true}
                                 />
                             </PopoverContent>
                         </Popover>

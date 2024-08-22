@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma"; // Asegúrate de que la ruta sea correcta
 import {formaFertilizante} from "@/lib/resources/fertilizanteResource";
 import {Fertilizante} from "@prisma/client";
 import {FertilizanteRequest} from "@/components/fertilizantes/services/fertilizante.interface";
+import {getAnioId} from "@/lib/utils";
 
 // GET ROUTE -> SIN PARAMETROS
 export async function GET(req: NextRequest): Promise<NextResponse> {
@@ -18,14 +19,17 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const page = parseInt(searchParams.get("page") ?? "1");
         const perPage = parseInt(searchParams.get("perPage") ?? "10");
+        const all = searchParams.get("all") === "true";
+        const yearFrom = searchParams.get("yearFrom") ?? undefined;
+        const yearTo = searchParams.get("yearTo") ?? undefined;
 
         let anioId: number | undefined;
-        if (anio) {
-            const anioRecord = await prisma.anio.findFirst({
-                where: {nombre: anio},
-            });
-            anioId = anioRecord ? anioRecord.id : undefined;
-        }
+        let yearFromId: number | undefined;
+        let yearToId: number | undefined;
+
+        if (anio) anioId = await getAnioId(anio);
+        if (yearFrom) yearFromId = await getAnioId(yearFrom);
+        if (yearTo) yearToId = await getAnioId(yearTo);
 
         const whereOptions = {
             sede_id: sedeId ? parseInt(sedeId) : undefined,
@@ -36,11 +40,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             tipoFertilizante: {
                 clase: claseFertilizante ? claseFertilizante : undefined,
             },
+            ...(yearFromId && yearToId
+                ? {anio: {id: {gte: yearFromId, lte: yearToId}}}
+                : yearFromId ? {anio: {id: {gte: yearFromId}}}
+                    : yearToId ? {anio: {id: {lte: yearToId}}}
+                        : {}),
         };
 
         const totalRecords = await prisma.fertilizante.count({where: whereOptions});
         const totalPages = Math.ceil(totalRecords / perPage);
 
+
+        console.log("all", all);
         const fertilizantes = await prisma.fertilizante.findMany({
             where: whereOptions,
             include: {
@@ -48,13 +59,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 sede: true,
                 tipoFertilizante: true,
             },
-            orderBy: sort
-                ? [{[sort]: direction || 'desc'}]
-                : [
-                    {anio_id: 'desc'},
-                ],
-            skip: (page - 1) * perPage,
-            take: perPage,
+            orderBy: sort ? [{[sort]: direction || 'desc'}] : [{anio_id: 'desc'}],
+            ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
         const formattedFertilizantes: Fertilizante[] = fertilizantes.map(

@@ -1,5 +1,9 @@
 import {useQuery} from "@tanstack/react-query";
-import {getFertilizante, getFertilizanteById} from "@/components/fertilizantes/services/fertilizante.actions";
+import {
+    getFertilizante,
+    getFertilizanteById,
+    getFertilizanteReport
+} from "@/components/fertilizantes/services/fertilizante.actions";
 import {
     getClaseFertilizante,
     getTiposFertilizante
@@ -15,13 +19,23 @@ interface getFertilizanteInterface {
     sort?: string;
     direction?: string;
     page?: number;
+    all?: boolean;
 }
 
 export const useFertilizante =
     ({tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page}: getFertilizanteInterface) => {
         return useQuery({
             queryKey: ['fertilizante'],
-            queryFn: () => getFertilizante(tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page),
+            queryFn: () => getFertilizante(tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page, false),
+            refetchOnWindowFocus: false,
+        });
+    }
+
+export const useFertilizanteReport =
+    ({tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page}: getFertilizanteInterface) => {
+        return useQuery({
+            queryKey: ['fertilizanteReport'],
+            queryFn: () => getFertilizanteReport(tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page),
             refetchOnWindowFocus: false,
         });
     }
