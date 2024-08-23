@@ -36,7 +36,7 @@ type Taxi = {
 };
 
 
-export function formatTaxi(taxi: any): Taxi {
+export function formatTaxi(taxi: any) {
     const {
         id,
         unidadContratante,

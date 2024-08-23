@@ -202,10 +202,7 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
                       <SelectContent>
                         <SelectGroup>
                           {meses.data!.map((mes) => (
-                            <SelectItem
-                              key={mes.id}
-                              value={mes.id.toString()}
-                            >
+                            <SelectItem key={mes.id} value={mes.id.toString()}>
                               {mes.nombre}
                             </SelectItem>
                           ))}
@@ -217,7 +214,47 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
               />
             </div>
 
-            {/* Unidad contratante */}
+            <div className="flex gap-5">
+              {/* Unidad contratante */}
+              <FormField
+                control={form.control}
+                name="unidad_contratante"
+                render={({ field }) => (
+                  <FormItem className="pt-2 w-1/2">
+                    <FormLabel>Unidad Contratante</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                        placeholder="Unidad contratante"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Monto */}
+              <FormField
+                control={form.control}
+                name="monto"
+                render={({ field }) => (
+                  <FormItem className="pt-2 w-1/2">
+                    <FormLabel>Monto</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                        placeholder="Ingresa el monto"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="flex gap-5">
               {/* lugar_salida */}
@@ -260,30 +297,10 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
               />
             </div>
 
-            {/* Monto */}
-            <FormField
-              control={form.control}
-              name="monto"
-              render={({ field }) => (
-                <FormItem className="pt-2">
-                  <FormLabel>Monto</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                      placeholder="Ingresa el monto"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             {/* Button */}
             <div className="w-full flex justify-center items-center pt-6">
-              <Button className="w-[300px]" type="submit">
-                Actualizar Registro
+              <Button className="w-full" type="submit">
+                Guardar
               </Button>
             </div>
           </form>
