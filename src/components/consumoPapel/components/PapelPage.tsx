@@ -34,7 +34,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
-import {CollectionConsumoPapel} from "@/components/consumoPapel/services/consumoPapel.interface";
+import {CollectionConsumoPapel, ConsumoPapelCollectionItem} from "@/components/consumoPapel/services/consumoPapel.interface";
 import {FormPapel} from "@/components/consumoPapel/components/FormPapelOficce";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {
@@ -46,8 +46,12 @@ import {
 import {deleteConsumoPapel} from "../services/consumoPapel.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {UpdateFormPapel} from "./UpdateFormPapelOficce";
+import CustomPagination from "@/components/Pagination";
 
 export default function PapelPage() {
+
+    const [page, setPage] = useState<number>(1);
+
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -120,6 +124,11 @@ export default function PapelPage() {
             await consumoPapelQuery.refetch();
         }
     }, [consumoPapelQuery]);
+
+    const handlePageChage = async (page: number) => {
+        await setPage(page);
+        await consumoPapelQuery.refetch();
+    }
 
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
@@ -241,8 +250,8 @@ export default function PapelPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {consumoPapelQuery.data!.map(
-                            (item: CollectionConsumoPapel, index: number) => (
+                        {consumoPapelQuery.data!.data.map(
+                            (item: ConsumoPapelCollectionItem, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{index + 1}</Badge>
@@ -298,6 +307,12 @@ export default function PapelPage() {
                         )}
                     </TableBody>
                 </Table>
+
+                {
+                    consumoPapelQuery.data!.meta.totalPages > 1 && (
+                        <CustomPagination meta={consumoPapelQuery.data!.meta} onPageChange={handlePageChage}/>
+                    )
+                }
             </div>
 
             {/*MODAL UPDATE*/}

@@ -47,12 +47,17 @@ export interface TipoPapel {
 
 
 export interface CollectionConsumoPapel {
+    data: ConsumoPapelCollectionItem[];
+    meta: Meta;
+}
+
+export interface ConsumoPapelCollectionItem {
     id: number;
     nombre: string;
     cantidad_paquete: number;
     comentario: null | string;
-    anio_id: number;
-    sede_id: number;
+    // anio_id: number;
+    // sede_id: number;
     gramaje: number;
     unidad_paquete: string;
     is_certificado: boolean;
@@ -61,6 +66,13 @@ export interface CollectionConsumoPapel {
     nombre_certificado: string;
     anio: string;
     sede: string;
+}
+
+export interface Meta {
+    page: number;
+    perPage: number;
+    totalPages: number;
+    totalRecords: number;
 }
 
 export interface CreateConsumoPapelProps {

@@ -1,4 +1,4 @@
-import {ConsumoPapelRequest} from "@/components/consumoPapel/services/consumoPapel.interface";
+import {ConsumoPapelCollectionItem, ConsumoPapelRequest} from "@/components/consumoPapel/services/consumoPapel.interface";
 import {formatConsumoPapel} from "@/lib/resources/papelResource";
 import prisma from "@/lib/prisma";
 import {NextRequest, NextResponse} from "next/server";
@@ -13,6 +13,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const tipoPapelId = searchParams.get("tipoPapelId") ?? undefined;
         const anio = searchParams.get("anio") ?? undefined;
 
+        const page = parseInt(searchParams.get("page") ?? "1");
+        const perPage = parseInt(searchParams.get("perPage") ?? "10");
+
+
         let anioId;
         if (anio) {
             const anioRecord = await prisma.anio.findFirst({
@@ -22,27 +26,44 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             });
             anioId = anioRecord ? anioRecord.id : undefined;
         }
+        const whereOptions = {
+            sede_id: sedeId ? parseInt(sedeId) : undefined,
+            tipoPapel_id: tipoPapelId ? parseInt(tipoPapelId) : undefined,
+            anio_id: anioId,
+        };
+  
+        const totalRecords = await prisma.consumoEnergia.count({where: whereOptions});
+        const totalPages = Math.ceil(totalRecords / perPage);
 
 
         const consumopapel = await prisma.consumoPapel.findMany({
-            where: {
-                sede_id: sedeId ? parseInt(sedeId) : undefined,
-                tipoPapel_id: tipoPapelId ? parseInt(tipoPapelId) : undefined,
-                anio_id: anioId,
-            },
+            where: whereOptions,
             include: {
                 tipoPapel: true,
                 anio: true,
                 sede: true,
             },
-            orderBy: {
-                [sort]: direction,
-            },
+            orderBy: sort
+                ? [{[sort]: direction || 'desc'}]
+                : [ {anio_id: "desc"}, {sede_id: "desc"}],
+            skip: (page - 1) * perPage,
+            take: perPage,
         });
 
-        const formattedConsumoPapel = consumopapel.map(formatConsumoPapel);
+        const  formattedConsumoPapel: ConsumoPapelCollectionItem[] = consumopapel.map(formatConsumoPapel);
 
-        return NextResponse.json(formattedConsumoPapel);
+
+        return NextResponse.json(
+            {
+                data: formattedConsumoPapel,
+                meta: {
+                    page: page,
+                    perPage: perPage,
+                    totalPages: totalPages,
+                    totalRecords: totalRecords,
+                },
+            }
+        );
     } catch (error) {
         console.error("Error finding consumo papel", error);
         return new NextResponse("Error finding consumo papel", {status: 500});

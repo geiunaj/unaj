@@ -9,7 +9,7 @@ export async function getConsumoPapel(
     anio?: string,
     sort?: string,
     direction?: string
-): Promise<CollectionConsumoPapel[]> {
+): Promise<CollectionConsumoPapel> {
     try {
         const config: AxiosRequestConfig = {
             params: {
@@ -20,7 +20,7 @@ export async function getConsumoPapel(
                 direction,
             },
         };
-        const {data} = await api.get<CollectionConsumoPapel[]>(
+        const {data} = await api.get<CollectionConsumoPapel>(
             "/api/consumoPapel",
             config
         );
