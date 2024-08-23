@@ -39,7 +39,7 @@ import {Badge} from "@/components/ui/badge";
 import {
     useAnio,
     useArea,
-    useElectricidad,
+    useElectricidad, useElectricidadReport,
     useMes,
     useSede,
 } from "../lib/electricidad.hooks";
@@ -53,10 +53,14 @@ import {
     Calendar,
     CalendarDays,
     Pen,
-    MapPinned,
+    MapPinned, FileSpreadsheet,
 } from "lucide-react";
 import CustomPagination from "@/components/Pagination";
 import {UpdateFormElectricidad} from "@/components/consumoElectricidad/components/UpdateFormElectricidad";
+import {useCombustibleReport} from "@/components/combustion/lib/combustion.hook";
+import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
+import GenerateReport from "@/lib/utils/generateReport";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 
 export default function ElectricidadPage() {
     //NAVIGATION
@@ -161,6 +165,42 @@ export default function ElectricidadPage() {
         await electricidad.refetch();
     }, [idForDelete, electricidad]);
 
+
+    const handlePageChage = async (page: number) => {
+        await setPage(page);
+        await electricidad.refetch();
+    }
+
+    const [from, setFrom] = useState<string>("");
+    const [to, setTo] = useState<string>("");
+
+    const electricidadReport = useElectricidadReport({
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
+        anioId: selectedAnio ? Number(selectedAnio) : undefined,
+        areaId: selectedArea ? Number(selectedArea) : undefined,
+        mesId: selectedMes ? Number(selectedMes) : undefined,
+        page: page,
+        from,
+        to
+    });
+
+    const handleClickReport = async (period: ReportRequest) => {
+        const columns = [
+            {header: "N°", key: "id", width: 10,},
+            {header: "N° DE SUMINISTRO", key: "numeroSuministro", width: 15,},
+            {header: "CONSUMO", key: "consumo", width: 20,},
+            {header: "AREA", key: "area", width: 15,},
+            {header: "SEDE", key: "sede", width: 20,},
+            {header: "AÑO", key: "anio", width: 15,},
+            {header: "MES", key: "mes", width: 30,},
+        ];
+        console.log(period);
+        await setFrom(period.from ?? "");
+        await setTo(period.to ?? "");
+        const data = await electricidadReport.refetch();
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), `REPORTE DE CONSUMO DE ENERGÍA ELÉCTRICA`);
+    }
+
     if (electricidad.isLoading || areas.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {
         return <SkeletonTable/>;
     }
@@ -168,11 +208,6 @@ export default function ElectricidadPage() {
     if (electricidad.isError || areas.isError || sedes.isError || anios.isError || meses.isError) {
         errorToast("Error al cargar los datos");
         return <SkeletonTable/>;
-    }
-
-    const handlePageChage = async (page: number) => {
-        await setPage(page);
-        await electricidad.refetch();
     }
 
     return (
@@ -229,6 +264,25 @@ export default function ElectricidadPage() {
                         />
                     </div>
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    size="sm"
+                                    className="h-7 gap-1"
+                                    variant="outline"
+                                >
+                                    <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                    Reporte
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                                <ReportPopover
+                                    onClick={(data: ReportRequest) => handleClickReport(data)}
+                                    withMonth={true}
+                                />
+                            </PopoverContent>
+                        </Popover>
+
                         <ButtonCalculate onClick={handleCalculate}/>
 
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

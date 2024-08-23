@@ -38,6 +38,37 @@ export async function getElectricidad(
     return data;
 }
 
+export async function getElectricidadReport(
+    sedeId?: number,
+    anioId?: number,
+    areaId?: number,
+    mesId?: number,
+    sort?: string,
+    direction?: string,
+    page?: number,
+    from?: string,
+    to?: string,
+): Promise<electricidadCollection> {
+    const config: AxiosRequestConfig = {
+        params: {
+            sedeId,
+            anioId,
+            areaId,
+            sort,
+            direction,
+            mesId,
+            page,
+            from,
+            to,
+        },
+    };
+    const {data} = await api.get<electricidadCollection>(
+        "/api/electricidad",
+        config
+    );
+    return data;
+}
+
 
 export async function getElectricidadById(id: number) {
     const {data} = await api.get(`/api/electricidad/${id}`);

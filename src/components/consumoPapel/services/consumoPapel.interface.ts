@@ -8,12 +8,41 @@ export interface ConsumoPapelRequest {
 
 export interface ConsumoPapelResource {
     id: number;
-    nombre: string;
+    tipoPapel_id: number;
     cantidad_paquete: number;
-    comentario: null | string;
-    anio: string;
-    sede: string;
-    
+    comentario: string;
+    anio_id: number;
+    sede_id: number;
+    created_at: Date;
+    updated_at: Date;
+    tipoPapel: TipoPapel;
+    sede: Sede;
+    anio: Anio;
+}
+
+export interface Anio {
+    id: number;
+    nombre: string;
+    created_at: Date;
+    updated_at: Date;
+}
+
+export interface Sede {
+    id: number;
+    name: string;
+}
+
+export interface TipoPapel {
+    id: number;
+    nombre: string;
+    gramaje: number;
+    unidad_paquete: string;
+    is_certificado: boolean;
+    is_reciclable: boolean;
+    porcentaje_reciclado: number;
+    nombre_certificado: string;
+    created_at: Date;
+    updated_at: Date;
 }
 
 

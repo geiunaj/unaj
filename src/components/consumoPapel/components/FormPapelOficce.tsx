@@ -20,17 +20,13 @@ import {
 } from "@/components/ui/select";
 import {Input} from "@/components/ui/input";
 import {Button} from "../../ui/button";
-import {useSedeStore} from "../../sede/lib/sede.store";
-import {useTipoPapelStore} from "../../tipoPapel/lib/tipoPapel.store";
 import {ConsumoPapelRequest, CreateConsumoPapelProps} from "../services/consumoPapel.interface";
 import {createConsumoPapel} from "../services/consumoPapel.actions";
-import {useAnioStore} from "../../anio/lib/anio.store";
 import {Textarea} from "../../ui/textarea";
 import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import {getTiposPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
-import skeletonForm from "@/components/Layout/skeletonForm";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 
 const ConsumoPapel = z.object({
@@ -55,19 +51,19 @@ export function FormPapel({onClose}: CreateConsumoPapelProps) {
     });
 
     const sedeQuery = useQuery({
-        queryKey: ['sedes'],
+        queryKey: ['sedesCPO'],
         queryFn: () => getSedes(),
         refetchOnWindowFocus: false,
     });
 
     const tipoPapelQuery = useQuery({
-        queryKey: ['tiposPapel'],
+        queryKey: ['tiposPapelCPO'],
         queryFn: () => getTiposPapel(),
         refetchOnWindowFocus: false,
     });
 
     const anioQuery = useQuery({
-        queryKey: ['anios'],
+        queryKey: ['aniosCPO'],
         queryFn: () => getAnio(),
         refetchOnWindowFocus: false,
     });
@@ -232,14 +228,18 @@ export function FormPapel({onClose}: CreateConsumoPapelProps) {
                                 <FormItem>
                                     <FormLabel>Comentario</FormLabel>
                                     <FormControl className="w-full">
-                                        <Textarea/>
+                                        <Textarea
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            placeholder="Comentario"
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
                             )}
                         />
                         <div className="flex gap-3 w-full pt-4">
-                            <Button type="submit" className="w-full bg-blue-700">
+                            <Button type="submit" className="w-full">
                                 Guardar
                             </Button>
                         </div>

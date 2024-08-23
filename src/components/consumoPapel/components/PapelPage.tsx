@@ -45,7 +45,7 @@ import {
 } from "@/components/consumoPapel/lib/consumoPapel.hook";
 import {deleteConsumoPapel} from "../services/consumoPapel.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import { UpdateFormPapel } from "./UpdateFormPapelOficce";
+import {UpdateFormPapel} from "./UpdateFormPapelOficce";
 
 export default function PapelPage() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -131,19 +131,11 @@ export default function PapelPage() {
         setIsDeleteDialogOpen(true);
     };
 
-    if (
-        sedeQuery.isLoading ||
-        consumoPapelQuery.isLoading ||
-        tiposPapelQuery.isLoading
-    ) {
+    if (sedeQuery.isLoading || consumoPapelQuery.isLoading || tiposPapelQuery.isLoading || aniosQuery.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (
-        sedeQuery.isError ||
-        consumoPapelQuery.isError ||
-        tiposPapelQuery.isError
-    ) {
+    if (sedeQuery.isError || consumoPapelQuery.isError || tiposPapelQuery.isError || aniosQuery.isError) {
         return <div>Error</div>;
     }
 
@@ -316,7 +308,7 @@ export default function PapelPage() {
                         <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <UpdateFormPapel onClose={handleCloseUpdate} id={idForUpdate} />
+                    <UpdateFormPapel onClose={handleCloseUpdate} id={idForUpdate}/>
                 </DialogContent>
             </Dialog>
 

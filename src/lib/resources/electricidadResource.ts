@@ -14,9 +14,7 @@ export function formatElectricidad(electricidad: any) {
 
         area: area.nombre,
         sede: area.sede.name,
-        mes: mes.nombre,
         anio: anio.nombre,
-
-
+        mes: mes.nombre,
     };
 }

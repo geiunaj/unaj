@@ -49,7 +49,6 @@ export async function PUT(
         }
 
         const body = await req.json();
-        console.log(body);
 
         // Validate required fields
         const {unidadContratante, lugarSalida, lugarDestino, montoGastado, mes_id, sede_id, anio_id} = body;

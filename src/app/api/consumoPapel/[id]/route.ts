@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {formatConsumoPapel} from "@/lib/resources/papelResource";
-import { ConsumoPapelRequest } from "@/components/consumoPapel/services/consumoPapel.interface";
+import {ConsumoPapelRequest} from "@/components/consumoPapel/services/consumoPapel.interface";
 
 
 // SHOW ROUTE -> PARAM [ID]
@@ -11,11 +11,11 @@ export async function GET(
 ): Promise<NextResponse> {
     console.log(params.id);
     try {
-        const id = parseInt(params.id,10);
+        const id = parseInt(params.id, 10);
         if (isNaN(id)) {
             return new NextResponse("Invalid ID", {status: 404});
-        }   
-        
+        }
+
         const consumoPapel = await prisma.consumoPapel.findUnique({
             where: {
                 id: id,
@@ -31,7 +31,7 @@ export async function GET(
             return new NextResponse("ConsumoPapel not found", {status: 404});
         }
 
-        return NextResponse.json(formatConsumoPapel(consumoPapel));
+        return NextResponse.json(consumoPapel);
     } catch (error) {
         console.error("Error finding combustible", error);
         return new NextResponse("Error finding combustible", {status: 500});
@@ -49,14 +49,9 @@ export async function PUT(
             return new NextResponse("Invalid ID", {status: 400});
         }
 
-        const {cantidad_paquete, tipoPapel_id, anio_id, sede_id}: ConsumoPapelRequest = await req.json(); 
-        if (
-            (cantidad_paquete && typeof cantidad_paquete !== "number") ||
-            (tipoPapel_id && typeof tipoPapel_id !== "number") ||
-            (anio_id && typeof anio_id !== "number") ||
-            (sede_id && typeof sede_id !== "number")
-        ) {
-            return new NextResponse("Invalid body", {status: 400});
+        const {cantidad_paquete, tipoPapel_id, anio_id, sede_id, comentario}: ConsumoPapelRequest = await req.json();
+        if (!cantidad_paquete || !tipoPapel_id || !anio_id || !sede_id) {
+            return new NextResponse("Faltan campos requeridos", {status: 400});
         }
 
         const updatedConsumoPapel = await prisma.consumoPapel.update({
@@ -68,6 +63,7 @@ export async function PUT(
                 tipoPapel_id,
                 anio_id,
                 sede_id,
+                comentario,
             },
             include: {
                 tipoPapel: true,
@@ -88,7 +84,7 @@ export async function PUT(
     }
 }
 
-export async function DELETE(req: NextRequest,{params}: { params: { id: string } }): Promise<NextResponse> {
+export async function DELETE(req: NextRequest, {params}: { params: { id: string } }): Promise<NextResponse> {
     try {
         const id = parseInt(params.id, 10);
         if (isNaN(id)) return new NextResponse("ID inválido", {status: 400});

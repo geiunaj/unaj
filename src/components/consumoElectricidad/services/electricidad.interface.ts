@@ -29,8 +29,8 @@ export interface electricidadCollectionItem {
     consumo: number;
     area: string;
     sede: string;
-    mes: string;
     anio: string;
+    mes: string;
 }
 
 export interface Meta {
