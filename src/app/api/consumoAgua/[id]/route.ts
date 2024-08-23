@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
-import { consumoAguaRequest } from "@/components/consumoAgua/services/consumoAgua.interface";
-import { formatConsumoAgua } from "@/lib/resources/consumoAgua.Resource";
+import {consumoAguaRequest} from "@/components/consumoAgua/services/consumoAgua.interface";
+import {formatConsumoAgua} from "@/lib/resources/consumoAgua.Resource";
 
 
 // SHOW ROUTE -> PARAM [ID]
@@ -12,7 +12,7 @@ export async function GET(
     console.log(params.id);
     try {
         const id = parseInt(params.id);
-        const consumoAgua = await prisma.consumoEnergia.findUnique({
+        const consumoAgua = await prisma.consumoAgua.findUnique({
             where: {
                 id: id,
             },
@@ -24,7 +24,7 @@ export async function GET(
         });
 
         if (!consumoAgua) {
-            return new NextResponse("consumoAgua not found", {status: 404});
+            return new NextResponse("Consumo no encontrado", {status: 404});
         }
 
         return NextResponse.json(consumoAgua);
@@ -45,7 +45,7 @@ export async function PUT(
         const body: consumoAguaRequest = await req.json();
 
         // VALIDATE BODY
-        if (!body.consumo || !body.area_id || !body.mes_id || !body.anio_id  || !body.codigoMedidor || !body.fuenteAgua) {
+        if (!body.consumo || !body.area_id || !body.mes_id || !body.anio_id || !body.codigoMedidor || !body.fuenteAgua) {
             return new NextResponse("Missing required fields", {status: 400});
         }
 
@@ -63,7 +63,11 @@ export async function PUT(
                 fuenteAgua: body.fuenteAgua,
             },
             include: {
-                area: true,
+                area: {
+                    include: {
+                        sede: true,
+                    }
+                },
                 mes: true,
                 anio: true,
                 // sede: true,

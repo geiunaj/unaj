@@ -32,7 +32,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import {consumoAguaCollection, consumoAguaCollectionItem} from "../services/consumoAgua.interface";
+import {consumoAguaCollectionItem} from "../services/consumoAgua.interface";
 import {useRouter} from "next/navigation";
 import {Badge} from "@/components/ui/badge";
 import {
@@ -56,7 +56,7 @@ import CustomPagination from "@/components/pagination";
 import {useSede} from "@/components/consumoElectricidad/lib/electricidad.hooks";
 import {deleteConsumoAgua} from "../services/consumoAgua.actions";
 import {FormConsumoAgua} from "./FormConsumoAgua";
-import {UpdateFormConsumoAgua} from "./UpdateFormElectricidad";
+import {UpdateFormConsumoAgua} from "./UpdateFormConsumoAgua";
 
 export default function ConsumoAguaPage() {
     //NAVIGATION

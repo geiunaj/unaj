@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -49,6 +49,8 @@ const consumoAgua = z.object({
 });
 
 export function FormConsumoAgua({onClose}: CreateconsumoAguaProps) {
+    const [sede, setSede] = useState("1");
+
     const form = useForm<z.infer<typeof consumoAgua>>({
         resolver: zodResolver(consumoAgua),
         defaultValues: {
@@ -67,13 +69,13 @@ export function FormConsumoAgua({onClose}: CreateconsumoAguaProps) {
     });
 
     const areas = useQuery({
-        queryKey: ["area"],
-        queryFn: () => getArea(),
+        queryKey: ["areaFormCreate"],
+        queryFn: () => getArea(Number(sede)),
         refetchOnWindowFocus: false,
     });
 
     const anios = useQuery({
-        queryKey: ["anio"],
+        queryKey: ["anioFormCreate"],
         queryFn: () => getAnio(),
         refetchOnWindowFocus: false,
     });
@@ -102,6 +104,12 @@ export function FormConsumoAgua({onClose}: CreateconsumoAguaProps) {
         }
     };
 
+    const handleSedeChange = useCallback(async (value: string) => {
+        await setSede(value);
+        await areas.refetch();
+        form.setValue("area", "");
+    }, [areas, form]);
+
     if (sedes.isLoading || anios.isLoading || areas.isLoading) {
         return <SkeletonForm/>;
     }
@@ -118,6 +126,29 @@ export function FormConsumoAgua({onClose}: CreateconsumoAguaProps) {
                         className="w-full flex flex-col gap-2"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
+                        <div className="pt-2">
+                            <FormLabel>Sede</FormLabel>
+                            <Select
+                                onValueChange={handleSedeChange}
+                                defaultValue={sede}
+                            >
+                                <FormControl className="w-full">
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Seleciona tu sede"/>
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        {sedes.data!.map((sede) => (
+                                            <SelectItem key={sede.id} value={sede.id.toString()}>
+                                                {sede.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
                         {/* Area */}
                         <FormField
                             name="area"
@@ -127,7 +158,7 @@ export function FormConsumoAgua({onClose}: CreateconsumoAguaProps) {
                                     <FormLabel>Area</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        value={field.value}
                                     >
                                         <FormControl className="w-full">
                                             <SelectTrigger>

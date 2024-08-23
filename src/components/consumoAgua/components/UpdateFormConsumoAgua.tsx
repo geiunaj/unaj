@@ -43,7 +43,6 @@ const ConsumoAgua = z.object({
     codigoMedidor: z.string().min(1, "Ingrese el codigo de medidor "),
     fuenteAgua: z.string().min(1, "Ingrese la fuente de agua"),
     mes: z.string().min(1, "Seleccione un mes"),
-    sede: z.string().min(1, "Seleccione una sede"),
     anio: z.string().min(1, "Seleccione un año"),
     consumo: z.preprocess(
         (val) => parseFloat(val as string),
@@ -55,6 +54,10 @@ export function UpdateFormConsumoAgua({
                                           id,
                                           onClose,
                                       }: UpdateElectricidadProps) {
+
+    // states
+    const [sede, setSede] = useState<string>("");
+
     const form = useForm<z.infer<typeof ConsumoAgua>>({
         resolver: zodResolver(ConsumoAgua),
         defaultValues: {
@@ -62,7 +65,6 @@ export function UpdateFormConsumoAgua({
             codigoMedidor: "",
             fuenteAgua: "",
             mes: "",
-            sede: "",
             consumo: 0,
             anio: "",
         },
@@ -74,15 +76,15 @@ export function UpdateFormConsumoAgua({
         refetchOnWindowFocus: false,
     });
 
-    // const sedes = useQuery({
-    //     queryKey: ['sede'],
-    //     queryFn: () => getSedes(),
-    //     refetchOnWindowFocus: false,
-    // });
+    const sedes = useQuery({
+        queryKey: ['sedeFormUpdateAgua'],
+        queryFn: () => getSedes(),
+        refetchOnWindowFocus: false,
+    });
 
     const areas = useQuery({
-        queryKey: ["area"],
-        queryFn: () => getArea(),
+        queryKey: ["areaFormUpdate"],
+        queryFn: () => getArea(Number(sede)),
         refetchOnWindowFocus: false,
     });
 
@@ -97,16 +99,15 @@ export function UpdateFormConsumoAgua({
         refetchOnWindowFocus: false,
     });
 
-    const laodForm = useCallback(async () => {
+    const loadForm = useCallback(async () => {
         if (consumoAgua.data) {
-            console.log(consumoAgua.data);
+            setSede(consumoAgua.data.area.sede_id.toString());
             const consumoAguaData = await consumoAgua.data;
             form.reset({
-                area: consumoAguaData.areaId.toString(),
+                area: consumoAguaData.area_id.toString(),
                 codigoMedidor: consumoAguaData.codigoMedidor,
                 fuenteAgua: consumoAguaData.fuenteAgua,
                 mes: consumoAguaData.mes_id.toString(),
-                sede: consumoAguaData.sede_id.toString(),
                 consumo: consumoAguaData.consumo,
                 anio: consumoAguaData.anio_id.toString(),
             });
@@ -114,8 +115,25 @@ export function UpdateFormConsumoAgua({
     }, [consumoAgua.data, id]);
 
     useEffect(() => {
-        laodForm();
-    }, [laodForm, id]);
+        if (sede !== "") {
+            areas.refetch();
+        }
+    }, [areas, sede]);
+
+    useEffect(() => {
+        loadForm();
+    }, [loadForm, id]);
+
+    useEffect(() => {
+        if (areas.data && areas.data.length > 0 && consumoAgua.data) {
+            form.setValue("area", consumoAgua.data.area_id.toString());
+            setSede(consumoAgua.data.area.sede_id.toString());
+        }
+    }, [sede, areas.data]);
+
+    const handleSedeChange = useCallback(async (value: string) => {
+        setSede(value);
+    }, [areas, form]);
 
     const onSubmit = async (data: z.infer<typeof ConsumoAgua>) => {
         const ConsumoAguaRequest: consumoAguaRequest = {
@@ -136,11 +154,11 @@ export function UpdateFormConsumoAgua({
         }
     };
 
-    if (areas.isLoading || anios.isLoading || meses.isLoading) {
+    if (areas.isLoading || anios.isLoading || meses.isLoading || sedes.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (areas.isError || anios.isError || meses.isError) {
+    if (areas.isError || anios.isError || meses.isError || sedes.isError) {
         return <div>Error</div>;
     }
 
@@ -152,35 +170,29 @@ export function UpdateFormConsumoAgua({
                         className="w-full flex flex-col gap-2"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
-                        {/* Sede
-                        <FormField
-                            name="sede"
-                            control={form.control}
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <FormLabel>Sede</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                    >
-                                        <FormControl className="w-full">
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Seleciona tu sede"/>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {sedes.data!.map((sede) => (
-                                                    <SelectItem key={sede.id} value={sede.id.toString()}>
-                                                        {sede.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </FormItem>
-                            )}
-                        /> */}
+
+                        <div className="pt-2">
+                            <FormLabel>Sede</FormLabel>
+                            <Select
+                                onValueChange={handleSedeChange}
+                                value={sede}
+                            >
+                                <FormControl className="w-full">
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Seleciona tu sede"/>
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        {sedes.data!.map((sede) => (
+                                            <SelectItem key={sede.id} value={sede.id.toString()}>
+                                                {sede.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
 
                         {/* Area */}
                         <FormField
@@ -191,7 +203,7 @@ export function UpdateFormConsumoAgua({
                                     <FormLabel>Area</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        value={field.value}
                                     >
                                         <FormControl className="w-full">
                                             <SelectTrigger>
@@ -237,11 +249,11 @@ export function UpdateFormConsumoAgua({
                                 name="fuenteAgua"
                                 control={form.control}
                                 render={({field}) => (
-                                    <FormItem className="pt-2">
+                                    <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Fuente de Agua</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            value={field.value}
                                         >
                                             <FormControl className="w-full">
                                                 <SelectTrigger>
@@ -293,7 +305,7 @@ export function UpdateFormConsumoAgua({
                                         <FormLabel>Mes</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            value={field.value}
                                         >
                                             <FormControl className="w-full">
                                                 <SelectTrigger>
@@ -325,7 +337,7 @@ export function UpdateFormConsumoAgua({
                                         <FormLabel>Año</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            value={field.value}
                                         >
                                             <FormControl className="w-full">
                                                 <SelectTrigger>
