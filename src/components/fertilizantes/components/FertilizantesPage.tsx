@@ -284,7 +284,7 @@ export default function FertilizantePage() {
                                     Registrar
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="max-w-md border-2">
+                            <DialogContent className="max-w-lg border-2">
                                 <DialogHeader className="">
                                     <DialogTitle>Fertilizante</DialogTitle>
                                     <DialogDescription>

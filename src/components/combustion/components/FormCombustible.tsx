@@ -20,15 +20,10 @@ import {
 } from "@/components/ui/select";
 import {Input} from "@/components/ui/input";
 import {Button} from "../../ui/button";
-import {useSedeStore} from "@/components/sede/lib/sede.store";
-import {useTipoCombustibleStore} from "@/components/tipoCombustible/lib/tipoCombustible.store";
 import {
     CombustionRequest,
     CreateCombustionProps,
 } from "../services/combustion.interface";
-import {useCombustionStore} from "../lib/combustion.store";
-import {useAnioStore} from "@/components/anio/lib/anio.store";
-import {useMesStore} from "@/components/mes/lib/mes.stores";
 import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import {getTiposCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";

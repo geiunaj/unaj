@@ -63,30 +63,30 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
     });
 
     const consumoElectricidad = useQuery({
-        queryKey: ['consumoElectricidad', id],
+        queryKey: ['consumoElectricidadUE', id],
         queryFn: () => getElectricidadById(id),
         refetchOnWindowFocus: false,
     });
 
     const sedes = useQuery({
-        queryKey: ['sede'],
+        queryKey: ['sedeUE'],
         queryFn: () => getSedes(),
         refetchOnWindowFocus: false,
     });
 
     const areas = useQuery({
-        queryKey: ['area'],
+        queryKey: ['areaUE'],
         queryFn: () => getArea(),
         refetchOnWindowFocus: false,
     });
 
     const anios = useQuery({
-        queryKey: ['anio'],
+        queryKey: ['anioUE'],
         queryFn: () => getAnio(),
         refetchOnWindowFocus: false,
     });
     const meses = useQuery({
-        queryKey: ['mes'],
+        queryKey: ['mesUE'],
         queryFn: () => getMes(),
         refetchOnWindowFocus: false,
     });

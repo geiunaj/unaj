@@ -240,7 +240,7 @@ export default function ConsumoAguaPage() {
                                     Registrar
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="max-w-md border-2">
+                            <DialogContent className="max-w-xl border-2">
                                 <DialogHeader className="">
                                     <DialogTitle>CONSUMO DE AGUA</DialogTitle>
                                     <DialogDescription>

@@ -63,24 +63,24 @@ export function FormConsumoAgua({onClose}: CreateconsumoAguaProps) {
         },
     });
     const sedes = useQuery({
-        queryKey: ["sede"],
+        queryKey: ["sedeCA"],
         queryFn: () => getSedes(),
         refetchOnWindowFocus: false,
     });
 
     const areas = useQuery({
-        queryKey: ["areaFormCreate"],
+        queryKey: ["areaCA"],
         queryFn: () => getArea(Number(sede)),
         refetchOnWindowFocus: false,
     });
 
     const anios = useQuery({
-        queryKey: ["anioFormCreate"],
+        queryKey: ["anioCA"],
         queryFn: () => getAnio(),
         refetchOnWindowFocus: false,
     });
     const meses = useQuery({
-        queryKey: ["mes"],
+        queryKey: ["mesCA"],
         queryFn: () => getMes(),
         refetchOnWindowFocus: false,
     });
@@ -110,11 +110,11 @@ export function FormConsumoAgua({onClose}: CreateconsumoAguaProps) {
         form.setValue("area", "");
     }, [areas, form]);
 
-    if (sedes.isLoading || anios.isLoading || areas.isLoading) {
+    if (sedes.isLoading || anios.isLoading || areas.isLoading || meses.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (sedes.isError || anios.isError || areas.isError) {
+    if (sedes.isError || anios.isError || areas.isError || meses.isError) {
         return <div>Error</div>;
     }
 

@@ -71,30 +71,30 @@ export function UpdateFormConsumoAgua({
     });
 
     const consumoAgua = useQuery({
-        queryKey: ["consumoAgua", id],
+        queryKey: ["consumoAguaUA", id],
         queryFn: () => getConsumoAguaById(id),
         refetchOnWindowFocus: false,
     });
 
     const sedes = useQuery({
-        queryKey: ['sedeFormUpdateAgua'],
+        queryKey: ['sedeUA'],
         queryFn: () => getSedes(),
         refetchOnWindowFocus: false,
     });
 
     const areas = useQuery({
-        queryKey: ["areaFormUpdate"],
+        queryKey: ["areaUA"],
         queryFn: () => getArea(Number(sede)),
         refetchOnWindowFocus: false,
     });
 
     const anios = useQuery({
-        queryKey: ["anio"],
+        queryKey: ["anioUA"],
         queryFn: () => getAnio(),
         refetchOnWindowFocus: false,
     });
     const meses = useQuery({
-        queryKey: ["mes"],
+        queryKey: ["mesUA"],
         queryFn: () => getMes(),
         refetchOnWindowFocus: false,
     });

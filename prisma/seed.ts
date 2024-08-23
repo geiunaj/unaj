@@ -543,20 +543,24 @@ async function main() {
         }
     }
 
-    for (let i = 0; i < 50; i++) {
-        await prisma.taxi.create({
-            data: {
-                unidadContratante: `Unidad ${faker.number.int({min: 1, max: 10})}`,
-                lugarSalida: faker.location.city(),
-                lugarDestino: faker.location.city(),
-                montoGastado: faker.number.float({min: 10, max: 50, precision: 0.01}),
-                mes_id: allMeses[Math.floor(Math.random() * allMeses.length)].id,
-                anio_id: allAnios[Math.floor(Math.random() * allAnios.length)].id,
-                sede_id: allSedes[Math.floor(Math.random() * allSedes.length)].id,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
+    for (const sede of allSedes) {
+        for (const anio of allAnios) {
+            for (const mes of allMeses) {
+                await prisma.taxi.create({
+                    data: {
+                        unidadContratante: `Unidad ${faker.number.int({min: 1, max: 10})}`,
+                        lugarSalida: faker.location.city(),
+                        lugarDestino: faker.location.city(),
+                        montoGastado: faker.number.float({min: 10, max: 50, multipleOf: 0.5}),
+                        mes_id: mes.id,
+                        anio_id: anio.id,
+                        sede_id: sede.id,
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                    },
+                });
+            }
+        }
     }
 
     //Datos Factor de Emisión SEIN

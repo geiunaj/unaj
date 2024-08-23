@@ -214,7 +214,6 @@ export default function TaxiPage() {
                             <PopoverContent className="w-80">
                                 <ReportPopover
                                     onClick={(data) => handleClickReport(data)}
-                                    text={"Generar reporte"}
                                 />
                             </PopoverContent>
                         </Popover>
@@ -242,7 +241,7 @@ export default function TaxiPage() {
                 </div>
             </div>
 
-            <div className="rounded-lg overflow-hidden">
+            <div className="rounded-lg overflow-hidden text-nowrap sm:text-wrap">
                 <Table>
                     <TableHeader>
                         <TableRow>
