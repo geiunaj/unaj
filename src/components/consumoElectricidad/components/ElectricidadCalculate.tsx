@@ -8,10 +8,10 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import SelectFilter from "@/components/selectFilter";
+import SelectFilter from "@/components/SelectFilter";
 import {Badge} from "@/components/ui/badge";
 import {useRouter} from "next/navigation";
-import ButtonCalculate from "@/components/buttonCalculate";
+import ButtonCalculate from "@/components/ButtonCalculate";
 import ButtonBack from "@/components/ButtonBack";
 import {
     useAnio,

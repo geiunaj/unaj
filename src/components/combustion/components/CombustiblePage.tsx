@@ -38,8 +38,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {UpdateFormCombustible} from "./UpdateFormCombustible";
-import SelectFilter from "@/components/selectFilter";
-import ButtonCalculate from "@/components/buttonCalculate";
+import SelectFilter from "@/components/SelectFilter";
+import ButtonCalculate from "@/components/ButtonCalculate";
 import {useRouter} from "next/navigation";
 import {
     useAnio,
@@ -51,7 +51,7 @@ import {
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {deleteCombustion} from "@/components/combustion/services/combustion.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import CustomPagination from "@/components/pagination";
+import CustomPagination from "@/components/Pagination";
 
 export default function CombustiblePage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;

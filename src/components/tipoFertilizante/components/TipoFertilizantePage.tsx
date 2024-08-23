@@ -1,7 +1,7 @@
 "use client";
 
 import {useCallback, useState} from "react";
-import SelectFilter from "@/components/selectFilter";
+import SelectFilter from "@/components/SelectFilter";
 import {Pen, Plus, Trash2, Bean} from "lucide-react";
 import {
     Dialog,

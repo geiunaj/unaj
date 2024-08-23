@@ -1,9 +1,9 @@
 "use client";
 
 import {useCallback, useState} from "react";
-import SelectFilter from "@/components/selectFilter";
+import SelectFilter from "@/components/SelectFilter";
 import {Building, Calendar, File, Pen, Plus, Trash2} from "lucide-react";
-import ButtonCalculate from "@/components/buttonCalculate";
+import ButtonCalculate from "@/components/ButtonCalculate";
 import {
     Dialog,
     DialogClose,

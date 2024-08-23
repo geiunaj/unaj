@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import {Badge} from "@/components/ui/badge";
 import {fertilizanteCollection, fertilizanteCollectionItem} from "../services/fertilizante.interface";
-import SelectFilter from "@/components/selectFilter";
+import SelectFilter from "@/components/SelectFilter";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -38,7 +38,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import ButtonCalculate from "@/components/buttonCalculate";
+import ButtonCalculate from "@/components/ButtonCalculate";
 import {useRouter} from "next/navigation";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {
@@ -49,7 +49,7 @@ import {
 } from "@/components/fertilizantes/lib/fertilizante.hook";
 import {deleteFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
 import {UpdateFormFertilizantes} from "@/components/fertilizantes/components/UpdateFormFertilizante";
-import CustomPagination from "@/components/pagination";
+import CustomPagination from "@/components/Pagination";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";

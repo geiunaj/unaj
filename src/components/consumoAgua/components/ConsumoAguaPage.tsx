@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/table";
 import {useCallback, useEffect, useState} from "react";
 
-import SelectFilter from "@/components/selectFilter";
-import ButtonCalculate from "@/components/buttonCalculate";
+import SelectFilter from "@/components/SelectFilter";
+import ButtonCalculate from "@/components/ButtonCalculate";
 import {
     Dialog,
     DialogClose,
@@ -52,7 +52,7 @@ import {
     Pen,
     MapPinned,
 } from "lucide-react";
-import CustomPagination from "@/components/pagination";
+import CustomPagination from "@/components/Pagination";
 import {useSede} from "@/components/consumoElectricidad/lib/electricidad.hooks";
 import {deleteConsumoAgua} from "../services/consumoAgua.actions";
 import {FormConsumoAgua} from "./FormConsumoAgua";

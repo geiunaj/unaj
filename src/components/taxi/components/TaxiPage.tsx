@@ -43,7 +43,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {useAnioStore} from "@/components/anio/lib/anio.store";
-import SelectFilter from "@/components/selectFilter";
+import SelectFilter from "@/components/SelectFilter";
 import {TaxiCollection, TaxiCollectionItem} from "../service/taxi.interface";
 import {usetaxiStore} from "../lib/taxi.store";
 import {deleteTaxi} from "../service/taxi.actions";
@@ -68,7 +68,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import CustomPagination from "@/components/pagination";
+import CustomPagination from "@/components/Pagination";
 import {useRouter} from "next/navigation";
 
 export default function TaxiPage() {

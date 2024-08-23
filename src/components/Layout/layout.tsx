@@ -3,10 +3,9 @@
 import {useSession} from "next-auth/react";
 import {useState, useEffect} from "react";
 import LoginPage from "../login/login";
-import Header from "../header";
-import Sidebar from "../sidebar";
 import LayoutSkeleton from "./layoutSkeleton";
-import DynamicBreadcrumbs from "../breadcrumps";
+import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
 
 const LayoutWrapper = ({children}: { children: React.ReactNode }) => {
     const {data: session, status} = useSession();

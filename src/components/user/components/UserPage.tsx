@@ -38,7 +38,7 @@ import {User} from "@prisma/client";
 import {useUser} from "../lib/user.hook";
 import {UserCollectionItem} from "@/components/user/services/user.interface";
 import {useSede} from "@/components/combustion/lib/combustion.hook";
-import SelectFilter from "@/components/selectFilter";
+import SelectFilter from "@/components/SelectFilter";
 
 export default function UsuarioPage() {
 

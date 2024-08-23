@@ -12,12 +12,12 @@ import {
 import {Calculator} from "lucide-react";
 import {useSedeStore} from "@/components/sede/lib/sede.store";
 import {useAnioStore} from "@/components/anio/lib/anio.store";
-import SelectFilter from "@/components/selectFilter";
+import SelectFilter from "@/components/SelectFilter";
 import {useCombustionCalculateStore} from "@/components/combustion/lib/combustionCalculate.store";
 import {CombustionCalcResponse} from "@/components/combustion/services/combustionCalculate.interface";
 import {Badge} from "@/components/ui/badge";
 import {useParams, useRouter} from "next/navigation";
-import ButtonCalculate from "@/components/buttonCalculate";
+import ButtonCalculate from "@/components/ButtonCalculate";
 import ButtonBack from "@/components/ButtonBack";
 
 interface CombustionCalculateProps {
