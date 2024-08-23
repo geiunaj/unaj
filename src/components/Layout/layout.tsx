@@ -21,6 +21,7 @@ const LayoutWrapper = ({children}: { children: React.ReactNode }) => {
         return <LayoutSkeleton/>;
     }
 
+    // return session ? (
     return (
         <div className="sm:grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
             <div className="hidden border-r bg-muted/40 md:block">
@@ -34,6 +35,7 @@ const LayoutWrapper = ({children}: { children: React.ReactNode }) => {
             </div>
         </div>
     );
+    // : (<LoginPage/>);
 };
 
 export default LayoutWrapper;
