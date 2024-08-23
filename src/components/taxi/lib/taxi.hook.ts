@@ -1,13 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
 import { getTaxi, getTaxiById } from "../service/taxi.actions";
 
-export const useTaxi = (selectedSede: string, anio: string, mesId: string) => {
+interface getTaxiInterface {
+  sedeId?: number;
+  anioId?: number;
+  mesId?: number;
+  sort?: string;
+  direction?: string;
+
+  page?: number;
+}
+
+export const useTaxi = ({
+  sedeId,
+  anioId,
+  mesId,
+  sort,
+  direction,
+  page,
+}: getTaxiInterface) => {
   return useQuery({
     queryKey: ["taxi"],
-    queryFn: () => getTaxi(selectedSede, anio, mesId),
+    queryFn: () => getTaxi(sedeId, anioId, mesId, sort, direction, page),
     refetchOnWindowFocus: false,
   });
-};
+}
 
 
 export const useTaxiId = (id: number) => {

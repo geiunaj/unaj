@@ -8,15 +8,15 @@ export interface UpdateElectricidadProps {
 }
 
 //PARA EL INDEX
-export interface electricidadCollection {
-    id: number;
-    area: string;
-    numeroSuministro: string;
-    consumo: number;
-    mes: string;
-    anio: number;
-    sede: string;
-}
+// export interface electricidadCollection {
+//     id: number;
+//     area: string;
+//     numeroSuministro: string;
+//     consumo: number;
+//     mes: string;
+//     anio: number;
+//     sede: string;
+// }
 
 export interface electricidadCollection {
     data: electricidadCollectionItem[];

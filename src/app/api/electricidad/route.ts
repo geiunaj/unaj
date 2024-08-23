@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import {formatElectricidad} from "@/lib/resources/electricidadResource";
 import {
     electricidadCollection,
+    electricidadCollectionItem,
     electricidadRequest,
 } from "@/components/consumoElectricidad/services/electricidad.interface";
 
@@ -60,7 +61,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             take: perPage,
         });
 
-        const formattedElectricidad: electricidadCollection[] = electricidad.map(
+        const formattedElectricidad: electricidadCollectionItem[] = electricidad.map(
             (electricidad) => formatElectricidad(electricidad)
         );
 

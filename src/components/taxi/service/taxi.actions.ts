@@ -9,12 +9,13 @@ interface Response {
 
 
 export async function getTaxi(
-  sedeId?: string,
-  anioId?: string,
-  mesId?: string,
+  sedeId?: number,
+  anioId?: number,
+  mesId?: number,
   sort?: string,
-  direction?: string
-): Promise<TaxiCollection[]> {
+  direction?: string,
+  page?: number,
+): Promise<TaxiCollection> {
   const config: AxiosRequestConfig = {
     params: {
       sedeId,
@@ -22,9 +23,10 @@ export async function getTaxi(
       mesId,
       sort,
       direction,
+      page,
     },
   };
-  const { data } = await api.get<TaxiCollection[]>("/api/taxi", config);
+  const { data } = await api.get<TaxiCollection>("/api/taxi", config);
   return data;
 }
 

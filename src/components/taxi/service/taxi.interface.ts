@@ -14,7 +14,7 @@ export interface UpdateTaxiProps {
 }
 
 // PARA EL INDEX
-export interface TaxiCollection {
+export interface TaxiCollectionItem {
     id: number;
     unidadContratante: string;
     lugarSalida: string;
@@ -24,6 +24,19 @@ export interface TaxiCollection {
     anio: number;
     mes: string;
 }
+
+export interface TaxiCollection {
+    data: TaxiCollectionItem[];
+    meta: Meta;
+}
+
+export interface Meta {
+    page: number;
+    perPage: number;
+    totalPages: number;
+    totalRecords: number;
+}
+
 
 // PARA EL SHOW
 export interface TaxiResource {
