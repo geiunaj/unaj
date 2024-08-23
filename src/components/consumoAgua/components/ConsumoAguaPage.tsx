@@ -38,7 +38,7 @@ import {Badge} from "@/components/ui/badge";
 import {
     useAnio,
     useArea,
-    useConsumoAgua,
+    useConsumoAgua, useConsumoAguaReport,
     useMes,
 } from "../lib/consumoAgua.hooks";
 import {errorToast, successToast} from "@/lib/utils/core.function";
@@ -50,13 +50,17 @@ import {
     Calendar,
     CalendarDays,
     Pen,
-    MapPinned,
+    MapPinned, FileSpreadsheet,
 } from "lucide-react";
 import CustomPagination from "@/components/Pagination";
 import {useSede} from "@/components/consumoElectricidad/lib/electricidad.hooks";
 import {deleteConsumoAgua} from "../services/consumoAgua.actions";
 import {FormConsumoAgua} from "./FormConsumoAgua";
 import {UpdateFormConsumoAgua} from "./UpdateFormConsumoAgua";
+import {useCombustibleReport} from "@/components/combustion/lib/combustion.hook";
+import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
+import GenerateReport from "@/lib/utils/generateReport";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 
 export default function ConsumoAguaPage() {
     //NAVIGATION
@@ -82,8 +86,8 @@ export default function ConsumoAguaPage() {
     //HOOKS
     const consumoAgua = useConsumoAgua({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
-        anioId: selectedAnio ? Number(selectedAnio) : undefined,
         areaId: selectedArea ? Number(selectedArea) : undefined,
+        anioId: selectedAnio ? Number(selectedAnio) : undefined,
         mesId: selectedMes ? Number(selectedMes) : undefined,
         page: page,
     });
@@ -161,6 +165,41 @@ export default function ConsumoAguaPage() {
         await consumoAgua.refetch();
     }, [idForDelete, consumoAgua]);
 
+    const handlePageChage = async (page: number) => {
+        await setPage(page);
+        await consumoAgua.refetch();
+    }
+
+    const [from, setFrom] = useState<string>("");
+    const [to, setTo] = useState<string>("");
+
+    const consumoAguaReport = useConsumoAguaReport({
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
+        areaId: selectedArea ? Number(selectedArea) : undefined,
+        anioId: selectedAnio ? Number(selectedAnio) : undefined,
+        mesId: selectedMes ? Number(selectedMes) : undefined,
+        page: page,
+        from,
+        to
+    });
+
+    const handleClickReport = async (period: ReportRequest) => {
+        const columns = [
+            {header: "N°", key: "id", width: 10,},
+            {header: "CÓDIGO MEDIDOR", key: "codigoMedidor", width: 20,},
+            {header: "CONSUMO", key: "consumo", width: 15,},
+            {header: "FUENTE DE AGUA", key: "fuenteAgua", width: 20,},
+            {header: "MES", key: "mes", width: 20,},
+            {header: "AÑO", key: "anio", width: 10,},
+            {header: "AREA", key: "area", width: 20,},
+            {header: "SEDE", key: "sede", width: 15,},
+        ];
+        await setFrom(period.from ?? "");
+        await setTo(period.to ?? "");
+        const data = await consumoAguaReport.refetch();
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CONSUMO DE AGUA`);
+    }
+
     if (consumoAgua.isLoading || areas.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {
         return <SkeletonTable/>;
     }
@@ -170,10 +209,6 @@ export default function ConsumoAguaPage() {
         return <SkeletonTable/>;
     }
 
-    const handlePageChage = async (page: number) => {
-        await setPage(page);
-        await consumoAgua.refetch();
-    }
 
     return (
         <div className="w-full max-w-[1150px] h-full ">
@@ -231,6 +266,24 @@ export default function ConsumoAguaPage() {
                         />
                     </div>
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    size="sm"
+                                    className="h-7 gap-1"
+                                    variant="outline"
+                                >
+                                    <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                    Reporte
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                                <ReportPopover
+                                    onClick={(data: ReportRequest) => handleClickReport(data)}
+                                    withMonth={true}
+                                />
+                            </PopoverContent>
+                        </Popover>
                         <ButtonCalculate onClick={handleCalculate}/>
 
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

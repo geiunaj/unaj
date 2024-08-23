@@ -59,18 +59,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const to = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
 
         if (from && to) {
-            whereOptions.anio_mes = {
-                gte: from,
-                lte: to,
-            };
+            whereOptions.anio_mes = {gte: from, lte: to,};
         } else if (from) {
-            whereOptions.anio_mes = {
-                gte: from,
-            };
+            whereOptions.anio_mes = {gte: from,};
         } else if (to) {
-            whereOptions.anio_mes = {
-                lte: to,
-            };
+            whereOptions.anio_mes = {lte: to,};
         }
 
         const totalRecords = await prisma.combustible.count({where: whereOptions});

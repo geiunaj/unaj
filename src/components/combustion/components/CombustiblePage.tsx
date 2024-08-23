@@ -185,7 +185,6 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
             {header: "UNIDAD", key: "unidad", width: 10,},
             {header: "SEDE", key: "sede", width: 20,}
         ];
-        console.log(period);
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
         const data = await combustibleReport.refetch();

@@ -2,65 +2,53 @@ import {useQuery} from "@tanstack/react-query";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {getMes} from "@/components/mes/services/mes.actions";
 import {getArea} from "@/components/area/services/area.actions";
-import {getConsumoAgua} from "../services/consumoAgua.actions";
+import {getConsumoAgua, getConsumoAguaReport} from "../services/consumoAgua.actions";
 
 interface getConsumoAguaInterface {
     sedeId?: number;
-    anioId?: number;
     areaId?: number;
-    sort?: string;
+    anioId?: number;
     mesId?: number;
+    sort?: string;
     direction?: string;
     page?: number;
+    from?: string;
+    to?: string;
 }
-
-// export const useConsumoAgua = ({
-//   anioId,
-//   mesId,
-//   areaId,
-//   sort,
-//   direction,
-//   page,
-// }: getConsumoAguaInterface) => {
-//   return useQuery({
-//     queryKey: ["ConsumoAgua"],
-//     queryFn: () => getConsumoAgua(anioId, areaId, sort, mesId, direction, page),
-//     refetchOnWindowFocus: false,
-//   });
-// };
 
 export const useConsumoAgua = ({
                                    sedeId,
+                                   areaId,
                                    anioId,
                                    mesId,
-                                   areaId,
                                    sort,
                                    direction,
                                    page,
                                }: getConsumoAguaInterface) => {
     return useQuery({
         queryKey: ["ConsumoAgua"],
-        queryFn: () =>
-            getConsumoAgua(
-                sedeId ? Number(sedeId) : undefined,
-                anioId ? Number(anioId) : undefined,
-                areaId ? Number(areaId) : undefined,
-                mesId ? Number(mesId) : undefined,
-                sort,
-                direction,
-                page ? Number(page) : undefined
-            ),
+        queryFn: () => getConsumoAgua(sedeId, areaId, anioId, mesId, sort, direction, page),
         refetchOnWindowFocus: false,
     });
 };
 
-// export const useSede = () => {
-//     return useQuery({
-//         queryKey: ['sede'],
-//         queryFn: () => getSedes(),
-//         refetchOnWindowFocus: false,
-//     });
-// }
+export const useConsumoAguaReport = ({
+                                         sedeId,
+                                         areaId,
+                                         anioId,
+                                         mesId,
+                                         sort,
+                                         direction,
+                                         page,
+                                         from,
+                                         to
+                                     }: getConsumoAguaInterface) => {
+    return useQuery({
+        queryKey: ["ConsumoAguaReport"],
+        queryFn: () => getConsumoAguaReport(sedeId, areaId, anioId, mesId, sort, direction, page, from, to),
+        refetchOnWindowFocus: false,
+    });
+};
 
 export const useAnio = () => {
     return useQuery({
