@@ -66,11 +66,12 @@ export default function PapelPage() {
     );
 
     const sedeQuery = useSedes();
-    const consumoPapelQuery = useConsumosPapel(
-        selectedSede,
-        selectedTipoPapel,
-        selectedAnio
-        
+    const consumoPapelQuery = useConsumosPapel({
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
+        anioId: selectedAnio ? Number(selectedAnio) : undefined,
+        tipoPapelId: selectedTipoPapel ? Number(selectedTipoPapel) : undefined,
+        page: page,
+    }   
     );
     const tiposPapelQuery = useTipoPapel();
     const aniosQuery = useAnios();
@@ -251,7 +252,7 @@ export default function PapelPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {consumoPapelQuery.data!.data.map(
+                        {consumoPapelQuery.data?.data!.map(
                             (item: ConsumoPapelCollectionItem, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">

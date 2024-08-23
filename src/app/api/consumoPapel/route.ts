@@ -32,7 +32,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             anio_id: anioId,
         };
   
-        const totalRecords = await prisma.consumoEnergia.count({where: whereOptions});
+        const totalRecords = await prisma.consumoPapel.count({where: whereOptions});
         const totalPages = Math.ceil(totalRecords / perPage);
 
 

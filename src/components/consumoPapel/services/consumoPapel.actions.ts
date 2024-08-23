@@ -3,20 +3,26 @@ import api from "../../../../config/api";
 import {AxiosRequestConfig} from "axios";
 import {CollectionConsumoPapel, ConsumoPapelRequest, ConsumoPapelResource} from "./consumoPapel.interface";
 
+
+interface Response {
+    message: string;
+}
+
 export async function getConsumoPapel(
-    sedeId?: string,
-    tipoPapelId?: string,
-    anio?: string,
-    sort?: string,
+    sedeId?: number,
+    anio?: number,
+    tipoPapelId?: number,
+    sort?: string | null,
     direction?: string,
+
     page?: number
 ): Promise<CollectionConsumoPapel> {
     try {
         const config: AxiosRequestConfig = {
             params: {
                 sedeId,
-                tipoPapelId,
                 anio,
+                tipoPapelId,
                 sort,
                 direction,
                 page,

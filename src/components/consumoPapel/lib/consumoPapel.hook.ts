@@ -7,7 +7,8 @@ import {getAnio} from "@/components/anio/services/anio.actions";
 interface getConsumoPapelInterface {
     sedeId?: number;
     anioId?: number;
-    sort?: string;
+    tipoPapelId?: number;
+    sort?: string | null;
     direction?: string;
   
     page?: number;
@@ -18,12 +19,13 @@ export const useConsumosPapel = (
         sedeId,
         anioId,
         sort,
+        tipoPapelId,
         direction,
         page,
     }: getConsumoPapelInterface) => {
     return useQuery({
         queryKey: ['consumoPapelQuery'],
-        queryFn: () => getConsumoPapel(sedeId, anioId, sort, direction, page),
+        queryFn: () => getConsumoPapel(sedeId, anioId,tipoPapelId, sort, direction, page),
         refetchOnWindowFocus: false,
     });
 }
