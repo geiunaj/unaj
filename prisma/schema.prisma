@@ -45,7 +45,6 @@ model Sede {
   combustibleCalculos  combustibleCalculos[]
   taxi                 Taxi[]
   fertilizanteCalculos fertilizanteCalculos[]
-  consumoEnergia       consumoEnergia[]
   energiaCalculos      energiaCalculos[]
   area                 area[]
   User                 User[]
@@ -255,14 +254,12 @@ model consumoEnergia {
   consumo          Float  @db.Float
   mes_id           Int
   anio_id          Int
-  sede_id          Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
   mes  Mes?  @relation(fields: [mes_id], references: [id])
   anio Anio? @relation(fields: [anio_id], references: [id])
-  sede Sede? @relation(fields: [sede_id], references: [id])
   area area? @relation(fields: [areaId], references: [id])
 }
 
@@ -339,17 +336,15 @@ model ConsumoAgua {
   id            Int     @id @default(autoincrement())
   consumo       Float   @db.Float
   codigoMedidor String? @db.VarChar(45)
-  fuenteAgua    String  @db.VarChar(45) //Red Publica o Pozo
-  area_id      Int?
+  fuenteAgua    String  @db.VarChar(45) // Red Publica o Pozo
+  area_id       Int?
   mes_id        Int
   anio_id       Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  anio   Anio  @relation(fields: [anio_id], references: [id])
-  mes    Mes   @relation(fields: [mes_id], references: [id])
-  area   area? @relation(fields: [area_id], references: [id])
+  anio Anio  @relation(fields: [anio_id], references: [id])
+  mes  Mes   @relation(fields: [mes_id], references: [id])
+  area area? @relation(fields: [area_id], references: [id])
 }
-
-

@@ -642,7 +642,6 @@ async function main() {
                         consumo: faker.number.float({min: 1, max: 200}),
                         mes_id: mes.id,
                         anio_id: anio.id,
-                        sede_id: area.sede.id,
                         created_at: new Date(),
                         updated_at: new Date(),
                     },

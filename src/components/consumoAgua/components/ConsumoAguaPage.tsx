@@ -81,7 +81,7 @@ export default function ConsumoAguaPage() {
 
     //HOOKS
     const consumoAgua = useConsumoAgua({
-        // sedeId: selectedSede ? Number(selectedSede) : undefined,
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
         anioId: selectedAnio ? Number(selectedAnio) : undefined,
         areaId: selectedArea ? Number(selectedArea) : undefined,
         mesId: selectedMes ? Number(selectedMes) : undefined,
@@ -179,7 +179,7 @@ export default function ConsumoAguaPage() {
         <div className="w-full max-w-[1150px] h-full ">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="font-Manrope">
-                    <h1 className="text-base text-gray-800 font-bold">CONSUMO DE AGUA </h1>
+                    <h1 className="text-base text-gray-800 font-bold">Consumo de Agua</h1>
                     <h2 className="text-xs sm:text-sm text-gray-500">
                         Huella de carbono
                     </h2>

@@ -38,6 +38,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const whereOptions = {
             // sede_id: sedeId ? parseInt(sedeId) : undefined,
+            area: {
+                sede_id: sedeId ? parseInt(sedeId) : undefined,
+            },
             anio_id: anioId,
             mes_id: mes ? parseInt(mes) : undefined,
             area_id: areaId ? parseInt(areaId) : undefined,
@@ -61,7 +64,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             },
             orderBy: sort
                 ? [{[sort]: direction || "desc"}]
-                : [{anio_id: "desc"}, {mes_id: "desc"}],
+                : [{area: {sede_id: "desc"}}, {area_id: "asc"}, {anio_id: "desc"}, {mes_id: "desc"}],
             skip: (page - 1) * perPage,
             take: perPage,
         });

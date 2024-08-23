@@ -150,36 +150,6 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
                             </Select>
                         </div>
 
-                        {/* Sede */}
-                        <FormField
-                            name="sede"
-                            control={form.control}
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <FormLabel>Sede</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                    >
-                                        <FormControl className="w-full">
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Seleciona tu sede"/>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {sedes.data!.map((sede) => (
-                                                    <SelectItem key={sede.id} value={sede.id.toString()}>
-                                                        {sede.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </FormItem>
-                            )}
-                        />
-
                         {/* Area */}
                         <FormField
                             name="area"

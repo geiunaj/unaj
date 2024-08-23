@@ -128,11 +128,11 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
         }
     };
 
-    if (sedes.isLoading || anios.isLoading || meses.isLoading) {
+    if (sedes.isLoading || anios.isLoading || meses.isLoading || areas.isLoading || consumoElectricidad.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (sedes.isError || anios.isError || meses.isError) {
+    if (sedes.isError || anios.isError || meses.isError || areas.isError || consumoElectricidad.isError) {
         return <div>Error</div>;
     }
 

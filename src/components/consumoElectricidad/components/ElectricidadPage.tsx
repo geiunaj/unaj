@@ -179,7 +179,7 @@ export default function ElectricidadPage() {
         <div className="w-full max-w-[1150px] h-full ">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="font-Manrope">
-                    <h1 className="text-base text-gray-800 font-bold">Electricidad</h1>
+                    <h1 className="text-base text-gray-800 font-bold">Consumo de Electricidad</h1>
                     <h2 className="text-xs sm:text-sm text-gray-500">
                         Huella de carbono
                     </h2>
@@ -240,7 +240,7 @@ export default function ElectricidadPage() {
                                     Registrar
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="max-w-md border-2">
+                            <DialogContent className="max-w-lg border-2">
                                 <DialogHeader className="">
                                     <DialogTitle>Consumo de electricidad</DialogTitle>
                                     <DialogDescription>
@@ -338,7 +338,7 @@ export default function ElectricidadPage() {
             {/*MODAL UPDATE*/}
             <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
                 <DialogTrigger asChild></DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-w-lg border-2">
                     <DialogHeader>
                         <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
                         <DialogDescription></DialogDescription>

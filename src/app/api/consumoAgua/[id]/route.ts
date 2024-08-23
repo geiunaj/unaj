@@ -70,7 +70,6 @@ export async function PUT(
                 },
                 mes: true,
                 anio: true,
-                // sede: true,
             },
         });
 

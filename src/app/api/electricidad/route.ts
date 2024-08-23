@@ -33,7 +33,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         }
 
         const whereOptions = {
-            sede_id: sedeId ? parseInt(sedeId) : undefined,
+            area: {
+                sede_id: sedeId ? parseInt(sedeId) : undefined,
+            },
             anio_id: anioId,
             mes_id: mes ? parseInt(mes) : undefined,
             areaId: areaId ? parseInt(areaId) : undefined,
@@ -47,15 +49,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             include: {
                 mes: true,
                 anio: true,
-                sede: true,
-                area: true,
+                area: {
+                    include: {
+                        sede: true,
+                    },
+                },
             },
             orderBy: sort
                 ? [{[sort]: direction || 'desc'}]
-                : [
-                    {anio_id: 'desc'},
-                    {mes_id: 'desc'}
-                ],
+                : [{area: {sede_id: "desc"}}, {areaId: "asc"}, {anio_id: "desc"}, {mes_id: "desc"}],
             skip: (page - 1) * perPage,
             take: perPage,
         });
@@ -88,7 +90,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 areaId: body.area_id,
                 numeroSuministro: body.numeroSuministro,
                 consumo: body.consumo,
-                sede_id: body.sede_id,
                 anio_id: body.anio_id,
                 mes_id: body.mes_id,
 
@@ -96,10 +97,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 updated_at: new Date(),
             },
             include: {
-                area: true,
+                area: {
+                    include: {
+                        sede: true,
+                    }
+                },
                 mes: true,
                 anio: true,
-                sede: true,
             },
         });
 

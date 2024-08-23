@@ -217,7 +217,6 @@ CREATE TABLE `consumoEnergia` (
     `consumo` FLOAT NOT NULL,
     `mes_id` INTEGER NOT NULL,
     `anio_id` INTEGER NOT NULL,
-    `sede_id` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -365,9 +364,6 @@ ALTER TABLE `consumoEnergia` ADD CONSTRAINT `consumoEnergia_mes_id_fkey` FOREIGN
 
 -- AddForeignKey
 ALTER TABLE `consumoEnergia` ADD CONSTRAINT `consumoEnergia_anio_id_fkey` FOREIGN KEY (`anio_id`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `consumoEnergia` ADD CONSTRAINT `consumoEnergia_sede_id_fkey` FOREIGN KEY (`sede_id`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `consumoEnergia` ADD CONSTRAINT `consumoEnergia_areaId_fkey` FOREIGN KEY (`areaId`) REFERENCES `area`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

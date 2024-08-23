@@ -1,7 +1,7 @@
 import api from "../../../../config/api";
 
 import {AxiosRequestConfig, AxiosResponse} from "axios";
-import { consumoAguaCollection, consumoAguaRequest } from "./consumoAgua.interface";
+import {consumoAguaCollection, consumoAguaRequest} from "./consumoAgua.interface";
 
 
 interface Response {
@@ -9,7 +9,7 @@ interface Response {
 }
 
 export async function getConsumoAgua(
-    // sedeId?: number,
+    sedeId?: number,
     anioId?: number,
     areaId?: number,
     mesId?: number,
@@ -19,6 +19,7 @@ export async function getConsumoAgua(
 ): Promise<consumoAguaCollection> {
     const config: AxiosRequestConfig = {
         params: {
+            sedeId,
             anioId,
             areaId,
             sort,
