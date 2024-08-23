@@ -35,7 +35,7 @@ import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {useTipoCombustible} from "../lib/tipoCombustible.hook";
 import {TipoCombustibleCollection} from "../services/tipoCombustible.interface";
-import {FromTipoCombustible} from "./FormTipoCombustiblePage";
+import {FromTipoCombustible} from "./FormTipoCombustible";
 import {deleteTipoCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";
 import {UpdateFormTipoCombustible} from "./UpdateFormTipoCombustible";
 import {errorToast, successToast} from "@/lib/utils/core.function";
@@ -93,12 +93,8 @@ export default function TipoCombustiblePage() {
         <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="font-Manrope">
-                    <h1 className="text-base text-gray-800 font-bold">
-                        Tipos de Combustible
-                    </h1>
-                    <h2 className="text-xs sm:text-sm text-gray-500">
-                        Huella de carbono
-                    </h2>
+                    <h1 className="text-base text-foreground font-bold"> Tipos de Combustible </h1>
+                    <h2 className="text-xs sm:text-sm text-muted-foreground"> Huella de carbono </h2>
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">

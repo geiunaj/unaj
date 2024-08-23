@@ -80,8 +80,8 @@ export default function AreaPage() {
         <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="font-Manrope">
-                    <h1 className="text-base text-gray-800 font-bold">Area</h1>
-                    <h2 className="text-xs sm:text-sm text-gray-500">
+                    <h1 className="text-base text-foreground font-bold">Area</h1>
+                    <h2 className="text-xs sm:text-sm text-muted-foreground">
                         Areas de las Sedes
                     </h2>
                 </div>

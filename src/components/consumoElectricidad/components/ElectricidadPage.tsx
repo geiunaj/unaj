@@ -179,10 +179,8 @@ export default function ElectricidadPage() {
         <div className="w-full max-w-[1150px] h-full ">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="font-Manrope">
-                    <h1 className="text-base text-gray-800 font-bold">Consumo de Electricidad</h1>
-                    <h2 className="text-xs sm:text-sm text-gray-500">
-                        Huella de carbono
-                    </h2>
+                    <h1 className="text-base text-foreground font-bold">Consumo de Electricidad</h1>
+                    <h2 className="text-xs sm:text-sm text-muted-foreground"> Huella de carbono </h2>
                 </div>
                 <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
                     <div

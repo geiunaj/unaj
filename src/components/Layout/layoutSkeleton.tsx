@@ -34,7 +34,8 @@ export default function LayoutSkeleton() {
                     </div>
                     <Skeleton className="h-12 w-12 rounded-full"/>
                 </div>
-                <div className="flex-auto m-4 flex justify-center items-center p-6 bg-white rounded-xl shadow">
+                <div
+                    className="flex-auto m-4 flex justify-center items-center p-6 bg-transparent rounded-xl shadow">
                     <div className="w-full max-w-[1150px] h-full ">
                         <div className="flex w-full">
                             <div className="flex flex-col gap-2 w-1/2">
