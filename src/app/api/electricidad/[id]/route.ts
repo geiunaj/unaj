@@ -16,10 +16,13 @@ export async function GET(
                 id: id,
             },
             include: {
-                area: true,
+                area: {
+                    include: {
+                        sede: true,
+                    }
+                },
                 mes: true,
                 anio: true,
-                sede: true,
             },
         });
 
@@ -45,7 +48,7 @@ export async function PUT(
         const body: electricidadRequest = await req.json();
 
         // VALIDATE BODY
-        if (!body.consumo || !body.area_id || !body.mes_id || !body.anio_id || !body.sede_id || !body.numeroSuministro) {
+        if (!body.consumo || !body.area_id || !body.mes_id || !body.anio_id || !body.numeroSuministro) {
             return new NextResponse("Missing required fields", {status: 400});
         }
 
@@ -59,14 +62,16 @@ export async function PUT(
                 numeroSuministro: body.numeroSuministro,
                 mes_id: body.mes_id,
                 anio_id: body.anio_id,
-                sede_id: body.sede_id,
                 updated_at: new Date(),
             },
             include: {
-                area: true,
+                area: {
+                    include: {
+                        sede: true,
+                    }
+                },
                 mes: true,
                 anio: true,
-                sede: true,
             },
         });
 

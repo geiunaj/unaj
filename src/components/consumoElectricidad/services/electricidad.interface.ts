@@ -75,7 +75,6 @@ export interface electricidadRequest {
     numeroSuministro: string;
     consumo: number;
     mes_id: number;
-    sede_id: number;
     anio_id: number;
 }
 

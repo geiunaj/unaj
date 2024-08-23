@@ -40,7 +40,6 @@ const Electricidad = z.object({
     area: z.string().min(1, "Seleccione un área"),
     numero_suministro: z.string().min(1, "Ingrese un número de suministro"),
     mes: z.string().min(1, "Seleccione un mes"),
-    sede: z.string().min(1, "Seleccione una sede"),
     anio: z.string().min(1, "Seleccione un año"),
     cantidad: z.preprocess(
         (val) => parseFloat(val as string),
@@ -49,6 +48,7 @@ const Electricidad = z.object({
 });
 
 export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
+    const [sede, setSede] = useState<string>("");
 
     const form = useForm<z.infer<typeof Electricidad>>({
         resolver: zodResolver(Electricidad),
@@ -56,7 +56,6 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
             area: "",
             numero_suministro: "",
             mes: "",
-            sede: "",
             cantidad: 0,
             anio: "",
         },
@@ -91,14 +90,14 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
         refetchOnWindowFocus: false,
     });
 
-    const laodForm = useCallback(async () => {
+    const loadForm = useCallback(async () => {
         if (consumoElectricidad.data) {
+            setSede(consumoElectricidad.data.area.sede_id.toString());
             const combustibleData = await consumoElectricidad.data;
             form.reset({
-                area: combustibleData.area_id.toString(),
+                area: combustibleData.areaId.toString(),
                 numero_suministro: combustibleData.numeroSuministro,
                 mes: combustibleData.mes_id.toString(),
-                sede: combustibleData.sede_id.toString(),
                 cantidad: combustibleData.consumo,
                 anio: combustibleData.anio_id.toString(),
             });
@@ -106,9 +105,25 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
     }, [consumoElectricidad.data, id]);
 
     useEffect(() => {
-        laodForm();
-    }, [laodForm, id]);
+        if (sede !== "") {
+            areas.refetch();
+        }
+    }, [areas, sede]);
 
+    useEffect(() => {
+        loadForm();
+    }, [loadForm, id]);
+
+    useEffect(() => {
+        if (areas.data && areas.data.length > 0 && consumoElectricidad.data) {
+            form.setValue("area", consumoElectricidad.data.areaId.toString());
+            setSede(consumoElectricidad.data.area.sede_id.toString());
+        }
+    }, [sede, areas.data]);
+
+    const handleSedeChange = useCallback(async (value: string) => {
+        setSede(value);
+    }, [areas, form]);
 
     const onSubmit = async (data: z.infer<typeof Electricidad>) => {
         const ElectricidadRequest: electricidadRequest = {
@@ -116,7 +131,6 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
             numeroSuministro: data.numero_suministro,
             mes_id: parseInt(data.mes),
             consumo: data.cantidad,
-            sede_id: parseInt(data.sede),
             anio_id: parseInt(data.anio),
         };
         try {
@@ -124,7 +138,7 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
-            errorToast(error.respone.data.message);
+            errorToast(error.response.data.message);
         }
     };
 
@@ -145,34 +159,31 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
                         {/* Sede */}
-                        <FormField
-                            name="sede"
-                            control={form.control}
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <FormLabel>Sede</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                    >
-                                        <FormControl className="w-full">
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Seleciona tu sede"/>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {sedes.data!.map((sede) => (
-                                                    <SelectItem key={sede.id} value={sede.id.toString()}>
-                                                        {sede.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </FormItem>
-                            )}
-                        />
+                        <div>
+
+                            <FormItem className="pt-2">
+                                <FormLabel>Sede</FormLabel>
+                                <Select
+                                    onValueChange={handleSedeChange}
+                                    value={sede}
+                                >
+                                    <FormControl className="w-full">
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Seleciona tu sede"/>
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            {sedes.data!.map((sede) => (
+                                                <SelectItem key={sede.id} value={sede.id.toString()}>
+                                                    {sede.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </FormItem>
+                        </div>
 
                         {/* Area */}
                         <FormField
@@ -183,7 +194,7 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
                                     <FormLabel>Area</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        value={field.value}
                                     >
                                         <FormControl className="w-full">
                                             <SelectTrigger>
@@ -257,7 +268,7 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
                                         <FormLabel>Mes</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            value={field.value}
                                         >
                                             <FormControl className="w-full">
                                                 <SelectTrigger>
@@ -286,7 +297,7 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
                                         <FormLabel>Año</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            value={field.value}
                                         >
                                             <FormControl className="w-full">
                                                 <SelectTrigger>

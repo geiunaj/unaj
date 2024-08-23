@@ -40,7 +40,6 @@ const Electricidad = z.object({
     area: z.string().min(1, "Seleccione un área"),
     numero_suministro: z.string().min(1, "Ingrese un número de suministro"),
     mes: z.string().min(1, "Seleccione un mes"),
-    sede: z.string().min(1, "Seleccione una sede"),
     anio: z.string().min(1, "Seleccione un año"),
     cantidad: z.preprocess(
         (val) => parseFloat(val as string),
@@ -58,7 +57,6 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
             area: "",
             numero_suministro: "",
             mes: "",
-            sede: "",
             cantidad: 0,
             anio: "",
         },
@@ -93,7 +91,6 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
             numeroSuministro: data.numero_suministro,
             mes_id: parseInt(data.mes),
             consumo: data.cantidad,
-            sede_id: parseInt(data.sede),
             anio_id: parseInt(data.anio),
         };
         try {
@@ -159,7 +156,7 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
                                     <FormLabel>Area</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        value={field.value}
                                     >
                                         <FormControl className="w-full">
                                             <SelectTrigger>
