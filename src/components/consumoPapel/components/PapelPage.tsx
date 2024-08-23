@@ -45,6 +45,7 @@ import {
 } from "@/components/consumoPapel/lib/consumoPapel.hook";
 import {deleteConsumoPapel} from "../services/consumoPapel.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import { UpdateFormPapel } from "./UpdateFormPapelOficce";
 
 export default function PapelPage() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -315,7 +316,7 @@ export default function PapelPage() {
                         <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    {/* <UpdateFormPapel onClose={handleCloseUpdate} id={idForUpdate} /> */}
+                    <UpdateFormPapel onClose={handleCloseUpdate} id={idForUpdate} />
                 </DialogContent>
             </Dialog>
 

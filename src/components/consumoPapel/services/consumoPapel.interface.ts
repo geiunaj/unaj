@@ -12,7 +12,7 @@ export interface ConsumoPapelResource {
     cantidad_paquete: number;
     comentario: null | string;
     anio: string;
-    seded: string;
+    sede: string;
     
 }
 
