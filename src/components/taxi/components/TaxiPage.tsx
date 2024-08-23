@@ -266,7 +266,7 @@ export default function TaxiPage() {
               </DialogTrigger>
               <DialogContent className="max-w-lg border-2">
                 <DialogHeader>
-                  <DialogTitle> TAXI CONTRATADOS</DialogTitle>
+                  <DialogTitle>Taxis Contratados</DialogTitle>
                   <DialogDescription>
                     Registrar el taxi contratado.
                   </DialogDescription>
@@ -314,18 +314,27 @@ export default function TaxiPage() {
                   <TableCell className="text-xs sm:text-sm">
                     <Badge variant="secondary">{index + 1}</Badge>
                   </TableCell>
-                  <TableCell>{item.unidadContratante}</TableCell>
-                  <TableCell>{item.lugarSalida}</TableCell>
-                  <TableCell>{item.lugarDestino}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-xs sm:text-sm">
+                    {item.unidadContratante}
+                  </TableCell>
+                  <TableCell className="text-xs sm:text-sm">
+                    {item.lugarSalida}
+                  </TableCell>
+                  <TableCell className="text-xs sm:text-sm">
+                    {item.lugarDestino}
+                  </TableCell>
+                  <TableCell className="text-xs sm:text-sm">
                     <Badge variant="default">{item.montoGastado}</Badge>
                   </TableCell>
-                  <TableCell>{item.mes}</TableCell>
+                  <TableCell className="text-xs sm:text-sm">
+                    {item.mes}
+                  </TableCell>
 
-                  <TableCell>
+                  <TableCell className="text-xs sm:text-sm p-1">
                     <div className="flex justify-center gap-4">
                       {/*UPDATE*/}
                       <Button
+                        className="h-7 w-7"
                         size="icon"
                         variant="outline"
                         onClick={() => handleClickUpdate(item.id)}
@@ -335,6 +344,7 @@ export default function TaxiPage() {
 
                       {/*DELETE*/}
                       <Button
+                        className="h-7 w-7"
                         size="icon"
                         variant="outline"
                         onClick={() => handleCLickDelete(item.id)}

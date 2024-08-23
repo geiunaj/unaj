@@ -61,10 +61,10 @@ export interface TaxiRequest {
     unidadContratante: string;
     lugarSalida: string;
     lugarDestino: string;
-    monto: number;
+    montoGastado: number;
     sede_id: number;
     anio_id: number;
     mes_id: number;
-    created_at: Date;
-    updated_at: Date;
+    created_at?: Date;
+    updated_at?: Date;
 }

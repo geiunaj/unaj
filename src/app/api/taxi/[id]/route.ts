@@ -52,43 +52,21 @@ export async function PUT(
     console.log(body);
 
     // Validate required fields
-    const {
-      unidadContratante,
-      lugarSalida,
-      lugarDestino,
-      monto,
-      anio_id,
-      sede_id,
-      mes_id,
-      created_at,
-      updated_at,
-    } = body;
-    if (
-      typeof monto !== "number" ||
-      typeof unidadContratante !== "string" ||
-      typeof lugarSalida !== "string" ||
-      typeof lugarDestino !== "string" ||
-      typeof mes_id !== "number" ||
-      typeof anio_id !== "number" ||
-      typeof sede_id !== "number" ||
-      created_at !== "Date" ||
-      updated_at !== "Date"
-    ) {
-      return new NextResponse("Missing or invalid required fields", {
-        status: 400,
-      });
+    const { unidadContratante, lugarSalida, lugarDestino, montoGastado, mes_id, sede_id, anio_id } = body;
+    if (!unidadContratante || !lugarSalida || !lugarDestino || !montoGastado || !mes_id || !sede_id || !anio_id) {
+      return new NextResponse("Missing required fields", { status: 400 });
     }
+
 
     const taxiRequest: TaxiRequest = {
       unidadContratante,
       lugarSalida,
       lugarDestino,
-      monto,
+      montoGastado,
       mes_id,
       sede_id,
       anio_id,
-      created_at,
-      updated_at,
+      updated_at : new Date(),
     };
 
     const taxi = await prisma.taxi.update({

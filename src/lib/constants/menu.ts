@@ -12,7 +12,8 @@ import {
     Settings,
     MapPinned,
     Droplets,
-    CarTaxiFront 
+    CarTaxiFront,
+    UserRound 
     
 } from "lucide-react";
 
@@ -37,7 +38,8 @@ export const iconComponents: Record<string, any> = {
     Settings,
     MapPinned,
     Droplets,
-    CarTaxiFront 
+    CarTaxiFront,
+    UserRound
 };
 
 export const menu: MenuItem[] = [
@@ -108,7 +110,7 @@ export const menu: MenuItem[] = [
             },
             {
                 title: "Usuarios",
-                icon: "MapPinned",
+                icon: "UserRound",
                 href: "/user",
             },
         ]

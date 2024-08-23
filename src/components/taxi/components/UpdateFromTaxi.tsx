@@ -32,10 +32,10 @@ import { updateTaxi } from "../service/taxi.actions";
 import { TaxiRequest, UpdateTaxiProps } from "../service/taxi.interface";
 
 const TaxiSchema = z.object({
-  unidad_contratante: z.string().min(1, "Seleccione un tipo de hoja"),
-  lugar_salida: z.string().min(1, "Seleccione un tipo de hoja"),
-  lugar_destino: z.string().min(1, "Seleccione un tipo de hoja"),
-  monto: z.preprocess(
+  unidadContratante: z.string().min(1, "Seleccione un tipo de hoja"),
+  lugarSalida: z.string().min(1, "Seleccione un tipo de hoja"),
+  lugarDestino: z.string().min(1, "Seleccione un tipo de hoja"),
+  montoGastado: z.preprocess(
     (val) => parseInt(val as string),
     z.number().min(0, "Ingresa un valor mayor a 0")
   ),
@@ -48,10 +48,10 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
   const form = useForm<z.infer<typeof TaxiSchema>>({
     resolver: zodResolver(TaxiSchema),
     defaultValues: {
-      unidad_contratante: "",
-      lugar_salida: "",
-      lugar_destino: "",
-      monto: 0,
+      unidadContratante: "",
+      lugarSalida: "",
+      lugarDestino: "",
+      montoGastado: 0,
       anio: "",
       sede: "",
       mes: "",
@@ -65,11 +65,12 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
 
   const loadForm = useCallback(() => {
     if (taxis.data) {
+      console.log(taxis.data);
       form.reset({
-        unidad_contratante: taxis.data.unidad_contratante,
-        lugar_salida: taxis.data.lugar_salida,
-        lugar_destino: taxis.data.lugar_destino,
-        monto: taxis.data.monto,
+        unidadContratante: taxis.data.unidadContratante,
+        lugarSalida: taxis.data.lugarSalida,
+        lugarDestino: taxis.data.lugarDestino,
+        montoGastado: taxis.data.montoGastado,
         sede: taxis.data.sede.id.toString(),
         anio: taxis.data.anio.id.toString(),
         mes: taxis.data.mes.id.toString(),
@@ -83,10 +84,10 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
 
   const onSubmit = async (data: z.infer<typeof TaxiSchema>) => {
     const TaxiRequest: TaxiRequest = {
-      unidadContratante: data.unidad_contratante,
-      lugarSalida: data.lugar_salida,
-      lugarDestino: data.lugar_destino,
-      monto: data.monto,
+      unidadContratante: data.unidadContratante,
+      lugarSalida: data.lugarSalida,
+      lugarDestino: data.lugarDestino,
+      montoGastado: data.montoGastado,
       anio_id: Number(data.anio),
       sede_id: Number(data.sede),
       mes_id: Number(data.mes),
@@ -157,7 +158,7 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
                     <FormLabel>Año</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      // defaultValue={field.value}
                       value={field.value}
                     >
                       <FormControl className="w-full">
@@ -191,7 +192,7 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
                     <FormLabel>Mes</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      // defaultValue={field.value}
                       value={field.value}
                     >
                       <FormControl className="w-full">
@@ -218,7 +219,7 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
               {/* Unidad contratante */}
               <FormField
                 control={form.control}
-                name="unidad_contratante"
+                name="unidadContratante"
                 render={({ field }) => (
                   <FormItem className="pt-2 w-1/2">
                     <FormLabel>Unidad Contratante</FormLabel>
@@ -238,7 +239,7 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
               {/* Monto */}
               <FormField
                 control={form.control}
-                name="monto"
+                name="montoGastado"
                 render={({ field }) => (
                   <FormItem className="pt-2 w-1/2">
                     <FormLabel>Monto</FormLabel>
@@ -260,7 +261,7 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
               {/* lugar_salida */}
               <FormField
                 control={form.control}
-                name="lugar_salida"
+                name="lugarSalida"
                 render={({ field }) => (
                   <FormItem className="pt-2 w-1/2">
                     <FormLabel>Lugar de Salida</FormLabel>
@@ -279,7 +280,7 @@ export function UpdateFormTaxi({ id, onClose }: UpdateTaxiProps) {
               {/* lugar_destino */}
               <FormField
                 control={form.control}
-                name="lugar_destino"
+                name="lugarDestino"
                 render={({ field }) => (
                   <FormItem className="pt-2 w-1/2">
                     <FormLabel>Lugar de Destino</FormLabel>
