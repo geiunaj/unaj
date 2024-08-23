@@ -29,7 +29,7 @@ export const useElectricidad =
 export const useElectricidadReport =
     ({sedeId, anioId, mesId, areaId, sort, direction, page, from, to}: getElectricidadInterface) => {
         return useQuery({
-            queryKey: ['Electricidad'],
+            queryKey: ['ElectricidadReport'],
             queryFn: () => getElectricidadReport(sedeId, anioId, areaId, mesId, sort, direction, page, from, to),
             refetchOnWindowFocus: false,
         });

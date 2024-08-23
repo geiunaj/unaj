@@ -118,7 +118,7 @@ export default function ReportPopover({
                                                 <FormLabel>Desde</FormLabel>
                                                 <FormControl>
                                                     <Input
-                                                        className="col-span-3 text-white"
+                                                        className="col-span-3"
                                                         placeholder="2023-01"
                                                         type="month"
                                                         {...field}

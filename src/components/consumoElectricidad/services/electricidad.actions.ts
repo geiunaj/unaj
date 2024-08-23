@@ -48,6 +48,7 @@ export async function getElectricidadReport(
     page?: number,
     from?: string,
     to?: string,
+    all = true
 ): Promise<electricidadCollection> {
     const config: AxiosRequestConfig = {
         params: {
@@ -60,6 +61,7 @@ export async function getElectricidadReport(
             page,
             from,
             to,
+            all,
         },
     };
     const {data} = await api.get<electricidadCollection>(

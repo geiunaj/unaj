@@ -254,6 +254,7 @@ model consumoEnergia {
   consumo          Float  @db.Float
   mes_id           Int
   anio_id          Int
+  anio_mes         Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

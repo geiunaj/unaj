@@ -633,6 +633,9 @@ async function main() {
     for (const area of allAreas) {
         for (const anio of allAnios) {
             for (const mes of allMeses) {
+                // Convertir año y mes en un número único (ejemplo: 202307 para julio de 2023)
+                const anio_mes = anio.nombre * 100 + mes.id;
+
                 await prisma.consumoEnergia.create({
                     data: {
                         areaId: area.id,
@@ -642,6 +645,7 @@ async function main() {
                         consumo: faker.number.float({min: 1, max: 200}),
                         mes_id: mes.id,
                         anio_id: anio.id,
+                        anio_mes,
                         created_at: new Date(),
                         updated_at: new Date(),
                     },
