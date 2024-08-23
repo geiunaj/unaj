@@ -14,7 +14,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const claseFertilizante = searchParams.get("claseFertilizante") ?? undefined;
         const sedeId = searchParams.get("sedeId") ?? undefined;
         const anio = searchParams.get("anio") ?? undefined;
-        const sort = searchParams.get("sort") ?? "id";
+        const sort = searchParams.get("sort") ?? undefined;
         const direction = searchParams.get("direction") ?? "desc";
 
         const page = parseInt(searchParams.get("page") ?? "1");
@@ -40,18 +40,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             tipoFertilizante: {
                 clase: claseFertilizante ? claseFertilizante : undefined,
             },
-            ...(yearFromId && yearToId
-                ? {anio: {id: {gte: yearFromId, lte: yearToId}}}
-                : yearFromId ? {anio: {id: {gte: yearFromId}}}
-                    : yearToId ? {anio: {id: {lte: yearToId}}}
-                        : {}),
+            anio: {
+                nombre: {
+                    ...(yearFromId && yearToId ? {gte: yearFrom, lte: yearTo} :
+                            yearFromId ? {gte: yearFrom} : yearToId ? {lte: yearTo} : undefined
+                    ),
+                }
+            }
         };
 
         const totalRecords = await prisma.fertilizante.count({where: whereOptions});
         const totalPages = Math.ceil(totalRecords / perPage);
 
-
-        console.log("all", all);
         const fertilizantes = await prisma.fertilizante.findMany({
             where: whereOptions,
             include: {
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 sede: true,
                 tipoFertilizante: true,
             },
-            orderBy: sort ? [{[sort]: direction || 'desc'}] : [{anio_id: 'desc'}],
+            orderBy: sort ? [{[sort]: direction || 'desc'}] : [{tipoFertilizante_id: 'asc'}, {anio: {nombre: 'desc'}}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 

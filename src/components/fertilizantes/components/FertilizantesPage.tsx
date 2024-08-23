@@ -164,13 +164,18 @@ export default function FertilizantePage() {
         await fertilizante.refetch();
     }
 
+    const [yearFrom, setYearFrom] = useState<string>("");
+    const [yearTo, setYearTo] = useState<string>("");
+
     const fertilizanteReport = useFertilizanteReport(
         {
             tipoFertilizanteId: selectedTipoFertilizanteId ? parseInt(selectedTipoFertilizanteId) : undefined,
             claseFertilizante: selectedClaseFertilizante,
             sedeId: parseInt(selectedSede),
             anio: selectedAnio,
-            page: page
+            page: page,
+            yearFrom: yearFrom,
+            yearTo: yearTo,
         }
     );
 
@@ -185,9 +190,11 @@ export default function FertilizantePage() {
             {header: "AÑO", key: "anio", width: 15,},
             {header: "SEDE", key: "sede", width: 20,}
         ];
+        console.log(period);
+        await setYearFrom(period.yearFrom ?? "");
+        await setYearTo(period.yearTo ?? "");
         const data = await fertilizanteReport.refetch();
-        GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE FERTILIZANTES");
-
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE FERTILIZANTES");
     }
 
     if (fertilizante.isLoading || claseFertilizante.isLoading || tipoFertilizante.isLoading
@@ -268,7 +275,6 @@ export default function FertilizantePage() {
                             <PopoverContent className="w-80">
                                 <ReportPopover
                                     onClick={(data: ReportRequest) => handleClickReport(data)}
-                                    withMonth={true}
                                 />
                             </PopoverContent>
                         </Popover>

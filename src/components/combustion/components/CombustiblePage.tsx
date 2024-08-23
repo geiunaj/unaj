@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/table";
 import {FormCombustible} from "./FormCombustible";
 import {
-    Building, Flame, Plus, Trash2, Calendar, CalendarDays, Pen,
+    Building, Flame, Plus, Trash2, Calendar, CalendarDays, Pen, FileSpreadsheet,
 } from "lucide-react";
 import {
     CombustionCollection, CombustionCollectionItem,
@@ -43,7 +43,7 @@ import ButtonCalculate from "@/components/ButtonCalculate";
 import {useRouter} from "next/navigation";
 import {
     useAnio,
-    useCombustible,
+    useCombustible, useCombustibleReport,
     useMes,
     useSede,
     useTipoCombustible
@@ -52,6 +52,10 @@ import SkeletonTable from "@/components/Layout/skeletonTable";
 import {deleteCombustion} from "@/components/combustion/services/combustion.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import CustomPagination from "@/components/Pagination";
+import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
+import GenerateReport from "@/lib/utils/generateReport";
+import {useFertilizanteReport} from "@/components/fertilizantes/lib/fertilizante.hook";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 
 export default function CombustiblePage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
@@ -155,6 +159,39 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         await combustible.refetch();
     }
 
+    const [from, setFrom] = useState<string>("");
+    const [to, setTo] = useState<string>("");
+
+    const combustibleReport = useCombustibleReport({
+        tipo,
+        tipoCombustibleId: selectTipoCombustible ? Number(selectTipoCombustible) : undefined,
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
+        anio: selectedAnio ? Number(selectedAnio) : undefined,
+        mesId: selectedMes ? Number(selectedMes) : undefined,
+        page,
+        from,
+        to
+    });
+
+    const handleClickReport = async (period: ReportRequest) => {
+        const columns = [
+            {header: "N°", key: "id", width: 10,},
+            {header: "TIPO", key: "tipo", width: 15,},
+            {header: "TIPO DE EQUIPO", key: "tipoEquipo", width: 20,},
+            {header: "CONSUMO", key: "consumo", width: 15,},
+            {header: "MES", key: "mes", width: 20,},
+            {header: "AÑO", key: "anio", width: 15,},
+            {header: "TIPO DE COMBUSTIBLE", key: "tipoCombustible", width: 30,},
+            {header: "UNIDAD", key: "unidad", width: 10,},
+            {header: "SEDE", key: "sede", width: 20,}
+        ];
+        console.log(period);
+        await setFrom(period.from ?? "");
+        await setTo(period.to ?? "");
+        const data = await combustibleReport.refetch();
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), `REPORTE DE COMBUSTIÓN ${tipo.toUpperCase()}`);
+    }
+
     if (combustible.isLoading || tiposCombustible.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {
         return <SkeletonTable/>;
     }
@@ -226,6 +263,25 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
                     </div>
 
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    size="sm"
+                                    className="h-7 gap-1"
+                                    variant="outline"
+                                >
+                                    <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                    Reporte
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                                <ReportPopover
+                                    onClick={(data: ReportRequest) => handleClickReport(data)}
+                                    withMonth={true}
+                                />
+                            </PopoverContent>
+                        </Popover>
+
                         <ButtonCalculate onClick={handleCalculate}/>
 
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

@@ -28,13 +28,13 @@ export default async function GenerateReport<T>(data: T[], columns: Column[], pe
     const cellPeriod = sheet.getRow(2).getCell(2);
     cellPeriod.value = period;
     cellPeriod.font = {
-        color: {argb: '000000'},
+        color: {argb: '0A2A70'},
         size: 12,
-        bold: true,
+        italic: true,
     };
     cellPeriod.alignment = {
         vertical: 'middle',
-        horizontal: 'center',
+        horizontal: 'left',
     };
     const cellTitle = sheet.getRow(1).getCell(1);
     cellTitle.value = title;

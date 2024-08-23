@@ -26,17 +26,32 @@ interface ReportPopoverProps {
 export interface ReportRequest {
     from?: string;
     to?: string;
+    yearFrom?: string;
+    yearTo?: string;
 }
 
-export const formatPeriod = (period: ReportRequest): string => {
-    if (period.from && period.to) {
-        return `Desde ${period.from} hasta ${period.to}`;
-    }
-    if (period.from) {
-        return `Desde ${period.from}`;
-    }
-    if (period.to) {
-        return `Hasta ${period.to}`;
+export const formatPeriod = (period: ReportRequest, withMonth = false) => {
+
+    if (withMonth) {
+        if (period.from && period.to) {
+            return `Desde ${period.from} hasta ${period.to}`;
+        }
+        if (period.from) {
+            return `Desde ${period.from}`;
+        }
+        if (period.to) {
+            return `Hasta ${period.to}`;
+        }
+    } else {
+        if (period.yearFrom && period.yearTo) {
+            return `Desde ${period.yearFrom} hasta ${period.yearTo}`;
+        }
+        if (period.yearFrom) {
+            return `Desde ${period.yearFrom}`;
+        }
+        if (period.yearTo) {
+            return `Hasta ${period.yearTo}`;
+        }
     }
     return "-";
 }
@@ -52,14 +67,15 @@ const Report = z.object({
 
 export default function ReportPopover({
                                           onClick,
-                                          withMonth
+                                          withMonth = false,
                                       }: ReportPopoverProps) {
     const form = useForm<z.infer<typeof Report>>({
         resolver: zodResolver(Report),
         defaultValues: {
             from: "",
             to: "",
-
+            yearFrom: "",
+            yearTo: "",
         },
     });
 
@@ -73,6 +89,8 @@ export default function ReportPopover({
         const reportRequest: ReportRequest = {
             from: data.from,
             to: data.to,
+            yearFrom: data.yearFrom,
+            yearTo: data.yearTo,
         };
         onClick(reportRequest);
     };
@@ -86,17 +104,57 @@ export default function ReportPopover({
             <div className="flex flex-col items-center justify-center w-full">
                 <Form {...form}>
                     <form
-                        className=""
+                        className="w-full flex flex-col gap-3"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
                         {
                             withMonth ? (
                                 <div className="w-full flex flex-col items-center gap-3">
                                     <FormField
+                                        control={form.control}
+                                        name="from"
+                                        render={({field}) => (
+                                            <FormItem className="w-full grid grid-cols-4 space-y-0 items-center">
+                                                <FormLabel>Desde</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        className="col-span-3 text-white"
+                                                        placeholder="2023-01"
+                                                        type="month"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="to"
+                                        render={({field}) => (
+                                            <FormItem className="w-full grid grid-cols-4 space-y-0 items-center">
+                                                <FormLabel>Hasta</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        className="col-span-3"
+                                                        placeholder="2024-01"
+                                                        type="month"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="w-full flex flex-col items-center gap-3">
+                                    <FormField
                                         name="yearFrom"
                                         control={form.control}
                                         render={({field}) => (
-                                            <FormItem className="grid grid-cols-4 space-y-0 items-center">
+                                            <FormItem className="w-full grid grid-cols-4 space-y-0 items-center">
                                                 <FormLabel>Desde</FormLabel>
                                                 <Select
                                                     onValueChange={field.onChange}
@@ -124,60 +182,32 @@ export default function ReportPopover({
                                     />
 
                                     <FormField
+                                        name="yearTo"
                                         control={form.control}
-                                        name="to"
                                         render={({field}) => (
-                                            <FormItem className="grid grid-cols-4 space-y-0 items-center">
+                                            <FormItem className="w-full grid grid-cols-4 space-y-0 items-center">
                                                 <FormLabel>Hasta</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="col-span-3"
-                                                        placeholder="2024-01"
-                                                        type="month"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            ) : (
-                                <div>
-                                    <FormField
-                                        control={form.control}
-                                        name="from"
-                                        render={({field}) => (
-                                            <FormItem className="grid grid-cols-4 space-y-0 items-center">
-                                                <FormLabel>Desde</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="col-span-3"
-                                                        placeholder="2023-01"
-                                                        type="month"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="to"
-                                        render={({field}) => (
-                                            <FormItem className="grid grid-cols-4 space-y-0 items-center">
-                                                <FormLabel>Hasta</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        className="col-span-3"
-                                                        placeholder="2024-01"
-                                                        type="month"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage/>
+                                                <Select
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={field.value}
+                                                >
+                                                    <FormControl className="w-full col-span-3">
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Seleciona la clase"/>
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <FormMessage/>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            {anios.data!.map((clase) => (
+                                                                <SelectItem key={clase.nombre}
+                                                                            value={clase.nombre.toString()}>
+                                                                    {clase.nombre}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
                                             </FormItem>
                                         )}
                                     />

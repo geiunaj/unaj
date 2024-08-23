@@ -19,23 +19,34 @@ interface getFertilizanteInterface {
     sort?: string;
     direction?: string;
     page?: number;
-    all?: boolean;
+    yearFrom?: string;
+    yearTo?: string;
 }
 
 export const useFertilizante =
     ({tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page}: getFertilizanteInterface) => {
         return useQuery({
             queryKey: ['fertilizante'],
-            queryFn: () => getFertilizante(tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page, false),
+            queryFn: () => getFertilizante(tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page),
             refetchOnWindowFocus: false,
         });
     }
 
 export const useFertilizanteReport =
-    ({tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page}: getFertilizanteInterface) => {
+    ({
+         tipoFertilizanteId,
+         claseFertilizante,
+         sedeId,
+         anio,
+         sort,
+         direction,
+         page,
+         yearFrom,
+         yearTo
+     }: getFertilizanteInterface) => {
         return useQuery({
             queryKey: ['fertilizanteReport'],
-            queryFn: () => getFertilizanteReport(tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page),
+            queryFn: () => getFertilizanteReport(tipoFertilizanteId, claseFertilizante, sedeId, anio, sort, direction, page, yearFrom, yearTo, true),
             refetchOnWindowFocus: false,
         });
     }

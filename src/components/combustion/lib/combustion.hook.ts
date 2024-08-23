@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
-import {getCombustion} from "@/components/combustion/services/combustion.actions";
+import {getCombustion, getCombustionReport} from "@/components/combustion/services/combustion.actions";
 import {getTiposCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";
 import {getMes} from "@/components/mes/services/mes.actions";
 
@@ -14,6 +14,8 @@ interface getCombustibleInterface {
     sort?: string;
     direction?: string;
     page?: number;
+    from?: string;
+    to?: string;
 }
 
 export const useCombustible =
@@ -21,6 +23,15 @@ export const useCombustible =
         return useQuery({
             queryKey: ['combustible'],
             queryFn: () => getCombustion(tipo, tipoCombustibleId, sedeId, anio, mesId, sort, direction, page),
+            refetchOnWindowFocus: false,
+        });
+    }
+
+export const useCombustibleReport =
+    ({tipo, tipoCombustibleId, sedeId, anio, mesId, sort, direction, page, from, to}: getCombustibleInterface) => {
+        return useQuery({
+            queryKey: ['combustibleR'],
+            queryFn: () => getCombustionReport(tipo, tipoCombustibleId, sedeId, anio, mesId, sort, direction, page, from, to),
             refetchOnWindowFocus: false,
         });
     }

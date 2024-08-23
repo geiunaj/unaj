@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma"; // Asegúrate de que la ruta sea correcta
 import {formatCombustible} from "@/lib/resources/combustionResource";
 import {Combustible} from "@prisma/client";
 import {CombustionRequest} from "@/components/combustion/services/combustion.interface";
+import {getAnioId} from "@/lib/utils";
 
 // INDEX
 export async function GET(req: NextRequest): Promise<NextResponse> {
@@ -15,19 +16,26 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const mesId = searchParams.get("mesId") ?? undefined;
         const sort = searchParams.get("sort") ?? undefined;
         const direction = searchParams.get("direction") ?? undefined;
+        const all = searchParams.get("all") === "true";
 
         const page = parseInt(searchParams.get("page") ?? "1");
         const perPage = parseInt(searchParams.get("perPage") ?? "10");
 
+        const dateFrom = searchParams.get("from") ?? undefined;
+        const dateTo = searchParams.get("to") ?? undefined;
+
         let anioId;
-        if (anio) {
-            const anioRecord = await prisma.anio.findFirst({
-                where: {
-                    nombre: anio,
-                },
-            });
-            anioId = anioRecord ? anioRecord.id : undefined;
-        }
+        if (anio) anioId = await getAnioId(anio);
+
+        let yearFrom, yearTo, monthFrom, monthTo;
+        let yearFromId, yearToId, mesFromId, mesToId;
+
+        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
+        if (yearFrom) yearFromId = await getAnioId(yearFrom);
+        if (yearTo) yearToId = await getAnioId(yearTo);
+        if (monthFrom) mesFromId = parseInt(monthFrom);
+        if (monthTo) mesToId = parseInt(monthTo);
 
         const whereOptions = {
             tipo: tipo ? tipo : undefined,
@@ -35,7 +43,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             sede_id: sedeId ? parseInt(sedeId) : undefined,
             anio_id: anioId,
             mes_id: mesId ? parseInt(mesId) : undefined,
+            anio: {
+                nombre: {
+                    ...(yearFromId && yearToId ? {gte: yearFrom, lte: yearTo} :
+                            yearFromId ? {gte: yearFrom} : yearToId ? {lte: yearTo} : undefined
+                    ),
+                }
+            },
+            mes: {
+                id: {
+                    ...(mesFromId && mesToId ? {gte: mesFromId, lte: mesToId} :
+                            mesFromId ? {gte: mesFromId} : mesToId ? {lte: mesToId} : undefined
+                    ),
+                }
+            }
         };
+
+        console.log(whereOptions);
 
         const totalRecords = await prisma.combustible.count({where: whereOptions});
         const totalPages = Math.ceil(totalRecords / perPage);
@@ -54,8 +78,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                     {anio_id: 'desc'},
                     {mes_id: 'desc'}
                 ],
-            skip: (page - 1) * perPage,
-            take: perPage,
+            ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
         const formattedCombustibles: Combustible[] = combustibles.map(

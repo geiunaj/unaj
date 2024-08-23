@@ -66,7 +66,8 @@ export default function Sidebar() {
                     <div className="flex items-center justify-around gap-3">
                         <p className="text-blue-700 text-3xl font-black">UNAJ</p>
                         <Separator orientation="vertical" className="h-8"/>
-                        <div className="flex flex-col text-gray-600 text-center text-[10px] xl:text-xs font-medium">
+                        <div
+                            className="flex flex-col text-muted-foreground text-center text-[10px] xl:text-xs font-medium">
                             <p>Calculadora de</p>
                             <p>Huella Ecológica</p>
                         </div>

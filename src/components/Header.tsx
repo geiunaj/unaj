@@ -2,22 +2,13 @@
 import Link from "next/link";
 import {
     CircleUser,
-    Home,
-    LineChart,
     Menu,
-    Package,
-    Package2,
-    ShoppingCart,
-    Users,
 } from "lucide-react";
-
-import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -76,7 +67,7 @@ export default function Header() {
                 <SheetTrigger asChild>
                     <Button variant="outline" size="icon" className="shrink-0 md:hidden">
                         <Menu className="h-5 w-5"/>
-                        <span className="sr-only">Toggle navigation menu</span>
+                        <span className="sr-only">Botón del Menú</span>
                     </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="flex flex-col p-4">
@@ -88,7 +79,7 @@ export default function Header() {
                         <div className="flex items-center justify-around gap-3">
                             <p className="text-blue-700 text-3xl font-black">UNAJ</p>
                             <Separator orientation="vertical" className="h-8"/>
-                            <div className="flex flex-col text-gray-600 text-center text-xs font-medium">
+                            <div className="flex flex-col text-muted-foreground text-center text-xs font-medium">
                                 <p>Calculadora de</p>
                                 <p>Huella Ecológica</p>
                             </div>
@@ -115,6 +106,21 @@ export default function Header() {
                     </nav>
                 </SheetContent>
             </Sheet>
+
+            <Link
+                href="/"
+                className="w-full flex md:hidden justify-evenly items-center gap-2"
+            >
+                <div className="flex items-center justify-around gap-3">
+                    <p className="text-blue-700 text-3xl font-black">UNAJ</p>
+                    <Separator orientation="vertical" className="h-8"/>
+                    <div className="flex flex-col text-muted-foreground text-center text-[10px] xl:text-xs font-medium">
+                        <p>Calculadora de</p>
+                        <p>Huella Ecológica</p>
+                    </div>
+                </div>
+            </Link>
+
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="secondary" size="icon" className="rounded-full">

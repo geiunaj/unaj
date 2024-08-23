@@ -38,6 +38,41 @@ export async function getCombustion(
     return data;
 }
 
+export async function getCombustionReport(
+    tipo: string = "estacionaria",
+    tipoCombustibleId?: number,
+    sedeId?: number,
+    anio?: number,
+    mesId?: number,
+    sort?: string,
+    direction?: string,
+    page?: number,
+    from?: string,
+    to?: string,
+    all = true
+): Promise<CombustionCollection> {
+    const config: AxiosRequestConfig = {
+        params: {
+            tipo,
+            tipoCombustibleId,
+            sedeId,
+            anio,
+            mesId,
+            sort,
+            direction,
+            page,
+            from,
+            to,
+            all,
+        },
+    };
+    const {data} = await api.get<CombustionCollection>(
+        "/api/combustion",
+        config
+    );
+    return data;
+}
+
 export async function getCombustionById(id: number) {
     const {data} = await api.get(`/api/combustion/${id}`);
     return data;
