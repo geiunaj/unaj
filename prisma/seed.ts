@@ -254,6 +254,7 @@ async function main() {
         for (const sede of allSedes) {
             for (const anio of allAnios) {
                 for (const mes of allMeses) {
+                    const anio_mes = anio.nombre * 100 + mes.id;
                     await prisma.combustible.create({
                         data: {
                             tipo: type,
@@ -264,6 +265,7 @@ async function main() {
                             mes_id: mes.id,
                             anio_id: anio.id,
                             sede_id: sede.id,
+                            anio_mes,
                             created_at: new Date(),
                             updated_at: new Date(),
                         },
@@ -543,26 +545,6 @@ async function main() {
         }
     }
 
-    for (const sede of allSedes) {
-        for (const anio of allAnios) {
-            for (const mes of allMeses) {
-                await prisma.taxi.create({
-                    data: {
-                        unidadContratante: `Unidad ${faker.number.int({min: 1, max: 10})}`,
-                        lugarSalida: faker.location.city(),
-                        lugarDestino: faker.location.city(),
-                        montoGastado: faker.number.float({min: 10, max: 50, multipleOf: 0.5}),
-                        mes_id: mes.id,
-                        anio_id: anio.id,
-                        sede_id: sede.id,
-                        created_at: new Date(),
-                        updated_at: new Date(),
-                    },
-                });
-            }
-        }
-    }
-
     //Datos Factor de Emisión SEIN
 
     const emisionSEIN = [
@@ -633,7 +615,6 @@ async function main() {
     for (const area of allAreas) {
         for (const anio of allAnios) {
             for (const mes of allMeses) {
-                // Convertir año y mes en un número único (ejemplo: 202307 para julio de 2023)
                 const anio_mes = anio.nombre * 100 + mes.id;
 
                 await prisma.consumoEnergia.create({
@@ -658,6 +639,7 @@ async function main() {
     for (const area of allAreas) {
         for (const anio of allAnios) {
             for (const mes of allMeses) {
+                const anio_mes = anio.nombre * 100 + mes.id;
                 await prisma.consumoAgua.create({
                     data: {
                         area_id: area.id,
@@ -668,7 +650,29 @@ async function main() {
                         fuenteAgua: faker.helpers.arrayElement(["Red Publica", "Pozo"]),
                         mes_id: mes.id,
                         anio_id: anio.id,
-                        // sede_id: area.sede?.id,
+                        anio_mes,
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                    },
+                });
+            }
+        }
+    }
+
+    for (const sede of allSedes) {
+        for (const anio of allAnios) {
+            for (const mes of allMeses) {
+                const anio_mes = anio.nombre * 100 + mes.id;
+                await prisma.taxi.create({
+                    data: {
+                        unidadContratante: `Unidad ${faker.number.int({min: 1, max: 10})}`,
+                        lugarSalida: faker.location.city(),
+                        lugarDestino: faker.location.city(),
+                        montoGastado: faker.number.float({min: 10, max: 50, multipleOf: 0.5}),
+                        mes_id: mes.id,
+                        anio_id: anio.id,
+                        sede_id: sede.id,
+                        anio_mes,
                         created_at: new Date(),
                         updated_at: new Date(),
                     },

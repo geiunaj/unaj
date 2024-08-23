@@ -189,7 +189,7 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
         const data = await combustibleReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), `REPORTE DE COMBUSTIÓN ${tipo.toUpperCase()}`);
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE COMBUSTIÓN ${tipo.toUpperCase()}`);
     }
 
     if (combustible.isLoading || tiposCombustible.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {

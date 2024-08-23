@@ -102,6 +102,7 @@ model Combustible {
   mes_id             Int
   anio_id            Int
   sede_id            Int
+  anio_mes           Int
 
   created_at DateTime
   updated_at DateTime
@@ -323,6 +324,7 @@ model Taxi {
   sede_id           Int
   mes_id            Int
   anio_id           Int
+  anio_mes          Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -341,6 +343,7 @@ model ConsumoAgua {
   area_id       Int?
   mes_id        Int
   anio_id       Int
+  anio_mes      Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

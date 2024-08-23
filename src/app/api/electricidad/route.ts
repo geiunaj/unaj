@@ -92,9 +92,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                     },
                 },
             },
-            orderBy: sort
-                ? [{[sort]: direction || 'desc'}]
-                : [{area: {sede_id: "desc"}}, {areaId: "asc"}, {anio_id: "desc"}, {mes_id: "desc"}],
+            orderBy: all
+                ? [{anio_mes: 'asc'}]
+                : sort
+                    ? [{[sort]: direction || 'desc'}]
+                    : [{area: {sede_id: "desc"}}, {areaId: "asc"}, {anio_id: "desc"}, {mes_id: "desc"}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
@@ -125,10 +127,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const anio = await prisma.anio.findFirst({
             where: {id: body.anio_id},
         });
-
-        if (!anio) {
-            return new NextResponse("Año no encontrado", {status: 404});
-        }
+        if (!anio) return new NextResponse("Año no encontrado", {status: 404});
 
         const electricidad = await prisma.consumoEnergia.create({
             data: {

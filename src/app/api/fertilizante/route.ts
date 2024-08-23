@@ -59,7 +59,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 sede: true,
                 tipoFertilizante: true,
             },
-            orderBy: sort ? [{[sort]: direction || 'desc'}] : [{tipoFertilizante_id: 'asc'}, {anio: {nombre: 'desc'}}],
+            orderBy: all
+                ? [{tipoFertilizante_id: 'asc'}, {anio: {nombre: 'asc'}}]
+                : sort
+                    ? [{[sort]: direction || 'desc'}]
+                    : [{tipoFertilizante_id: 'asc'}, {anio: {nombre: 'asc'}}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 

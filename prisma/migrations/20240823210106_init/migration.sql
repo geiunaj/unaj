@@ -84,6 +84,7 @@ CREATE TABLE `Combustible` (
     `mes_id` INTEGER NOT NULL,
     `anio_id` INTEGER NOT NULL,
     `sede_id` INTEGER NOT NULL,
+    `anio_mes` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL,
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -217,6 +218,7 @@ CREATE TABLE `consumoEnergia` (
     `consumo` FLOAT NOT NULL,
     `mes_id` INTEGER NOT NULL,
     `anio_id` INTEGER NOT NULL,
+    `anio_mes` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -278,6 +280,7 @@ CREATE TABLE `Taxi` (
     `sede_id` INTEGER NOT NULL,
     `mes_id` INTEGER NOT NULL,
     `anio_id` INTEGER NOT NULL,
+    `anio_mes` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -293,6 +296,7 @@ CREATE TABLE `ConsumoAgua` (
     `area_id` INTEGER NULL,
     `mes_id` INTEGER NOT NULL,
     `anio_id` INTEGER NOT NULL,
+    `anio_mes` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
