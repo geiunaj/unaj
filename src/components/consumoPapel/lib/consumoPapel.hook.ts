@@ -4,12 +4,28 @@ import {getConsumoPapel, getConsumoPapelById} from "@/components/consumoPapel/se
 import {getTiposPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 
-export const useConsumosPapel = (selectedSede: string, tipoPapelId: string, anio: string) => {
+interface getConsumoPapelInterface {
+    sedeId?: number;
+    anioId?: number;
+    sort?: string;
+    direction?: string;
+  
+    page?: number;
+  }
+
+export const useConsumosPapel = (
+    {
+        sedeId,
+        anioId,
+        sort,
+        direction,
+        page,
+    }: getConsumoPapelInterface) => {
     return useQuery({
         queryKey: ['consumoPapelQuery'],
-        queryFn: () => getConsumoPapel(selectedSede, tipoPapelId, anio),
+        queryFn: () => getConsumoPapel(sedeId, anioId, sort, direction, page),
         refetchOnWindowFocus: false,
-    })
+    });
 }
 
 export const useSedes = () => {

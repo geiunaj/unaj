@@ -70,6 +70,7 @@ export default function PapelPage() {
         selectedSede,
         selectedTipoPapel,
         selectedAnio
+        
     );
     const tiposPapelQuery = useTipoPapel();
     const aniosQuery = useAnios();
