@@ -18,9 +18,15 @@ import CustomPagination from "@/components/Pagination";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Button} from "@/components/ui/button";
 import ReportCalculatePopover, {ReportCalculateRequest} from "@/components/ReportCalculatePopover";
-import {useConsumoAguaCalculos} from "@/components/consumoAgua/lib/consumoAguaCalculos.hooks";
+import {
+    useConsumoAguaCalculos,
+    useConsumoAguaCalculosReport
+} from "@/components/consumoAgua/lib/consumoAguaCalculos.hooks";
 import {createCalculosConsumoAgua} from "@/components/consumoAgua/services/consumoAguaCalculos.actions";
 import {consumoAguaCalculosCollectionItem} from "@/components/consumoAgua/services/consumoAguaCalculos.interface";
+import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
+import GenerateReport from "@/lib/utils/generateReport";
+import {errorToast} from "@/lib/utils/core.function";
 
 export default function ConsumoAguaCalculate() {
     const {push} = useRouter();
@@ -60,12 +66,32 @@ export default function ConsumoAguaCalculate() {
         await consumoAguaCalculos.refetch();
     }, [consumoAguaCalculos]);
 
-    const handleClickReport = useCallback(async (data: ReportCalculateRequest) => {
-        await setFrom(data.from || "");
-        await setTo(data.to || "");
-        await setSelectedSede(data.sedeId || "");
-        await consumoAguaCalculos.refetch();
-    }, [consumoAguaCalculos]);
+    const consumoAguaCalculosReport = useConsumoAguaCalculosReport({
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
+        from,
+        to
+    });
+
+    const handleClickReport = async (period: ReportCalculateRequest) => {
+        try {
+            const columns = [
+                {header: "N°", key: "id", width: 10,},
+                {header: "CONSUMO DE AREA", key: "consumoArea", width: 25,},
+                {header: "FACTOR DE EMISIÓN", key: "factorEmision", width: 25,},
+                {header: "TOTAL GEI", key: "totalGEI", width: 20,},
+                {header: "AREA", key: "area", width: 20,},
+                {header: "SEDE", key: "sede", width: 10,},
+            ];
+            await setFrom(period.from ?? "");
+            await setTo(period.to ?? "");
+            await setSelectedSede(period.sedeId ?? "");
+            const data = await consumoAguaCalculosReport.refetch();
+            await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CALCULOS DE CONSUMO DE AGUA`);
+        } catch (error: any) {
+            errorToast(error.response.data);
+        }
+
+    }
 
     if (consumoAguaCalculos.isLoading) {
         return <SkeletonTable/>;
@@ -106,6 +132,7 @@ export default function ConsumoAguaCalculate() {
                             <PopoverContent className="w-80">
                                 <ReportCalculatePopover
                                     onClick={(data: ReportCalculateRequest) => handleCalculate(data)}
+                                    onClickExport={(data: ReportRequest) => handleClickReport(data)}
                                 />
                             </PopoverContent>
                         </Popover>

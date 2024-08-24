@@ -30,6 +30,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             },
         });
 
+        if (!period) {
+            return new NextResponse("Periodo no encontrado", {status: 404,});
+        }
+
         const whereOptions = {
             area: {
                 sede_id: sedeId ? Number(sedeId) : undefined,
@@ -98,8 +102,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         if (yearTo) yearToId = await getAnioId(yearTo);
         if (monthFrom) mesFromId = parseInt(monthFrom);
         if (monthTo) mesToId = parseInt(monthTo);
-
-        console.log("body", body);
 
         let period = await prisma.periodoCalculo.findFirst({
             where: {

@@ -11,7 +11,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import {FileSpreadsheet, FileText} from "lucide-react";
+import {FileSpreadsheet, FileText, FileUp} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {useQuery} from "@tanstack/react-query";
 import {getAnio} from "@/components/anio/services/anio.actions";
@@ -21,7 +21,7 @@ import {getSedes} from "@/components/sede/services/sede.actions";
 
 interface ReportCalculatePopoverProps {
     onClick: (data: ReportCalculateRequest) => void;
-    withMonth?: boolean;
+    onClickExport: (data: ReportCalculateRequest) => void;
 }
 
 export interface ReportCalculateRequest {
@@ -37,7 +37,7 @@ const Report = z.object({
 });
 
 
-export default function ReportCalculatePopover({onClick}: ReportCalculatePopoverProps) {
+export default function ReportCalculatePopover({onClick, onClickExport}: ReportCalculatePopoverProps) {
     const form = useForm<z.infer<typeof Report>>({
         resolver: zodResolver(Report),
         defaultValues: {
@@ -53,12 +53,6 @@ export default function ReportCalculatePopover({onClick}: ReportCalculatePopover
         refetchOnWindowFocus: false,
     });
 
-    const anios = useQuery({
-        queryKey: ['aniosRCP'],
-        queryFn: () => getAnio(),
-        refetchOnWindowFocus: false
-    });
-
     const onSubmit = async (data: z.infer<typeof Report>) => {
         const reportRequest: ReportCalculateRequest = {
             from: data.from,
@@ -68,7 +62,11 @@ export default function ReportCalculatePopover({onClick}: ReportCalculatePopover
         onClick(reportRequest);
     };
 
-    if (anios.isLoading || sedeQuery.isLoading) {
+    const handleExport = () => {
+        onClickExport(form.getValues());
+    }
+
+    if (sedeQuery.isLoading) {
         return <div>Loading...</div>;
     }
 
@@ -153,12 +151,14 @@ export default function ReportCalculatePopover({onClick}: ReportCalculatePopover
 
                         <div className="flex justify-end w-full gap-4">
                             <Button
-                                type="submit"
+                                type="button"
                                 size="sm"
                                 className="flex items-center gap-2"
+                                variant="secondary"
+                                onClick={handleExport}
                             >
-                                <FileText className="h-3.5 w-3.5"/>
-                                Exportar Calculos
+                                <FileUp className="h-3.5 w-3.5"/>
+                                Exportar
                             </Button>
                             <Button
                                 type="submit"
@@ -166,7 +166,7 @@ export default function ReportCalculatePopover({onClick}: ReportCalculatePopover
                                 className="flex items-center gap-2"
                             >
                                 <FileText className="h-3.5 w-3.5"/>
-                                Generar Calculos
+                                Generar
                             </Button>
                         </div>
                     </form>

@@ -39,6 +39,25 @@ export async function getConsumoAguaCalculos({
     return data;
 }
 
+export async function getConsumoAguaCalculosReport({
+                                                       sedeId,
+                                                       from,
+                                                       to,
+                                                       page,
+                                                   }: GetConsumoAguaProps)
+    : Promise<consumoAguaCalculosCollection> {
+    const config: AxiosRequestConfig = {
+        params: {
+            sedeId,
+            from,
+            to,
+        },
+    };
+    const {data} = await api.get<consumoAguaCalculosCollection>(
+        "/api/consumoAgua/calculate", config);
+    return data;
+}
+
 export async function createCalculosConsumoAgua({
                                                     sedeId,
                                                     from,
