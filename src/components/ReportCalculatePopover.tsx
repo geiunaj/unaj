@@ -166,7 +166,7 @@ export default function ReportCalculatePopover({onClick, onClickExport}: ReportC
                                 className="flex items-center gap-2"
                             >
                                 <FileText className="h-3.5 w-3.5"/>
-                                Generar
+                                Ver Calculos
                             </Button>
                         </div>
                     </form>

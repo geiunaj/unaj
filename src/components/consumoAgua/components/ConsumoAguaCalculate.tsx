@@ -26,7 +26,7 @@ import {createCalculosConsumoAgua} from "@/components/consumoAgua/services/consu
 import {consumoAguaCalculosCollectionItem} from "@/components/consumoAgua/services/consumoAguaCalculos.interface";
 import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
-import {errorToast} from "@/lib/utils/core.function";
+import {create} from "zustand";
 
 export default function ConsumoAguaCalculate() {
     const {push} = useRouter();
@@ -73,24 +73,24 @@ export default function ConsumoAguaCalculate() {
     });
 
     const handleClickReport = async (period: ReportCalculateRequest) => {
-        try {
-            const columns = [
-                {header: "N°", key: "id", width: 10,},
-                {header: "CONSUMO DE AREA", key: "consumoArea", width: 25,},
-                {header: "FACTOR DE EMISIÓN", key: "factorEmision", width: 25,},
-                {header: "TOTAL GEI", key: "totalGEI", width: 20,},
-                {header: "AREA", key: "area", width: 20,},
-                {header: "SEDE", key: "sede", width: 10,},
-            ];
-            await setFrom(period.from ?? "");
-            await setTo(period.to ?? "");
-            await setSelectedSede(period.sedeId ?? "");
-            const data = await consumoAguaCalculosReport.refetch();
-            await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CALCULOS DE CONSUMO DE AGUA`);
-        } catch (error: any) {
-            errorToast(error.response.data);
-        }
-
+        const columns = [
+            {header: "N°", key: "id", width: 10,},
+            {header: "CONSUMO DE AREA", key: "consumoArea", width: 25,},
+            {header: "FACTOR DE EMISIÓN", key: "factorEmision", width: 25,},
+            {header: "TOTAL GEI", key: "totalGEI", width: 20,},
+            {header: "AREA", key: "area", width: 20,},
+            {header: "SEDE", key: "sede", width: 10,},
+        ];
+        await setFrom(period.from ?? "");
+        await setTo(period.to ?? "");
+        await setSelectedSede(period.sedeId ?? "");
+        await createCalculosConsumoAgua({
+            sedeId: period.sedeId ? Number(period.sedeId) : undefined,
+            from: period.from ? period.from : undefined,
+            to: period.to ? period.to : undefined
+        });
+        const data = await consumoAguaCalculosReport.refetch();
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CALCULOS DE CONSUMO DE AGUA`);
     }
 
     if (consumoAguaCalculos.isLoading) {
