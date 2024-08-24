@@ -20,6 +20,7 @@ import {
 } from "@/components/consumoElectricidad/lib/electricidadCalculos.hooks";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {electricidadCalculosResource} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
+import {createCalculosElectricidad} from "@/components/consumoElectricidad/services/electricidadCalculos.actions";
 
 export default function ElectricidadCalculate() {
     const {push} = useRouter();
@@ -38,7 +39,7 @@ export default function ElectricidadCalculate() {
     // HOOKS
     const electricidadCalculos = useElectricidadCalculos({
         sedeId: parseInt(selectedSede),
-        anioId: parseInt(selectedAnio),
+        anio: parseInt(selectedAnio),
         page,
     });
 
@@ -56,8 +57,12 @@ export default function ElectricidadCalculate() {
     }, [electricidadCalculos]);
 
     const handleCalculate = useCallback(async () => {
-        await electricidadCalculos.refetch();
-    }, [electricidadCalculos]);
+        await createCalculosElectricidad(
+            parseInt(selectedSede),
+            parseInt(selectedAnio),
+        );
+        electricidadCalculos.refetch();
+    }, [selectedSede, selectedAnio, page, electricidadCalculos]);
 
     const handleCombustion = () => {
         push("/electricidad");

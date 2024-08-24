@@ -248,7 +248,6 @@ CREATE TABLE `energiaCalculos` (
     `emisionN2O` FLOAT NOT NULL,
     `totalGEI` FLOAT NOT NULL,
     `anioId` INTEGER NOT NULL,
-    `sedeId` INTEGER NOT NULL,
     `areaId` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -380,9 +379,6 @@ ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_factorId_fkey` FOR
 
 -- AddForeignKey
 ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_anioId_fkey` FOREIGN KEY (`anioId`) REFERENCES `Anio`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_sedeId_fkey` FOREIGN KEY (`sedeId`) REFERENCES `Sede`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `energiaCalculos` ADD CONSTRAINT `energiaCalculos_areaId_fkey` FOREIGN KEY (`areaId`) REFERENCES `area`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

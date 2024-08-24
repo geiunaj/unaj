@@ -16,13 +16,13 @@ interface Response {
 
 export async function getElectricidadCalculos(
     sedeId?: number,
-    anioId?: number,
+    anio?: number,
     page?: number
 ): Promise<electricidadCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
-            anioId,
+            anio,
             page,
         },
     };
@@ -31,6 +31,13 @@ export async function getElectricidadCalculos(
     return data;
 }
 
-export async function createCalculosElectricidad(electricidadCalculos: electricidadCalculosRequest): Promise<AxiosResponse<Response>> {
-    return await api.post("/api/electricidad/calculate", electricidadCalculos);
+export async function createCalculosElectricidad(
+    sedeId?: number,
+    anio?: number,
+): Promise<AxiosResponse<Response>> {
+    const body = {
+        sedeId,
+        anio,
+    };
+    return await api.post("/api/electricidad/calculate", body);
 }

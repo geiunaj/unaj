@@ -3,8 +3,12 @@ import prisma from "@/lib/prisma";
 import {
     CombustionCalcRequest,
 } from "@/components/combustion/services/combustionCalculate.interface";
-import {electricidadCalculosRequest} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
+import {
+    ElectricidadCalcRequest,
+    electricidadCalculosRequest
+} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
 import {formatElectricidadCalculo} from "@/lib/resources/electricidadCalculateResource";
+import {getAnioId} from "@/lib/utils";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
@@ -32,7 +36,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         if (!sedeId || !anioId) return NextResponse.json([{error: "Missing sedeId or anioId"}]);
 
         const whereOptions = {
-            sedeId: parseInt(sedeId),
+            area: {
+                sede_id: parseInt(sedeId),
+            },
             anioId: anioId,
         };
 
@@ -43,11 +49,17 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const electricidadCalculos = await prisma.energiaCalculos.findMany({
             where: {
-                sedeId: parseInt(sedeId),
+                area: {
+                    sede_id: parseInt(sedeId),
+                },
                 anioId: anioId,
             },
             include: {
-                sede: true,
+                area: {
+                    include: {
+                        sede: true
+                    }
+                },
                 anio: true,
                 factor: true,
             },
@@ -88,36 +100,30 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         const electricidadCalculos = [];
 
-        const body: CombustionCalcRequest = await req.json();
+        const body: ElectricidadCalcRequest = await req.json();
 
         const sedeId = body.sedeId;
-        let anioId = body.anioId;
-
-        const searchAnio = await prisma.anio.findFirst({
-            where: {
-                nombre: anioId.toString(),
-            },
-        });
-
-        if (!searchAnio) {
-            return NextResponse.json([{error: "Anio not found"}]);
-        } else {
-            anioId = searchAnio.id;
-        }
-
-        const areas = await prisma.area.findMany();
+        let anioId = await getAnioId(body.anio.toString());
+        if (!anioId) return NextResponse.json([{error: "Anio not found"}]);
+        const areas = await prisma.area.findMany(
+            {
+                where: {
+                    sede_id: sedeId,
+                },
+            }
+        );
 
         const electricidad = await prisma.consumoEnergia.findMany({
             where: {
-                sede_id: sedeId,
+                area: {sede_id: sedeId,},
                 anio_id: anioId,
             },
         });
 
         await prisma.energiaCalculos.deleteMany({
             where: {
+                area: {sede_id: sedeId,},
                 anioId: anioId,
-                sedeId: sedeId,
             },
         });
 
@@ -130,7 +136,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         if (!factorSEIN) return NextResponse.json([{error: "Factor SEIN not found"}]);
 
         const factorConversion: number = 277.7778;
-
 
         for (const area of areas) {
             const totalConsumo: number = electricidad.reduce((acc, electricidad) => {
@@ -158,7 +163,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 emisionN2O: totalEmisionN2O,
                 totalGEI: totalGEI,
                 anioId: anioId,
-                sedeId: sedeId,
             };
             const electridadCalculoCreate = await prisma.energiaCalculos.create({
                 data: {
@@ -172,13 +176,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     totalGEI: calculoElectricidad.totalGEI,
                     areaId: calculoElectricidad.areaId,
                     anioId: calculoElectricidad.anioId,
-                    sedeId: calculoElectricidad.sedeId,
 
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
                 include: {
-                    sede: true,
+                    area: {include: {sede: true,}},
                     anio: true,
                     factor: true
                 },

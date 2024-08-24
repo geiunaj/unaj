@@ -38,7 +38,12 @@ export interface electricidadCalculosRequest {
     emisionN2O: number;
     totalGEI: number;
     anioId: number;
+}
+
+export interface ElectricidadCalcRequest {
     sedeId: number;
+    anio: number;
+    page?: number;
 }
 
 interface Meta {

@@ -8,16 +8,16 @@ import {getElectricidadCalculos} from "@/components/consumoElectricidad/services
 
 interface getElectricidadCalculoInterface {
     sedeId?: number;
-    anioId?: number;
+    anio?: number;
 
     page?: number;
 }
 
 export const useElectricidadCalculos =
-    ({sedeId, anioId, page}: getElectricidadCalculoInterface) => {
+    ({sedeId, anio, page}: getElectricidadCalculoInterface) => {
         return useQuery({
             queryKey: ['electricidadCalculos'],
-            queryFn: () => getElectricidadCalculos(sedeId, anioId, page),
+            queryFn: () => getElectricidadCalculos(sedeId, anio, page),
             refetchOnWindowFocus: false,
         });
     }
