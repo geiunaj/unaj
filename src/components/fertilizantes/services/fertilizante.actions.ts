@@ -43,7 +43,6 @@ export async function getFertilizanteReport(
     yearTo?: string,
     sort?: string,
     direction?: string,
-    page?: number,
 ): Promise<fertilizanteCollection> {
     const config: AxiosRequestConfig = {
         params: {
@@ -54,7 +53,6 @@ export async function getFertilizanteReport(
             yearTo,
             sort,
             direction,
-            page,
             all: true,
         },
     };

@@ -7,13 +7,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import {useCallback, useState} from "react";
-import {Bean, Building, Calendar, FileSpreadsheet, LeafyGreen, Pen, Plus, Trash2} from "lucide-react";
+import {Bean, Building, LeafyGreen, Pen, Plus, Trash2} from "lucide-react";
 import {FormFertilizantes} from "./FormFertilizantes";
 import {
     Dialog,
@@ -25,7 +20,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {Badge} from "@/components/ui/badge";
-import {fertilizanteCollection, fertilizanteCollectionItem} from "../services/fertilizante.interface";
+import {fertilizanteCollectionItem} from "../services/fertilizante.interface";
 import SelectFilter from "@/components/SelectFilter";
 import {
     AlertDialog,
@@ -50,12 +45,9 @@ import {
 import {deleteFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
 import {UpdateFormFertilizantes} from "@/components/fertilizantes/components/UpdateFormFertilizante";
 import CustomPagination from "@/components/Pagination";
-import {errorToast, successToast} from "@/lib/utils/core.function";
-import {Label} from "@/components/ui/label";
-import {Input} from "@/components/ui/input";
-import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
+import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
+import {ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
-import {useQuery} from "@tanstack/react-query";
 import ReportComponent from "@/components/ReportComponent";
 
 
@@ -78,9 +70,6 @@ export default function FertilizantePage() {
     const [selectedClaseFertilizante, setSelectedClaseFertilizante] =
         useState<string>("Orgánico");
     const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [selectedAnio, setSelectedAnio] = useState<string>(
-        new Date().getFullYear().toString()
-    );
     const [yearFrom, setYearFrom] = useState<string>(new Date().getFullYear().toString());
     const [yearTo, setYearTo] = useState<string>(new Date().getFullYear().toString());
 
@@ -181,11 +170,10 @@ export default function FertilizantePage() {
             sedeId: parseInt(selectedSede),
             yearFrom: yearFrom,
             yearTo: yearTo,
-            page: page,
         }
     );
 
-    const handleClickReport = async (period: ReportRequest) => {
+    const handleClickReport = useCallback(async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10,},
             {header: "TIPO", key: "clase", width: 15,},
@@ -196,11 +184,9 @@ export default function FertilizantePage() {
             {header: "AÑO", key: "anio", width: 15,},
             {header: "SEDE", key: "sede", width: 20,}
         ];
-        await setYearFrom(period.yearFrom ?? "");
-        await setYearTo(period.yearTo ?? "");
         const data = await fertilizanteReport.refetch();
         await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE FERTILIZANTES");
-    }
+    }, [fertilizanteReport]);
 
     if (fertilizante.isLoading || claseFertilizante.isLoading || tipoFertilizante.isLoading
         || sedes.isLoading || anios.isLoading) {

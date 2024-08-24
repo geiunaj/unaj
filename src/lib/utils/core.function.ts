@@ -23,7 +23,11 @@ export const errorToast = (body: string = "Error", description: string = new Dat
 
 
 export const formatPeriod = (period: ReportRequest, withMonth = false) => {
-
+    period.from = period.from !== 'all' ? period.from : "";
+    period.to = period.to !== 'all' ? period.to : "";
+    period.yearFrom = period.yearFrom !== 'all' ? period.yearFrom : "";
+    period.yearTo = period.yearTo !== 'all' ? period.yearTo : "";
+    console.log(period);
     if (withMonth) {
         if (period.from && period.to) {
             return `Desde ${period.from} hasta ${period.to}`;

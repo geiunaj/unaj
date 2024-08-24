@@ -85,6 +85,20 @@ export default function ReportComponent({
         return <div>Loading...</div>;
     }
 
+    const handleChangeYearFrom = (value: string) => {
+        form.setValue('yearFrom', value);
+        if (handleYearFromChange) {
+            handleYearFromChange(value);
+        }
+    }
+
+    const handleChangeYearTo = (value: string) => {
+        form.setValue('yearTo', value);
+        if (handleYearToChange) {
+            handleYearToChange(value);
+        }
+    }
+
     return (
         <div className="flex items-center justify-center">
             <div className="flex items-center justify-center w-full">
@@ -142,7 +156,7 @@ export default function ReportComponent({
                                         render={({field}) => (
                                             <FormItem className="w-full">
                                                 <Select
-                                                    onValueChange={handleYearFromChange}
+                                                    onValueChange={handleChangeYearFrom}
                                                     defaultValue={field.value}
                                                 >
                                                     <FormControl className="w-full">
@@ -176,7 +190,7 @@ export default function ReportComponent({
                                         render={({field}) => (
                                             <FormItem className="w-full">
                                                 <Select
-                                                    onValueChange={handleYearToChange}
+                                                    onValueChange={handleChangeYearTo}
                                                     defaultValue={field.value}
                                                 >
                                                     <FormControl className="w-full">

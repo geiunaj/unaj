@@ -49,11 +49,10 @@ export const useFertilizanteReport =
          yearTo,
          sort,
          direction,
-         page,
      }: getFertilizanteInterface) => {
         return useQuery({
             queryKey: ['fertilizanteReport'],
-            queryFn: () => getFertilizanteReport(tipoFertilizanteId, claseFertilizante, sedeId, yearFrom, yearTo, sort, direction, page),
+            queryFn: () => getFertilizanteReport(tipoFertilizanteId, claseFertilizante, sedeId, yearFrom, yearTo, sort, direction),
             refetchOnWindowFocus: false,
         });
     }
