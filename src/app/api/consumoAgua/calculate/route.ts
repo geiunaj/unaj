@@ -127,6 +127,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         const whereOptionsConsumoAgua = {
             area: {sede_id: sedeId ? Number(sedeId) : undefined,},
+            fuenteAgua: "Red Publica",
         } as {
             area: {
                 sede_id?: number;
