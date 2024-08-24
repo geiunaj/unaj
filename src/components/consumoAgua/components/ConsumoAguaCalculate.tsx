@@ -1,5 +1,5 @@
 "use client";
-import {useState, useCallback} from "react";
+import React, {useState, useCallback} from "react";
 import {
     Table,
     TableBody,
@@ -8,63 +8,48 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import SelectFilter from "@/components/SelectFilter";
 import {Badge} from "@/components/ui/badge";
 import {useRouter} from "next/navigation";
 import ButtonCalculate from "@/components/ButtonCalculate";
 import ButtonBack from "@/components/ButtonBack";
-import {
-    useAnio,
-    useElectricidadCalculos,
-    useSede
-} from "@/components/consumoElectricidad/lib/electricidadCalculos.hooks";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {electricidadCalculosResource} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
-import {createCalculosElectricidad} from "@/components/consumoElectricidad/services/electricidadCalculos.actions";
-import {Building, Calendar} from "lucide-react";
+import {FileSpreadsheet} from "lucide-react";
 import CustomPagination from "@/components/Pagination";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {Button} from "@/components/ui/button";
+import ReportCalculatePopover, {ReportCalculateRequest} from "@/components/ReportCalculatePopover";
+import {useConsumoAguaCalculos} from "@/components/consumoAgua/lib/consumoAguaCalculos.hooks";
+import {createCalculosConsumoAgua} from "@/components/consumoAgua/services/consumoAguaCalculos.actions";
+import {consumoAguaCalculosCollectionItem} from "@/components/consumoAgua/services/consumoAguaCalculos.interface";
 
 export default function ConsumoAguaCalculate() {
     const {push} = useRouter();
 
     // SELECTS - FILTERS
-    const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [selectedAnio, setSelectedAnio] = useState<string>(
-        new Date().getFullYear().toString()
-    );
-    const [selectedArea, setsSelectedArea] = useState<string>("1");
+    const [selectedSede, setSelectedSede] = useState<string>("");
     const [page, setPage] = useState<number>(1);
-
-    const sedes = useSede();
-    const anios = useAnio();
+    const [from, setFrom] = useState<string>("");
+    const [to, setTo] = useState<string>("");
 
     // HOOKS
-    const electricidadCalculos = useElectricidadCalculos({
+    const consumoAguaCalculos = useConsumoAguaCalculos({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
-        anio: selectedAnio ? Number(selectedAnio) : undefined,
-        page,
+        from: from ? from : undefined,
+        to: to ? to : undefined,
+        page: page,
     });
 
-    // HANDLES
-    const handleSedeChange = useCallback(async (value: string) => {
-        await setPage(1);
-        await setSelectedSede(value);
-        await electricidadCalculos.refetch();
-    }, [electricidadCalculos]);
-
-    const handleAnioChange = useCallback(async (value: string) => {
-        await setPage(1);
-        await setSelectedAnio(value);
-        await electricidadCalculos.refetch();
-    }, [electricidadCalculos]);
-
-    const handleCalculate = useCallback(async () => {
-        await createCalculosElectricidad({
+    const handleCalculate = useCallback(async (data: ReportCalculateRequest) => {
+        await setFrom(data.from || "");
+        await setTo(data.to || "");
+        await setSelectedSede(data.sedeId || "");
+        await createCalculosConsumoAgua({
             sedeId: selectedSede ? Number(selectedSede) : undefined,
-            anio: selectedAnio ? Number(selectedAnio) : undefined,
+            from: from ? from : undefined,
+            to: to ? to : undefined
         });
-        electricidadCalculos.refetch();
-    }, [selectedSede, selectedAnio, page, electricidadCalculos]);
+        await consumoAguaCalculos.refetch();
+    }, [selectedSede, from, to, consumoAguaCalculos]);
 
     const handleCombustion = () => {
         push("/electricidad");
@@ -72,14 +57,21 @@ export default function ConsumoAguaCalculate() {
 
     const handlePageChange = useCallback(async (page: number) => {
         await setPage(page);
-        await electricidadCalculos.refetch();
-    }, [electricidadCalculos]);
+        await consumoAguaCalculos.refetch();
+    }, [consumoAguaCalculos]);
 
-    if (electricidadCalculos.isLoading || sedes.isLoading || anios.isLoading) {
+    const handleClickReport = useCallback(async (data: ReportCalculateRequest) => {
+        await setFrom(data.from || "");
+        await setTo(data.to || "");
+        await setSelectedSede(data.sedeId || "");
+        await consumoAguaCalculos.refetch();
+    }, [consumoAguaCalculos]);
+
+    if (consumoAguaCalculos.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (electricidadCalculos.isError || sedes.isError || anios.isError) {
+    if (consumoAguaCalculos.isError) {
         return <div>Error</div>;
     }
 
@@ -101,33 +93,23 @@ export default function ConsumoAguaCalculate() {
                     <div
                         className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
 
-                        <SelectFilter
-                            list={sedes.data!}
-                            itemSelected={selectedSede}
-                            handleItemSelect={handleSedeChange}
-                            value={"id"}
-                            nombre={"name"}
-                            id={"id"}
-                            all={true}
-                            icon={<Building className="h-3 w-3"/>}
-                        />
-
-                        <SelectFilter
-                            list={anios.data!}
-                            itemSelected={selectedAnio}
-                            handleItemSelect={handleAnioChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            icon={<Calendar className="h-3 w-3"/>}
-                        />
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    size="sm"
+                                    className="h-7 gap-1"
+                                >
+                                    <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                    Calcular
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                                <ReportCalculatePopover
+                                    onClick={(data: ReportCalculateRequest) => handleCalculate(data)}
+                                />
+                            </PopoverContent>
+                        </Popover>
                     </div>
-
-                    <ButtonCalculate
-                        onClick={handleCalculate}
-                        variant="default"
-                        text="Calcular"
-                    />
                 </div>
             </div>
 
@@ -142,13 +124,7 @@ export default function ConsumoAguaCalculate() {
                                 CONSUMO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                EMISIONES DE CO2
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                EMISIONES DE CH4
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                EMISIONES DE N2O
+                                FACTOR DE EMISIÓN
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 TOTAL EMISIONES GEI
@@ -156,39 +132,22 @@ export default function ConsumoAguaCalculate() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {electricidadCalculos.data!.data.map(
-                            (electricidadCalculosResource: electricidadCalculosResource) => (
-                                <TableRow className="text-center" key={electricidadCalculosResource.id}>
+                        {consumoAguaCalculos.data!.data.map(
+                            (consumoAguaCalculosItem: consumoAguaCalculosCollectionItem) => (
+                                <TableRow className="text-center" key={consumoAguaCalculosItem.id}>
                                     <TableCell className="text-xs sm:text-sm text-start">
-                                        {electricidadCalculosResource.area}
+                                        {consumoAguaCalculosItem.area}
                                     </TableCell>
-                                    {/*<TableCell>*/}
-                                    {/*    {combustionCalculate.unidad}*/}
-                                    {/*</TableCell>*/}
-                                    {/*<TableCell>*/}
-                                    {/*    {combustionCalculate.cantidad}*/}
-                                    {/*</TableCell>*/}
-                                    {/*<TableCell>*/}
-                                    {/*    {combustionCalculate.valorCalorico}*/}
-                                    {/*</TableCell>*/}
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">
-                                            {electricidadCalculosResource.consumoTotal}
+                                            {consumoAguaCalculosItem.consumoArea}
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {electricidadCalculosResource.emisionCO2}
+                                        {consumoAguaCalculosItem.factorEmision}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {electricidadCalculosResource.emisionCH4}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {electricidadCalculosResource.emisionN2O}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default">
-                                            {electricidadCalculosResource.totalGEI}
-                                        </Badge>
+                                        {consumoAguaCalculosItem.totalGEI}
                                     </TableCell>
                                 </TableRow>
                             )
@@ -196,8 +155,8 @@ export default function ConsumoAguaCalculate() {
                     </TableBody>
                 </Table>
                 {
-                    electricidadCalculos.data!.meta.totalPages > 1 && (
-                        <CustomPagination meta={electricidadCalculos.data!.meta} onPageChange={handlePageChange}/>
+                    consumoAguaCalculos.data!.meta.totalPages > 1 && (
+                        <CustomPagination meta={consumoAguaCalculos.data!.meta} onPageChange={handlePageChange}/>
                     )
                 }
             </div>
