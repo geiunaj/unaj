@@ -13,7 +13,8 @@ import {
     MapPinned,
     Droplets,
     CarTaxiFront,
-    UserRound 
+    UserRound,
+    Gauge 
     
 } from "lucide-react";
 
@@ -39,7 +40,8 @@ export const iconComponents: Record<string, any> = {
     MapPinned,
     Droplets,
     CarTaxiFront,
-    UserRound
+    UserRound,
+    Gauge
 };
 
 export const menu: MenuItem[] = [
@@ -107,6 +109,11 @@ export const menu: MenuItem[] = [
                 title: "Area",
                 icon: "MapPinned",
                 href: "/area",
+            },
+            {
+                title: "GPW",
+                icon: "Gauge",
+                href: "/gpw",
             },
             {
                 title: "Usuarios",

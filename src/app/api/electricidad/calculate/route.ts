@@ -109,7 +109,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         const electricidad = await prisma.consumoEnergia.findMany({
             where: {
-                sede_id: sedeId,
+                // sede_id: sedeId,
                 anio_id: anioId,
             },
         });

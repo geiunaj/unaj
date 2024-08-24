@@ -1,10 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
-import {formatElectricidad} from "@/lib/resources/electricidadResource";
-import {
-    electricidadCollection,
-    electricidadRequest,
-} from "@/components/consumoElectricidad/services/electricidad.interface";
 import {formatConsumoAgua} from "@/lib/resources/consumoAgua.Resource";
 import {
     consumoAguaCollection,
