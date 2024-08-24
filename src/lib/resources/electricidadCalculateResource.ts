@@ -21,7 +21,7 @@ export function formatElectricidadCalculo(combustibleCalculo: any) {
         ...rest,
         area: area.nombre,
         anio: anio.nombre,
-        sede: sede.name,
+        sede: area.sede.name,
         factorCOS: factor.factorCO2,
         factorCH4: factor.factorCH4,
         factorN2O: factor.factorN2O

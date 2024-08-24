@@ -1,9 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {
-    CombustionCalcRequest,
-} from "@/components/combustion/services/combustionCalculate.interface";
-import {
     ElectricidadCalcRequest,
     electricidadCalculosRequest
 } from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
@@ -33,11 +30,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             if (!searchAnio) return NextResponse.json([{error: "Anio not found"}]);
             anioId = searchAnio.id;
         }
-        if (!sedeId || !anioId) return NextResponse.json([{error: "Missing sedeId or anioId"}]);
 
         const whereOptions = {
             area: {
-                sede_id: parseInt(sedeId),
+                sede_id: sedeId ? Number(sedeId) : undefined,
             },
             anioId: anioId,
         };
@@ -50,7 +46,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const electricidadCalculos = await prisma.energiaCalculos.findMany({
             where: {
                 area: {
-                    sede_id: parseInt(sedeId),
+                    sede_id: sedeId ? Number(sedeId) : undefined,
                 },
                 anioId: anioId,
             },

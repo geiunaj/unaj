@@ -21,6 +21,8 @@ import {
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {electricidadCalculosResource} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
 import {createCalculosElectricidad} from "@/components/consumoElectricidad/services/electricidadCalculos.actions";
+import {Building, Calendar} from "lucide-react";
+import CustomPagination from "@/components/Pagination";
 
 export default function ElectricidadCalculate() {
     const {push} = useRouter();
@@ -38,8 +40,8 @@ export default function ElectricidadCalculate() {
 
     // HOOKS
     const electricidadCalculos = useElectricidadCalculos({
-        sedeId: parseInt(selectedSede),
-        anio: parseInt(selectedAnio),
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
+        anio: selectedAnio ? Number(selectedAnio) : undefined,
         page,
     });
 
@@ -57,16 +59,21 @@ export default function ElectricidadCalculate() {
     }, [electricidadCalculos]);
 
     const handleCalculate = useCallback(async () => {
-        await createCalculosElectricidad(
-            parseInt(selectedSede),
-            parseInt(selectedAnio),
-        );
+        await createCalculosElectricidad({
+            sedeId: selectedSede ? Number(selectedSede) : undefined,
+            anio: selectedAnio ? Number(selectedAnio) : undefined,
+        });
         electricidadCalculos.refetch();
     }, [selectedSede, selectedAnio, page, electricidadCalculos]);
 
     const handleCombustion = () => {
         push("/electricidad");
     };
+
+    const handlePageChange = useCallback(async (page: number) => {
+        await setPage(page);
+        await electricidadCalculos.refetch();
+    }, [electricidadCalculos]);
 
     if (electricidadCalculos.isLoading || sedes.isLoading || anios.isLoading) {
         return <SkeletonTable/>;
@@ -101,6 +108,8 @@ export default function ElectricidadCalculate() {
                             value={"id"}
                             nombre={"name"}
                             id={"id"}
+                            all={true}
+                            icon={<Building className="h-3 w-3"/>}
                         />
 
                         <SelectFilter
@@ -110,6 +119,7 @@ export default function ElectricidadCalculate() {
                             value={"nombre"}
                             nombre={"nombre"}
                             id={"id"}
+                            icon={<Calendar className="h-3 w-3"/>}
                         />
                     </div>
 
@@ -185,6 +195,11 @@ export default function ElectricidadCalculate() {
                         )}
                     </TableBody>
                 </Table>
+                {
+                    electricidadCalculos.data!.meta.totalPages > 1 && (
+                        <CustomPagination meta={electricidadCalculos.data!.meta} onPageChange={handlePageChange}/>
+                    )
+                }
             </div>
         </div>
     );

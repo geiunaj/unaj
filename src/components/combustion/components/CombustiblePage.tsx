@@ -154,7 +154,7 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         push(`/combustion-${tipo}/calculos`);
     };
 
-    const handlePageChage = async (page: number) => {
+    const handlePageChange = async (page: number) => {
         await setPage(page);
         await combustible.refetch();
     }
@@ -393,7 +393,7 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
                 </Table>
                 {
                     combustible.data!.meta.totalPages > 1 && (
-                        <CustomPagination meta={combustible.data!.meta} onPageChange={handlePageChage}/>
+                        <CustomPagination meta={combustible.data!.meta} onPageChange={handlePageChange}/>
                     )
                 }
             </div>
