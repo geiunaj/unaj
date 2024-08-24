@@ -23,11 +23,11 @@ export const useConsumoAguaCalculos =
     }
 
 export const useConsumoAguaCalculosReport =
-    ({sedeId, from, to, page}: getElectricidadCalculoInterface) => {
+    ({sedeId, from, to}: getElectricidadCalculoInterface) => {
         return useQuery({
             queryKey: ['consumoAguaCalculosReport'],
             queryFn: () => getConsumoAguaCalculosReport({
-                sedeId, from, to, page,
+                sedeId, from, to,
             }),
             refetchOnWindowFocus: false,
         });

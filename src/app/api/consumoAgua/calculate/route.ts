@@ -1,10 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
-import {
-    ElectricidadCalcRequest,
-    electricidadCalculosRequest
-} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
-import {formatElectricidadCalculo} from "@/lib/resources/electricidadCalculateResource";
 import {getAnioId} from "@/lib/utils";
 import {
     consumoAguaCalcRequest,
@@ -22,6 +17,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const dateFrom = searchParams.get("from") ?? undefined;
         const dateTo = searchParams.get("to") ?? undefined;
+        const all = searchParams.get("all") === "true";
 
         const period = await prisma.periodoCalculo.findFirst({
             where: {
@@ -56,7 +52,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 },
             },
             orderBy: [{area: {nombre: "asc"}}],
-            skip: (page - 1) * perPage, take: perPage,
+            ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
         const formattedConsumoAguaCalculos: any[] = consumoAguaCalculos

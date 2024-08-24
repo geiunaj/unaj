@@ -12,6 +12,7 @@ interface GetConsumoAguaProps {
     from?: string,
     to?: string,
     page?: number
+    all?: boolean
 }
 
 interface CreateCalculosConsumoAguaProps {
@@ -32,6 +33,7 @@ export async function getConsumoAguaCalculos({
             sedeId,
             from,
             to,
+            page
         },
     };
     const {data} = await api.get<consumoAguaCalculosCollection>(
@@ -43,7 +45,7 @@ export async function getConsumoAguaCalculosReport({
                                                        sedeId,
                                                        from,
                                                        to,
-                                                       page,
+                                                       all = true,
                                                    }: GetConsumoAguaProps)
     : Promise<consumoAguaCalculosCollection> {
     const config: AxiosRequestConfig = {
@@ -51,6 +53,7 @@ export async function getConsumoAguaCalculosReport({
             sedeId,
             from,
             to,
+            all
         },
     };
     const {data} = await api.get<consumoAguaCalculosCollection>(

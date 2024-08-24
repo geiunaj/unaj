@@ -52,7 +52,7 @@ export default function ConsumoAguaCalculate() {
         await createCalculosConsumoAgua({
             sedeId: selectedSede ? Number(selectedSede) : undefined,
             from: from ? from : undefined,
-            to: to ? to : undefined
+            to: to ? to : undefined,
         });
         await consumoAguaCalculos.refetch();
     }, [selectedSede, from, to, consumoAguaCalculos]);
@@ -162,11 +162,11 @@ export default function ConsumoAguaCalculate() {
                         {consumoAguaCalculos.data!.data.map(
                             (consumoAguaCalculosItem: consumoAguaCalculosCollectionItem) => (
                                 <TableRow className="text-center" key={consumoAguaCalculosItem.id}>
-                                    <TableCell className="text-xs sm:text-sm text-start">
+                                    <TableCell className="text-xs sm:text-sm">
                                         {consumoAguaCalculosItem.area}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary">
+                                        <Badge variant="default">
                                             {consumoAguaCalculosItem.consumoArea}
                                         </Badge>
                                     </TableCell>
