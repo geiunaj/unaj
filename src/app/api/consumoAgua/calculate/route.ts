@@ -26,7 +26,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             },
         });
 
-        if (!period) {
+        if (!period && all) {
             return new NextResponse("Periodo no encontrado", {status: 404,});
         }
 

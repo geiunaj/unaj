@@ -162,7 +162,7 @@ export default function ReportPopover({
                                                 >
                                                     <FormControl className="w-full col-span-3">
                                                         <SelectTrigger>
-                                                            <SelectValue placeholder="Seleciona la clase"/>
+                                                            <SelectValue placeholder="Seleciona el año"/>
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <FormMessage/>
@@ -193,7 +193,7 @@ export default function ReportPopover({
                                                 >
                                                     <FormControl className="w-full col-span-3">
                                                         <SelectTrigger>
-                                                            <SelectValue placeholder="Seleciona la clase"/>
+                                                            <SelectValue placeholder="Seleciona el año"/>
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <FormMessage/>
@@ -225,7 +225,7 @@ export default function ReportPopover({
                         {/*</div>*/}
 
                         <div className="flex justify-end w-full gap-4">
-                            <Button
+                            {/* <Button
                                 variant="secondary"
                                 type="submit"
                                 size="sm"
@@ -233,7 +233,7 @@ export default function ReportPopover({
                             >
                                 <FileText className="h-3.5 w-3.5"/>
                                 PDF
-                            </Button>
+                            </Button> */}
                             <Button
                                 type="submit"
                                 size="sm"

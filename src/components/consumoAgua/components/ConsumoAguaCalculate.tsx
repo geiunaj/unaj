@@ -108,7 +108,7 @@ export default function ConsumoAguaCalculate() {
                     <ButtonBack onClick={handleCombustion}/>
                     <div className="font-Manrope">
                         <h1 className="text-base text-gray-800 font-bold">
-                            Cálculo de emisiones de CO2 por combustión
+                            Cálculo de Consumo de Agua Potable 
                         </h1>
                         <h2 className="text-xs sm:text-sm text-gray-500">
                             Huella de carbono
