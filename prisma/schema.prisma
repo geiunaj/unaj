@@ -273,9 +273,10 @@ model area {
 
   sede Sede? @relation(fields: [sede_id], references: [id])
 
-  consumoEnergia  consumoEnergia[]
-  energiaCalculos energiaCalculos[]
-  ConsumoAgua     ConsumoAgua[]
+  consumoEnergia      consumoEnergia[]
+  energiaCalculos     energiaCalculos[]
+  ConsumoAgua         ConsumoAgua[]
+  ConsumoAguaCalculos ConsumoAguaCalculos[]
 }
 
 model energiaCalculos {
@@ -348,4 +349,28 @@ model ConsumoAgua {
   anio Anio  @relation(fields: [anio_id], references: [id])
   mes  Mes   @relation(fields: [mes_id], references: [id])
   area area? @relation(fields: [area_id], references: [id])
+}
+
+model ConsumoAguaCalculos {
+  id               Int   @id @default(autoincrement())
+  consumoArea      Float @db.Float
+  factorEmision    Float @db.Float
+  totalGEI         Float @db.Float
+  areaId           Int
+  periodoCalculoId Int?  @db.Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  area           area?           @relation(fields: [areaId], references: [id])
+  PeriodoCalculo PeriodoCalculo? @relation(fields: [periodoCalculoId], references: [id])
+}
+
+model PeriodoCalculo {
+  id                  Int                   @id @default(autoincrement())
+  fechaInicio         String?
+  fechaFin            String?
+  created_at          DateTime              @default(now())
+  updated_at          DateTime              @updatedAt
+  ConsumoAguaCalculos ConsumoAguaCalculos[]
 }

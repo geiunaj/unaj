@@ -44,12 +44,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const totalPages = Math.ceil(totalRecords / perPage);
 
         const electricidadCalculos = await prisma.energiaCalculos.findMany({
-            where: {
-                area: {
-                    sede_id: sedeId ? Number(sedeId) : undefined,
-                },
-                anioId: anioId,
-            },
+            where: whereOptions,
             include: {
                 area: {
                     include: {
