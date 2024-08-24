@@ -10,19 +10,21 @@ export async function getFertilizante(
     tipoFertilizanteId?: number,
     claseFertilizante?: string,
     sedeId?: number,
-    anio?: string,
+    yearFrom?: string,
+    yearTo?: string,
     sort?: string,
     direction?: string,
     page?: number,
 ): Promise<fertilizanteCollection> {
     const config: AxiosRequestConfig = {
         params: {
-            sedeId,
-            sort,
-            direction,
-            anio,
             tipoFertilizanteId,
             claseFertilizante,
+            sedeId,
+            yearFrom,
+            yearTo,
+            sort,
+            direction,
             page,
         },
     };
@@ -37,26 +39,23 @@ export async function getFertilizanteReport(
     tipoFertilizanteId?: number,
     claseFertilizante?: string,
     sedeId?: number,
-    anio?: string,
+    yearFrom?: string,
+    yearTo?: string,
     sort?: string,
     direction?: string,
     page?: number,
-    yearFrom?: string,
-    yearTo?: string,
-    all = true
 ): Promise<fertilizanteCollection> {
     const config: AxiosRequestConfig = {
         params: {
-            sedeId,
-            sort,
-            direction,
-            anio,
             tipoFertilizanteId,
             claseFertilizante,
-            page,
+            sedeId,
             yearFrom,
             yearTo,
-            all,
+            sort,
+            direction,
+            page,
+            all: true,
         },
     };
     const {data} = await api.get<fertilizanteCollection>(

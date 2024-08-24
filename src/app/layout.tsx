@@ -21,7 +21,7 @@ export default function RootLayout({
         <ReactQueryClientProvider>
             <SessionWrapper>
                 <html lang="en">
-                <body className={`${inter.className}`}>
+                <body className={`${inter.className} dark`}>
                 {children}
                 <Toaster/>
                 </body>

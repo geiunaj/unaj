@@ -56,6 +56,7 @@ import {Input} from "@/components/ui/input";
 import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import {useQuery} from "@tanstack/react-query";
+import ReportComponent from "@/components/ReportComponent";
 
 
 export default function FertilizantePage() {
@@ -80,6 +81,8 @@ export default function FertilizantePage() {
     const [selectedAnio, setSelectedAnio] = useState<string>(
         new Date().getFullYear().toString()
     );
+    const [yearFrom, setYearFrom] = useState<string>(new Date().getFullYear().toString());
+    const [yearTo, setYearTo] = useState<string>(new Date().getFullYear().toString());
 
     // HOOKS
     const fertilizante = useFertilizante(
@@ -87,7 +90,8 @@ export default function FertilizantePage() {
             tipoFertilizanteId: selectedTipoFertilizanteId ? parseInt(selectedTipoFertilizanteId) : undefined,
             claseFertilizante: selectedClaseFertilizante,
             sedeId: parseInt(selectedSede),
-            anio: selectedAnio,
+            yearFrom: yearFrom,
+            yearTo: yearTo,
             page: page,
         }
     );
@@ -122,9 +126,15 @@ export default function FertilizantePage() {
         await fertilizante.refetch();
     }, [fertilizante]);
 
-    const handleAnioChange = useCallback(async (value: string) => {
+    const handleYearFromChange = useCallback(async (value: string) => {
         await setPage(1);
-        await setSelectedAnio(value);
+        await setYearFrom(value);
+        await fertilizante.refetch();
+    }, [fertilizante]);
+
+    const handleYearToChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setYearTo(value);
         await fertilizante.refetch();
     }, [fertilizante]);
 
@@ -164,18 +174,14 @@ export default function FertilizantePage() {
         await fertilizante.refetch();
     }
 
-    const [yearFrom, setYearFrom] = useState<string>("");
-    const [yearTo, setYearTo] = useState<string>("");
-
     const fertilizanteReport = useFertilizanteReport(
         {
             tipoFertilizanteId: selectedTipoFertilizanteId ? parseInt(selectedTipoFertilizanteId) : undefined,
             claseFertilizante: selectedClaseFertilizante,
             sedeId: parseInt(selectedSede),
-            anio: selectedAnio,
-            page: page,
             yearFrom: yearFrom,
             yearTo: yearTo,
+            page: page,
         }
     );
 
@@ -190,7 +196,6 @@ export default function FertilizantePage() {
             {header: "AÑO", key: "anio", width: 15,},
             {header: "SEDE", key: "sede", width: 20,}
         ];
-        console.log(period);
         await setYearFrom(period.yearFrom ?? "");
         await setYearTo(period.yearTo ?? "");
         const data = await fertilizanteReport.refetch();
@@ -248,37 +253,16 @@ export default function FertilizantePage() {
                             icon={<Building className="h-3 w-3"/>}
                         />
 
-                        <SelectFilter
-                            list={anios.data!}
-                            itemSelected={selectedAnio}
-                            handleItemSelect={handleAnioChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            icon={<Calendar className="h-3 w-3"/>}
-                            all={true}
+                        <ReportComponent
+                            onClick={(data: ReportRequest) => handleClickReport(data)}
+                            yearFrom={yearFrom}
+                            yearTo={yearTo}
+                            handleYearFromChange={handleYearFromChange}
+                            handleYearToChange={handleYearToChange}
                         />
+
                     </div>
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
-
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    size="sm"
-                                    className="h-7 gap-1"
-                                    variant="outline"
-                                >
-                                    <FileSpreadsheet className="h-3.5 w-3.5"/>
-                                    Reporte
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-80">
-                                <ReportPopover
-                                    onClick={(data: ReportRequest) => handleClickReport(data)}
-                                />
-                            </PopoverContent>
-                        </Popover>
-
                         <ButtonCalculate onClick={handleCalculate}/>
 
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

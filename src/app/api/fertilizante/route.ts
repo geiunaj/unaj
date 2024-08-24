@@ -1,11 +1,10 @@
 import {NextRequest, NextResponse} from "next/server";
-import prisma from "@/lib/prisma"; // Asegúrate de que la ruta sea correcta
+import prisma from "@/lib/prisma";
 import {formaFertilizante} from "@/lib/resources/fertilizanteResource";
 import {Fertilizante} from "@prisma/client";
 import {FertilizanteRequest} from "@/components/fertilizantes/services/fertilizante.interface";
 import {getAnioId} from "@/lib/utils";
 
-// GET ROUTE -> SIN PARAMETROS
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
@@ -13,27 +12,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const tipoFertilizanteId = searchParams.get("tipoFertilizanteId") ?? undefined;
         const claseFertilizante = searchParams.get("claseFertilizante") ?? undefined;
         const sedeId = searchParams.get("sedeId") ?? undefined;
-        const anio = searchParams.get("anio") ?? undefined;
         const sort = searchParams.get("sort") ?? undefined;
         const direction = searchParams.get("direction") ?? "desc";
-
         const page = parseInt(searchParams.get("page") ?? "1");
         const perPage = parseInt(searchParams.get("perPage") ?? "10");
+
         const all = searchParams.get("all") === "true";
         const yearFrom = searchParams.get("yearFrom") ?? undefined;
         const yearTo = searchParams.get("yearTo") ?? undefined;
 
-        let anioId: number | undefined;
         let yearFromId: number | undefined;
         let yearToId: number | undefined;
 
-        if (anio) anioId = await getAnioId(anio);
         if (yearFrom) yearFromId = await getAnioId(yearFrom);
         if (yearTo) yearToId = await getAnioId(yearTo);
 
         const whereOptions = {
             sede_id: sedeId ? parseInt(sedeId) : undefined,
-            anio_id: anioId,
             tipoFertilizante_id: tipoFertilizanteId
                 ? parseInt(tipoFertilizanteId)
                 : undefined,
