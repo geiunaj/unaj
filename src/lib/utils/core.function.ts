@@ -21,7 +21,6 @@ export const errorToast = (body: string = "Error", description: string = new Dat
     });
 }
 
-
 export const formatPeriod = (period: ReportRequest, withMonth = false) => {
     period.from = period.from !== 'all' ? period.from : "";
     period.to = period.to !== 'all' ? period.to : "";

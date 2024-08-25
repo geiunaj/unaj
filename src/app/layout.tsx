@@ -1,9 +1,9 @@
 import type {Metadata} from "next";
 import {Inter} from "next/font/google";
 import "./globals.css";
-import SessionWrapper from "@/components/SessionWrapper/SessionWrapper";
 import {ReactQueryClientProvider} from "@/components/Provider";
 import {Toaster} from "@/components/ui/sonner";
+import {SessionWrapper} from "@/components/SessionWrapper/SessionWrapper";
 
 const inter = Inter({subsets: ["latin"]});
 

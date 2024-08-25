@@ -11,18 +11,18 @@ interface Response {
 export async function getConsumoAgua(
     sedeId?: number,
     areaId?: number,
-    anioId?: number,
-    mesId?: number,
+    from?: string,
+    to?: string,
     sort?: string,
     direction?: string,
-    page?: number
+    page?: number,
 ): Promise<consumoAguaCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
             areaId,
-            anioId,
-            mesId,
+            from,
+            to,
             sort,
             direction,
             page,
@@ -38,26 +38,22 @@ export async function getConsumoAgua(
 export async function getConsumoAguaReport(
     sedeId?: number,
     areaId?: number,
-    anioId?: number,
-    mesId?: number,
+    from?: string,
+    to?: string,
     sort?: string,
     direction?: string,
     page?: number,
-    from?: string,
-    to?: string,
     all = true
 ): Promise<consumoAguaCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
             areaId,
-            anioId,
-            mesId,
+            from,
+            to,
             sort,
             direction,
             page,
-            from,
-            to,
             all,
         },
     };

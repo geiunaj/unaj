@@ -200,78 +200,79 @@ export default function FertilizantePage() {
 
     return (
         <div className="w-full max-w-[1150px] h-full ">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="font-Manrope">
                     <h1 className="text-base text-foreground font-bold">Fertilizantes</h1>
                     <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
                 </div>
-                <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
-                    <div
-                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
-                        <SelectFilter
-                            list={claseFertilizante.data!}
-                            itemSelected={selectedClaseFertilizante}
-                            handleItemSelect={handleClaseFertilizanteChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"nombre"}
-                            icon={<LeafyGreen className="h-3 w-3"/>}
-                        />
+                <div className="flex flex-col items-end gap-2">
+                    <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+                        <div
+                            className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
+                            <SelectFilter
+                                list={claseFertilizante.data!}
+                                itemSelected={selectedClaseFertilizante}
+                                handleItemSelect={handleClaseFertilizanteChange}
+                                value={"nombre"}
+                                nombre={"nombre"}
+                                id={"nombre"}
+                                icon={<LeafyGreen className="h-3 w-3"/>}
+                            />
 
-                        <SelectFilter
-                            list={tipoFertilizante.data!}
-                            itemSelected={selectedTipoFertilizanteId}
-                            handleItemSelect={handleTipoFertilizanteChange}
-                            value={"id"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            all={true}
-                            icon={<Bean className="h-3 w-3"/>}
-                        />
+                            <SelectFilter
+                                list={tipoFertilizante.data!}
+                                itemSelected={selectedTipoFertilizanteId}
+                                handleItemSelect={handleTipoFertilizanteChange}
+                                value={"id"}
+                                nombre={"nombre"}
+                                id={"id"}
+                                all={true}
+                                icon={<Bean className="h-3 w-3"/>}
+                            />
 
-                        <SelectFilter
-                            list={sedes.data!}
-                            itemSelected={selectedSede}
-                            handleItemSelect={handleSedeChange}
-                            value={"id"}
-                            nombre={"name"}
-                            id={"id"}
-                            icon={<Building className="h-3 w-3"/>}
-                        />
+                            <SelectFilter
+                                list={sedes.data!}
+                                itemSelected={selectedSede}
+                                handleItemSelect={handleSedeChange}
+                                value={"id"}
+                                nombre={"name"}
+                                id={"id"}
+                                icon={<Building className="h-3 w-3"/>}
+                            />
 
-                        <ReportComponent
-                            onClick={(data: ReportRequest) => handleClickReport(data)}
-                            yearFrom={yearFrom}
-                            yearTo={yearTo}
-                            handleYearFromChange={handleYearFromChange}
-                            handleYearToChange={handleYearToChange}
-                        />
+                        </div>
+                        <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                            <ButtonCalculate onClick={handleCalculate}/>
 
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button size="sm" className="h-7 gap-1">
+                                        <Plus className="h-3.5 w-3.5"/>
+                                        Registrar
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-lg border-2">
+                                    <DialogHeader className="">
+                                        <DialogTitle>Fertilizante</DialogTitle>
+                                        <DialogDescription>
+                                            Indicar el consumo de fertilizantes por tipo y considerar
+                                            aquellos usados en prácticas agronómicas y/o mantenimiento
+                                            de áreas verdes.
+                                        </DialogDescription>
+                                        <DialogClose></DialogClose>
+                                    </DialogHeader>
+                                    <FormFertilizantes onClose={handleClose}/>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </div>
-                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
-                        <ButtonCalculate onClick={handleCalculate}/>
-
-                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                            <DialogTrigger asChild>
-                                <Button size="sm" className="h-7 gap-1">
-                                    <Plus className="h-3.5 w-3.5"/>
-                                    Registrar
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-lg border-2">
-                                <DialogHeader className="">
-                                    <DialogTitle>Fertilizante</DialogTitle>
-                                    <DialogDescription>
-                                        Indicar el consumo de fertilizantes por tipo y considerar
-                                        aquellos usados en prácticas agronómicas y/o mantenimiento
-                                        de áreas verdes.
-                                    </DialogDescription>
-                                    <DialogClose></DialogClose>
-                                </DialogHeader>
-                                <FormFertilizantes onClose={handleClose}/>
-                            </DialogContent>
-                        </Dialog>
-                    </div>
+                    <ReportComponent
+                        onClick={(data: ReportRequest) => handleClickReport(data)}
+                        yearFrom={yearFrom}
+                        yearTo={yearTo}
+                        handleYearFromChange={handleYearFromChange}
+                        handleYearToChange={handleYearToChange}
+                    />
                 </div>
             </div>
 

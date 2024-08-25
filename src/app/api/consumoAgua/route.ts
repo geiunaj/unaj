@@ -13,22 +13,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const {searchParams} = new URL(req.url);
 
         const sedeId = searchParams.get("sedeId") ?? undefined;
-        const sort = searchParams.get("sort") ?? undefined;
-        const direction = searchParams.get("direction") ?? undefined;
-        const anio = searchParams.get("anioId") ?? undefined;
-        const mes = searchParams.get("mesId") ?? undefined;
         const areaId = searchParams.get("areaId") ?? undefined;
-
-        const all = searchParams.get("all") === "true";
-
-        const page = parseInt(searchParams.get("page") ?? "1");
-        const perPage = parseInt(searchParams.get("perPage") ?? "10");
-
         const dateFrom = searchParams.get("from") ?? undefined;
         const dateTo = searchParams.get("to") ?? undefined;
-
-        let anioId;
-        if (anio) anioId = await getAnioId(anio);
+        const sort = searchParams.get("sort") ?? undefined;
+        const direction = searchParams.get("direction") ?? undefined;
+        const page = parseInt(searchParams.get("page") ?? "1");
+        const perPage = parseInt(searchParams.get("perPage") ?? "10");
+        const all = searchParams.get("all") === "true";
 
         let yearFrom, yearTo, monthFrom, monthTo;
         let yearFromId, yearToId, mesFromId, mesToId;
@@ -44,15 +36,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             area: {
                 sede_id: sedeId ? parseInt(sedeId) : undefined,
             },
-            anio_id: anioId,
-            mes_id: mes ? parseInt(mes) : undefined,
             area_id: areaId ? parseInt(areaId) : undefined,
         } as {
             area: {
                 sede_id?: number;
             };
-            anio_id: number | undefined;
-            mes_id?: number;
             area_id?: number;
             anio_mes?: {
                 gte?: number;

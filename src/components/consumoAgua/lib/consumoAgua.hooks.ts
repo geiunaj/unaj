@@ -7,7 +7,7 @@ import {getConsumoAgua, getConsumoAguaReport} from "../services/consumoAgua.acti
 interface getConsumoAguaInterface {
     sedeId?: number;
     areaId?: number;
-    anioId?: number;
+    anio?: number;
     mesId?: number;
     sort?: string;
     direction?: string;
@@ -19,7 +19,7 @@ interface getConsumoAguaInterface {
 export const useConsumoAgua = ({
                                    sedeId,
                                    areaId,
-                                   anioId,
+                                   anio,
                                    mesId,
                                    sort,
                                    direction,
@@ -27,7 +27,7 @@ export const useConsumoAgua = ({
                                }: getConsumoAguaInterface) => {
     return useQuery({
         queryKey: ["ConsumoAgua"],
-        queryFn: () => getConsumoAgua(sedeId, areaId, anioId, mesId, sort, direction, page),
+        queryFn: () => getConsumoAgua(sedeId, areaId, anio, mesId, sort, direction, page),
         refetchOnWindowFocus: false,
     });
 };
@@ -35,7 +35,7 @@ export const useConsumoAgua = ({
 export const useConsumoAguaReport = ({
                                          sedeId,
                                          areaId,
-                                         anioId,
+                                         anio,
                                          mesId,
                                          sort,
                                          direction,
@@ -45,7 +45,7 @@ export const useConsumoAguaReport = ({
                                      }: getConsumoAguaInterface) => {
     return useQuery({
         queryKey: ["ConsumoAguaReport"],
-        queryFn: () => getConsumoAguaReport(sedeId, areaId, anioId, mesId, sort, direction, page, from, to),
+        queryFn: () => getConsumoAguaReport(sedeId, areaId, anio, mesId, sort, direction, page, from, to),
         refetchOnWindowFocus: false,
     });
 };

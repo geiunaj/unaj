@@ -87,7 +87,7 @@ export default function ConsumoAguaPage() {
     const consumoAgua = useConsumoAgua({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
         areaId: selectedArea ? Number(selectedArea) : undefined,
-        anioId: selectedAnio ? Number(selectedAnio) : undefined,
+        anio: selectedAnio ? Number(selectedAnio) : undefined,
         mesId: selectedMes ? Number(selectedMes) : undefined,
         page: page,
     });
@@ -176,7 +176,7 @@ export default function ConsumoAguaPage() {
     const consumoAguaReport = useConsumoAguaReport({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
         areaId: selectedArea ? Number(selectedArea) : undefined,
-        anioId: selectedAnio ? Number(selectedAnio) : undefined,
+        anio: selectedAnio ? Number(selectedAnio) : undefined,
         mesId: selectedMes ? Number(selectedMes) : undefined,
         page: page,
         from,
