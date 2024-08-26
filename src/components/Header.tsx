@@ -149,13 +149,13 @@ export default function Header() {
                             <DropdownMenuPortal>
                                 <DropdownMenuSubContent>
                                     <DropdownMenuItem className="text-xs" onClick={() => setTheme("light")}>
-                                        Light
+                                        Claro
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="text-xs" onClick={() => setTheme("dark")}>
-                                        Dark
+                                        Oscuro
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="text-xs" onClick={() => setTheme("system")}>
-                                        System
+                                        Sistema
                                     </DropdownMenuItem>
                                 </DropdownMenuSubContent>
                             </DropdownMenuPortal>
