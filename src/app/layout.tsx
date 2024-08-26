@@ -4,6 +4,7 @@ import "./globals.css";
 import {ReactQueryClientProvider} from "@/components/Provider";
 import {Toaster} from "@/components/ui/sonner";
 import {SessionWrapper} from "@/components/SessionWrapper/SessionWrapper";
+import {ThemeProvider} from "@/components/theme-provider";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -21,7 +22,7 @@ export default function RootLayout({
         <ReactQueryClientProvider>
             <SessionWrapper>
                 <html lang="en">
-                <body className={`${inter.className} dark`}>
+                <body className={`${inter.className}`}>
                 {children}
                 <Toaster/>
                 </body>

@@ -7,8 +7,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {useCallback, useState} from "react";
-import {Bean, Building, LeafyGreen, Pen, Plus, Trash2} from "lucide-react";
+import React, {useCallback, useRef, useState} from "react";
+import {Bean, Building, FileSpreadsheet, LeafyGreen, Pen, Plus, Trash2} from "lucide-react";
 import {FormFertilizantes} from "./FormFertilizantes";
 import {
     Dialog,
@@ -187,6 +187,14 @@ export default function FertilizantePage() {
         await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE FERTILIZANTES");
     }, [fertilizanteReport]);
 
+    const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
+
+    const handleClick = () => {
+        if (submitFormRef.current) {
+            submitFormRef.current.submitForm();
+        }
+    };
+
     if (fertilizante.isLoading || claseFertilizante.isLoading || tipoFertilizante.isLoading
         || sedes.isLoading || anios.isLoading) {
         return <SkeletonTable/>;
@@ -205,9 +213,10 @@ export default function FertilizantePage() {
                     <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                    <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+                    <div
+                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:justify-end sm:items-end gap-1 justify-center">
                         <div
-                            className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
                             <SelectFilter
                                 list={claseFertilizante.data!}
                                 itemSelected={selectedClaseFertilizante}
@@ -239,8 +248,27 @@ export default function FertilizantePage() {
                                 icon={<Building className="h-3 w-3"/>}
                             />
 
+                            <ReportComponent
+                                onSubmit={handleClickReport}
+                                ref={submitFormRef}
+                                yearFrom={yearFrom}
+                                yearTo={yearTo}
+                                handleYearFromChange={handleYearFromChange}
+                                handleYearToChange={handleYearToChange}
+                            />
+
                         </div>
-                        <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                        <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-4">
+                            <Button
+                                onClick={handleClick}
+                                size="sm"
+                                variant="outline"
+                                className="flex items-center gap-2 h-7"
+                            >
+                                <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                Excel
+                            </Button>
+
                             <ButtonCalculate onClick={handleCalculate}/>
 
                             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -265,13 +293,6 @@ export default function FertilizantePage() {
                             </Dialog>
                         </div>
                     </div>
-                    <ReportComponent
-                        onClick={(data: ReportRequest) => handleClickReport(data)}
-                        yearFrom={yearFrom}
-                        yearTo={yearTo}
-                        handleYearFromChange={handleYearFromChange}
-                        handleYearToChange={handleYearToChange}
-                    />
                 </div>
             </div>
 

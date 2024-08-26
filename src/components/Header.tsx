@@ -7,16 +7,18 @@ import {
 import {Button} from "@/components/ui/button";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
+    DropdownMenuContent, DropdownMenuGroup,
+    DropdownMenuItem, DropdownMenuPortal,
+    DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";
+import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
 import {iconComponents, menu, MenuItem} from "@/lib/constants/menu";
 import {useEffect, useState} from "react";
 import {usePathname, useRouter} from "next/navigation";
 import {Separator} from "./ui/separator";
+import {useTheme} from "next-themes";
+import * as React from "react";
 
 export default function Header() {
     const logo = "/img/logoUNAJ.png";
@@ -43,6 +45,8 @@ export default function Header() {
             itemActive === href ? "text-primary" : "text-muted-foreground"
         }`;
     };
+
+    const {setTheme} = useTheme()
 
     return (
         // <div className="flex justify-between items-center p-3">
@@ -71,20 +75,27 @@ export default function Header() {
                     </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="flex flex-col p-4">
-                    <Link
-                        href="/"
-                        className="w-full flex justify-evenly items-center gap-2 pt-4"
-                    >
-                        {/* <Calculator className="h-5" /> */}
-                        <div className="flex items-center justify-around gap-3">
-                            <p className="text-blue-700 text-3xl font-black">UNAJ</p>
-                            <Separator orientation="vertical" className="h-8"/>
-                            <div className="flex flex-col text-muted-foreground text-center text-xs font-medium">
-                                <p>Calculadora de</p>
-                                <p>Huella Ecológica</p>
-                            </div>
-                        </div>
-                    </Link>
+                    <SheetHeader>
+                        <SheetTitle>
+                            <Link
+                                href="/"
+                                className="w-full flex justify-evenly items-center gap-2 pt-4"
+                            >
+                                {/* <Calculator className="h-5" /> */}
+                                <div className="flex items-center justify-around gap-3">
+                                    <p className="text-blue-700 text-3xl font-black">UNAJ</p>
+                                    <Separator orientation="vertical" className="h-8"/>
+                                    <div
+                                        className="flex flex-col text-muted-foreground text-center text-xs font-medium">
+                                        <p>Calculadora de</p>
+                                        <p>Huella Ecológica</p>
+                                    </div>
+                                </div>
+                            </Link>
+                        </SheetTitle>
+                        <SheetDescription/>
+                    </SheetHeader>
+
                     <nav className="grid items-start text-sm font-medium">
                         {menu.map((item) => {
                             const Icon = iconComponents[item.icon];
@@ -132,6 +143,24 @@ export default function Header() {
                     <DropdownMenuItem className="text-xs">Cuenta</DropdownMenuItem>
                     <DropdownMenuItem className="text-xs">Ajutes</DropdownMenuItem>
                     <DropdownMenuSeparator/>
+                    <DropdownMenuGroup>
+                        <DropdownMenuSub>
+                            <DropdownMenuSubTrigger className="text-xs">Tema</DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                                <DropdownMenuSubContent>
+                                    <DropdownMenuItem className="text-xs" onClick={() => setTheme("light")}>
+                                        Light
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="text-xs" onClick={() => setTheme("dark")}>
+                                        Dark
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="text-xs" onClick={() => setTheme("system")}>
+                                        System
+                                    </DropdownMenuItem>
+                                </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                        </DropdownMenuSub>
+                    </DropdownMenuGroup>
                     <DropdownMenuItem className="text-xs">Cerrar Sesión</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

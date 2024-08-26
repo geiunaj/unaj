@@ -11,9 +11,9 @@ import {getAnioId} from "@/lib/utils";
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
-
         const sedeId = searchParams.get("sedeId") ?? undefined;
         const areaId = searchParams.get("areaId") ?? undefined;
+        const mesId = searchParams.get("mesId") ?? undefined;
         const dateFrom = searchParams.get("from") ?? undefined;
         const dateTo = searchParams.get("to") ?? undefined;
         const sort = searchParams.get("sort") ?? undefined;
@@ -37,11 +37,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 sede_id: sedeId ? parseInt(sedeId) : undefined,
             },
             area_id: areaId ? parseInt(areaId) : undefined,
+            mes_id: mesId ? parseInt(mesId) : undefined,
         } as {
             area: {
                 sede_id?: number;
             };
             area_id?: number;
+            mes_id?: number;
             anio_mes?: {
                 gte?: number;
                 lte?: number;

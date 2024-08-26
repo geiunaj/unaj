@@ -16,10 +16,10 @@ import {Input} from "@/components/ui/input";
 import {useQuery} from "@tanstack/react-query";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import React from "react";
+import React, {forwardRef, useImperativeHandle} from "react";
 
 interface ReportPopoverProps {
-    onClick: (data: ReportRequest) => void;
+    onSubmit: (data: ReportRequest) => void;
     withMonth?: boolean;
     yearFrom?: string;
     yearTo?: string;
@@ -37,24 +37,25 @@ export interface ReportRequest {
 }
 
 const Report = z.object({
-    // format yyyy-MM
     from: z.string().optional(),
     to: z.string().optional(),
     yearFrom: z.string().optional(),
     yearTo: z.string().optional(),
 });
 
-
-export default function ReportComponent({
-                                            onClick,
-                                            withMonth = false,
-                                            yearFrom,
-                                            yearTo,
-                                            from,
-                                            to,
-                                            handleYearFromChange,
-                                            handleYearToChange,
-                                        }: ReportPopoverProps) {
+const ReportComponent = forwardRef(function ReportComponent(
+    {
+        onSubmit,
+        withMonth = false,
+        yearFrom,
+        yearTo,
+        from,
+        to,
+        handleYearFromChange,
+        handleYearToChange,
+    }: ReportPopoverProps,
+    ref
+) {
     const form = useForm<z.infer<typeof Report>>({
         resolver: zodResolver(Report),
         defaultValues: {
@@ -71,15 +72,23 @@ export default function ReportComponent({
         refetchOnWindowFocus: false
     });
 
-    const onSubmit = async (data: z.infer<typeof Report>) => {
+    const handleFormSubmit = (data: z.infer<typeof Report>) => {
         const reportRequest: ReportRequest = {
             from: data.from,
             to: data.to,
             yearFrom: data.yearFrom,
             yearTo: data.yearTo,
         };
-        onClick(reportRequest);
+        onSubmit(reportRequest);
     };
+
+    const submitForm = () => {
+        form.handleSubmit(handleFormSubmit)();
+    };
+
+    useImperativeHandle(ref, () => ({
+        submitForm,
+    }));
 
     if (anios.isLoading) {
         return <div>Loading...</div>;
@@ -90,26 +99,26 @@ export default function ReportComponent({
         if (handleYearFromChange) {
             handleYearFromChange(value);
         }
-    }
+    };
 
     const handleChangeYearTo = (value: string) => {
         form.setValue('yearTo', value);
         if (handleYearToChange) {
             handleYearToChange(value);
         }
-    }
+    };
 
     return (
         <div className="flex items-center justify-center">
             <div className="flex items-center justify-center w-full">
                 <Form {...form}>
                     <form
-                        className="w-full flex gap-3"
+                        className="w-full flex"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
                         {
                             withMonth ? (
-                                <div className="w-full flex flex-col items-center gap-3">
+                                <div className="flex flex-col items-center gap-2">
                                     <FormField
                                         control={form.control}
                                         name="from"
@@ -149,7 +158,8 @@ export default function ReportComponent({
                                     />
                                 </div>
                             ) : (
-                                <div className="w-full flex items-center gap-3">
+                                <div
+                                    className="flex w-full flex-col gap-1 sm:flex-row sm:w-full sm:items-center sm:gap-2">
                                     <FormField
                                         name="yearFrom"
                                         control={form.control}
@@ -160,7 +170,7 @@ export default function ReportComponent({
                                                     defaultValue={field.value}
                                                 >
                                                     <FormControl className="w-full">
-                                                        <SelectTrigger className="rounded-sm h-7 text-xs w-auto gap-2 ">
+                                                        <SelectTrigger className="rounded-sm h-7 text-xs w-full gap-2">
                                                             <ArrowLeftFromLine className="h-3 w-3"/>
                                                             <SelectValue placeholder="Desde"/>
                                                         </SelectTrigger>
@@ -194,7 +204,7 @@ export default function ReportComponent({
                                                     defaultValue={field.value}
                                                 >
                                                     <FormControl className="w-full">
-                                                        <SelectTrigger className="rounded-sm h-7 text-xs w-auto gap-2">
+                                                        <SelectTrigger className="rounded-sm h-7 text-xs w-full gap-2">
                                                             <ArrowRightFromLine className="h-3 w-3"/>
                                                             <SelectValue placeholder="Hasta"/>
                                                         </SelectTrigger>
@@ -220,29 +230,11 @@ export default function ReportComponent({
                                 </div>
                             )
                         }
-
-                        <div className="flex justify-end w-full gap-4">
-                            {/* <Button
-                                variant="secondary"
-                                type="submit"
-                                size="sm"
-                                className="flex items-center gap-2"
-                            >
-                                <FileText className="h-3.5 w-3.5"/>
-                                PDF
-                            </Button> */}
-                            <Button
-                                type="submit"
-                                size="sm"
-                                className="flex items-center gap-2 h-7"
-                            >
-                                <FileSpreadsheet className="h-3.5 w-3.5"/>
-                                Excel
-                            </Button>
-                        </div>
                     </form>
                 </Form>
             </div>
         </div>
     );
-}
+});
+
+export default ReportComponent;
