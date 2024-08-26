@@ -49,6 +49,7 @@ export async function PUT(
             return new NextResponse("Invalid ID", {status: 400});
         }
 
+
         const {cantidad_paquete, tipoPapel_id, anio_id, sede_id, comentario}: ConsumoPapelRequest = await req.json();
         if (!cantidad_paquete || !tipoPapel_id || !anio_id || !sede_id) {
             return new NextResponse("Faltan campos requeridos", {status: 400});

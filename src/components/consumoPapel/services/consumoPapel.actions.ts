@@ -9,20 +9,21 @@ interface Response {
 }
 
 export async function getConsumoPapel(
-    sedeId?: number,
-    anio?: number,
     tipoPapelId?: number,
-    sort?: string | null,
+    sedeId?: number,
+    yearFrom?: string,
+    yearTo?: string,
+    sort?: string,
     direction?: string,
+    page?: number,
 
-    page?: number
 ): Promise<CollectionConsumoPapel> {
-    try {
         const config: AxiosRequestConfig = {
             params: {
-                sedeId,
-                anio,
                 tipoPapelId,
+                sedeId,
+                yearFrom,
+                yearTo,
                 sort,
                 direction,
                 page,
@@ -33,10 +34,32 @@ export async function getConsumoPapel(
             config
         );
         return data;
-    } catch (error) {
-        console.error(error);
-        throw new Error("Error al obtener los consumos de papel");
-    }
+}
+
+export async function getConsumoPapelReport(
+    tipoPapelId?: number,
+    sedeId?: number,
+    yearFrom?: string,
+    yearTo?: string,
+    sort?: string,
+    direction?: string,
+): Promise<CollectionConsumoPapel> {
+    const config: AxiosRequestConfig = {
+        params: {
+            tipoPapelId,
+            sedeId,
+            yearFrom,
+            yearTo,
+            sort,
+            direction,
+            all: true,
+        },
+    };
+    const {data} = await api.get<CollectionConsumoPapel>(
+        "/api/consumoPapel",
+        config
+    );
+    return data;
 }
 
 export async function createConsumoPapel(body: ConsumoPapelRequest): Promise<any> {

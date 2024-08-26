@@ -89,7 +89,6 @@ export default function FertilizantePage() {
     const sedes = useSede();
     const anios = useAnio();
 
-
     // HANDLE FUNCTIONS
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);

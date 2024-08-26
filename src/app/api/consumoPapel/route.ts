@@ -2,6 +2,8 @@ import {ConsumoPapelCollectionItem, ConsumoPapelRequest} from "@/components/cons
 import {formatConsumoPapel} from "@/lib/resources/papelResource";
 import prisma from "@/lib/prisma";
 import {NextRequest, NextResponse} from "next/server";
+import { getAnioId } from "@/lib/utils";
+import { number } from "zod";
 
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
@@ -16,21 +18,44 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const page = parseInt(searchParams.get("page") ?? "1");
         const perPage = parseInt(searchParams.get("perPage") ?? "10");
 
+        const all = searchParams.get("all") === "true";
+        const yearFrom = searchParams.get("yearFrom") ?? undefined;
+        const yearTo = searchParams.get("yearTo") ?? undefined;
 
-        let anioId;
-        if (anio) {
-            const anioRecord = await prisma.anio.findFirst({
-                where: {
-                    nombre: anio,
-                },
-            });
-            anioId = anioRecord ? anioRecord.id : undefined;
-        }
+        let yearFromId: number | undefined;
+        let yearToId: number | undefined;
+
+        if (yearFrom) yearFromId = await getAnioId(yearFrom);
+        if (yearTo) yearToId = await getAnioId(yearTo);
+        
+
         const whereOptions = {
+
             sede_id: sedeId ? parseInt(sedeId) : undefined,
             tipoPapel_id: tipoPapelId ? parseInt(tipoPapelId) : undefined,
-            anio_id: anioId,
+            anio: {
+                nombre: {
+                    ...(yearFromId && yearToId ? {gte: yearFrom, lte: yearTo} :
+                            yearFromId ? {gte: yearFrom} : yearToId ? {lte: yearTo} : undefined
+                    ),
+                }
+            }
         };
+
+        // let anioId;
+        // if (anio) {
+        //     const anioRecord = await prisma.anio.findFirst({
+        //         where: {
+        //             nombre: anio,
+        //         },
+        //     });
+        //     anioId = anioRecord ? anioRecord.id : undefined;
+        // }
+        // const whereOptions = {
+        //     sede_id: sedeId ? parseInt(sedeId) : undefined,
+        //     tipoPapel_id: tipoPapelId ? parseInt(tipoPapelId) : undefined,
+        //     anio_id: anioId,
+        // };
   
         const totalRecords = await prisma.consumoPapel.count({where: whereOptions});
         const totalPages = Math.ceil(totalRecords / perPage);
@@ -43,14 +68,17 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 anio: true,
                 sede: true,
             },
-            orderBy: sort
+            orderBy: all
+                ? [{tipoPapel_id: 'asc'}, {anio_id: 'asc'}, {sede_id: 'asc'}]
+                : sort
+
                 ? [{[sort]: direction || 'desc'}]
-                : [ {anio_id: "desc"}, {sede_id: "desc"}],
-            skip: (page - 1) * perPage,
-            take: perPage,
+                : [{tipoPapel_id: 'asc'}, {anio: {nombre: 'asc'}}],
+            ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
-        const  formattedConsumoPapel: ConsumoPapelCollectionItem[] = consumopapel.map(formatConsumoPapel);
+        const  formattedConsumoPapel: ConsumoPapelCollectionItem[] = 
+        consumopapel.map((consumopapel) => formatConsumoPapel(consumopapel));
 
 
         return NextResponse.json(
@@ -74,6 +102,19 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         const body: ConsumoPapelRequest = await req.json();
+
+        // Validar campos 
+        if (
+            typeof body.tipoPapel_id !== "number" ||
+            typeof body.anio_id !== "number" ||
+            typeof body.sede_id !== "number" ||
+            typeof body.cantidad_paquete !== "number"
+        ) {
+            return new NextResponse("Campos requeridos faltantes", {
+                status: 400,
+            });
+        }
+
         const consumopapel = await prisma.consumoPapel.create({
             data: {
                 tipoPapel_id: body.tipoPapel_id,
@@ -84,6 +125,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
                 created_at: new Date(),
                 updated_at: new Date(),
+            },
+            include: {
+                tipoPapel: true,
+                anio: true,
+                sede: true,
             },
         });
 
@@ -96,4 +142,5 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         return new NextResponse("Error creating combustible", {status: 500});
     }
 }
+
 

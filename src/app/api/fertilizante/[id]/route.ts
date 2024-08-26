@@ -48,7 +48,7 @@ export async function PUT(
         if (isNaN(id)) {
             return new NextResponse("Invalid ID", {status: 400});
         }
-
+        
         const body = await req.json();
         console.log(body);
 

@@ -5,27 +5,46 @@ import {getTiposPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 
 interface getConsumoPapelInterface {
-    sedeId?: number;
-    anioId?: number;
     tipoPapelId?: number;
-    sort?: string | null;
+    sedeId?: number;
+    yearFrom?: string;
+    yearTo?: string;
+    sort?: string;
     direction?: string;
-  
     page?: number;
+
+  
   }
 
 export const useConsumosPapel = (
     {
-        sedeId,
-        anioId,
-        sort,
         tipoPapelId,
+        sedeId,
+        yearFrom,
+        yearTo,
+        sort,
         direction,
         page,
     }: getConsumoPapelInterface) => {
     return useQuery({
         queryKey: ['consumoPapelQuery'],
-        queryFn: () => getConsumoPapel(sedeId, anioId,tipoPapelId, sort, direction, page),
+        queryFn: () => getConsumoPapel(tipoPapelId, sedeId, yearFrom, yearTo, sort, direction, page),
+        refetchOnWindowFocus: false,
+    });
+}
+
+export const useConsumoPapelReport =
+    ({
+        tipoPapelId,
+        sedeId,
+        yearFrom,
+        yearTo,
+        sort,
+        direction,
+    }: getConsumoPapelInterface) => {
+    return useQuery({
+        queryKey: ['consumoPapelReport'],
+        queryFn: () => getConsumoPapel(tipoPapelId, sedeId, yearFrom, yearTo, sort, direction),
         refetchOnWindowFocus: false,
     });
 }
