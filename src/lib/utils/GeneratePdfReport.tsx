@@ -112,10 +112,13 @@ interface Column {
 interface ReportDocumentProps {
     data: Record<string, any>[];
     columns: Column[];
+    title: string;
+    period: string;
+    rows?: number;
 }
 
-const ReportDocument: React.FC<ReportDocumentProps> = ({data, columns}) => {
-    const rowsPerPage = 15; // Adjust the number of rows per page as needed
+const ReportDocument: React.FC<ReportDocumentProps> = ({data, columns, title, period, rows}) => {
+    const rowsPerPage = rows ?? 15;
     const numberOfPages = Math.ceil(data.length / rowsPerPage);
 
     // Create an array of page numbers
@@ -194,7 +197,7 @@ const ReportDocument: React.FC<ReportDocumentProps> = ({data, columns}) => {
                     }}>
                         <Text
                             style={{fontSize: "14px", fontWeight: "bold", color: "#05153d", fontFamily: "Inter-Bold"}}>
-                            REPORTE DE PRUEBA
+                            {title}
                         </Text>
                     </View>
                     <View style={{
@@ -204,7 +207,7 @@ const ReportDocument: React.FC<ReportDocumentProps> = ({data, columns}) => {
                         paddingLeft: "30px",
                     }}>
                         <Text style={{fontSize: "10px", fontWeight: "bold", color: "#05153d", fontFamily: "Inter"}}>
-                            Desde el 2024-01 hasta el 2024-12
+                            {period}
                         </Text>
                     </View>
 
@@ -220,31 +223,4 @@ const ReportDocument: React.FC<ReportDocumentProps> = ({data, columns}) => {
     );
 };
 
-
-interface ExportPdfReportProps {
-    fileName?: string;
-    data: Record<string, any>[];
-    columns: Column[];
-}
-
-const ExportPdfReport: React.FC<ExportPdfReportProps> = ({fileName, data, columns}) => {
-    return (
-        <div>
-            <PDFDownloadLink document={<ReportDocument data={data} columns={columns}/>}
-                             fileName={`${fileName ?? "reporte"}.pdf`}>
-                {({blob, url, loading, error}) =>
-                    loading ? <Button className="h-7 text-xs w-full gap-2" variant="outline" disabled={true}>
-                            <FileText className="w-3.5 h-3.5"/>
-                            PDF
-                        </Button> :
-                        <Button className="h-7 text-xs w-full gap-2" variant="outline">
-                            <FileText className="w-3.5 h-3.5"/>
-                            PDF
-                        </Button>
-                }
-            </PDFDownloadLink>
-        </div>
-    );
-};
-
-export default ExportPdfReport;
+export default ReportDocument;

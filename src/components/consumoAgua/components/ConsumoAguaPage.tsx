@@ -60,10 +60,10 @@ import {UpdateFormConsumoAgua} from "./UpdateFormConsumoAgua";
 import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import ReportComponent from "@/components/ReportComponent";
-import ExportPdfReport from "@/lib/utils/GeneratePdfReport";
+import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 
 
-export default async function ConsumoAguaPage() {
+export default function ConsumoAguaPage() {
     //NAVIGATION
     const {push} = useRouter();
     const [page, setPage] = useState<number>(1);
@@ -88,6 +88,15 @@ export default async function ConsumoAguaPage() {
 
     //HOOKS
     const consumoAgua = useConsumoAgua({
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
+        areaId: selectedArea ? Number(selectedArea) : undefined,
+        mesId: selectedMes ? Number(selectedMes) : undefined,
+        from,
+        to,
+        page: page,
+    });
+
+    const consumoAguaReport = useConsumoAguaReport({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
         areaId: selectedArea ? Number(selectedArea) : undefined,
         mesId: selectedMes ? Number(selectedMes) : undefined,
@@ -124,41 +133,48 @@ export default async function ConsumoAguaPage() {
 
     useEffect(() => {
         consumoAgua.refetch();
+        consumoAguaReport.refetch();
     }, [selectedArea]);
 
     const handleAreaChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedArea(value);
         await consumoAgua.refetch();
-    }, [consumoAgua]);
+        await consumoAguaReport.refetch();
+    }, [consumoAgua, consumoAguaReport]);
 
     const handleMesChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedMes(value);
         await consumoAgua.refetch();
-    }, [consumoAgua]);
+        await consumoAguaReport.refetch();
+    }, [consumoAgua, consumoAguaReport]);
 
     const handleFromChange = useCallback(async (value: string) => {
         await setPage(1);
         await setFrom(value);
         await consumoAgua.refetch();
-    }, [consumoAgua]);
+        await consumoAguaReport.refetch();
+    }, [consumoAgua, consumoAguaReport]);
 
     const handleToChange = useCallback(async (value: string) => {
         await setPage(1);
         await setTo(value);
         await consumoAgua.refetch();
-    }, [consumoAgua]);
+        await consumoAguaReport.refetch();
+    }, [consumoAgua, consumoAguaReport]);
 
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
         consumoAgua.refetch();
-    }, [consumoAgua]);
+        consumoAguaReport.refetch();
+    }, [consumoAgua, consumoAguaReport]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
         consumoAgua.refetch();
-    }, [consumoAgua]);
+        consumoAguaReport.refetch();
+    }, [consumoAgua, consumoAguaReport]);
 
     const handleCalculate = () => {
         push("/consumoAgua/calculos");
@@ -173,21 +189,14 @@ export default async function ConsumoAguaPage() {
             errorToast(error.response.data.message);
         }
         await consumoAgua.refetch();
-    }, [idForDelete, consumoAgua]);
+        await consumoAguaReport.refetch();
+    }, [consumoAgua, consumoAguaReport, idForDelete]);
 
     const handlePageChage = async (page: number) => {
         await setPage(page);
         await consumoAgua.refetch();
+        await consumoAguaReport.refetch();
     }
-
-    const consumoAguaReport = useConsumoAguaReport({
-        sedeId: selectedSede ? Number(selectedSede) : undefined,
-        areaId: selectedArea ? Number(selectedArea) : undefined,
-        mesId: selectedMes ? Number(selectedMes) : undefined,
-        from,
-        to,
-        page: page,
-    });
 
     const handleClickReport = async (period: ReportRequest) => {
         const columns = [
@@ -222,7 +231,6 @@ export default async function ConsumoAguaPage() {
         errorToast("Error al cargar los datos");
         return <SkeletonTable/>;
     }
-
 
     return (
         <div className="w-full max-w-[1150px] h-full ">
@@ -293,8 +301,8 @@ export default async function ConsumoAguaPage() {
                             </Button>
 
                             <ExportPdfReport
-                                fileName="Reporte Consumo Agua"
-                                data={}
+                                data={consumoAguaReport.data!.data}
+                                fileName={`REPORTE DE CONSUMO DE AGUA_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
                                     {header: "CÓDIGO MEDIDOR", key: "codigoMedidor", width: 15},
@@ -305,6 +313,8 @@ export default async function ConsumoAguaPage() {
                                     {header: "AREA", key: "area", width: 15},
                                     {header: "SEDE", key: "sede", width: 15},
                                 ]}
+                                title="REPORTE DE CONSUMO DE AGUA"
+                                period={formatPeriod({from, to}, true)}
                             />
 
 
