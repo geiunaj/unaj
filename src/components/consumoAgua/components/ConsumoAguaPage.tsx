@@ -57,13 +57,13 @@ import {useSede} from "@/components/consumoElectricidad/lib/electricidad.hooks";
 import {deleteConsumoAgua} from "../services/consumoAgua.actions";
 import {FormConsumoAgua} from "./FormConsumoAgua";
 import {UpdateFormConsumoAgua} from "./UpdateFormConsumoAgua";
-import {useCombustibleReport} from "@/components/combustion/lib/combustion.hook";
-import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
+import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import ReportComponent from "@/components/ReportComponent";
+import ExportPdfReport from "@/lib/utils/GeneratePdfReport";
 
-export default function ConsumoAguaPage() {
+
+export default async function ConsumoAguaPage() {
     //NAVIGATION
     const {push} = useRouter();
     const [page, setPage] = useState<number>(1);
@@ -292,6 +292,21 @@ export default function ConsumoAguaPage() {
                                 Excel
                             </Button>
 
+                            <ExportPdfReport
+                                fileName="Reporte Consumo Agua"
+                                data={}
+                                columns={[
+                                    {header: "N°", key: "id", width: 5},
+                                    {header: "CÓDIGO MEDIDOR", key: "codigoMedidor", width: 15},
+                                    {header: "CONSUMO", key: "consumo", width: 15},
+                                    {header: "FUENTE DE AGUA", key: "fuenteAgua", width: 15},
+                                    {header: "MES", key: "mes", width: 10},
+                                    {header: "AÑO", key: "anio", width: 10},
+                                    {header: "AREA", key: "area", width: 15},
+                                    {header: "SEDE", key: "sede", width: 15},
+                                ]}
+                            />
+
 
                             <ButtonCalculate onClick={handleCalculate}/>
 
@@ -318,7 +333,7 @@ export default function ConsumoAguaPage() {
                 </div>
             </div>
 
-            <div className="rounded-lg overflow-hidden text-nowrap sm:text-wrap flex flex-col gap-10    ">
+            <div className="rounded-lg overflow-hidden text-nowrap sm:text-wrap flex flex-col gap-10">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -352,7 +367,7 @@ export default function ConsumoAguaPage() {
                         {consumoAgua.data!.data.map((item: consumoAguaCollectionItem, index: number) => (
                             <TableRow key={item.id} className="text-center">
                                 <TableCell className="text-xs sm:text-sm">
-                                    <Badge variant="secondary">{index + 1}</Badge>
+                                    <Badge variant="secondary">{10 * (page - 1) + index + 1}</Badge>
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">
                                     {item.area}
@@ -379,7 +394,7 @@ export default function ConsumoAguaPage() {
                                             variant="outline"
                                             onClick={() => handleClickUpdate(item.id)}
                                         >
-                                            <Pen className="h-3.5 text-blue-700"/>
+                                            <Pen className="h-3.5 text-primary"/>
                                         </Button>
 
                                         {/*DELETE*/}
