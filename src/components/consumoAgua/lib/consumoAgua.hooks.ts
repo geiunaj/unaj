@@ -7,27 +7,27 @@ import {getConsumoAgua, getConsumoAguaReport} from "../services/consumoAgua.acti
 interface getConsumoAguaInterface {
     sedeId?: number;
     areaId?: number;
-    anio?: number;
     mesId?: number;
+    from?: string;
+    to?: string;
     sort?: string;
     direction?: string;
     page?: number;
-    from?: string;
-    to?: string;
 }
 
 export const useConsumoAgua = ({
                                    sedeId,
                                    areaId,
-                                   anio,
                                    mesId,
+                                   from,
+                                   to,
                                    sort,
                                    direction,
                                    page,
                                }: getConsumoAguaInterface) => {
     return useQuery({
         queryKey: ["ConsumoAgua"],
-        queryFn: () => getConsumoAgua(sedeId, areaId, anio, mesId, sort, direction, page),
+        queryFn: () => getConsumoAgua(sedeId, areaId, mesId, from, to, sort, direction, page),
         refetchOnWindowFocus: false,
     });
 };
@@ -35,17 +35,16 @@ export const useConsumoAgua = ({
 export const useConsumoAguaReport = ({
                                          sedeId,
                                          areaId,
-                                         anio,
                                          mesId,
+                                         from,
+                                         to,
                                          sort,
                                          direction,
                                          page,
-                                         from,
-                                         to
                                      }: getConsumoAguaInterface) => {
     return useQuery({
         queryKey: ["ConsumoAguaReport"],
-        queryFn: () => getConsumoAguaReport(sedeId, areaId, anio, mesId, sort, direction, page, from, to),
+        queryFn: () => getConsumoAguaReport(sedeId, areaId, mesId, from, to, sort, direction, page),
         refetchOnWindowFocus: false,
     });
 };

@@ -11,6 +11,7 @@ interface Response {
 export async function getConsumoAgua(
     sedeId?: number,
     areaId?: number,
+    mesId?: number,
     from?: string,
     to?: string,
     sort?: string,
@@ -21,6 +22,7 @@ export async function getConsumoAgua(
         params: {
             sedeId,
             areaId,
+            mesId,
             from,
             to,
             sort,
@@ -38,23 +40,24 @@ export async function getConsumoAgua(
 export async function getConsumoAguaReport(
     sedeId?: number,
     areaId?: number,
+    mesId?: number,
     from?: string,
     to?: string,
     sort?: string,
     direction?: string,
-    page?: number,
-    all = true
+    page?: number
 ): Promise<consumoAguaCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
             areaId,
+            mesId,
             from,
             to,
             sort,
             direction,
             page,
-            all,
+            all: true,
         },
     };
     const {data} = await api.get<consumoAguaCollection>(

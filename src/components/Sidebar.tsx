@@ -91,7 +91,7 @@ export default function Sidebar() {
                             >
                                 <AccordionItem className="border-0" value={item.title}>
                                     <AccordionTrigger
-                                        className="w-full px-4 py-2 justify-between items-center text-slate-500 hover:text-primary hover:no-underline"
+                                        className="w-full px-4 py-2 justify-between items-center text-muted-foreground hover:text-primary hover:no-underline"
                                     >
                                         <div className="flex items-center">
                                             <Icon className="mr-2 h-4 w-4"/>

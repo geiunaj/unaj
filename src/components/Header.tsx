@@ -134,9 +134,9 @@ export default function Header() {
 
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="secondary" size="icon" className="rounded-full">
+                    <Button variant="secondary" size="icon" className="aspect-square w-15 rounded-full">
                         <CircleUser className="h-5 w-5"/>
-                        <span className="sr-only">Toggle user menu</span>
+                        <span className="sr-only">Menu</span>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

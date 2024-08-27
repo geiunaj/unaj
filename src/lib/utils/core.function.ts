@@ -29,23 +29,23 @@ export const formatPeriod = (period: ReportRequest, withMonth = false) => {
     console.log(period);
     if (withMonth) {
         if (period.from && period.to) {
-            return `Desde ${period.from} hasta ${period.to}`;
+            return `DESDE ${period.from} HASTA ${period.to}`;
         }
         if (period.from) {
-            return `Desde ${period.from}`;
+            return `DESDE ${period.from}`;
         }
         if (period.to) {
-            return `Hasta ${period.to}`;
+            return `HASTA ${period.to}`;
         }
     } else {
         if (period.yearFrom && period.yearTo) {
-            return `Desde ${period.yearFrom} hasta ${period.yearTo}`;
+            return `DESDE ${period.yearFrom} HASTA ${period.yearTo}`;
         }
         if (period.yearFrom) {
-            return `Desde ${period.yearFrom}`;
+            return `DESDE ${period.yearFrom}`;
         }
         if (period.yearTo) {
-            return `Hasta ${period.yearTo}`;
+            return `HASTA ${period.yearTo}`;
         }
     }
     return "-";

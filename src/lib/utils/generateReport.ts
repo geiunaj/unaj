@@ -6,16 +6,16 @@ export interface Column {
     width: number;
 }
 
-export default async function GenerateReport<T>(data: T[], columns: Column[], period: string, title: string) {
+export default async function GenerateReport<T>(data: T[], columns: Column[], period: string, title: string, sheetName: string) {
     const workbook = new Exceljs.Workbook();
-    const sheet = workbook.addWorksheet('PRUEBA');
+    const sheet = workbook.addWorksheet(sheetName);
     sheet.properties.defaultRowHeight = 22;
     sheet.properties.showGridLines = false;
 
     sheet.mergeCells(1, 1, 1, columns.length);
     sheet.mergeCells(2, 2, 2, 3);
     const cellPeriodTitle = sheet.getRow(2).getCell(1);
-    cellPeriodTitle.value = 'Periodo:';
+    cellPeriodTitle.value = 'PERIODO';
     cellPeriodTitle.font = {
         color: {argb: '0A2A70'},
         size: 12,
@@ -96,7 +96,7 @@ export default async function GenerateReport<T>(data: T[], columns: Column[], pe
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'report.xlsx';
+    a.download = `${title}_${period}.xlsx`;
     a.click();
     URL.revokeObjectURL(url);
 }

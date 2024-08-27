@@ -184,7 +184,7 @@ export default function FertilizantePage() {
             {header: "SEDE", key: "sede", width: 20,}
         ];
         const data = await fertilizanteReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE FERTILIZANTES");
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE FERTILIZANTES", "Fertilizantes");
     }, [fertilizanteReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
@@ -214,7 +214,7 @@ export default function FertilizantePage() {
                 </div>
                 <div className="flex flex-col items-end gap-2">
                     <div
-                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:justify-end sm:items-end gap-1 justify-center">
+                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
                         <div
                             className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
                             <SelectFilter
@@ -258,7 +258,7 @@ export default function FertilizantePage() {
                             />
 
                         </div>
-                        <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-4">
+                        <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-2">
                             <Button
                                 onClick={handleClick}
                                 size="sm"
@@ -333,7 +333,7 @@ export default function FertilizantePage() {
                         {fertilizante.data!.data.map((item: fertilizanteCollectionItem, index: number) => (
                             <TableRow key={item.id} className="text-center">
                                 <TableCell className="text-xs sm:text-sm">
-                                    <Badge variant="secondary">{index + 1}</Badge>
+                                    <Badge variant="secondary">{10 * (page - 1) + index + 1}</Badge>
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.clase}</TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.tipoFertilizante}</TableCell>

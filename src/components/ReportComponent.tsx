@@ -25,6 +25,8 @@ interface ReportPopoverProps {
     yearTo?: string;
     from?: string;
     to?: string;
+    handleFromChange?: (value: string) => void;
+    handleToChange?: (value: string) => void;
     handleYearFromChange?: (value: string) => void;
     handleYearToChange?: (value: string) => void;
 }
@@ -51,6 +53,8 @@ const ReportComponent = forwardRef(function ReportComponent(
         yearTo,
         from,
         to,
+        handleFromChange,
+        handleToChange,
         handleYearFromChange,
         handleYearToChange,
     }: ReportPopoverProps,
@@ -59,8 +63,8 @@ const ReportComponent = forwardRef(function ReportComponent(
     const form = useForm<z.infer<typeof Report>>({
         resolver: zodResolver(Report),
         defaultValues: {
-            from: "",
-            to: "",
+            from: from,
+            to: to,
             yearFrom: yearFrom,
             yearTo: yearTo,
         },
@@ -94,6 +98,20 @@ const ReportComponent = forwardRef(function ReportComponent(
         return <div>Loading...</div>;
     }
 
+    const handleChangeFrom = (value: string) => {
+        form.setValue('from', value);
+        if (handleFromChange) {
+            handleFromChange(value);
+        }
+    }
+
+    const handleChangeTo = (value: string) => {
+        form.setValue('to', value);
+        if (handleToChange) {
+            handleToChange(value);
+        }
+    }
+
     const handleChangeYearFrom = (value: string) => {
         form.setValue('yearFrom', value);
         if (handleYearFromChange) {
@@ -118,19 +136,20 @@ const ReportComponent = forwardRef(function ReportComponent(
                     >
                         {
                             withMonth ? (
-                                <div className="flex flex-col items-center gap-2">
+                                <div
+                                    className="flex w-full flex-col gap-1 sm:flex-row sm:w-full sm:items-center sm:gap-2">
                                     <FormField
                                         control={form.control}
                                         name="from"
-                                        render={({field}) => (
+                                        render={() => (
                                             <FormItem className="w-full">
-                                                <FormLabel>Desde</FormLabel>
                                                 <FormControl>
                                                     <Input
-                                                        className="h-7"
+                                                        className="h-7 text-xs"
                                                         placeholder="2023-01"
                                                         type="month"
-                                                        {...field}
+                                                        defaultValue={form.watch('from')}
+                                                        onChange={(e) => handleChangeFrom(e.target.value)}
                                                     />
                                                 </FormControl>
                                                 <FormMessage/>
@@ -141,15 +160,15 @@ const ReportComponent = forwardRef(function ReportComponent(
                                     <FormField
                                         control={form.control}
                                         name="to"
-                                        render={({field}) => (
+                                        render={() => (
                                             <FormItem className="w-full">
-                                                <FormLabel>Hasta</FormLabel>
                                                 <FormControl>
                                                     <Input
-                                                        className="col-span-3"
+                                                        className="h-7 text-xs"
                                                         placeholder="2024-01"
                                                         type="month"
-                                                        {...field}
+                                                        defaultValue={form.watch('to')}
+                                                        onChange={(e) => handleChangeTo(e.target.value)}
                                                     />
                                                 </FormControl>
                                                 <FormMessage/>

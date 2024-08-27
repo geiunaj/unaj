@@ -4,7 +4,6 @@ import "./globals.css";
 import {ReactQueryClientProvider} from "@/components/Provider";
 import {Toaster} from "@/components/ui/sonner";
 import {SessionWrapper} from "@/components/SessionWrapper/SessionWrapper";
-import {ThemeProvider} from "@/components/theme-provider";
 
 const inter = Inter({subsets: ["latin"]});
 

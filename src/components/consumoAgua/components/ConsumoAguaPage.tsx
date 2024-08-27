@@ -19,7 +19,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 
 import SelectFilter from "@/components/SelectFilter";
 import ButtonCalculate from "@/components/ButtonCalculate";
@@ -61,6 +61,7 @@ import {useCombustibleReport} from "@/components/combustion/lib/combustion.hook"
 import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import ReportComponent from "@/components/ReportComponent";
 
 export default function ConsumoAguaPage() {
     //NAVIGATION
@@ -82,13 +83,16 @@ export default function ConsumoAguaPage() {
     const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
         "desc"
     );
+    const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
+    const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     //HOOKS
     const consumoAgua = useConsumoAgua({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
         areaId: selectedArea ? Number(selectedArea) : undefined,
-        anio: selectedAnio ? Number(selectedAnio) : undefined,
         mesId: selectedMes ? Number(selectedMes) : undefined,
+        from,
+        to,
         page: page,
     });
 
@@ -122,12 +126,6 @@ export default function ConsumoAguaPage() {
         consumoAgua.refetch();
     }, [selectedArea]);
 
-    const handleAnioChange = useCallback(async (value: string) => {
-        await setPage(1);
-        await setSelectedAnio(value);
-        await consumoAgua.refetch();
-    }, [consumoAgua]);
-
     const handleAreaChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedArea(value);
@@ -137,6 +135,18 @@ export default function ConsumoAguaPage() {
     const handleMesChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedMes(value);
+        await consumoAgua.refetch();
+    }, [consumoAgua]);
+
+    const handleFromChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setFrom(value);
+        await consumoAgua.refetch();
+    }, [consumoAgua]);
+
+    const handleToChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setTo(value);
         await consumoAgua.refetch();
     }, [consumoAgua]);
 
@@ -170,17 +180,13 @@ export default function ConsumoAguaPage() {
         await consumoAgua.refetch();
     }
 
-    const [from, setFrom] = useState<string>("");
-    const [to, setTo] = useState<string>("");
-
     const consumoAguaReport = useConsumoAguaReport({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
         areaId: selectedArea ? Number(selectedArea) : undefined,
-        anio: selectedAnio ? Number(selectedAnio) : undefined,
         mesId: selectedMes ? Number(selectedMes) : undefined,
-        page: page,
         from,
-        to
+        to,
+        page: page,
     });
 
     const handleClickReport = async (period: ReportRequest) => {
@@ -197,8 +203,16 @@ export default function ConsumoAguaPage() {
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
         const data = await consumoAguaReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CONSUMO DE AGUA`);
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CONSUMO DE AGUA`, `Consumo Agua`);
     }
+
+    const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
+
+    const handleClick = () => {
+        if (submitFormRef.current) {
+            submitFormRef.current.submitForm();
+        }
+    };
 
     if (consumoAgua.isLoading || areas.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {
         return <SkeletonTable/>;
@@ -219,91 +233,87 @@ export default function ConsumoAguaPage() {
                         Huella de carbono
                     </h2>
                 </div>
-                <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+                <div className="flex flex-col items-end gap-2">
                     <div
-                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
-                        <SelectFilter
-                            list={sedes.data!}
-                            itemSelected={selectedSede}
-                            handleItemSelect={handleSedeChange}
-                            value={"id"}
-                            nombre={"name"}
-                            id={"id"}
-                            icon={<Building className="h-3 w-3"/>}
-                        />
+                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
+                        <div
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
+                            <SelectFilter
+                                list={sedes.data!}
+                                itemSelected={selectedSede}
+                                handleItemSelect={handleSedeChange}
+                                value={"id"}
+                                nombre={"name"}
+                                id={"id"}
+                                icon={<Building className="h-3 w-3"/>}
+                            />
 
-                        <SelectFilter
-                            list={anios.data!}
-                            itemSelected={selectedAnio}
-                            handleItemSelect={handleAnioChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            all={true}
-                            icon={<Calendar className="h-3 w-3"/>}
-                        />
+                            <SelectFilter
+                                list={areas.data!}
+                                itemSelected={selectedArea}
+                                handleItemSelect={handleAreaChange}
+                                value={"id"}
+                                nombre={"nombre"}
+                                id={"id"}
+                                all={true}
+                                icon={<MapPinned className="h-3 w-3"/>}
+                            />
 
-                        <SelectFilter
-                            list={meses.data!}
-                            itemSelected={selectedMes}
-                            handleItemSelect={handleMesChange}
-                            value={"id"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            all={true}
-                            icon={<CalendarDays className="h-3 w-3"/>}
-                        />
+                            <SelectFilter
+                                list={meses.data!}
+                                itemSelected={selectedMes}
+                                handleItemSelect={handleMesChange}
+                                value={"id"}
+                                nombre={"nombre"}
+                                id={"id"}
+                                all={true}
+                                icon={<CalendarDays className="h-3 w-3"/>}
+                            />
 
-                        <SelectFilter
-                            list={areas.data!}
-                            itemSelected={selectedArea}
-                            handleItemSelect={handleAreaChange}
-                            value={"id"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            all={true}
-                            icon={<MapPinned className="h-3 w-3"/>}
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    size="sm"
-                                    className="h-7 gap-1"
-                                    variant="outline"
-                                >
-                                    <FileSpreadsheet className="h-3.5 w-3.5"/>
-                                    Reporte
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-80">
-                                <ReportPopover
-                                    onClick={(data: ReportRequest) => handleClickReport(data)}
-                                    withMonth={true}
-                                />
-                            </PopoverContent>
-                        </Popover>
-                        <ButtonCalculate onClick={handleCalculate}/>
+                            <ReportComponent
+                                onSubmit={handleClickReport}
+                                ref={submitFormRef}
+                                withMonth={true}
+                                from={from}
+                                to={to}
+                                handleFromChange={handleFromChange}
+                                handleToChange={handleToChange}
+                            />
+                        </div>
+                        <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-2">
 
-                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                            <DialogTrigger asChild>
-                                <Button size="sm" className="h-7 gap-1">
-                                    <Plus className="h-3.5 w-3.5"/>
-                                    Registrar
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-xl border-2">
-                                <DialogHeader className="">
-                                    <DialogTitle>CONSUMO DE AGUA</DialogTitle>
-                                    <DialogDescription>
-                                        Indicar el Consumo de Agua
-                                    </DialogDescription>
-                                    <DialogClose></DialogClose>
-                                </DialogHeader>
-                                <FormConsumoAgua onClose={handleClose}/>
-                            </DialogContent>
-                        </Dialog>
+                            <Button
+                                onClick={handleClick}
+                                size="sm"
+                                variant="outline"
+                                className="flex items-center gap-2 h-7"
+                            >
+                                <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                Excel
+                            </Button>
+
+
+                            <ButtonCalculate onClick={handleCalculate}/>
+
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button size="sm" className="h-7 gap-1">
+                                        <Plus className="h-3.5 w-3.5"/>
+                                        Registrar
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-xl border-2">
+                                    <DialogHeader className="">
+                                        <DialogTitle>CONSUMO DE AGUA</DialogTitle>
+                                        <DialogDescription>
+                                            Indicar el Consumo de Agua
+                                        </DialogDescription>
+                                        <DialogClose></DialogClose>
+                                    </DialogHeader>
+                                    <FormConsumoAgua onClose={handleClose}/>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </div>
                 </div>
             </div>
