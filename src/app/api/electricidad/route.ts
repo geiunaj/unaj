@@ -27,11 +27,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const dateFrom = searchParams.get("from") ?? undefined;
         const dateTo = searchParams.get("to") ?? undefined;
 
-        let anioId;
-        if (anio) anioId = await getAnioId(anio);
 
         let yearFrom, yearTo, monthFrom, monthTo;
         let yearFromId, yearToId, mesFromId, mesToId;
+
+        // if (anio) anioId = await getAnioId(anio);
+
 
         if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
         if (dateTo) [yearTo, monthTo] = dateTo.split("-");
@@ -44,7 +45,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             area: {
                 sede_id: sedeId ? parseInt(sedeId) : undefined,
             },
-            anio_id: anioId,
+            // anio_id: anioId,
             mes_id: mes ? parseInt(mes) : undefined,
             areaId: areaId ? parseInt(areaId) : undefined,
         } as {

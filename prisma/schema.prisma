@@ -291,6 +291,7 @@ model energiaCalculos {
   totalGEI         Float @db.Float
   anioId           Int
   areaId           Int
+  periodoCalculoId Int?  @db.Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

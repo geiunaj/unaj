@@ -11,31 +11,30 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
         const sedeId = searchParams.get("sedeId");
-        const anio = searchParams.get("anio");
-
-        const sort = searchParams.get("sort") ?? undefined;
-        const direction = searchParams.get("direction") ?? undefined;
+        // const anio = searchParams.get("anio");
 
         const page = parseInt(searchParams.get("page") ?? "1");
         const perPage = parseInt(searchParams.get("perPage") ?? "10");
 
-        let anioId;
+        const dateFrom = searchParams.get("from") ?? undefined;
+        const dateTo = searchParams.get("to") ?? undefined;
+        const all = searchParams.get("all") === "true";
 
-        if (anio) {
-            const searchAnio = await prisma.anio.findFirst({
-                where: {
-                    nombre: anio,
-                },
-            });
-            if (!searchAnio) return NextResponse.json([{error: "Anio not found"}]);
-            anioId = searchAnio.id;
+        const period = await prisma.periodoCalculo.findFirst({
+            where: {
+                fechaInicio: dateFrom ? dateFrom : undefined,
+                fechaFin: dateTo ? dateTo : undefined,
+            },
+        });
+        if (!period && all) {
+            return new NextResponse("Periodo no encontrado", {status: 404,});
         }
 
         const whereOptions = {
             area: {
                 sede_id: sedeId ? Number(sedeId) : undefined,
             },
-            anioId: anioId,
+            periodoCalculoId: period?.id,
         };
 
         const totalRecords = await prisma.energiaCalculos.count({
@@ -51,16 +50,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                         sede: true
                     }
                 },
-                anio: true,
+                // anio: true,
                 factor: true,
             },
-            orderBy: sort
-                ? [{[sort]: direction || 'desc'}]
-                : [
-                    {anioId: 'desc'},
-                ],
-            skip: (page - 1) * perPage,
-            take: perPage,
+            orderBy: [{area: {nombre: "asc"}}],
+            ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}), 
         });
 
         const formattedElectricidadCalculos: any[] = electricidadCalculos
@@ -92,10 +86,39 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const electricidadCalculos = [];
 
         const body: ElectricidadCalcRequest = await req.json();
-
         const sedeId = body.sedeId;
-        let anioId = await getAnioId(body.anio.toString());
-        if (!anioId) return NextResponse.json([{error: "Anio not found"}]);
+        const dateFrom = body.from;
+        const dateTo = body.to;
+        
+
+        let yearFrom, yearTo, monthFrom, monthTo;
+        let yearFromId, yearToId, mesFromId, mesToId;
+
+        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
+        if (yearFrom) yearFromId = await getAnioId(yearFrom);
+        if (yearTo) yearToId = await getAnioId(yearTo);
+        if (monthFrom) mesFromId = parseInt(monthFrom);
+        if (monthTo) mesToId = parseInt(monthTo);
+
+        let period = await prisma.periodoCalculo.findFirst({
+            where: {
+                fechaInicio: dateFrom ? dateFrom : undefined,
+                fechaFin: dateTo ? dateTo : undefined,
+            },
+        });
+
+        if (!period) {
+            period = await prisma.periodoCalculo.create({
+                data: {
+                    fechaInicio: dateFrom ? dateFrom : undefined,
+                    fechaFin: dateTo ? dateTo : undefined,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+        }
+
         const areas = await prisma.area.findMany(
             {
                 where: {
@@ -104,21 +127,41 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         );
 
+        const whereOptionsConsumoElectricidad = {
+            area: {sede_id: sedeId ? Number(sedeId) : undefined,},
+        } as{
+            area:{
+                sede_id: number;
+            }
+            anio_mes?: {
+                gte?: number;
+                lte?: number;
+            }
+        }
+        const from = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
+        const to = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
+
+        if (from && to) {
+            whereOptionsConsumoElectricidad.anio_mes = {gte: from, lte: to,};
+        } else if (from) {
+            whereOptionsConsumoElectricidad.anio_mes = {gte: from,};
+        } else if (to) {
+            whereOptionsConsumoElectricidad.anio_mes = {lte: to,};
+        }
+
         const electricidad = await prisma.consumoEnergia.findMany({
-            where: {
-                area: {sede_id: sedeId,},
-                anio_id: anioId,
-            },
+            where: whereOptionsConsumoElectricidad
         });
 
         await prisma.energiaCalculos.deleteMany({
             where: {
                 area: {sede_id: sedeId,},
-                anioId: anioId,
+                periodoCalculoId: period.id,
             },
         });
 
         const factorSEIN = await prisma.factorConversionSEIN.findFirst({
+            
             where: {
                 anioId: anioId,
             },
