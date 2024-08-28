@@ -88,7 +88,6 @@ model Anio {
   fertilizanteCalculos fertilizanteCalculos[]
   consumoEnergia       consumoEnergia[]
   factorConversionSEIN factorConversionSEIN[]
-  energiaCalculos      energiaCalculos[]
   ConsumoAgua          ConsumoAgua[]
 }
 
@@ -274,31 +273,29 @@ model area {
   sede Sede? @relation(fields: [sede_id], references: [id])
 
   consumoEnergia      consumoEnergia[]
-  energiaCalculos     energiaCalculos[]
+  EnergiaCalculos     EnergiaCalculos[]
   ConsumoAgua         ConsumoAgua[]
   ConsumoAguaCalculos ConsumoAguaCalculos[]
 }
 
-model energiaCalculos {
+model EnergiaCalculos {
   id               Int   @id @default(autoincrement())
   consumoArea      Float @db.Float
   factorConversion Float @db.Float
-  factorId         Int
   consumoTotal     Float @db.Float
   emisionCO2       Float @db.Float
   emisionCH4       Float @db.Float
   emisionN2O       Float @db.Float
   totalGEI         Float @db.Float
-  anioId           Int
   areaId           Int
   periodoCalculoId Int?  @db.Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  factor factorConversionSEIN? @relation(fields: [factorId], references: [id])
-  anio   Anio?                 @relation(fields: [anioId], references: [id])
-  area   area?                 @relation(fields: [areaId], references: [id])
+  area           area?           @relation(fields: [areaId], references: [id])
+  PeriodoCalculo PeriodoCalculo? @relation(fields: [periodoCalculoId], references: [id])
+  anioId         Int?
 }
 
 model factorConversionSEIN {
@@ -310,8 +307,7 @@ model factorConversionSEIN {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  anio            Anio              @relation(fields: [anioId], references: [id])
-  energiaCalculos energiaCalculos[]
+  anio Anio @relation(fields: [anioId], references: [id])
 }
 
 model Taxi {
@@ -374,4 +370,5 @@ model PeriodoCalculo {
   created_at          DateTime              @default(now())
   updated_at          DateTime              @updatedAt
   ConsumoAguaCalculos ConsumoAguaCalculos[]
+  EnergiaCalculos     EnergiaCalculos[]
 }

@@ -32,7 +32,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import {electricidadCollection, electricidadCollectionItem} from "../services/electricidad.interface";
+import {electricidadCollectionItem} from "../services/electricidad.interface";
 import {FormElectricidad} from "./FormElectricidad";
 import {useRouter} from "next/navigation";
 import {Badge} from "@/components/ui/badge";
@@ -57,7 +57,6 @@ import {
 } from "lucide-react";
 import CustomPagination from "@/components/Pagination";
 import {UpdateFormElectricidad} from "@/components/consumoElectricidad/components/UpdateFormElectricidad";
-import {useCombustibleReport} from "@/components/combustion/lib/combustion.hook";
 import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
@@ -79,9 +78,9 @@ export default function ElectricidadPage() {
     );
     const [selectedArea, setSelectedArea] = useState<string>("1");
     const [selectedMes, setSelectedMes] = useState<string>("");
-    const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
-        "desc"
-    );
+    // const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
+    //     "desc"
+    // );
 
     //HOOKS
     const electricidad = useElectricidad({
@@ -198,7 +197,7 @@ export default function ElectricidadPage() {
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
         const data = await electricidadReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), `REPORTE DE CONSUMO DE ENERGÍA ELÉCTRICA`);
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), `REPORTE DE CONSUMO DE ENERGÍA ELÉCTRICA`, "consumo-electricidad");
     }
 
     if (electricidad.isLoading || areas.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {

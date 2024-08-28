@@ -1,5 +1,5 @@
 "use client";
-import {useState, useCallback} from "react";
+import React, {useState, useCallback} from "react";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {
     AlertDialog,
@@ -56,6 +56,7 @@ import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPop
 import GenerateReport from "@/lib/utils/generateReport";
 import {useFertilizanteReport} from "@/components/fertilizantes/lib/fertilizante.hook";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 
 export default function CombustiblePage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
@@ -76,6 +77,8 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         new Date().getFullYear().toString()
     );
     const [selectedMes, setSelectedMes] = useState<string>("");
+    const [from, setFrom] = useState<string>("");
+    const [to, setTo] = useState<string>("");
 
     // HOOKS
     const combustible = useCombustible({
@@ -86,6 +89,18 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         mesId: selectedMes ? Number(selectedMes) : undefined,
         page,
     });
+
+    const combustibleReport = useCombustibleReport({
+        tipo,
+        tipoCombustibleId: selectTipoCombustible ? Number(selectTipoCombustible) : undefined,
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
+        anio: selectedAnio ? Number(selectedAnio) : undefined,
+        mesId: selectedMes ? Number(selectedMes) : undefined,
+        page,
+        from,
+        to
+    });
+
     const tiposCombustible = useTipoCombustible();
     const sedes = useSede();
     const anios = useAnio();
@@ -159,19 +174,6 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         await combustible.refetch();
     }
 
-    const [from, setFrom] = useState<string>("");
-    const [to, setTo] = useState<string>("");
-
-    const combustibleReport = useCombustibleReport({
-        tipo,
-        tipoCombustibleId: selectTipoCombustible ? Number(selectTipoCombustible) : undefined,
-        sedeId: selectedSede ? Number(selectedSede) : undefined,
-        anio: selectedAnio ? Number(selectedAnio) : undefined,
-        mesId: selectedMes ? Number(selectedMes) : undefined,
-        page,
-        from,
-        to
-    });
 
     const handleClickReport = async (period: ReportRequest) => {
         const columns = [
@@ -188,7 +190,7 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
         const data = await combustibleReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE COMBUSTIÓN ${tipo.toUpperCase()}`);
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE COMBUSTIÓN ${tipo.toUpperCase()}`, `Combustión ${tipo}`);
     }
 
     if (combustible.isLoading || tiposCombustible.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {
@@ -262,24 +264,23 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
                     </div>
 
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    size="sm"
-                                    className="h-7 gap-1"
-                                    variant="outline"
-                                >
-                                    <FileSpreadsheet className="h-3.5 w-3.5"/>
-                                    Reporte
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-80">
-                                <ReportPopover
-                                    onClick={(data: ReportRequest) => handleClickReport(data)}
-                                    withMonth={true}
-                                />
-                            </PopoverContent>
-                        </Popover>
+                        <ExportPdfReport
+                            data={combustibleReport.data!.data}
+                            fileName={`REPORTE DE CONSUMO DE AGUA_${formatPeriod({from, to}, true)}`}
+                            columns={[
+                                {header: "N°", key: "id", width: 5,},
+                                {header: "TIPO", key: "tipo", width: 10,},
+                                {header: "TIPO DE EQUIPO", key: "tipoEquipo", width: 10,},
+                                {header: "CONSUMO", key: "consumo", width: 15,},
+                                {header: "MES", key: "mes", width: 10,},
+                                {header: "AÑO", key: "anio", width: 10,},
+                                {header: "TIPO DE COMBUSTIBLE", key: "tipoCombustible", width: 20,},
+                                {header: "UNIDAD", key: "unidad", width: 10,},
+                                {header: "SEDE", key: "sede", width: 70,}
+                            ]}
+                            title="REPORTE DE CONSUMO DE AGUA"
+                            period={formatPeriod({from, to}, true)}
+                        />
 
                         <ButtonCalculate onClick={handleCalculate}/>
 

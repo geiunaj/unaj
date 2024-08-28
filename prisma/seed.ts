@@ -410,9 +410,9 @@ async function main() {
     }
 
     const allTiposFertilizantes = await prisma.tipoFertilizante.findMany();
-    const allDocument = await prisma.documento.findMany(); // Asumiendo que 'document' es el nombre correcto del modelo
+    // const allDocument = await prisma.documento.findMany(); // Asumiendo que 'document' es el nombre correcto del modelo
 
-    const fichaIds = allDocument.map((doc: { id: any }) => doc.id); // Obtener los IDs de los documentos creados
+    // const fichaIds = allDocument.map((doc: { id: any }) => doc.id); // Obtener los IDs de los documentos creados
 
     for (const typeFertilizante of allTiposFertilizantes) {
         for (const sede of allSedes) {

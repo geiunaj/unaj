@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/table";
 import {Badge} from "@/components/ui/badge";
 import {useRouter} from "next/navigation";
-import ButtonCalculate from "@/components/ButtonCalculate";
 import ButtonBack from "@/components/ButtonBack";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {FileSpreadsheet} from "lucide-react";
@@ -26,7 +25,6 @@ import {createCalculosConsumoAgua} from "@/components/consumoAgua/services/consu
 import {consumoAguaCalculosCollectionItem} from "@/components/consumoAgua/services/consumoAguaCalculos.interface";
 import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
-import {create} from "zustand";
 
 export default function ConsumoAguaCalculate() {
     const {push} = useRouter();
@@ -90,7 +88,7 @@ export default function ConsumoAguaCalculate() {
             to: period.to ? period.to : undefined
         });
         const data = await consumoAguaCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CALCULOS DE CONSUMO DE AGUA`);
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CALCULOS DE CONSUMO DE AGUA`, "consumo-agua");
     }
 
     if (consumoAguaCalculos.isLoading) {
@@ -108,7 +106,7 @@ export default function ConsumoAguaCalculate() {
                     <ButtonBack onClick={handleCombustion}/>
                     <div className="font-Manrope">
                         <h1 className="text-base text-gray-800 font-bold">
-                            Cálculo de Consumo de Agua Potable 
+                            Cálculo de Consumo de Agua Potable
                         </h1>
                         <h2 className="text-xs sm:text-sm text-gray-500">
                             Huella de carbono
