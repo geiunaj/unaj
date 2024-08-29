@@ -70,6 +70,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 lte: to,
             };
         }
+        console.log(whereOptions);
 
         const totalRecords = await prisma.consumoEnergia.count({where: whereOptions});
         const totalPages = Math.ceil(totalRecords / perPage);
@@ -86,8 +87,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 },
             },
             orderBy: all
-            ? [{area: {sede_id: 'asc'}}, {areaId: 'asc'}, {anio_mes: 'asc'}]
-            : sort
+                ? [{area: {sede_id: 'asc'}}, {areaId: 'asc'}, {anio_mes: 'asc'}]
+                : sort
                     ? [{[sort]: direction || 'desc'}]
                     : [{area: {sede_id: "desc"}}, {areaId: "asc"}, {anio_id: "desc"}, {mes_id: "desc"}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),

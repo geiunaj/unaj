@@ -39,7 +39,7 @@ import {
     useAnio,
     useArea,
     useConsumoAgua, useConsumoAguaReport,
-    useMes,
+    useMes, useSede,
 } from "../lib/consumoAgua.hooks";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonTable from "@/components/Layout/skeletonTable";
@@ -53,7 +53,6 @@ import {
     MapPinned, FileSpreadsheet,
 } from "lucide-react";
 import CustomPagination from "@/components/Pagination";
-import {useSede} from "@/components/consumoElectricidad/lib/electricidad.hooks";
 import {deleteConsumoAgua} from "../services/consumoAgua.actions";
 import {FormConsumoAgua} from "./FormConsumoAgua";
 import {UpdateFormConsumoAgua} from "./UpdateFormConsumoAgua";

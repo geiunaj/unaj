@@ -12,8 +12,9 @@ interface Response {
 
 export async function getElectricidad(
     sedeId?: number,
-    anioId?: number,
     areaId?: number,
+    from?: string,
+    to?: string,
     mesId?: number,
     sort?: string,
     direction?: string,
@@ -22,12 +23,12 @@ export async function getElectricidad(
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
-            anioId,
             areaId,
+            from,
+            to,
+            mesId,
             sort,
             direction,
-            mesId,
-
             page,
         },
     };
@@ -40,28 +41,23 @@ export async function getElectricidad(
 
 export async function getElectricidadReport(
     sedeId?: number,
-    anioId?: number,
     areaId?: number,
+    from?: string,
+    to?: string,
     mesId?: number,
     sort?: string,
     direction?: string,
-    page?: number,
-    from?: string,
-    to?: string,
-    all = true
 ): Promise<electricidadCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
-            anioId,
             areaId,
-            sort,
-            direction,
-            mesId,
-            page,
             from,
             to,
-            all,
+            mesId,
+            sort,
+            direction,
+            all: true,
         },
     };
     const {data} = await api.get<electricidadCollection>(

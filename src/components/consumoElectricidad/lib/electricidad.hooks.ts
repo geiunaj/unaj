@@ -7,30 +7,29 @@ import {getArea} from "@/components/area/services/area.actions";
 
 interface getElectricidadInterface {
     sedeId?: number;
-    anioId?: number;
-    mesId?: number;
     areaId?: number;
+    from?: string;
+    to?: string;
+    mesId?: number;
     sort?: string;
     direction?: string;
     page?: number;
-    from?: string;
-    to?: string;
 }
 
 export const useElectricidad =
-    ({sedeId, anioId, mesId, areaId, sort, direction, page}: getElectricidadInterface) => {
+    ({sedeId, areaId, from, to, mesId, sort, direction, page}: getElectricidadInterface) => {
         return useQuery({
             queryKey: ['Electricidad'],
-            queryFn: () => getElectricidad(sedeId, anioId, areaId, mesId, sort, direction, page),
+            queryFn: () => getElectricidad(sedeId, areaId, from, to, mesId, sort, direction, page),
             refetchOnWindowFocus: false,
         });
     }
 
 export const useElectricidadReport =
-    ({sedeId, anioId, mesId, areaId, sort, direction, page, from, to}: getElectricidadInterface) => {
+    ({sedeId, areaId, from, to, mesId, sort, direction,}: getElectricidadInterface) => {
         return useQuery({
             queryKey: ['ElectricidadReport'],
-            queryFn: () => getElectricidadReport(sedeId, anioId, areaId, mesId, sort, direction, page, from, to),
+            queryFn: () => getElectricidadReport(sedeId, areaId, from, to, mesId, sort, direction),
             refetchOnWindowFocus: false,
         });
     }

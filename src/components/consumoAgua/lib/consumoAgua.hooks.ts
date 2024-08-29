@@ -3,6 +3,7 @@ import {getAnio} from "@/components/anio/services/anio.actions";
 import {getMes} from "@/components/mes/services/mes.actions";
 import {getArea} from "@/components/area/services/area.actions";
 import {getConsumoAgua, getConsumoAguaReport} from "../services/consumoAgua.actions";
+import {getSedes} from "@/components/sede/services/sede.actions";
 
 interface getConsumoAguaInterface {
     sedeId?: number;
@@ -48,6 +49,14 @@ export const useConsumoAguaReport = ({
         refetchOnWindowFocus: false,
     });
 };
+
+export const useSede = () => {
+    return useQuery({
+        queryKey: ["sedeCS"],
+        queryFn: () => getSedes(),
+        refetchOnWindowFocus: false,
+    });
+}
 
 export const useAnio = () => {
     return useQuery({

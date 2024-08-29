@@ -84,9 +84,6 @@ export default function ElectricidadPage() {
 
     //SELECTS - FILTERS
     const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [selectedAnio, setSelectedAnio] = useState<string>(
-        new Date().getFullYear().toString()
-    );
     const [selectedArea, setSelectedArea] = useState<string>("1");
     const [selectedMes, setSelectedMes] = useState<string>("");
     // const [consumoDirection, setConsumoDirection] = useState<"asc" | "desc">(
@@ -108,12 +105,10 @@ export default function ElectricidadPage() {
 
     const electricidadReport = useElectricidadReport({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
-        anioId: selectedAnio ? Number(selectedAnio) : undefined,
         areaId: selectedArea ? Number(selectedArea) : undefined,
         mesId: selectedMes ? Number(selectedMes) : undefined,
         from,
         to,
-        page: page,
     });
 
     const sedes = useSede();
@@ -149,13 +144,6 @@ export default function ElectricidadPage() {
         electricidad.refetch();
         electricidadReport.refetch();
     }, [selectedArea]);
-
-    // const handleAnioChange = useCallback(async (value: string) => {
-    //     await setPage(1);
-    //     await setSelectedArea(value);
-    //     await electricidad.refetch();
-    //     await electricidadReport.refetch();
-    // }, [electricidad,electricidadReport]);
 
     const handleAreaChange = useCallback(
         async (value: string) => {
@@ -205,6 +193,7 @@ export default function ElectricidadPage() {
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
+        electricidad.refetch();
         electricidadReport.refetch();
     }, [electricidad, electricidadReport]);
 
@@ -274,7 +263,7 @@ export default function ElectricidadPage() {
 
     return (
         <div className="w-full max-w-[1150px] h-full ">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="font-Manrope">
                     <h1 className="text-base text-foreground font-bold">
                         Consumo de Electricidad
@@ -355,7 +344,6 @@ export default function ElectricidadPage() {
                                         width: 15,
                                     },
                                     {header: "CONSUMO", key: "consumo", width: 15},
-                                    // {header: "FUENTE DE AGUA", key: "fuenteAgua", width: 15},
                                     {header: "MES", key: "mes", width: 10},
                                     {header: "AÑO", key: "anio", width: 10},
                                     {header: "AREA", key: "area", width: 15},
