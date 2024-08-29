@@ -99,8 +99,7 @@ export default function ElectricidadCalculate() {
                 <div className="flex items-center gap-4">
                     <ButtonBack onClick={handleCombustion}/>
                     <div className="font-Manrope">
-                        <h1 className="text-base text-foreground font-bold">Cálculo de emisiones de CO2 por
-                            combustión</h1>
+                        <h1 className="text-base text-foreground font-bold">Emisiones de Consumo de Electricidad</h1>
                         <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
                     </div>
                 </div>

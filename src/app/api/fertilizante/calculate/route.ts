@@ -14,7 +14,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const tipoFertilizanteId = searchParams.get("tipoFertilizanteId") ?? undefined;
         const claseFertilizante = searchParams.get("claseFertilizante") ?? undefined;
 
-        
+
         // let anioId = searchParams.get("anioId");
 
         const all = searchParams.get("all") === "true";
@@ -59,18 +59,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             tipoFertilizante_id: tipoFertilizanteId
                 ? parseInt(tipoFertilizanteId)
                 : undefined,
-                tipoFertilizante: {
-                    clase: claseFertilizante ? claseFertilizante : undefined,
-                },
-                anio: {
-                    nombre: {
-                        ...(yearFromId && yearToId ? {gte: yearFrom, lte: yearTo} :
-                                yearFromId ? {gte: yearFrom} : yearToId ? {lte: yearTo} : undefined
-                        ),
-                    }
-                },
+            tipoFertilizante: {
+                clase: claseFertilizante ? claseFertilizante : undefined,
+            },
+            anio: {
+                nombre: {
+                    ...(yearFromId && yearToId ? {gte: yearFrom, lte: yearTo} :
+                            yearFromId ? {gte: yearFrom} : yearToId ? {lte: yearTo} : undefined
+                    ),
+                }
+            },
             periodoCalculoId: period?.id,
-            };
+        };
 
         const totalRecords = await prisma.fertilizante.count({where: whereOptions});
         const totalPages = Math.ceil(totalRecords / perPage);
@@ -80,10 +80,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             include: {
                 TipoFertilizante: true,
                 sede: true,
-                anio: true,
-            }, 
-            orderBy: [{anio: {nombre: 'asc'}}],
-            ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),          
+            },
+            orderBy: [{TipoFertilizante: {nombre: 'asc'}}],
+            ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
         const formattedFertilizananteCalculos: FertilizanteCalc[] = fertilizanteCalculos.map(
@@ -119,8 +118,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const sedeId = body.sedeId;
 
         const yearFrom = body.from;
-        const yearTo = body.to;     
-        
+        const yearTo = body.to;
+
         let yearFromId, yearToId;
         if (yearFrom) yearFromId = parseInt(yearFrom);
         if (yearTo) yearToId = parseInt(yearTo);
@@ -161,14 +160,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         //     anioId = searchAnio.id;
         // }
 
-        const whereOptionsFertilizanteCal ={
+        const whereOptionsFertilizanteCal = {
             sede_id: sedeId,
-        }as{
+        } as {
             sede_id: number;
             anio?: {
-                    gte: string;
-                    lte: string;
-                
+                gte?: string;
+                lte?: string;
             };
         };
 
@@ -182,7 +180,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         } else if (to) {
             whereOptionsFertilizanteCal.anio = {lte: to,};
         }
-        
+
         const tiposFertilizante = await prisma.tipoFertilizante.findMany();
         const fertilizante = await prisma.fertilizante.findMany({
             where: {
@@ -192,7 +190,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         await prisma.fertilizanteCalculos.deleteMany({
             where: {
-                sede_id: sedeId,
+                sedeId: sedeId,
                 periodoCalculoId: period.id,
             },
         });

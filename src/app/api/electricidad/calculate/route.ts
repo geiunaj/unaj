@@ -46,9 +46,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             periodoCalculoId: period?.id,
         };
 
-        const totalRecords = await prisma.consumoAguaCalculos.count({
+        const totalRecords = await prisma.energiaCalculos.count({
             where: whereOptions
         });
+
         const totalPages = Math.ceil(totalRecords / perPage);
 
         const electricidadCalculos = await prisma.energiaCalculos.findMany({
