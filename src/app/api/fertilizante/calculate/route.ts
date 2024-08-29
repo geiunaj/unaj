@@ -30,7 +30,16 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         if (yearFrom) yearFromId = parseInt(yearFrom);
         if (yearTo) yearToId = parseInt(yearTo);
 
+        const period = await prisma.periodoCalculo.findFirst({
+            where: {
+                fechaInicio: yearFrom ? yearFrom : undefined,
+                fechaFin: yearTo ? yearTo : undefined,
+            },
+        });
 
+        if (!period && all) {
+            return new NextResponse("Periodo no encontrado", {status: 404,});
+        }
         // if (!sedeId || !anioId) {
         //     return NextResponse.json([{error: "Missing sedeId or anioId"}]);
         // }
@@ -59,7 +68,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                                 yearFromId ? {gte: yearFrom} : yearToId ? {lte: yearTo} : undefined
                         ),
                     }
-                }
+                },
+            periodoCalculoId: period?.id,
             };
 
         const totalRecords = await prisma.fertilizante.count({where: whereOptions});
@@ -71,7 +81,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 TipoFertilizante: true,
                 sede: true,
                 anio: true,
-            },           
+            }, 
+            orderBy: [{anio: {nombre: 'asc'}}],
+            ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),          
         });
 
         const formattedFertilizananteCalculos: FertilizanteCalc[] = fertilizanteCalculos.map(
@@ -104,6 +116,30 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         const fertilizanteCalculos = [];
         const body: FertilizanteCalcRequest = await req.json();
+        const sedeId = body.sedeId;
+
+        const yearFrom = body.from;
+        const yearTo = body.to;     
+        
+        let yearFromId, yearToId;
+        if (yearFrom) yearFromId = parseInt(yearFrom);
+        if (yearTo) yearToId = parseInt(yearTo);
+
+        let period = await prisma.periodoCalculo.findFirst({
+            where: {
+                fechaInicio: yearFrom ? yearFrom : undefined,
+                fechaFin: yearTo ? yearTo : undefined,
+            },
+        });
+
+        if (!period) {
+            period = await prisma.periodoCalculo.create({
+                data: {
+                    fechaInicio: yearFrom,
+                    fechaFin: yearTo,
+                },
+            });
+        }
 
         if (!body) {
             return NextResponse.json([{error: "Missing body"}]);
@@ -111,31 +147,54 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         console.log("body: " + JSON.stringify(body));
 
-        const sedeId = body.sedeId;
-        let anioId = body.anioId;
+        // let anioId = body.anioId;
 
-        const searchAnio = await prisma.anio.findFirst({
-            where: {
-                nombre: anioId.toString(),
-            },
-        });
+        // const searchAnio = await prisma.anio.findFirst({
+        //     where: {
+        //         nombre: anioId.toString(),
+        //     },
+        // });
 
-        if (!searchAnio) {
-            return NextResponse.json([{error: "Anio not found"}]);
-        } else {
-            anioId = searchAnio.id;
+        // if (!searchAnio) {
+        //     return NextResponse.json([{error: "Anio not found"}]);
+        // } else {
+        //     anioId = searchAnio.id;
+        // }
+
+        const whereOptionsFertilizanteCal ={
+            sede_id: sedeId,
+        }as{
+            sede_id: number;
+            anio?: {
+                    gte: string;
+                    lte: string;
+                
+            };
+        };
+
+        const from = yearFromId ? yearFrom : undefined;
+        const to = yearToId ? yearTo : undefined;
+
+        if (from && to) {
+            whereOptionsFertilizanteCal.anio = {gte: from, lte: to};
+        } else if (from) {
+            whereOptionsFertilizanteCal.anio = {gte: from,};
+        } else if (to) {
+            whereOptionsFertilizanteCal.anio = {lte: to,};
         }
-
+        
         const tiposFertilizante = await prisma.tipoFertilizante.findMany();
         const fertilizante = await prisma.fertilizante.findMany({
             where: {
                 sede_id: sedeId,
-                anio_id: anioId,
             },
         });
 
         await prisma.fertilizanteCalculos.deleteMany({
-            where: {anioId: anioId, sedeId: sedeId},
+            where: {
+                sede_id: sedeId,
+                periodoCalculoId: period.id,
+            },
         });
 
         const gwp = await prisma.gWP.findFirstOrThrow({
@@ -175,7 +234,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 totalEmisionesDirectas: totalEmisionesDirectas,
                 // porcentajeNitrogeno: porcentajeNitrogeno,
                 emisionGEI: emisionGEI,
-                anioId: anioId,
+                periodoCalculoId: period.id,
                 sedeId: sedeId,
             };
 

@@ -3,16 +3,18 @@ export interface FertilizanteCalc {
   consumoTotal: number;
   cantidadAporte: number;
   emisionDirecta: number;
-  // porcentajeNitrogeno: number;
   totalEmisionesDirectas: number;
   emisionGEI: number;
-  anioId: number;
+  // anioId: number;
   sedeId: number;
+  periodoCalculoId: number;
 }
 
 export interface FertilizanteCalcRequest {
   sedeId: number;
-  anioId: number;
+  // anioId: number;
+  from: string;
+  to: string;
 }
 
 export interface FertilizanteCalcResponse {
