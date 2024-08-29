@@ -338,14 +338,10 @@ export default function ElectricidadPage() {
                                 )}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
-                                    {
-                                        header: "NUMERO DE SUMINISTRO",
-                                        key: "numeroSuministro",
-                                        width: 15,
-                                    },
+                                    {header: "NUMERO DE SUMINISTRO", key: "numeroSuministro", width: 20},
                                     {header: "CONSUMO", key: "consumo", width: 15},
-                                    {header: "MES", key: "mes", width: 10},
-                                    {header: "AÑO", key: "anio", width: 10},
+                                    {header: "MES", key: "mes", width: 15},
+                                    {header: "AÑO", key: "anio", width: 15},
                                     {header: "AREA", key: "area", width: 15},
                                     {header: "SEDE", key: "sede", width: 15},
                                 ]}
