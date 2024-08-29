@@ -9,40 +9,89 @@ import {formatFertilizanteCalculo} from "@/lib/resources/fertilizanteCalculateRe
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
+
         const sedeId = searchParams.get("sedeId");
-        let anioId = searchParams.get("anioId");
+        const tipoFertilizanteId = searchParams.get("tipoFertilizanteId") ?? undefined;
+        const claseFertilizante = searchParams.get("claseFertilizante") ?? undefined;
 
-        if (!sedeId || !anioId) {
-            return NextResponse.json([{error: "Missing sedeId or anioId"}]);
-        }
+        
+        // let anioId = searchParams.get("anioId");
 
-        const searchAnio = await prisma.anio.findFirst({
-            where: {
-                nombre: anioId,
-            },
-        });
+        const all = searchParams.get("all") === "true";
+        const yearFrom = searchParams.get("yearFrom") ?? undefined;
+        const yearTo = searchParams.get("yearTo") ?? undefined;
 
-        if (!searchAnio) {
-            return NextResponse.json([{error: "Anio not found"}]);
-        }
+        const page = parseInt(searchParams.get("page") ?? "1");
+        const perPage = parseInt(searchParams.get("perPage") ?? "10");
+
+        let yearFromId: number | undefined;
+        let yearToId: number | undefined;
+
+        if (yearFrom) yearFromId = parseInt(yearFrom);
+        if (yearTo) yearToId = parseInt(yearTo);
+
+
+        // if (!sedeId || !anioId) {
+        //     return NextResponse.json([{error: "Missing sedeId or anioId"}]);
+        // }
+
+        // const searchAnio = await prisma.anio.findFirst({
+        //     where: {
+        //         nombre: anioId,
+        //     },
+        // });
+
+        // if (!searchAnio) {
+        //     return NextResponse.json([{error: "Anio not found"}]);
+        // }
+
+        const whereOptions = {
+            sede_id: sedeId ? parseInt(sedeId) : undefined,
+            tipoFertilizante_id: tipoFertilizanteId
+                ? parseInt(tipoFertilizanteId)
+                : undefined,
+                tipoFertilizante: {
+                    clase: claseFertilizante ? claseFertilizante : undefined,
+                },
+                anio: {
+                    nombre: {
+                        ...(yearFromId && yearToId ? {gte: yearFrom, lte: yearTo} :
+                                yearFromId ? {gte: yearFrom} : yearToId ? {lte: yearTo} : undefined
+                        ),
+                    }
+                }
+            };
+
+        const totalRecords = await prisma.fertilizante.count({where: whereOptions});
+        const totalPages = Math.ceil(totalRecords / perPage);
 
         const fertilizanteCalculos = await prisma.fertilizanteCalculos.findMany({
-            where: {
-                sedeId: parseInt(sedeId),
-                anioId: searchAnio.id,
-            },
+            where: whereOptions,
             include: {
                 TipoFertilizante: true,
                 sede: true,
                 anio: true,
+            },           
+        });
+
+        const formattedFertilizananteCalculos: FertilizanteCalc[] = fertilizanteCalculos.map(
+            (fertilizanteCalculo) => formatFertilizanteCalculo(fertilizanteCalculo)
+        );
+
+        // const formattedFertilizanteCalculos: any[] = fertilizanteCalculos.map(
+        //     (fertilizanteCalculos) => formatFertilizanteCalculo(fertilizanteCalculos)
+        // );
+
+        return NextResponse.json({
+            data: formattedFertilizananteCalculos,
+            meta: {
+                page,
+                perPage,
+                totalPages,
+                totalRecords,
             },
         });
 
-        const formattedFertilizanteCalculos: any[] = fertilizanteCalculos.map(
-            (fertilizanteCalculos) => formatFertilizanteCalculo(fertilizanteCalculos)
-        );
-
-        return NextResponse.json(formattedFertilizanteCalculos);
     } catch (error) {
         console.error("Error finding combustion calculations", error);
         return new NextResponse("Error finding combustion calculations", {
