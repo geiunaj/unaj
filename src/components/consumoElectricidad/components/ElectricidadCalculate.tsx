@@ -15,7 +15,7 @@ import ButtonCalculate from "@/components/ButtonCalculate";
 import ButtonBack from "@/components/ButtonBack";
 import {
     useAnio,
-    useElectricidadCalculos,
+    useElectricidadCalculos, useElectricidadCalculosReport,
     useSede
 } from "@/components/consumoElectricidad/lib/electricidadCalculos.hooks";
 import SkeletonTable from "@/components/Layout/skeletonTable";
@@ -24,6 +24,8 @@ import {createCalculosElectricidad} from "@/components/consumoElectricidad/servi
 import {Building} from "lucide-react";
 import CustomPagination from "@/components/Pagination";
 import ReportComponent from "@/components/ReportComponent";
+import {formatPeriod} from "@/components/ReportPopover";
+import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 
 export default function ElectricidadCalculate() {
     const {push} = useRouter();
@@ -46,6 +48,13 @@ export default function ElectricidadCalculate() {
         page,
     });
 
+    const electricidadCalculosReport = useElectricidadCalculosReport({
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
+        from,
+        to,
+        page,
+    });
+
     // HANDLES
     const handleSedeChange = useCallback(async (value: string) => {
         await setPage(1);
@@ -62,7 +71,8 @@ export default function ElectricidadCalculate() {
             to,
         });
         electricidadCalculos.refetch();
-    }, [selectedSede, from, to, electricidadCalculos]);
+        electricidadCalculosReport.refetch();
+    }, [selectedSede, from, to, electricidadCalculos, electricidadCalculosReport]);
 
     const handleCombustion = () => {
         push("/electricidad");
@@ -72,30 +82,32 @@ export default function ElectricidadCalculate() {
         await setPage(1);
         await setFrom(value);
         await electricidadCalculos.refetch();
-    }, [electricidadCalculos]);
+        await electricidadCalculosReport.refetch();
+    }, [electricidadCalculos, electricidadCalculosReport]);
 
     const handleToChange = useCallback(async (value: string) => {
         await setPage(1);
         await setTo(value);
         await electricidadCalculos.refetch();
-    }, [electricidadCalculos]);
+        await electricidadCalculosReport.refetch();
+    }, [electricidadCalculos, electricidadCalculosReport]);
 
     const handlePageChange = useCallback(async (page: number) => {
         await setPage(page);
         await electricidadCalculos.refetch();
     }, [electricidadCalculos]);
 
-    if (electricidadCalculos.isLoading || sedes.isLoading || anios.isLoading) {
+    if (electricidadCalculos.isLoading || sedes.isLoading || anios.isLoading || electricidadCalculosReport.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (electricidadCalculos.isError || sedes.isError || anios.isError) {
+    if (electricidadCalculos.isError || sedes.isError || anios.isError || electricidadCalculosReport.isError) {
         return <div>Error</div>;
     }
 
     return (
         <div className="w-full max-w-[1150px] h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="flex items-center gap-4">
                     <ButtonBack onClick={handleCombustion}/>
                     <div className="font-Manrope">
@@ -103,37 +115,58 @@ export default function ElectricidadCalculate() {
                         <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
                     </div>
                 </div>
-                <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+                <div className="flex flex-col items-end gap-2">
                     <div
-                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
+                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
+                        <div
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
 
-                        <SelectFilter
-                            list={sedes.data!}
-                            itemSelected={selectedSede}
-                            handleItemSelect={handleSedeChange}
-                            value={"id"}
-                            nombre={"name"}
-                            id={"id"}
-                            all={true}
-                            icon={<Building className="h-3 w-3"/>}
-                        />
+                            <SelectFilter
+                                list={sedes.data!}
+                                itemSelected={selectedSede}
+                                handleItemSelect={handleSedeChange}
+                                value={"id"}
+                                nombre={"name"}
+                                id={"id"}
+                                all={true}
+                                icon={<Building className="h-3 w-3"/>}
+                            />
 
-                        <ReportComponent
-                            onSubmit={handleCalculate}
-                            ref={submitFormRef}
-                            withMonth={true}
-                            from={from}
-                            to={to}
-                            handleFromChange={handleFromChange}
-                            handleToChange={handleToChange}
-                        />
+                            <ReportComponent
+                                onSubmit={handleCalculate}
+                                ref={submitFormRef}
+                                withMonth={true}
+                                from={from}
+                                to={to}
+                                handleFromChange={handleFromChange}
+                                handleToChange={handleToChange}
+                            />
+                        </div>
+                        <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-2">
+
+                            <ExportPdfReport
+                                data={electricidadCalculosReport.data!.data}
+                                fileName={`REPORTE CALCULOS DE CONSUMO DE ENERGÍA_${formatPeriod({from, to}, true)}`}
+                                columns={[
+                                    {header: "N°", key: "id", width: 5},
+                                    {header: "AREA", key: "area", width: 15},
+                                    {header: "CONSUMO TOTAL", key: "consumoTotal", width: 15},
+                                    {header: "EMISIONES DE CO2", key: "emisionCO2", width: 15},
+                                    {header: "EMISIONES DE CH4", key: "emisionCH4", width: 15},
+                                    {header: "EMISIONES DE N20", key: "emisionN2O", width: 15},
+                                    {header: "TOTAL GEI", key: "totalGEI", width: 15},
+                                ]}
+                                title="REPORTE DE CALCULOS DE CONSUMO DE ENERGÍA"
+                                period={formatPeriod({from, to}, true)}
+                            />
+
+                            <ButtonCalculate
+                                onClick={handleCalculate}
+                                variant="default"
+                                text="Calcular"
+                            />
+                        </div>
                     </div>
-
-                    <ButtonCalculate
-                        onClick={handleCalculate}
-                        variant="default"
-                        text="Calcular"
-                    />
                 </div>
             </div>
 
@@ -166,7 +199,8 @@ export default function ElectricidadCalculate() {
                             electricidadCalculos.data!.data.length === 0 && (
                                 <TableRow>
                                     <TableCell colSpan={6} className="text-center">
-                                        Click en el botón calcular para obtener los resultados
+                                        Click en el botón <strong className="text-primary">Calcular</strong> para obtener
+                                        los resultados
                                     </TableCell>
                                 </TableRow>
                             )

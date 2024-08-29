@@ -4,7 +4,10 @@ import {getAnio} from "@/components/anio/services/anio.actions";
 import {getMes} from "@/components/mes/services/mes.actions";
 import {getElectricidad} from "../services/electricidad.actions";
 import {getArea} from "@/components/area/services/area.actions";
-import {getElectricidadCalculos} from "@/components/consumoElectricidad/services/electricidadCalculos.actions";
+import {
+    getElectricidadCalculos,
+    getElectricidadCalculosReport
+} from "@/components/consumoElectricidad/services/electricidadCalculos.actions";
 
 interface getElectricidadCalculoInterface {
     sedeId?: number;
@@ -18,6 +21,14 @@ export const useElectricidadCalculos =
         return useQuery({
             queryKey: ['electricidadCalculos'],
             queryFn: () => getElectricidadCalculos({sedeId, from, to, page}),
+            refetchOnWindowFocus: false,
+        });
+    }
+export const useElectricidadCalculosReport =
+    ({sedeId, from, to, page}: getElectricidadCalculoInterface) => {
+        return useQuery({
+            queryKey: ['electricidadCalculosReport'],
+            queryFn: () => getElectricidadCalculosReport({sedeId, from, to, page}),
             refetchOnWindowFocus: false,
         });
     }

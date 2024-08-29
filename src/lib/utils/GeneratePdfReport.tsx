@@ -196,7 +196,7 @@ const ReportDocument: React.FC<ReportDocumentProps> = ({data, columns, title, pe
                         marginTop: "20px",
                     }}>
                         <Text
-                            style={{fontSize: "14px", fontWeight: "bold", color: "#05153d", fontFamily: "Inter-Bold"}}>
+                            style={{fontSize: "13px", fontWeight: "bold", color: "#05153d", fontFamily: "Inter-Bold"}}>
                             {title}
                         </Text>
                     </View>

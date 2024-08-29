@@ -47,6 +47,27 @@ export async function getElectricidadCalculos({
     return data;
 }
 
+export async function getElectricidadCalculosReport({
+                                                        sedeId,
+                                                        from,
+                                                        to,
+                                                        page,
+                                                    }: GetElectricidadProps)
+    : Promise<electricidadCalculosCollection> {
+    const config: AxiosRequestConfig = {
+        params: {
+            sedeId,
+            from,
+            to,
+            page,
+            all: true
+        },
+    };
+    const {data} = await api.get<electricidadCalculosCollection>(
+        "/api/electricidad/calculate", config);
+    return data;
+}
+
 export async function createCalculosElectricidad({
                                                      sedeId,
                                                      from,
