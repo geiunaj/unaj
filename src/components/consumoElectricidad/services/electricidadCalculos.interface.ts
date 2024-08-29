@@ -39,6 +39,17 @@ export interface electricidadCalculosRequest {
     totalGEI: number;
 }
 
+export interface electricidadCalculosDetailRequest {
+    areaId: number;
+    consumoTotal: number;
+    factorConversion: number;
+    consumo: number;
+    emisionCO2: number;
+    emisionCH4: number;
+    emisionN2O: number;
+    totalGEI: number;
+}
+
 export interface ElectricidadCalcRequest {
     sedeId: number;
     from: string;

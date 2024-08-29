@@ -1,9 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
-import {
-    ElectricidadCalcRequest,
-    electricidadCalculosRequest
-} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
+import {ElectricidadCalcRequest} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
 import {formatElectricidadCalculo} from "@/lib/resources/electricidadCalculateResource";
 import {getAnioId} from "@/lib/utils";
 
@@ -11,7 +8,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
         const sedeId = searchParams.get("sedeId");
-        // const anio = searchParams.get("anio");
 
         const page = parseInt(searchParams.get("page") ?? "1");
         const perPage = parseInt(searchParams.get("perPage") ?? "10");
@@ -26,6 +22,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 fechaFin: dateTo ? dateTo : undefined,
             },
         });
+
         if (!period && all) {
             return new NextResponse("Periodo no encontrado", {status: 404,});
         }
@@ -37,7 +34,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             periodoCalculoId: period?.id,
         };
 
-        const totalRecords = await prisma.energiaCalculos.count({
+        const totalRecords = await prisma.consumoAguaCalculos.count({
             where: whereOptions
         });
         const totalPages = Math.ceil(totalRecords / perPage);
@@ -50,6 +47,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                         sede: true
                     }
                 },
+                EnergiaCalculosDetail: true
             },
             orderBy: [{area: {nombre: "asc"}}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
@@ -58,7 +56,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const formattedElectricidadCalculos: any[] = electricidadCalculos
             .map((electricidadCalculo: any) => {
                 if (electricidadCalculo.consumo !== 0) {
-                    return formatElectricidadCalculo(electricidadCalculo);
+                    return electricidadCalculos
+                        ;
                 }
                 return null;
             })
@@ -89,8 +88,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         let yearFrom, yearTo, monthFrom, monthTo;
         let yearFromId, yearToId, mesFromId, mesToId;
 
-        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
-        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
+        if (dateFrom) [monthFrom, yearFrom] = dateFrom.split("-");
+        if (dateTo) [monthTo, yearTo] = dateTo.split("-");
         if (yearFrom) yearFromId = await getAnioId(yearFrom);
         if (yearTo) yearToId = await getAnioId(yearTo);
         if (monthFrom) mesFromId = parseInt(monthFrom);
@@ -114,8 +113,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             });
         }
 
-        console.log(period);
-
         const areas = await prisma.area.findMany({
             where: {sede_id: sedeId},
         });
@@ -138,77 +135,142 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             whereOptionsConsumoElectricidad.anio_mes = {lte: to};
         }
 
-        const electricidad = await prisma.consumoEnergia.findMany({
-            where: whereOptionsConsumoElectricidad
-        });
-
-        await prisma.energiaCalculos.deleteMany({
+        const energiaCalculos = await prisma.energiaCalculos.findMany({
             where: {
-                area: {sede_id: sedeId},
+                area: {sede_id: sedeId ? Number(sedeId) : undefined,},
                 periodoCalculoId: period.id,
             },
         });
 
-        const consumosPorAnio: Record<number, number> = {};
+        for (const energiaCalculo of energiaCalculos) {
+            await prisma.energiaCalculosDetail.deleteMany({
+                where: {
+                    energiaCalculosId: energiaCalculo.id,
+                },
+            });
+        }
+
+        await prisma.energiaCalculos.deleteMany({
+            where: {
+                area: {sede_id: sedeId ? Number(sedeId) : undefined,},
+                periodoCalculoId: period.id,
+            },
+        });
+
+        const factorConversion: number = 277.7778;
+        const allAnios = await prisma.anio.findMany({orderBy: {"nombre": "desc"}})
+
+        const allAniosFromToIds: any[] = [];
+        if (yearFrom && yearTo) {
+            allAnios.map((anio) => {
+                if (anio.nombre >= yearFrom && anio.nombre <= yearTo) {
+                    allAniosFromToIds.push(anio);
+                }
+            });
+        } else if (yearFrom) {
+            allAnios.map((anio) => {
+                if (anio.nombre >= yearFrom) {
+                    allAniosFromToIds.push(anio);
+                }
+            });
+        } else if (yearTo) {
+            allAnios.map((anio) => {
+                if (anio.id <= yearTo) {
+                    allAniosFromToIds.push(anio);
+                }
+            });
+        }
+
+        let consumoArea = 0;
+        let consumoTotal = 0;
         let totalEmisionCO2 = 0;
         let totalEmisionCH4 = 0;
         let totalEmisionN2O = 0;
         let totalGEI = 0;
 
-        const factorConversion: number = 277.7778;
-
-        for (const electricidadRecord of electricidad) {
-            const anio = Math.floor(electricidadRecord.anio_mes / 100);
-            if (!consumosPorAnio[anio]) {
-                consumosPorAnio[anio] = 0;
-            }
-            consumosPorAnio[anio] += electricidadRecord.consumo;
-        }
-
-        for (const [anio, consumoAnual] of Object.entries(consumosPorAnio)) {
-            const anioId = await getAnioId(anio);
-            const factorSEIN = await prisma.factorConversionSEIN.findFirst({
-                where: {anioId},
-            });
-
-            if (!factorSEIN) continue;
-
-            const consumo = factorConversion * consumoAnual;
-            const emisionCO2 = factorSEIN.factorCO2 * consumo;
-            const emisionCH4 = factorSEIN.factorCH4 * consumo;
-            const emisionN2O = factorSEIN.factorN2O * consumo;
-            const totalEmisionesAnuales = emisionCO2 + emisionCH4 + emisionN2O;
-
-            totalEmisionCO2 += emisionCO2;
-            totalEmisionCH4 += emisionCH4;
-            totalEmisionN2O += emisionN2O;
-            totalGEI += totalEmisionesAnuales;
-        }
-
         for (const area of areas) {
-            const calculoElectricidad: electricidadCalculosRequest = {
-                areaId: area.id,
-                consumoTotal: Object.values(consumosPorAnio).reduce((acc, curr) => acc + curr, 0),
-                factorConversion: factorConversion,
-                consumo: factorConversion * Object.values(consumosPorAnio).reduce((acc, curr) => acc + curr, 0),
-                emisionCO2: totalEmisionCO2,
-                emisionCH4: totalEmisionCH4,
-                emisionN2O: totalEmisionN2O,
-                totalGEI: totalGEI,
-            };
-
-            await prisma.energiaCalculos.create({
+            const energiaCalculos = await prisma.energiaCalculos.create({
                 data: {
-                    consumoArea: calculoElectricidad.consumo,
-                    factorConversion: calculoElectricidad.factorConversion,
-                    consumoTotal: calculoElectricidad.consumoTotal,
-                    emisionCO2: calculoElectricidad.emisionCO2,
-                    emisionCH4: calculoElectricidad.emisionCH4,
-                    emisionN2O: calculoElectricidad.emisionN2O,
-                    totalGEI: calculoElectricidad.totalGEI,
-                    areaId: calculoElectricidad.areaId,
+                    consumoArea: 0,
+                    factorConversion: 0,
+                    consumoTotal: 0,
+                    emisionCO2: 0,
+                    emisionCH4: 0,
+                    emisionN2O: 0,
+                    totalGEI: 0,
+                    areaId: area.id,
                     periodoCalculoId: period.id,
                     created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+
+            for (const anio of allAniosFromToIds) {
+                const anioId = await getAnioId(anio.name);
+                const factorSEIN = await prisma.factorConversionSEIN.findFirst({
+                    where: {anioId},
+                });
+
+                if (!factorSEIN) return new NextResponse("No se encontró el factor de conversión para el año seleccionado", {status: 404});
+
+                let whereOptionDetails = whereOptionsConsumoElectricidad;
+                const anioMesGte = Number(anio.nombre) * 100 + 1;
+                const anioMesLte = Number(anio.nombre) * 100 + 12;
+                whereOptionDetails.anio_mes = {gte: anioMesGte, lte: anioMesLte};
+
+                const electricidad = await prisma.consumoEnergia.findMany({
+                    where: whereOptionDetails
+                });
+
+                const totalConsumo: number = electricidad.reduce((acc, consumoEnergia) => {
+                    if (consumoEnergia.anio_id === anioId) {
+                        return acc + consumoEnergia.consumo;
+                    }
+                    return acc;
+                }, 0);
+
+                const consumo = factorConversion * totalConsumo;
+                const emisionCO2 = factorSEIN.factorCO2 * consumo;
+                const emisionCH4 = factorSEIN.factorCH4 * consumo;
+                const emisionN2O = factorSEIN.factorN2O * consumo;
+                const totalEmisionesAnuales = emisionCO2 + emisionCH4 + emisionN2O;
+
+                await prisma.energiaCalculosDetail.create({
+                    data: {
+                        areaId: area.id,
+                        consumoArea: totalConsumo,
+                        factorConversion: factorConversion,
+                        consumoTotal: consumo,
+                        emisionCO2: totalEmisionCO2,
+                        emisionCH4: totalEmisionCH4,
+                        emisionN2O: totalEmisionN2O,
+                        totalGEI: totalGEI,
+                        factorConversionSEINId: factorSEIN.id,
+                        energiaCalculosId: energiaCalculos.id,
+
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                    },
+                });
+
+                consumoArea += totalConsumo;
+                consumoTotal += consumo;
+                totalEmisionCO2 += emisionCO2;
+                totalEmisionCH4 += emisionCH4;
+                totalEmisionN2O += emisionN2O;
+                totalGEI += totalEmisionesAnuales;
+            }
+
+            await prisma.energiaCalculos.update({
+                where: {id: energiaCalculos.id},
+                data: {
+                    consumoArea: consumoArea,
+                    factorConversion: factorConversion,
+                    consumoTotal: consumoTotal,
+                    emisionCO2: totalEmisionCO2,
+                    emisionCH4: totalEmisionCH4,
+                    emisionN2O: totalEmisionN2O,
+                    totalGEI: totalGEI,
                     updated_at: new Date(),
                 },
             });

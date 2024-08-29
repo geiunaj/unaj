@@ -92,8 +92,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         let yearFrom, yearTo, monthFrom, monthTo;
         let yearFromId, yearToId, mesFromId, mesToId;
 
-        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
-        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
+        if (dateFrom) [monthFrom, yearFrom] = dateFrom.split("-");
+        if (dateTo) [monthTo, yearTo] = dateTo.split("-");
         if (yearFrom) yearFromId = await getAnioId(yearFrom);
         if (yearTo) yearToId = await getAnioId(yearTo);
         if (monthFrom) mesFromId = parseInt(monthFrom);

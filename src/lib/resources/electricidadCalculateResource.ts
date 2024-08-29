@@ -1,6 +1,5 @@
 export function formatElectricidadCalculo(combustibleCalculo: any) {
     const {
-        anio,
         sede,
         area,
         factor,
@@ -20,7 +19,6 @@ export function formatElectricidadCalculo(combustibleCalculo: any) {
         updated_at: undefined,
         ...rest,
         area: area.nombre,
-        anio: anio.nombre,
         sede: area.sede.name,
         factorCOS: factor.factorCO2,
         factorCH4: factor.factorCH4,

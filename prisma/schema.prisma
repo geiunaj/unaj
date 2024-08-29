@@ -76,10 +76,11 @@ model Mes {
 }
 
 model Anio {
-  id                   Int                    @id @default(autoincrement())
-  nombre               String                 @db.VarChar(45)
-  created_at           DateTime
-  updated_at           DateTime
+  id         Int      @id @default(autoincrement())
+  nombre     String   @db.VarChar(45)
+  created_at DateTime
+  updated_at DateTime
+
   combustibles         Combustible[]
   fertilizante         Fertilizante[]
   consumoPapel         ConsumoPapel[]
@@ -272,10 +273,11 @@ model area {
 
   sede Sede? @relation(fields: [sede_id], references: [id])
 
-  consumoEnergia      consumoEnergia[]
-  EnergiaCalculos     EnergiaCalculos[]
-  ConsumoAgua         ConsumoAgua[]
-  ConsumoAguaCalculos ConsumoAguaCalculos[]
+  ConsumoAgua           ConsumoAgua[]
+  ConsumoAguaCalculos   ConsumoAguaCalculos[]
+  consumoEnergia        consumoEnergia[]
+  EnergiaCalculos       EnergiaCalculos[]
+  EnergiaCalculosDetail EnergiaCalculosDetail[]
 }
 
 model EnergiaCalculos {
@@ -287,15 +289,36 @@ model EnergiaCalculos {
   emisionCH4       Float @db.Float
   emisionN2O       Float @db.Float
   totalGEI         Float @db.Float
-  areaId           Int
+  areaId           Int   @db.Int
   periodoCalculoId Int?  @db.Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  area           area?           @relation(fields: [areaId], references: [id])
-  PeriodoCalculo PeriodoCalculo? @relation(fields: [periodoCalculoId], references: [id])
-  anioId         Int?
+  area                  area?                   @relation(fields: [areaId], references: [id])
+  PeriodoCalculo        PeriodoCalculo?         @relation(fields: [periodoCalculoId], references: [id])
+  EnergiaCalculosDetail EnergiaCalculosDetail[]
+}
+
+model EnergiaCalculosDetail {
+  id                     Int   @id @default(autoincrement())
+  consumoArea            Float @db.Float
+  factorConversion       Float @db.Float
+  factorConversionSEINId Int   @db.Int
+  consumoTotal           Float @db.Float
+  emisionCO2             Float @db.Float
+  emisionCH4             Float @db.Float
+  emisionN2O             Float @db.Float
+  totalGEI               Float @db.Float
+  areaId                 Int
+  energiaCalculosId      Int   @db.Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  area                 area?                @relation(fields: [areaId], references: [id])
+  EnergiaCalculos      EnergiaCalculos      @relation(fields: [energiaCalculosId], references: [id])
+  factorConversionSEIN factorConversionSEIN @relation(fields: [factorConversionSEINId], references: [id])
 }
 
 model factorConversionSEIN {
@@ -307,7 +330,8 @@ model factorConversionSEIN {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  anio Anio @relation(fields: [anioId], references: [id])
+  anio                  Anio                    @relation(fields: [anioId], references: [id])
+  EnergiaCalculosDetail EnergiaCalculosDetail[]
 }
 
 model Taxi {
