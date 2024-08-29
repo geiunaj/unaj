@@ -21,11 +21,13 @@ import {
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {electricidadCalculosResource} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
 import {createCalculosElectricidad} from "@/components/consumoElectricidad/services/electricidadCalculos.actions";
-import {Building} from "lucide-react";
+import {Building, FileSpreadsheet} from "lucide-react";
 import CustomPagination from "@/components/Pagination";
 import ReportComponent from "@/components/ReportComponent";
-import {formatPeriod} from "@/components/ReportPopover";
+import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
+import GenerateReport from "@/lib/utils/generateReport";
+import {Button} from "@/components/ui/button";
 
 export default function ElectricidadCalculate() {
     const {push} = useRouter();
@@ -98,6 +100,29 @@ export default function ElectricidadCalculate() {
         await electricidadCalculos.refetch();
     }, [electricidadCalculos]);
 
+    const handleClickExcelReport = async (period: ReportRequest) => {
+        const columns = [
+            {header: "N°", key: "id", width: 10},
+            {header: "AREA", key: "area", width: 20},
+            {header: "CONSUMO TOTAL", key: "consumoTotal", width: 20},
+            {header: "EMISIONES DE CO2", key: "emisionCO2", width: 25},
+            {header: "EMISIONES DE CH4", key: "emisionCH4", width: 25},
+            {header: "EMISIONES DE N20", key: "emisionN2O", width: 25},
+            {header: "TOTAL GEI", key: "totalGEI", width: 20},
+        ];
+        await setFrom(period.from ?? "");
+        await setTo(period.to ?? "");
+        const data = await electricidadCalculosReport.refetch();
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), `REPORTE DE CALCULOS DE CONSUMO DE ELECTRICIDAD`, "ELECTRICIDAD-CALCULOS");
+    }
+
+    const handleClick = () => {
+        if (submitFormRef.current) {
+            submitFormRef.current.submitForm();
+        }
+    };
+
+
     if (electricidadCalculos.isLoading || sedes.isLoading || anios.isLoading || electricidadCalculosReport.isLoading) {
         return <SkeletonTable/>;
     }
@@ -134,7 +159,7 @@ export default function ElectricidadCalculate() {
                             />
 
                             <ReportComponent
-                                onSubmit={handleCalculate}
+                                onSubmit={handleClickExcelReport}
                                 ref={submitFormRef}
                                 withMonth={true}
                                 from={from}
@@ -144,6 +169,16 @@ export default function ElectricidadCalculate() {
                             />
                         </div>
                         <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-2">
+
+                            <Button
+                                onClick={handleClick}
+                                size="sm"
+                                variant="outline"
+                                className="flex items-center gap-2 h-7"
+                            >
+                                <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                Excel
+                            </Button>
 
                             <ExportPdfReport
                                 data={electricidadCalculosReport.data!.data}

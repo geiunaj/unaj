@@ -96,7 +96,7 @@ export default async function GenerateReport<T>(data: T[], columns: Column[], pe
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${title}_${period}.xlsx`;
+    a.download = title + (period === '-' ? '' : `_${period}`) + '.xlsx';
     a.click();
     URL.revokeObjectURL(url);
 }
