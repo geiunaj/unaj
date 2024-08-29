@@ -86,7 +86,6 @@ model Anio {
   consumoPapel         ConsumoPapel[]
   combustibleCalculos  combustibleCalculos[]
   Taxi                 Taxi[]
-  fertilizanteCalculos fertilizanteCalculos[]
   consumoEnergia       consumoEnergia[]
   factorConversionSEIN factorConversionSEIN[]
   ConsumoAgua          ConsumoAgua[]
@@ -232,18 +231,17 @@ model fertilizanteCalculos {
   tipofertilizanteId     Int
   consumoTotal           Float  @db.Float
   cantidadAporte         Float  @db.Float
-  // factorEmision          Float @db.Float
   emisionDirecta         Float  @db.Float
   totalEmisionesDirectas Float  @db.Float
   emisionGEI             Float? @db.Float
-  anioId                 Int    @db.Int
   sedeId                 Int    @db.Int
+  periodoCalculoId       Int?   @db.Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  anio             Anio?             @relation(fields: [anioId], references: [id])
   sede             Sede?             @relation(fields: [sedeId], references: [id])
+  periodoCalculo   PeriodoCalculo?   @relation(fields: [periodoCalculoId], references: [id])
   TipoFertilizante TipoFertilizante? @relation(fields: [tipofertilizanteId], references: [id])
 }
 
@@ -388,11 +386,12 @@ model ConsumoAguaCalculos {
 }
 
 model PeriodoCalculo {
-  id                  Int                   @id @default(autoincrement())
-  fechaInicio         String?
-  fechaFin            String?
-  created_at          DateTime              @default(now())
-  updated_at          DateTime              @updatedAt
-  ConsumoAguaCalculos ConsumoAguaCalculos[]
-  EnergiaCalculos     EnergiaCalculos[]
+  id                   Int                    @id @default(autoincrement())
+  fechaInicio          String?
+  fechaFin             String?
+  created_at           DateTime               @default(now())
+  updated_at           DateTime               @updatedAt
+  ConsumoAguaCalculos  ConsumoAguaCalculos[]
+  EnergiaCalculos      EnergiaCalculos[]
+  fertilizanteCalculos fertilizanteCalculos[]
 }
