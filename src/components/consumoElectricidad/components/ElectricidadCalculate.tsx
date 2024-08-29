@@ -60,7 +60,8 @@ export default function ElectricidadCalculate() {
         await setPage(1);
         await setSelectedSede(value);
         await electricidadCalculos.refetch();
-    }, [electricidadCalculos]);
+        await electricidadCalculosReport.refetch();
+    }, [electricidadCalculos, electricidadCalculosReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
 

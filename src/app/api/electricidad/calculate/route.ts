@@ -67,8 +67,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         });
 
         const formattedElectricidadCalculos: any[] = electricidadCalculos
-            .map((electricidadCalculo: any) => {
+            .map((electricidadCalculo: any, index: number) => {
                 if (electricidadCalculo.consumo !== 0) {
+                    electricidadCalculo.id = index + 1;
                     return formatElectricidadCalculo(electricidadCalculo);
                 }
                 return null;
