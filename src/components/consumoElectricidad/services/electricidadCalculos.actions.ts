@@ -16,25 +16,29 @@ interface Response {
 
 interface GetElectricidadProps {
     sedeId?: number,
-    anio?: number,
+    from?: string,
+    to?: string,
     page?: number
 }
 
 interface CreateCalculosElectricidadProps {
     sedeId?: number;
-    anio?: number;
+    from?: string;
+    to?: string;
 }
 
 export async function getElectricidadCalculos({
                                                   sedeId,
-                                                  anio,
+                                                  from,
+                                                  to,
                                                   page,
                                               }: GetElectricidadProps)
     : Promise<electricidadCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
-            anio,
+            from,
+            to,
             page,
         },
     };
@@ -45,12 +49,14 @@ export async function getElectricidadCalculos({
 
 export async function createCalculosElectricidad({
                                                      sedeId,
-                                                     anio,
+                                                     from,
+                                                     to,
                                                  }: CreateCalculosElectricidadProps)
     : Promise<AxiosResponse<Response>> {
     const body = {
         sedeId,
-        anio,
+        from,
+        to,
     };
     return await api.post("/api/electricidad/calculate", body);
 }

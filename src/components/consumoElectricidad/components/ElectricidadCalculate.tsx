@@ -1,5 +1,5 @@
 "use client";
-import {useState, useCallback} from "react";
+import React, {useState, useCallback, useRef} from "react";
 import {
     Table,
     TableBody,
@@ -21,19 +21,19 @@ import {
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {electricidadCalculosResource} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
 import {createCalculosElectricidad} from "@/components/consumoElectricidad/services/electricidadCalculos.actions";
-import {Building, Calendar} from "lucide-react";
+import {Building} from "lucide-react";
 import CustomPagination from "@/components/Pagination";
+import ReportComponent from "@/components/ReportComponent";
 
 export default function ElectricidadCalculate() {
     const {push} = useRouter();
 
     // SELECTS - FILTERS
     const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [selectedAnio, setSelectedAnio] = useState<string>(
-        new Date().getFullYear().toString()
-    );
-    const [selectedArea, setSelectedArea] = useState<string>("1");
     const [page, setPage] = useState<number>(1);
+
+    const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
+    const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     const sedes = useSede();
     const anios = useAnio();
@@ -41,7 +41,8 @@ export default function ElectricidadCalculate() {
     // HOOKS
     const electricidadCalculos = useElectricidadCalculos({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
-        anio: selectedAnio ? Number(selectedAnio) : undefined,
+        from,
+        to,
         page,
     });
 
@@ -52,23 +53,32 @@ export default function ElectricidadCalculate() {
         await electricidadCalculos.refetch();
     }, [electricidadCalculos]);
 
-    const handleAnioChange = useCallback(async (value: string) => {
-        await setPage(1);
-        await setSelectedAnio(value);
-        await electricidadCalculos.refetch();
-    }, [electricidadCalculos]);
+    const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
 
     const handleCalculate = useCallback(async () => {
         await createCalculosElectricidad({
             sedeId: selectedSede ? Number(selectedSede) : undefined,
-            anio: selectedAnio ? Number(selectedAnio) : undefined,
+            from,
+            to,
         });
         electricidadCalculos.refetch();
-    }, [selectedSede, selectedAnio, page, electricidadCalculos]);
+    }, [selectedSede, from, to, electricidadCalculos]);
 
     const handleCombustion = () => {
         push("/electricidad");
     };
+
+    const handleFromChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setFrom(value);
+        await electricidadCalculos.refetch();
+    }, [electricidadCalculos]);
+
+    const handleToChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setTo(value);
+        await electricidadCalculos.refetch();
+    }, [electricidadCalculos]);
 
     const handlePageChange = useCallback(async (page: number) => {
         await setPage(page);
@@ -89,12 +99,9 @@ export default function ElectricidadCalculate() {
                 <div className="flex items-center gap-4">
                     <ButtonBack onClick={handleCombustion}/>
                     <div className="font-Manrope">
-                        <h1 className="text-base text-gray-800 font-bold">
-                            Cálculo de emisiones de CO2 por combustión
-                        </h1>
-                        <h2 className="text-xs sm:text-sm text-gray-500">
-                            Huella de carbono
-                        </h2>
+                        <h1 className="text-base text-foreground font-bold">Cálculo de emisiones de CO2 por
+                            combustión</h1>
+                        <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
                     </div>
                 </div>
                 <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
@@ -112,14 +119,14 @@ export default function ElectricidadCalculate() {
                             icon={<Building className="h-3 w-3"/>}
                         />
 
-                        <SelectFilter
-                            list={anios.data!}
-                            itemSelected={selectedAnio}
-                            handleItemSelect={handleAnioChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            icon={<Calendar className="h-3 w-3"/>}
+                        <ReportComponent
+                            onSubmit={handleCalculate}
+                            ref={submitFormRef}
+                            withMonth={true}
+                            from={from}
+                            to={to}
+                            handleFromChange={handleFromChange}
+                            handleToChange={handleToChange}
                         />
                     </div>
 
@@ -156,6 +163,15 @@ export default function ElectricidadCalculate() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
+                        {
+                            electricidadCalculos.data!.data.length === 0 && (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="text-center">
+                                        Click en el botón calcular para obtener los resultados
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        }
                         {electricidadCalculos.data!.data.map(
                             (electricidadCalculosResource: electricidadCalculosResource) => (
                                 <TableRow className="text-center" key={electricidadCalculosResource.id}>

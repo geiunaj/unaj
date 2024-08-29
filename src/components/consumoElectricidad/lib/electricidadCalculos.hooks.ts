@@ -8,15 +8,16 @@ import {getElectricidadCalculos} from "@/components/consumoElectricidad/services
 
 interface getElectricidadCalculoInterface {
     sedeId?: number;
-    anio?: number;
+    from?: string;
+    to?: string;
     page?: number;
 }
 
 export const useElectricidadCalculos =
-    ({sedeId, anio, page}: getElectricidadCalculoInterface) => {
+    ({sedeId, from, to, page}: getElectricidadCalculoInterface) => {
         return useQuery({
             queryKey: ['electricidadCalculos'],
-            queryFn: () => getElectricidadCalculos({sedeId, anio, page}),
+            queryFn: () => getElectricidadCalculos({sedeId, from, to, page}),
             refetchOnWindowFocus: false,
         });
     }
@@ -41,14 +42,6 @@ export const useMeses = () => {
     return useQuery({
         queryKey: ['mes'],
         queryFn: () => getMes(),
-        refetchOnWindowFocus: false,
-    });
-}
-
-export const useArea = () => {
-    return useQuery({
-        queryKey: ['area'],
-        queryFn: () => getArea(),
         refetchOnWindowFocus: false,
     });
 }

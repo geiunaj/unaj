@@ -16,12 +16,24 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const dateTo = searchParams.get("to") ?? undefined;
         const all = searchParams.get("all") === "true";
 
-        const period = await prisma.periodoCalculo.findFirst({
+        let period = await prisma.periodoCalculo.findFirst({
             where: {
                 fechaInicio: dateFrom ? dateFrom : undefined,
                 fechaFin: dateTo ? dateTo : undefined,
             },
         });
+
+        if (!period) {
+            period = await prisma.periodoCalculo.create({
+                data: {
+                    fechaInicio: dateFrom ? dateFrom : undefined,
+                    fechaFin: dateTo ? dateTo : undefined,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+        }
+
 
         if (!period && all) {
             return new NextResponse("Periodo no encontrado", {status: 404,});
@@ -56,8 +68,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const formattedElectricidadCalculos: any[] = electricidadCalculos
             .map((electricidadCalculo: any) => {
                 if (electricidadCalculo.consumo !== 0) {
-                    return electricidadCalculos
-                        ;
+                    return formatElectricidadCalculo(electricidadCalculo);
                 }
                 return null;
             })
@@ -78,6 +89,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     }
 }
 
+interface WhereAnioMes {
+    from?: number;
+    to?: number;
+    anio?: number;
+}
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         const body: ElectricidadCalcRequest = await req.json();
@@ -88,8 +105,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         let yearFrom, yearTo, monthFrom, monthTo;
         let yearFromId, yearToId, mesFromId, mesToId;
 
-        if (dateFrom) [monthFrom, yearFrom] = dateFrom.split("-");
-        if (dateTo) [monthTo, yearTo] = dateTo.split("-");
+        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
         if (yearFrom) yearFromId = await getAnioId(yearFrom);
         if (yearTo) yearToId = await getAnioId(yearTo);
         if (monthFrom) mesFromId = parseInt(monthFrom);
@@ -120,6 +137,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const whereOptionsConsumoElectricidad = {
             area: {sede_id: sedeId ? Number(sedeId) : undefined},
         } as {
+            areaId?: number;
             area: { sede_id: number };
             anio_mes?: { gte?: number; lte?: number };
         };
@@ -127,28 +145,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const from = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
         const to = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
 
-        if (from && to) {
-            whereOptionsConsumoElectricidad.anio_mes = {gte: from, lte: to};
-        } else if (from) {
-            whereOptionsConsumoElectricidad.anio_mes = {gte: from};
-        } else if (to) {
-            whereOptionsConsumoElectricidad.anio_mes = {lte: to};
-        }
-
-        const energiaCalculos = await prisma.energiaCalculos.findMany({
+        await prisma.energiaCalculosDetail.deleteMany({
             where: {
-                area: {sede_id: sedeId ? Number(sedeId) : undefined,},
-                periodoCalculoId: period.id,
+                EnergiaCalculos: {
+                    periodoCalculoId: period.id,
+                }
             },
         });
-
-        for (const energiaCalculo of energiaCalculos) {
-            await prisma.energiaCalculosDetail.deleteMany({
-                where: {
-                    energiaCalculosId: energiaCalculo.id,
-                },
-            });
-        }
 
         await prisma.energiaCalculos.deleteMany({
             where: {
@@ -158,28 +161,110 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         });
 
         const factorConversion: number = 277.7778;
-        const allAnios = await prisma.anio.findMany({orderBy: {"nombre": "desc"}})
 
-        const allAniosFromToIds: any[] = [];
-        if (yearFrom && yearTo) {
-            allAnios.map((anio) => {
-                if (anio.nombre >= yearFrom && anio.nombre <= yearTo) {
-                    allAniosFromToIds.push(anio);
+        const allPeriodsBetweenYears: WhereAnioMes[] = [];
+
+        console.log(dateFrom, dateTo);
+        if (dateFrom && dateTo) {
+            console.log("from and to");
+            if (!yearFrom || !yearTo || !mesFromId || !mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+
+            let currentYear = Number(yearFrom);
+
+            console.log("currentYear", currentYear);
+            console.log("yearTo", yearTo);
+            while (currentYear <= Number(yearTo)) {
+                if (currentYear === Number(yearFrom)) {
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + mesFromId,
+                        to: currentYear * 100 + 12,
+                        anio: currentYear,
+                    });
+                } else if (currentYear === Number(yearTo)) {
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + 1,
+                        to: currentYear * 100 + mesToId,
+                        anio: currentYear,
+                    });
+                } else {
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + 1,
+                        to: currentYear * 100 + 12,
+                        anio: currentYear,
+                    });
                 }
+
+                currentYear++;
+            }
+        } else if (dateFrom) {
+            if (!mesFromId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+
+            const lastYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "desc"},
             });
-        } else if (yearFrom) {
-            allAnios.map((anio) => {
-                if (anio.nombre >= yearFrom) {
-                    allAniosFromToIds.push(anio);
-                }
+
+            if (!lastYear) return new NextResponse("Error buscando el último año", {status: 404});
+
+            let currentYear = Number(yearFrom);
+
+            while (currentYear <= Number(lastYear.nombre)) {
+                const startMonth = currentYear === Number(yearFrom) ? mesFromId : 1;
+
+                allPeriodsBetweenYears.push({
+                    from: currentYear * 100 + startMonth,
+                    to: currentYear * 100 + 12,
+                    anio: currentYear,
+                });
+
+                currentYear++;
+            }
+        } else if (dateTo) {
+            if (!mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+
+            const firstYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "asc"},
             });
-        } else if (yearTo) {
-            allAnios.map((anio) => {
-                if (anio.id <= yearTo) {
-                    allAniosFromToIds.push(anio);
-                }
+
+            if (!firstYear) return new NextResponse("Error buscando el primer año", {status: 404});
+
+            let currentYear = Number(firstYear.nombre);
+
+            while (currentYear <= Number(yearTo)) {
+                const endMonth = currentYear === Number(yearTo) ? mesToId : 12;
+
+                allPeriodsBetweenYears.push({
+                    from: currentYear * 100 + 1,
+                    to: currentYear * 100 + endMonth,
+                    anio: currentYear,
+                });
+
+                currentYear++;
+            }
+        } else {
+            const firstYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "asc"},
             });
+            const lastYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "desc"},
+            });
+
+            if (!firstYear || !lastYear) return new NextResponse("Error buscando años", {status: 404});
+
+            let currentYear = Number(firstYear.nombre);
+
+            while (currentYear <= Number(lastYear.nombre)) {
+                allPeriodsBetweenYears.push({
+                    from: currentYear * 100 + 1,
+                    to: currentYear * 100 + 12,
+                    anio: currentYear,
+                });
+
+                currentYear++;
+            }
         }
+
+        console.log("allPeriodsBetweenYears", allPeriodsBetweenYears);
+
 
         let consumoArea = 0;
         let consumoTotal = 0;
@@ -205,8 +290,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 },
             });
 
-            for (const anio of allAniosFromToIds) {
-                const anioId = await getAnioId(anio.name);
+            for (const period of allPeriodsBetweenYears) {
+                const anioId = await getAnioId(period.anio!.toString());
                 const factorSEIN = await prisma.factorConversionSEIN.findFirst({
                     where: {anioId},
                 });
@@ -214,9 +299,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 if (!factorSEIN) return new NextResponse("No se encontró el factor de conversión para el año seleccionado", {status: 404});
 
                 let whereOptionDetails = whereOptionsConsumoElectricidad;
-                const anioMesGte = Number(anio.nombre) * 100 + 1;
-                const anioMesLte = Number(anio.nombre) * 100 + 12;
-                whereOptionDetails.anio_mes = {gte: anioMesGte, lte: anioMesLte};
+                whereOptionDetails.areaId = area.id;
+                whereOptionDetails.anio_mes = {gte: period.from, lte: period.to};
 
                 const electricidad = await prisma.consumoEnergia.findMany({
                     where: whereOptionDetails
@@ -228,6 +312,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     }
                     return acc;
                 }, 0);
+
+                console.log("totalConsumo", totalConsumo);
+
 
                 const consumo = factorConversion * totalConsumo;
                 const emisionCO2 = factorSEIN.factorCO2 * consumo;
@@ -241,10 +328,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                         consumoArea: totalConsumo,
                         factorConversion: factorConversion,
                         consumoTotal: consumo,
-                        emisionCO2: totalEmisionCO2,
-                        emisionCH4: totalEmisionCH4,
-                        emisionN2O: totalEmisionN2O,
-                        totalGEI: totalGEI,
+                        emisionCO2: emisionCO2,
+                        emisionCH4: emisionCH4,
+                        emisionN2O: emisionN2O,
+                        totalGEI: totalEmisionesAnuales,
                         factorConversionSEINId: factorSEIN.id,
                         energiaCalculosId: energiaCalculos.id,
 
@@ -282,5 +369,3 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         return new NextResponse("Error calculating combustion", {status: 500});
     }
 }
-
-

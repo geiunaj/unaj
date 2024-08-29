@@ -8,10 +8,12 @@ export function formatElectricidadCalculo(combustibleCalculo: any) {
         anioId,
         sedeId,
         areaId,
+        EnergiaCalculosDetail,
         ...rest
     } = combustibleCalculo;
 
     return {
+        EnergiaCalculosDetail: undefined,
         anioId: undefined,
         sedeId: undefined,
         areaId: undefined,
@@ -19,9 +21,5 @@ export function formatElectricidadCalculo(combustibleCalculo: any) {
         updated_at: undefined,
         ...rest,
         area: area.nombre,
-        sede: area.sede.name,
-        factorCOS: factor.factorCO2,
-        factorCH4: factor.factorCH4,
-        factorN2O: factor.factorN2O
     };
 }
