@@ -12,26 +12,20 @@ import {getAnioId} from "@/lib/utils";
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
-
         const sedeId = searchParams.get("sedeId") ?? undefined;
+        const areaId = searchParams.get("areaId") ?? undefined;
+        const mesId = searchParams.get("mesId") ?? undefined;
+        const dateFrom = searchParams.get("from") ?? undefined;
+        const dateTo = searchParams.get("to") ?? undefined;
         const sort = searchParams.get("sort") ?? undefined;
         const direction = searchParams.get("direction") ?? undefined;
-        const anio = searchParams.get("anioId") ?? undefined;
-        const mes = searchParams.get("mesId") ?? undefined;
-        const areaId = searchParams.get("areaId") ?? undefined;
 
         const all = searchParams.get("all") === "true";
         const page = parseInt(searchParams.get("page") ?? "1");
         const perPage = parseInt(searchParams.get("perPage") ?? "10");
 
-        const dateFrom = searchParams.get("from") ?? undefined;
-        const dateTo = searchParams.get("to") ?? undefined;
-
-
         let yearFrom, yearTo, monthFrom, monthTo;
         let yearFromId, yearToId, mesFromId, mesToId;
-
-        // if (anio) anioId = await getAnioId(anio);
 
 
         if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
@@ -45,14 +39,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             area: {
                 sede_id: sedeId ? parseInt(sedeId) : undefined,
             },
-            // anio_id: anioId,
-            mes_id: mes ? parseInt(mes) : undefined,
+            mes_id: mesId ? parseInt(mesId) : undefined,
             areaId: areaId ? parseInt(areaId) : undefined,
         } as {
             area: {
                 sede_id: number | undefined;
             };
-            anio_id: number | undefined;
             mes_id: number | undefined;
             areaId: number | undefined;
             anio_mes?: {
@@ -94,8 +86,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 },
             },
             orderBy: all
-                ? [{anio_mes: 'asc'}]
-                : sort
+            ? [{area: {sede_id: 'asc'}}, {areaId: 'asc'}, {anio_mes: 'asc'}]
+            : sort
                     ? [{[sort]: direction || 'desc'}]
                     : [{area: {sede_id: "desc"}}, {areaId: "asc"}, {anio_id: "desc"}, {mes_id: "desc"}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
@@ -124,7 +116,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         const body: electricidadRequest = await req.json();
-
         const anio = await prisma.anio.findFirst({
             where: {id: body.anio_id},
         });
