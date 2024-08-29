@@ -164,29 +164,35 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         const allPeriodsBetweenYears: WhereAnioMes[] = [];
 
-        console.log(dateFrom, dateTo);
         if (dateFrom && dateTo) {
-            console.log("from and to");
             if (!yearFrom || !yearTo || !mesFromId || !mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
 
             let currentYear = Number(yearFrom);
 
-            console.log("currentYear", currentYear);
-            console.log("yearTo", yearTo);
             while (currentYear <= Number(yearTo)) {
-                if (currentYear === Number(yearFrom)) {
+                if (currentYear === Number(yearFrom) && currentYear === Number(yearTo)) {
+                    // Caso especial: el from y to están en el mismo año
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + mesFromId,
+                        to: currentYear * 100 + mesToId,
+                        anio: currentYear,
+                    });
+                } else if (currentYear === Number(yearFrom)) {
+                    // Primer año: desde el mes especificado hasta diciembre
                     allPeriodsBetweenYears.push({
                         from: currentYear * 100 + mesFromId,
                         to: currentYear * 100 + 12,
                         anio: currentYear,
                     });
                 } else if (currentYear === Number(yearTo)) {
+                    // Último año: desde enero hasta el mes especificado
                     allPeriodsBetweenYears.push({
                         from: currentYear * 100 + 1,
                         to: currentYear * 100 + mesToId,
                         anio: currentYear,
                     });
                 } else {
+                    // Años intermedios: de enero a diciembre
                     allPeriodsBetweenYears.push({
                         from: currentYear * 100 + 1,
                         to: currentYear * 100 + 12,
@@ -197,6 +203,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 currentYear++;
             }
         } else if (dateFrom) {
+            // Lógica para solo from
             if (!mesFromId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
 
             const lastYear = await prisma.anio.findFirst({
@@ -219,6 +226,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 currentYear++;
             }
         } else if (dateTo) {
+            // Lógica para solo to
             if (!mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
 
             const firstYear = await prisma.anio.findFirst({
@@ -241,6 +249,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 currentYear++;
             }
         } else {
+            // Lógica para cuando no hay ni from ni to
             const firstYear = await prisma.anio.findFirst({
                 orderBy: {nombre: "asc"},
             });
@@ -312,9 +321,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     }
                     return acc;
                 }, 0);
-
-                console.log("totalConsumo", totalConsumo);
-
 
                 const consumo = factorConversion * totalConsumo;
                 const emisionCO2 = factorSEIN.factorCO2 * consumo;
