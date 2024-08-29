@@ -37,7 +37,6 @@ import {FormElectricidad} from "./FormElectricidad";
 import {useRouter} from "next/navigation";
 import {Badge} from "@/components/ui/badge";
 import {
-    useAnio,
     useArea,
     useElectricidad,
     useElectricidadReport,
@@ -51,7 +50,6 @@ import {
     Building,
     Plus,
     Trash2,
-    Calendar,
     CalendarDays,
     Pen,
     MapPinned,
@@ -59,16 +57,8 @@ import {
 } from "lucide-react";
 import CustomPagination from "@/components/Pagination";
 import {UpdateFormElectricidad} from "@/components/consumoElectricidad/components/UpdateFormElectricidad";
-import ReportPopover, {
-    formatPeriod,
-    ReportRequest,
-} from "@/components/ReportPopover";
+import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 
@@ -112,7 +102,6 @@ export default function ElectricidadPage() {
     });
 
     const sedes = useSede();
-    const anios = useAnio();
     const meses = useMes();
     const areas = useArea(Number(selectedSede));
 
@@ -219,7 +208,7 @@ export default function ElectricidadPage() {
         await electricidadReport.refetch();
     };
 
-    const handleClickReport = async (period: ReportRequest) => {
+    const handleClickExcelReport = async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10},
             {header: "N° DE SUMINISTRO", key: "numeroSuministro", width: 15},
@@ -250,13 +239,11 @@ export default function ElectricidadPage() {
         }
     };
 
-    if (electricidad.isLoading || areas.isLoading || sedes.isLoading ||
-        anios.isLoading || meses.isLoading || electricidadReport.isLoading) {
+    if (electricidad.isLoading || areas.isLoading || sedes.isLoading || meses.isLoading || electricidadReport.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (electricidad.isError || areas.isError || sedes.isError ||
-        anios.isError || meses.isError || electricidadReport.isError) {
+    if (electricidad.isError || areas.isError || sedes.isError || meses.isError || electricidadReport.isError) {
         errorToast("Error al cargar los datos");
         return <SkeletonTable/>;
     }
@@ -310,7 +297,7 @@ export default function ElectricidadPage() {
                             />
 
                             <ReportComponent
-                                onSubmit={handleClickReport}
+                                onSubmit={handleClickExcelReport}
                                 ref={submitFormRef}
                                 withMonth={true}
                                 from={from}

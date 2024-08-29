@@ -1,5 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
-import prisma from "@/lib/prisma"; // Asegúrate de que la ruta sea correcta
+import prisma from "@/lib/prisma";
 import {formatCombustible} from "@/lib/resources/combustionResource";
 import {Combustible} from "@prisma/client";
 import {CombustionRequest} from "@/components/combustion/services/combustion.interface";
@@ -24,9 +24,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const dateFrom = searchParams.get("from") ?? undefined;
         const dateTo = searchParams.get("to") ?? undefined;
 
-        let anioId;
-        if (anio) anioId = await getAnioId(anio);
-
         let yearFrom, yearTo, monthFrom, monthTo;
         let yearFromId, yearToId, mesFromId, mesToId;
 
@@ -41,13 +38,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             tipo: tipo ? tipo : undefined,
             tipoCombustible_id: tipoCombustibleId ? parseInt(tipoCombustibleId) : undefined,
             sede_id: sedeId ? parseInt(sedeId) : undefined,
-            anio_id: anioId,
             mes_id: mesId ? parseInt(mesId) : undefined,
         } as {
             tipo?: string;
             tipoCombustible_id?: number;
             sede_id?: number;
-            anio_id: number | undefined;
             mes_id?: number;
             anio_mes?: {
                 gte?: number;

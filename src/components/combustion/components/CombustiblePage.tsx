@@ -1,5 +1,5 @@
 "use client";
-import React, {useState, useCallback} from "react";
+import React, {useState, useCallback, useRef} from "react";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {
     AlertDialog,
@@ -22,12 +22,9 @@ import {
 } from "@/components/ui/table";
 import {FormCombustible} from "./FormCombustible";
 import {
-    Building, Flame, Plus, Trash2, Calendar, CalendarDays, Pen, FileSpreadsheet,
+    Building, Flame, Plus, Trash2, CalendarDays, Pen, FileSpreadsheet,
 } from "lucide-react";
-import {
-    CombustionCollection, CombustionCollectionItem,
-    CombustionProps,
-} from "../services/combustion.interface";
+import {CombustionCollectionItem, CombustionProps} from "../services/combustion.interface";
 import {Badge} from "@/components/ui/badge";
 import {
     Dialog,
@@ -52,11 +49,10 @@ import SkeletonTable from "@/components/Layout/skeletonTable";
 import {deleteCombustion} from "@/components/combustion/services/combustion.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import CustomPagination from "@/components/Pagination";
-import ReportPopover, {formatPeriod, ReportRequest} from "@/components/ReportPopover";
+import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
-import {useFertilizanteReport} from "@/components/fertilizantes/lib/fertilizante.hook";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
+import ReportComponent from "@/components/ReportComponent";
 
 export default function CombustiblePage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
@@ -77,15 +73,16 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         new Date().getFullYear().toString()
     );
     const [selectedMes, setSelectedMes] = useState<string>("");
-    const [from, setFrom] = useState<string>("");
-    const [to, setTo] = useState<string>("");
+    const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
+    const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     // HOOKS
     const combustible = useCombustible({
         tipo,
         tipoCombustibleId: selectTipoCombustible ? Number(selectTipoCombustible) : undefined,
         sedeId: selectedSede ? Number(selectedSede) : undefined,
-        anio: selectedAnio ? Number(selectedAnio) : undefined,
+        from,
+        to,
         mesId: selectedMes ? Number(selectedMes) : undefined,
         page,
     });
@@ -94,11 +91,10 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         tipo,
         tipoCombustibleId: selectTipoCombustible ? Number(selectTipoCombustible) : undefined,
         sedeId: selectedSede ? Number(selectedSede) : undefined,
-        anio: selectedAnio ? Number(selectedAnio) : undefined,
+        from,
+        to,
         mesId: selectedMes ? Number(selectedMes) : undefined,
         page,
-        from,
-        to
     });
 
     const tiposCombustible = useTipoCombustible();
@@ -124,35 +120,50 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         await setPage(1);
         await setSelectTipoCombustible(value);
         await combustible.refetch();
-    }, [combustible]);
+        await combustibleReport.refetch();
+    }, [combustible, combustibleReport]);
 
     const handleSedeChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedSede(value);
         await combustible.refetch();
-    }, [combustible]);
-
-    const handleAnioChange = useCallback(async (value: string) => {
-        await setPage(1);
-        await setSelectedAnio(value);
-        await combustible.refetch();
-    }, [combustible]);
+        await combustibleReport.refetch();
+    }, [combustible, combustibleReport]);
 
     const handleMesChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedMes(value);
         await combustible.refetch();
-    }, [combustible]);
+        await combustibleReport.refetch();
+    }, [combustible, combustibleReport]);
+
+    const handleFromChange = useCallback(
+        async (value: string) => {
+            await setPage(1);
+            await setFrom(value);
+            await combustible.refetch();
+            await combustibleReport.refetch();
+        }, [combustible, combustibleReport]);
+
+    const handleToChange = useCallback(
+        async (value: string) => {
+            await setPage(1);
+            await setTo(value);
+            await combustible.refetch();
+            await combustibleReport.refetch();
+        }, [combustible, combustibleReport]);
 
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
         combustible.refetch();
-    }, [combustible]);
+        combustibleReport.refetch();
+    }, [combustible, combustibleReport]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
         combustible.refetch();
-    }, [combustible]);
+        combustibleReport.refetch();
+    }, [combustible, combustibleReport]);
 
     const handleDelete = useCallback(async () => {
         try {
@@ -172,10 +183,10 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
     const handlePageChange = async (page: number) => {
         await setPage(page);
         await combustible.refetch();
+        await combustibleReport.refetch();
     }
 
-
-    const handleClickReport = async (period: ReportRequest) => {
+    const handleClickExcelReport = async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10,},
             {header: "TIPO", key: "tipo", width: 15,},
@@ -193,18 +204,26 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE COMBUSTIÓN ${tipo.toUpperCase()}`, `Combustión ${tipo}`);
     }
 
-    if (combustible.isLoading || tiposCombustible.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {
+    const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
+
+    const handleClick = () => {
+        if (submitFormRef.current) {
+            submitFormRef.current.submitForm();
+        }
+    };
+
+    if (combustible.isLoading || tiposCombustible.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading || combustibleReport.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (combustible.isError || tiposCombustible.isError || sedes.isError || anios.isError || meses.isError) {
+    if (combustible.isError || tiposCombustible.isError || sedes.isError || anios.isError || meses.isError || combustibleReport.isError) {
         errorToast("Error al cargar los datos");
         return <SkeletonTable/>;
     }
 
     return (
         <div className="w-full max-w-[1150px] h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="font-Manrope">
                     <h1 className="text-base text-foreground font-bold">
                         {tipo === "estacionaria"
@@ -215,100 +234,114 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
                         Huella de carbono
                     </h2>
                 </div>
-                <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+                <div className="flex flex-col items-end gap-2">
                     <div
-                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
-                        <SelectFilter
-                            list={tiposCombustible.data!}
-                            itemSelected={selectTipoCombustible}
-                            handleItemSelect={handleTipoCombustibleChange}
-                            value={"id"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            all={true}
-                            icon={<Flame className="h-3 w-3"/>}
-                        />
+                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
+                        <div
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
+                            <SelectFilter
+                                list={tiposCombustible.data!}
+                                itemSelected={selectTipoCombustible}
+                                handleItemSelect={handleTipoCombustibleChange}
+                                value={"id"}
+                                nombre={"nombre"}
+                                id={"id"}
+                                all={true}
+                                icon={<Flame className="h-3 w-3"/>}
+                            />
 
-                        <SelectFilter
-                            list={sedes.data!}
-                            itemSelected={selectedSede}
-                            handleItemSelect={handleSedeChange}
-                            value={"id"}
-                            nombre={"name"}
-                            id={"id"}
-                            icon={<Building className="h-3 w-3"/>}
-                        />
+                            <SelectFilter
+                                list={sedes.data!}
+                                itemSelected={selectedSede}
+                                handleItemSelect={handleSedeChange}
+                                value={"id"}
+                                nombre={"name"}
+                                id={"id"}
+                                icon={<Building className="h-3 w-3"/>}
+                            />
 
-                        <SelectFilter
-                            list={anios.data!}
-                            itemSelected={selectedAnio}
-                            handleItemSelect={handleAnioChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            all={true}
-                            icon={<Calendar className="h-3 w-3"/>}
-                        />
+                            <SelectFilter
+                                list={meses.data!}
+                                itemSelected={selectedMes}
+                                handleItemSelect={handleMesChange}
+                                value={"id"}
+                                nombre={"nombre"}
+                                id={"id"}
+                                all={true}
+                                icon={<CalendarDays className="h-3 w-3"/>}
+                            />
 
-                        <SelectFilter
-                            list={meses.data!}
-                            itemSelected={selectedMes}
-                            handleItemSelect={handleMesChange}
-                            value={"id"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            all={true}
-                            icon={<CalendarDays className="h-3 w-3"/>}
-                        />
+                            <ReportComponent
+                                onSubmit={handleClickExcelReport}
+                                ref={submitFormRef}
+                                withMonth={true}
+                                from={from}
+                                to={to}
+                                handleFromChange={handleFromChange}
+                                handleToChange={handleToChange}
+                            />
 
-                    </div>
+                        </div>
+                        <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-2">
+                            <Button
+                                onClick={handleClick}
+                                size="sm"
+                                variant="outline"
+                                className="flex items-center gap-2 h-7"
+                            >
+                                <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                Excel
+                            </Button>
 
-                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
-                        <ExportPdfReport
-                            data={combustibleReport.data!.data}
-                            fileName={`REPORTE DE CONSUMO DE AGUA_${formatPeriod({from, to}, true)}`}
-                            columns={[
-                                {header: "N°", key: "id", width: 5,},
-                                {header: "TIPO", key: "tipo", width: 10,},
-                                {header: "TIPO DE EQUIPO", key: "tipoEquipo", width: 10,},
-                                {header: "CONSUMO", key: "consumo", width: 15,},
-                                {header: "MES", key: "mes", width: 10,},
-                                {header: "AÑO", key: "anio", width: 10,},
-                                {header: "TIPO DE COMBUSTIBLE", key: "tipoCombustible", width: 20,},
-                                {header: "UNIDAD", key: "unidad", width: 10,},
-                                {header: "SEDE", key: "sede", width: 70,}
-                            ]}
-                            title="REPORTE DE CONSUMO DE AGUA"
-                            period={formatPeriod({from, to}, true)}
-                        />
+                            <ExportPdfReport
+                                data={combustibleReport.data!.data}
+                                fileName={`REPORTE DE COMBUSTIÓN ${tipo.toUpperCase()}_${formatPeriod({
+                                    from,
+                                    to
+                                }, true)}`}
+                                columns={[
+                                    {header: "N°", key: "id", width: 5,},
+                                    {header: "TIPO", key: "tipo", width: 10,},
+                                    {header: "TIPO DE EQUIPO", key: "tipoEquipo", width: 20,},
+                                    {header: "CONSUMO", key: "consumo", width: 10,},
+                                    {header: "MES", key: "mes", width: 10,},
+                                    {header: "AÑO", key: "anio", width: 5,},
+                                    {header: "TIPO DE COMBUSTIBLE", key: "tipoCombustible", width: 20,},
+                                    {header: "UNIDAD", key: "unidad", width: 10,},
+                                    {header: "SEDE", key: "sede", width: 10,}
+                                ]}
+                                title={`REPORTE DE COMBUSTIÓN ${tipo.toUpperCase()}`}
+                                period={formatPeriod({from, to}, true)}
+                            />
 
-                        <ButtonCalculate onClick={handleCalculate}/>
+                            <ButtonCalculate onClick={handleCalculate}/>
 
-                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                            <DialogTrigger asChild>
-                                <Button size="sm" className="h-7 gap-1">
-                                    <Plus className="h-3.5 w-3.5"/>
-                                    Registrar
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>
-                                        {tipo === "estacionaria"
-                                            ? "Registro Estacionaria"
-                                            : "Registro Móvil"}
-                                    </DialogTitle>
-                                    <DialogDescription>
-                                        Indicar el consumo de combustible de{" "}
-                                        {tipo === "estacionaria"
-                                            ? "equipos estacionarios"
-                                            : "equipos móviles"}
-                                        .
-                                    </DialogDescription>
-                                </DialogHeader>
-                                <FormCombustible onClose={handleClose} tipo={tipo}/>
-                            </DialogContent>
-                        </Dialog>
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button size="sm" className="h-7 gap-1">
+                                        <Plus className="h-3.5 w-3.5"/>
+                                        Registrar
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>
+                                            {tipo === "estacionaria"
+                                                ? "Registro Estacionaria"
+                                                : "Registro Móvil"}
+                                        </DialogTitle>
+                                        <DialogDescription>
+                                            Indicar el consumo de combustible de{" "}
+                                            {tipo === "estacionaria"
+                                                ? "equipos estacionarios"
+                                                : "equipos móviles"}
+                                            .
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <FormCombustible onClose={handleClose} tipo={tipo}/>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -36,23 +36,15 @@ export const useElectricidadReport =
 
 export const useSede = () => {
     return useQuery({
-        queryKey: ['sede'],
+        queryKey: ['sedeCEP'],
         queryFn: () => getSedes(),
-        refetchOnWindowFocus: false,
-    });
-}
-
-export const useAnio = () => {
-    return useQuery({
-        queryKey: ['anio'],
-        queryFn: () => getAnio(),
         refetchOnWindowFocus: false,
     });
 }
 
 export const useMes = () => {
     return useQuery({
-        queryKey: ['mes'],
+        queryKey: ['mesCEP'],
         queryFn: () => getMes(),
         refetchOnWindowFocus: false,
     });
@@ -60,7 +52,7 @@ export const useMes = () => {
 
 export const useArea = (sedeId: number) => {
     return useQuery({
-        queryKey: ['area'],
+        queryKey: ['areaCEP'],
         queryFn: () => getArea(sedeId),
         refetchOnWindowFocus: false,
     });

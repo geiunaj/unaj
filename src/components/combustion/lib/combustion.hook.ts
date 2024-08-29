@@ -9,29 +9,28 @@ interface getCombustibleInterface {
     tipo: string;
     tipoCombustibleId?: number;
     sedeId?: number;
-    anio?: number;
+    from?: string;
+    to?: string;
     mesId?: number;
     sort?: string;
     direction?: string;
     page?: number;
-    from?: string;
-    to?: string;
 }
 
 export const useCombustible =
-    ({tipo, tipoCombustibleId, sedeId, anio, mesId, sort, direction, page}: getCombustibleInterface) => {
+    ({tipo, tipoCombustibleId, sedeId, from, to, mesId, sort, direction, page}: getCombustibleInterface) => {
         return useQuery({
             queryKey: ['combustible'],
-            queryFn: () => getCombustion(tipo, tipoCombustibleId, sedeId, anio, mesId, sort, direction, page),
+            queryFn: () => getCombustion(tipo, tipoCombustibleId, sedeId, from, to, mesId, sort, direction, page),
             refetchOnWindowFocus: false,
         });
     }
 
 export const useCombustibleReport =
-    ({tipo, tipoCombustibleId, sedeId, anio, mesId, sort, direction, page, from, to}: getCombustibleInterface) => {
+    ({tipo, tipoCombustibleId, sedeId, from, to, mesId, sort, direction}: getCombustibleInterface) => {
         return useQuery({
-            queryKey: ['combustibleR'],
-            queryFn: () => getCombustionReport(tipo, tipoCombustibleId, sedeId, anio, mesId, sort, direction, page, from, to),
+            queryKey: ['combustibleRreport'],
+            queryFn: () => getCombustionReport(tipo, tipoCombustibleId, sedeId, from, to, mesId, sort, direction),
             refetchOnWindowFocus: false,
         });
     }
