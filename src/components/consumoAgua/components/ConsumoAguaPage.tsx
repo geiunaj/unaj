@@ -223,11 +223,11 @@ export default function ConsumoAguaPage() {
         }
     };
 
-    if (consumoAgua.isLoading || areas.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading) {
+    if (consumoAgua.isLoading || areas.isLoading || sedes.isLoading || anios.isLoading || meses.isLoading || consumoAguaReport.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (consumoAgua.isError || areas.isError || sedes.isError || anios.isError || meses.isError) {
+    if (consumoAgua.isError || areas.isError || sedes.isError || anios.isError || meses.isError || consumoAguaReport.isError) {
         errorToast("Error al cargar los datos");
         return <SkeletonTable/>;
     }
@@ -314,7 +314,6 @@ export default function ConsumoAguaPage() {
                                 title="REPORTE DE CONSUMO DE AGUA"
                                 period={formatPeriod({from, to}, true)}
                             />
-
 
                             <ButtonCalculate onClick={handleCalculate}/>
 
