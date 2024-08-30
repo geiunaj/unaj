@@ -34,10 +34,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             });
         }
 
-
-        if (!period && all) {
-            return new NextResponse("Periodo no encontrado", {status: 404,});
-        }
+        if (!period && all) return new NextResponse("Periodo no encontrado", {status: 404,});
 
         const whereOptions = {
             area: {
@@ -143,9 +140,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             area: { sede_id: number };
             anio_mes?: { gte?: number; lte?: number };
         };
-
-        const from = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
-        const to = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
 
         await prisma.energiaCalculosDetail.deleteMany({
             where: {

@@ -1,4 +1,16 @@
-export interface CombustionCalc {
+export interface combutionCalculosCollection {
+    data: CombustionCalcResponse[];
+    meta: Meta;
+}
+
+interface Meta {
+    page: number;
+    perPage: number;
+    totalPages: number;
+    totalRecords: number;
+}
+
+export interface combustionCalculosResource {
     tipo: string;
     tipoCombustibleId: number;
     consumoTotal: number;
@@ -13,18 +25,32 @@ export interface CombustionCalc {
 }
 
 export interface CombustionCalcRequest {
-    sedeId: number;
-    anioId: number;
     tipo: string;
-    // combustibleId: number;
+    sedeId: number;
+    from?: string;
+    to?: string;
+}
+
+export interface CombustionCalculosRequest {
+    tipo: string;
+    tipoCombustibleId: number;
+    consumoTotal: number;
+    valorCalorico: number;
+    consumo: number;
+    emisionCO2: number;
+    emisionCH4: number;
+    emisionN2O: number;
+    totalGEI: number;
+    periodoCalculoId: number;
+    sedeId: number;
 }
 
 export interface CombustionCalcResponse {
     id: number;
     tipo: string;
     tipoCombustibleId: number;
-    anioId: number;
     sedeId: number;
+    periodoCalculoId: number;
     tipoCombustible: string;
     unidad: string;
     cantidad: number;
@@ -34,4 +60,5 @@ export interface CombustionCalcResponse {
     emisionCH4: number;
     emisionN2O: number;
     totalGEI: number;
+    sede: string;
 }

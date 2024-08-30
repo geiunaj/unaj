@@ -42,8 +42,7 @@ export async function getElectricidadCalculos({
             page,
         },
     };
-    const {data} = await api.get<electricidadCalculosCollection>(
-        "/api/electricidad/calculate", config);
+    const {data} = await api.get<electricidadCalculosCollection>("/api/electricidad/calculate", config);
     return data;
 }
 

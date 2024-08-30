@@ -39,8 +39,6 @@ export default function ElectricidadCalculate() {
     const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
     const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
-    const sedes = useSede();
-    const anios = useAnio();
 
     // HOOKS
     const electricidadCalculos = useElectricidadCalculos({
@@ -56,6 +54,8 @@ export default function ElectricidadCalculate() {
         to,
         page,
     });
+    const sedes = useSede();
+    const anios = useAnio();
 
     // HANDLES
     const handleSedeChange = useCallback(async (value: string) => {
@@ -146,7 +146,6 @@ export default function ElectricidadCalculate() {
                         className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
                         <div
                             className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
-
                             <SelectFilter
                                 list={sedes.data!}
                                 itemSelected={selectedSede}
@@ -231,31 +230,20 @@ export default function ElectricidadCalculate() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {
-                            electricidadCalculos.data!.data.length === 0 && (
-                                <TableRow>
-                                    <TableCell colSpan={6} className="text-center">
-                                        Click en el botón <strong className="text-primary">Calcular</strong> para obtener
-                                        los resultados
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        }
+                        {electricidadCalculos.data!.data.length === 0 && (
+                            <TableRow>
+                                <TableCell colSpan={6} className="text-center">
+                                    Click en el botón <strong className="text-primary">Calcular</strong> para obtener
+                                    los resultados
+                                </TableCell>
+                            </TableRow>
+                        )}
                         {electricidadCalculos.data!.data.map(
                             (electricidadCalculosResource: electricidadCalculosResource) => (
                                 <TableRow className="text-center" key={electricidadCalculosResource.id}>
                                     <TableCell className="text-xs sm:text-sm text-start">
                                         {electricidadCalculosResource.area}
                                     </TableCell>
-                                    {/*<TableCell>*/}
-                                    {/*    {combustionCalculate.unidad}*/}
-                                    {/*</TableCell>*/}
-                                    {/*<TableCell>*/}
-                                    {/*    {combustionCalculate.cantidad}*/}
-                                    {/*</TableCell>*/}
-                                    {/*<TableCell>*/}
-                                    {/*    {combustionCalculate.valorCalorico}*/}
-                                    {/*</TableCell>*/}
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">
                                             {electricidadCalculosResource.consumoTotal}

@@ -1,48 +1,3 @@
-export interface CombustibleCalculo {
-    id: number;
-    tipoCombustibleId: number;
-    consumoTotal: number;
-    valorCalorico: number;
-    consumo: number;
-    emisionCO2: number;
-    emisionCH4: number;
-    emisionN2O: number;
-    totalGEI: number;
-    anioId: number;
-    sedeId: number;
-    created_at: Date;
-    updated_at: Date;
-    tipoCombustible: TipoCombustible;
-    sede: Sede;
-    anio: Anio;
-}
-
-export interface Anio {
-    id: number;
-    nombre: string;
-    created_at: Date;
-    updated_at: Date;
-}
-
-export interface Sede {
-    id: number;
-    name: string;
-}
-
-export interface TipoCombustible {
-    id: number;
-    nombre: string;
-    abreviatura: string;
-    unidad: string;
-    valorCalorico: number;
-    factorEmisionCO2: number;
-    factorEmisionCH4: number;
-    factorEmisionN2O: number;
-    created_at: Date;
-    updated_at: Date;
-}
-
-
 export function formatCombustibleCalculo(combustibleCalculo: any) {
     const {
         tipoCombustible,
@@ -53,6 +8,7 @@ export function formatCombustibleCalculo(combustibleCalculo: any) {
         emisionCH4,
         emisionN2O,
         totalGEI,
+        sede,
         ...rest
     } = combustibleCalculo;
 
@@ -67,6 +23,7 @@ export function formatCombustibleCalculo(combustibleCalculo: any) {
         emisionCH4: Number(emisionCH4.toFixed(5)),
         emisionN2O: Number(emisionN2O.toFixed(5)),
         totalGEI: Number(totalGEI.toFixed(5)),
+        sede: sede.name,
         created_at: undefined,
         updated_at: undefined,
     };
