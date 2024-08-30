@@ -49,6 +49,7 @@ import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function"
 import {ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import ReportComponent from "@/components/ReportComponent";
+import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 
 
 export default function FertilizantePage() {
@@ -268,6 +269,22 @@ export default function FertilizantePage() {
                                 <FileSpreadsheet className="h-3.5 w-3.5"/>
                                 Excel
                             </Button>
+
+                            <ExportPdfReport
+                                data={fertilizante.data!.data}
+                                fileName={`REPORTE DE FERTILIZANTES_${formatPeriod({yearFrom, yearTo}, true)}`}
+                                columns={[
+                                    {header: "N°", key: "id", width: 5,},
+                                    {header: "TIPO", key: "clase", width: 20,},
+                                    {header: "FERTILIZANTE", key: "tipoFertilizante", width: 25,},
+                                    {header: "CANTIDAD", key: "cantidad", width: 20,},
+                                    {header: "NITRÓGENO %", key: "porcentajeNit", width: 10,},
+                                    {header: "AÑO", key: "anio", width: 10,},
+                                    {header: "SEDE", key: "sede", width: 10,}
+                                ]}
+                                title="REPORTE DE FERTILIZANTES"
+                                period={formatPeriod({yearFrom, yearTo})}
+                            />
 
                             <ButtonCalculate onClick={handleCalculate}/>
 
