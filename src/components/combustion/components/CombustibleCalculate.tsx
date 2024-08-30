@@ -200,12 +200,12 @@ export default function CombustibleCalculate({
                                 fileName={`REPORTE CALCULOS DE CONSUMO DE ENERGÍA_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
-                                    {header: "TIPO COMBUSTIBLE", key: "tipoCombustible", width: 15},
+                                    {header: "TIPO COMBUSTIBLE", key: "tipoCombustible", width: 20},
                                     {header: "CONSUMO", key: "consumo", width: 10},
                                     {header: "EMISIONES CO2", key: "emisionCO2", width: 15},
                                     {header: "EMISIONES CH4", key: "emisionCH4", width: 15},
                                     {header: "EMISIONES N20", key: "emisionN2O", width: 15},
-                                    {header: "TOTAL GEI", key: "totalGEI", width: 15},
+                                    {header: "TOTAL GEI", key: "totalGEI", width: 10},
                                     {header: "SEDE", key: "sede", width: 10},
                                 ]}
                                 title="REPORTE DE CALCULOS DE CONSUMO DE ENERGÍA"

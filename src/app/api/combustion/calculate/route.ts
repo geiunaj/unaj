@@ -45,6 +45,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             sedeId: parseInt(sedeId),
             tipo: tipo ?? undefined,
             periodoCalculoId: period?.id,
+            consumo: {
+                not: 0
+            },
         };
 
         const totalRecords = await prisma.combustibleCalculos.count({
@@ -64,13 +67,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const formattedCombustibleCalculos: any[] = combustibleCalculos
             .map((combustibleCalculo, index: number) => {
-                if (combustibleCalculo.consumo !== 0) {
-                    combustibleCalculo.id = index + 1;
-                    return formatCombustibleCalculo(combustibleCalculo);
-                }
-                return null;
-            })
-            .filter((combustibleCalculo) => combustibleCalculo !== null);
+                combustibleCalculo.id = index + 1;
+                return formatCombustibleCalculo(combustibleCalculo);
+            });
 
         return NextResponse.json({
             data: formattedCombustibleCalculos,
@@ -92,6 +91,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const combustibleCalculos = [];
 
         const body: CombustionCalcRequest = await req.json();
+        console.log(body);
         const sedeId = body.sedeId;
         const tipo = body.tipo;
         const dateFrom = body.from;
@@ -100,8 +100,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         let yearFrom, yearTo, monthFrom, monthTo;
         let yearFromId, yearToId, mesFromId, mesToId;
 
-        if (dateFrom) [monthFrom, yearFrom] = dateFrom.split("-");
-        if (dateTo) [monthTo, yearTo] = dateTo.split("-");
+        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
         if (yearFrom) yearFromId = await getAnioId(yearFrom);
         if (yearTo) yearToId = await getAnioId(yearTo);
         if (monthFrom) mesFromId = parseInt(monthFrom);
@@ -140,6 +140,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const from = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
         const to = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
 
+        console.log(from, to);
+
         if (from && to) {
             whereOptionsCombustion.anio_mes = {gte: from, lte: to,};
         } else if (from) {
@@ -147,6 +149,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         } else if (to) {
             whereOptionsCombustion.anio_mes = {lte: to,};
         }
+
+        console.log(whereOptionsCombustion);
 
         const tiposCombustible = await prisma.tipoCombustible.findMany();
         const combustibles = await prisma.combustible.findMany({
