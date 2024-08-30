@@ -1,4 +1,4 @@
-export interface combutionCalculosCollection {
+export interface combustionCalculosCollection {
     data: CombustionCalcResponse[];
     meta: Meta;
 }

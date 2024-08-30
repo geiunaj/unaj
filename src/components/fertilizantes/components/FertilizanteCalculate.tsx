@@ -1,5 +1,5 @@
 "use client";
-import {useEffect, useState, useCallback} from "react";
+import React, {useEffect, useState, useCallback, useRef} from "react";
 import {Button} from "@/components/ui/button";
 import {
     Table,
@@ -9,7 +9,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {Calculator} from "lucide-react";
+import {Building, Calculator} from "lucide-react";
 import {useSedeStore} from "@/components/sede/lib/sede.store";
 import {useAnioStore} from "@/components/anio/lib/anio.store";
 import SelectFilter from "@/components/SelectFilter";
@@ -19,94 +19,105 @@ import {FertilizanteCalcResponse} from "../services/fertilizanteCalculate.interf
 import ButtonCalculate from "@/components/ButtonCalculate";
 import ButtonBack from "@/components/ButtonBack";
 import {useRouter} from "next/navigation";
+import ReportComponent from "@/components/ReportComponent";
+import {ReportRequest} from "@/components/ReportPopover";
+import GenerateReport from "@/lib/utils/generateReport";
+import {formatPeriod} from "@/lib/utils/core.function";
+import {
+    useFertilizanteCalculos,
+    useFertilizanteCalculosReport, useSedes
+} from "@/components/fertilizantes/lib/fertilizantesCalculos.hooks";
+import SkeletonTable from "@/components/Layout/skeletonTable";
+import {createCalculosElectricidad} from "@/components/consumoElectricidad/services/electricidadCalculos.actions";
+import {createFertilizanteCalculate} from "@/components/fertilizantes/services/fertilizanteCalculate.actions";
 
 export default function FertilizanteCalculate() {
     const {push} = useRouter();
 
-    // STORES
-    const {
-        FertilizanteCalculates,
-        loadFertilizanteCalculates,
-        createFertilizanteCalculate,
-    } = useFertilizanteCalculateStore();
-    const {sedes, loadSedes} = useSedeStore();
-    const {anios, loadAnios} = useAnioStore();
-
     // SELECTS - FILTERS
     const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [selectedAnio, setSelectedAnio] = useState<string>(
-        new Date().getFullYear().toString()
-    );
-    const [selectedTipo, setSelectedTipo] = useState<string>("estacionaria");
+    const [yearFrom, setYearFrom] = useState<string>(new Date().getFullYear().toString());
+    const [yearTo, setYearTo] = useState<string>(new Date().getFullYear().toString());
+    const [page, setPage] = useState(1);
 
-    useEffect(() => {
-        if (sedes.length === 0) loadSedes();
-        if (anios.length === 0) loadAnios();
-        if (FertilizanteCalculates.length === 0)
-            loadFertilizanteCalculates(
-                parseInt(selectedSede),
-                parseInt(selectedAnio)
-            );
-    }, [
-        loadFertilizanteCalculates,
-        loadSedes,
-        loadAnios,
-        sedes.length,
-        anios.length,
-        selectedSede,
-        selectedAnio,
-        FertilizanteCalculates.length,
-    ]);
+    const fertilizanteCalculos = useFertilizanteCalculos({
+        sedeId: parseInt(selectedSede),
+        yearFrom: yearFrom,
+        yearTo: yearTo,
+        page,
+    });
+    const fertilizanteCalculosReport = useFertilizanteCalculosReport({
+        sedeId: parseInt(selectedSede),
+        yearFrom: yearFrom,
+        yearTo: yearTo,
+    });
 
-    const handleSedeChange = useCallback(
-        (value: string) => {
-            setSelectedSede(value);
-            loadFertilizanteCalculates(parseInt(value), parseInt(selectedAnio));
-        },
-        [loadFertilizanteCalculates, selectedAnio, selectedTipo]
-    );
-
-    const handleAnioChange = useCallback(
-        (value: string) => {
-            setSelectedAnio(value);
-            loadFertilizanteCalculates(parseInt(selectedSede), parseInt(value));
-        },
-        [loadFertilizanteCalculates, selectedSede, selectedTipo]
-    );
-
-    const handleCalculate = useCallback(async () => {
-        await createFertilizanteCalculate(
-            parseInt(selectedSede),
-            parseInt(selectedAnio)
-        );
-        await loadFertilizanteCalculates(
-            parseInt(selectedSede),
-            parseInt(selectedAnio)
-        );
-    }, [
-        createFertilizanteCalculate,
-        selectedSede,
-        selectedAnio,
-        selectedTipo,
-        loadFertilizanteCalculates,
-    ]);
-
+    const sedes = useSedes();
     const handleFertilizante = () => {
         push("/fertilizante");
     };
 
-    const tipos = [
-        {value: "estacionaria", name: "Estacionaria"},
-        {value: "movil", name: "Móvil"},
-    ];
+    const handleSedeChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setSelectedSede(value);
+        await fertilizanteCalculos.refetch();
+        await fertilizanteCalculosReport.refetch();
+    }, [fertilizanteCalculos, fertilizanteCalculosReport]);
 
-    // const handleTipo = useCallback((value: string) => {
-    //     setSelectedTipo(value);
-    //     loadFertilizanteCalculates(parseInt(selectedSede), parseInt(selectedAnio));
-    // }, [loadFertilizanteCalculates, selectedAnio, selectedSede]);
+    const handleYearFromChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setYearFrom(value);
+        await fertilizanteCalculos.refetch();
+        await fertilizanteCalculosReport.refetch();
+    }, [fertilizanteCalculos, fertilizanteCalculosReport]);
 
-    if (!FertilizanteCalculates) {
-        return <p>Cargando...</p>;
+    const handleYearToChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setYearTo(value);
+        await fertilizanteCalculos.refetch();
+        await fertilizanteCalculosReport.refetch();
+    }, [fertilizanteCalculos, fertilizanteCalculosReport]);
+
+    const handleCalculate = useCallback(async () => {
+        await createFertilizanteCalculate({
+            sedeId: selectedSede ? Number(selectedSede) : undefined,
+            yearFrom,
+            yearTo,
+        });
+        fertilizanteCalculos.refetch();
+        fertilizanteCalculosReport.refetch();
+    }, [selectedSede, yearFrom, yearTo, fertilizanteCalculos, fertilizanteCalculosReport]);
+
+
+    const handleClickReport = useCallback(async (period: ReportRequest) => {
+        const columns = [
+            {header: "N°", key: "id", width: 10,},
+            {header: "TIPO", key: "clase", width: 15,},
+            {header: "FERTILIZANTE", key: "tipoFertilizante", width: 40,},
+            {header: "CANTIDAD", key: "cantidad", width: 15,},
+            {header: "NITRÓGENO %", key: "porcentajeNit", width: 20,},
+            {header: "FICHA TECNICA", key: "is_ficha", width: 15,},
+            {header: "AÑO", key: "anio", width: 15,},
+            {header: "SEDE", key: "sede", width: 20,}
+        ];
+        const data = await fertilizanteCalculosReport.refetch();
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMIIONES DE FERTILIZANTES", "FERTILIZANTES");
+    }, [fertilizanteCalculosReport]);
+
+    const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
+
+    const handleClick = () => {
+        if (submitFormRef.current) {
+            submitFormRef.current.submitForm();
+        }
+    };
+
+    if (fertilizanteCalculos.isLoading || fertilizanteCalculosReport.isLoading || sedes.isLoading) {
+        return <SkeletonTable/>;
+    }
+
+    if (fertilizanteCalculos.isError || fertilizanteCalculosReport.isError || sedes.isError) {
+        return <div>Error al cargar los datos</div>;
     }
 
     return (
@@ -115,10 +126,10 @@ export default function FertilizanteCalculate() {
                 <div className="flex gap-4 items-center">
                     <ButtonBack onClick={handleFertilizante}/>
                     <div className="font-Manrope">
-                        <h1 className="text-base text-gray-800 font-bold">
+                        <h1 className="text-base text-foreground font-bold">
                             Cálculo de emisiones por fertilizantes
                         </h1>
-                        <h2 className="text-xs sm:text-sm text-gray-500">
+                        <h2 className="text-xs sm:text-sm text-muted-foreground">
                             Huella de carbono
                         </h2>
                     </div>
@@ -127,22 +138,24 @@ export default function FertilizanteCalculate() {
                     <div
                         className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center w-1/2">
                         <SelectFilter
-                            list={sedes}
+                            list={sedes.data!}
                             itemSelected={selectedSede}
                             handleItemSelect={handleSedeChange}
                             value={"id"}
                             nombre={"name"}
                             id={"id"}
+                            icon={<Building className="h-3 w-3"/>}
                         />
 
-                        <SelectFilter
-                            list={anios}
-                            itemSelected={selectedAnio}
-                            handleItemSelect={handleAnioChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"id"}
+                        <ReportComponent
+                            onSubmit={handleClickReport}
+                            ref={submitFormRef}
+                            yearFrom={yearFrom}
+                            yearTo={yearTo}
+                            handleYearFromChange={handleYearFromChange}
+                            handleYearToChange={handleYearToChange}
                         />
+
                     </div>
                     <ButtonCalculate
                         onClick={handleCalculate}
@@ -171,12 +184,6 @@ export default function FertilizanteCalculate() {
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 CANTIDAD DE APORTE DE NITROGENO
                             </TableHead>
-                            {/* <TableHead className="font-Manrope text-sm font-bold text-center">
-                FACTOR DE EMISIÓN PARA EMISIONES DIRECTAS
-              </TableHead> */}
-                            {/* <TableHead className="font-Manrope text-sm font-bold text-center">
-                EMISIONES DIRECTA DE LOS SUELOS
-              </TableHead> */}
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 TOTAL DE EMISIONES DIRECTAS DE N2O
                             </TableHead>
@@ -186,7 +193,7 @@ export default function FertilizanteCalculate() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {FertilizanteCalculates.map(
+                        {fertilizanteCalculos.data!.data.map(
                             (FertilizanteCalculate: FertilizanteCalcResponse) => (
                                 <TableRow
                                     className="text-center"
@@ -211,7 +218,6 @@ export default function FertilizanteCalculate() {
                                             {FertilizanteCalculate.cantidadAporte}
                                         </Badge>
                                     </TableCell>
-                                    {/* <TableCell>{FertilizanteCalculate.emisionDirecta}</TableCell> */}
                                     <TableCell className="text-xs sm:text-sm">
                                         {FertilizanteCalculate.totalEmisionesDirectas}
                                     </TableCell>

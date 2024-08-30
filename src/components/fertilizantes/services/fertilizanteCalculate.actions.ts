@@ -1,27 +1,71 @@
 import api from "../../../../config/api";
 import {AxiosRequestConfig} from "axios";
-import {
-    FertilizanteCalcRequest,
-    FertilizanteCalcResponse,
-} from "./fertilizanteCalculate.interface";
+import {fertilizanteCalculosCollection} from "@/components/fertilizantes/services/fertilizanteCalculate.interface";
+
+interface GetFertilizanteProps {
+    sedeId?: number,
+    yearFrom?: string,
+    yearTo?: string,
+    page?: number
+}
+
+interface CreateCalculosFertilizanteProps {
+    sedeId?: number;
+    yearFrom?: string;
+    yearTo?: string;
+}
 
 export async function getFertilizanteCalculate(
-    sedeId: number,
-    anioId: number
-): Promise<FertilizanteCalcResponse[]> {
+    {
+        sedeId,
+        yearFrom,
+        yearTo,
+        page,
+    }: GetFertilizanteProps): Promise<fertilizanteCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
-            anioId,
-        },
+            yearFrom,
+            yearTo,
+            page,
+        }
+    };
+    const {data} = await api.get<fertilizanteCalculosCollection>("/api/fertilizante/calculate", config);
+    return data;
+}
+
+export async function getFertilizanteCalculateReport(
+    {
+        sedeId,
+        yearFrom,
+        yearTo,
+    }: GetFertilizanteProps): Promise<fertilizanteCalculosCollection> {
+    const config: AxiosRequestConfig = {
+        params: {
+            sedeId,
+            yearFrom,
+            yearTo,
+            all: true
+        }
     };
     const {data} = await api.get("/api/fertilizante/calculate", config);
     return data;
 }
 
 export async function createFertilizanteCalculate(
-    body: FertilizanteCalcRequest
-): Promise<FertilizanteCalcResponse[]> {
+    {
+        sedeId,
+        yearFrom,
+        yearTo,
+    }: CreateCalculosFertilizanteProps):
+    Promise<fertilizanteCalculosCollection> {
+
+    const body = {
+        sedeId,
+        yearFrom,
+        yearTo,
+    };
+
     const {data} = await api.post("/api/fertilizante/calculate", body);
     return data;
 }

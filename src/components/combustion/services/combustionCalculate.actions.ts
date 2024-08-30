@@ -1,6 +1,7 @@
 import api from "../../../../config/api";
 import {
-    CombustionCalcRequest, CombustionCalcResponse, combutionCalculosCollection,
+    CombustionCalcResponse,
+    combustionCalculosCollection,
 } from "@/components/combustion/services/combustionCalculate.interface";
 import {AxiosRequestConfig} from "axios";
 
@@ -25,7 +26,7 @@ export async function getCombustionCalculate({
                                                  from,
                                                  to,
                                                  page,
-                                             }: GetCombustionProps): Promise<combutionCalculosCollection> {
+                                             }: GetCombustionProps): Promise<combustionCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             tipo,
@@ -35,7 +36,7 @@ export async function getCombustionCalculate({
             page,
         }
     };
-    const {data} = await api.get<combutionCalculosCollection>("/api/combustion/calculate", config);
+    const {data} = await api.get<combustionCalculosCollection>("/api/combustion/calculate", config);
     return data;
 }
 
@@ -44,7 +45,7 @@ export async function getCombustionCalculateReport({
                                                        sedeId,
                                                        from,
                                                        to,
-                                                   }: GetCombustionProps): Promise<combutionCalculosCollection> {
+                                                   }: GetCombustionProps): Promise<combustionCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             tipo,
