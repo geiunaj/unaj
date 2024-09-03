@@ -1,7 +1,7 @@
 "use client";
 
-import {useCallback, useState} from "react";
-import {Pen, Plus, Trash2} from "lucide-react";
+import React, {useCallback, useState} from "react";
+import {CalendarDays, Flame, Pen, Plus, Trash2} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -33,12 +33,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {useTipoCombustible} from "../lib/tipoCombustible.hook";
+import {useTipoCombustible, useTipoCombustiblePaginate} from "../lib/tipoCombustible.hook";
 import {TipoCombustibleCollection} from "../services/tipoCombustible.interface";
 import {FromTipoCombustible} from "./FormTipoCombustible";
 import {deleteTipoCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";
 import {UpdateFormTipoCombustible} from "./UpdateFormTipoCombustible";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import SelectFilter from "@/components/SelectFilter";
+import CustomPagination from "@/components/Pagination";
 
 export default function TipoCombustiblePage() {
     //DIALOGS
@@ -47,11 +49,24 @@ export default function TipoCombustiblePage() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
+    const [selectTipoCombustible, setSelectTipoCombustible] = useState<string>("");
+    const [page, setPage] = useState<number>(1);
 
     //USE QUERIES
-    const tipoCombustibleQuery = useTipoCombustible();
+    const tipoCombustibleQuery = useTipoCombustiblePaginate({
+        tipoCombustibleId: selectTipoCombustible,
+        page,
+        perPage: 10,
+    });
+
+    const tiposCombustible = useTipoCombustible();
 
     // HANDLES
+    const handleTipoCombustibleChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setSelectTipoCombustible(value);
+        await tipoCombustibleQuery.refetch();
+    }, [tipoCombustibleQuery]);
 
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
@@ -85,7 +100,12 @@ export default function TipoCombustiblePage() {
         setIsDeleteDialogOpen(true);
     };
 
-    if (tipoCombustibleQuery.isLoading) {
+    const handlePageChange = async (page: number) => {
+        await setPage(page);
+        await tipoCombustibleQuery.refetch();
+    }
+
+    if (tipoCombustibleQuery.isLoading || tiposCombustible.isLoading) {
         return <SkeletonTable/>;
     }
 
@@ -98,6 +118,16 @@ export default function TipoCombustiblePage() {
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                        <SelectFilter
+                            list={tiposCombustible.data!}
+                            itemSelected={selectTipoCombustible}
+                            handleItemSelect={handleTipoCombustibleChange}
+                            value={"id"}
+                            nombre={"nombre"}
+                            id={"id"}
+                            all={true}
+                            icon={<Flame className="h-3 w-3"/>}
+                        />
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button size="sm" className="h-7 gap-1">
@@ -130,9 +160,6 @@ export default function TipoCombustiblePage() {
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 NOMBRE
                             </TableHead>
-                            {/* <TableHead className="text-xs sm:text-sm font-bold text-center">
-                ABREVIATURA
-              </TableHead> */}
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 UNIDAD
                             </TableHead>
@@ -149,12 +176,15 @@ export default function TipoCombustiblePage() {
                                 FE N2O
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                AÑO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 ACCIONES
                             </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {tipoCombustibleQuery.data!.map(
+                        {tipoCombustibleQuery.data!.data.map(
                             (item: TipoCombustibleCollection, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
@@ -180,6 +210,9 @@ export default function TipoCombustiblePage() {
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary"> {item.factorEmisionN2O}</Badge>
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        <Badge variant="secondary"> {item.anio.nombre}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm p-1">
                                         <div className="flex justify-center gap-4">
@@ -209,6 +242,11 @@ export default function TipoCombustiblePage() {
                         )}
                     </TableBody>
                 </Table>
+                {
+                    tipoCombustibleQuery.data!.meta.totalPages > 1 && (
+                        <CustomPagination meta={tipoCombustibleQuery.data!.meta} onPageChange={handlePageChange}/>
+                    )
+                }
             </div>
 
             {/*MODAL UPDATE*/}

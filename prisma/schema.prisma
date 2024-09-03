@@ -49,19 +49,31 @@ model Sede {
   User                 User[]
 }
 
-model tipoCombustible {
+model tipoCombustibleFactor {
   id                  Int                   @id @default(autoincrement())
-  nombre              String                @db.VarChar(45)
-  abreviatura         String                @db.VarChar(45)
-  unidad              String                @db.VarChar(45)
   valorCalorico       Float                 @db.Float
   factorEmisionCO2    Float                 @db.Float
   factorEmisionCH4    Float                 @db.Float
   factorEmisionN2O    Float                 @db.Float
+  anio_id             Int
+  tipoCombustible_id  Int
   created_at          DateTime
   updated_at          DateTime
-  combustibles        Combustible[]
+  anio                Anio                  @relation(fields: [anio_id], references: [id])
+  tipoCombustible     tipoCombustible       @relation(fields: [tipoCombustible_id], references: [id])
   combustibleCalculos combustibleCalculos[]
+}
+
+model tipoCombustible {
+  id          Int    @id @default(autoincrement())
+  nombre      String @db.VarChar(45)
+  abreviatura String @db.VarChar(45)
+  unidad      String @db.VarChar(45)
+
+  created_at            DateTime
+  updated_at            DateTime
+  tipoCombustibleFactor tipoCombustibleFactor[]
+  Combustible           Combustible[]
 }
 
 model Mes {
@@ -81,13 +93,14 @@ model Anio {
   created_at DateTime
   updated_at DateTime
 
-  combustibles         Combustible[]
-  fertilizante         Fertilizante[]
-  consumoPapel         ConsumoPapel[]
-  Taxi                 Taxi[]
-  consumoEnergia       consumoEnergia[]
-  factorConversionSEIN factorConversionSEIN[]
-  ConsumoAgua          ConsumoAgua[]
+  combustibles          Combustible[]
+  fertilizante          Fertilizante[]
+  consumoPapel          ConsumoPapel[]
+  Taxi                  Taxi[]
+  consumoEnergia        consumoEnergia[]
+  factorConversionSEIN  factorConversionSEIN[]
+  ConsumoAgua           ConsumoAgua[]
+  tipoCombustibleFactor tipoCombustibleFactor[]
 }
 
 model Combustible {
@@ -197,25 +210,25 @@ model GWP {
 
 // A1_1 COMBUSTIBLES
 model combustibleCalculos {
-  id                Int    @id @default(autoincrement())
-  tipo              String @db.VarChar(45)
-  tipoCombustibleId Int
-  consumoTotal      Float  @db.Float
-  valorCalorico     Float  @db.Float
-  consumo           Float  @db.Float
-  emisionCO2        Float  @db.Float
-  emisionCH4        Float  @db.Float
-  emisionN2O        Float  @db.Float
-  totalGEI          Float  @db.Float
-  sedeId            Int    @db.Int
-  periodoCalculoId  Int?   @db.Int
+  id                      Int    @id @default(autoincrement())
+  tipo                    String @db.VarChar(45)
+  tipoCombustibleFactorId Int
+  consumoTotal            Float  @db.Float
+  valorCalorico           Float  @db.Float
+  consumo                 Float  @db.Float
+  emisionCO2              Float  @db.Float
+  emisionCH4              Float  @db.Float
+  emisionN2O              Float  @db.Float
+  totalGEI                Float  @db.Float
+  sedeId                  Int    @db.Int
+  periodoCalculoId        Int?   @db.Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  tipoCombustible tipoCombustible? @relation(fields: [tipoCombustibleId], references: [id])
-  sede            Sede?            @relation(fields: [sedeId], references: [id])
-  PeriodoCalculo  PeriodoCalculo?  @relation(fields: [periodoCalculoId], references: [id])
+  tipoCombustibleFactor tipoCombustibleFactor? @relation(fields: [tipoCombustibleFactorId], references: [id])
+  sede                  Sede?                  @relation(fields: [sedeId], references: [id])
+  PeriodoCalculo        PeriodoCalculo?        @relation(fields: [periodoCalculoId], references: [id])
 }
 
 // // A1_5 - FERTILIZANTES

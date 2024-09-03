@@ -16,6 +16,16 @@ export async function getTiposPapel(): Promise<TipoPapelCollection[]> {
     }
 }
 
+export async function getTiposDePapel(): Promise<TipoPapelCollection[]> {
+    try {
+        const {data} = await api.get<TipoPapelCollection[]>("/api/tipoPapel");
+        return data;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Error al obtener los tipos de papel");
+    }
+}
+
 export async function getTipoPapel(id: number): Promise<TipoPapelCollection> {
     try {
         const {data} = await api.get<TipoPapelCollection>(`/api/tipoPapel/${id}`);

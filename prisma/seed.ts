@@ -226,27 +226,44 @@ async function main() {
             factorEmisionN2O: 0.6,
         },
     ];
+
+    const allAnios = await prisma.anio.findMany();
+    const allMeses = await prisma.mes.findMany();
+
     for (const tipo of tiposCombustible) {
         await prisma.tipoCombustible.create({
             data: {
                 nombre: tipo.nombre,
                 abreviatura: tipo.abreviatura,
                 unidad: tipo.unidad,
-                valorCalorico: tipo.valorCalorico,
-                factorEmisionCO2: tipo.factorEmisionCO2,
-                factorEmisionCH4: tipo.factorEmisionCH4,
-                factorEmisionN2O: tipo.factorEmisionN2O,
                 created_at: new Date(),
                 updated_at: new Date(),
             },
         });
     }
 
-    // Obtener ids de Mes, Anio, Sede y tipoCombustible
-    const allMeses = await prisma.mes.findMany();
-    const allAnios = await prisma.anio.findMany();
-    const allSedes = await prisma.sede.findMany();
     const allTiposCombustible = await prisma.tipoCombustible.findMany();
+
+    for (const anio of allAnios) {
+        for (const tipo of allTiposCombustible) {
+            const tipoSearch = tiposCombustible.find((t) => t.nombre === tipo.nombre);
+            await prisma.tipoCombustibleFactor.create({
+                data: {
+                    valorCalorico: tipoSearch!.valorCalorico,
+                    factorEmisionCO2: tipoSearch!.factorEmisionCO2,
+                    factorEmisionCH4: tipoSearch!.factorEmisionCH4,
+                    factorEmisionN2O: tipoSearch!.factorEmisionN2O,
+                    anio_id: anio.id,
+                    tipoCombustible_id: tipo.id,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+        }
+    }
+
+    const allSedes = await prisma.sede.findMany();
+    const allTipoCombustibleFactor = await prisma.tipoCombustibleFactor.findMany();
     const types = ["estacionaria", "movil"];
 
     // Crear datos aleatorios para Combustible
@@ -260,8 +277,7 @@ async function main() {
                             tipo: type,
                             tipoEquipo: faker.lorem.word(),
                             consumo: faker.number.float({min: 0, max: 100}),
-                            tipoCombustible_id:
-                            faker.helpers.arrayElement(allTiposCombustible).id,
+                            tipoCombustibleFactor_id: faker.helpers.arrayElement(allTipoCombustibleFactor).id,
                             mes_id: mes.id,
                             anio_id: anio.id,
                             sede_id: sede.id,

@@ -1,7 +1,7 @@
 "use client";
 
-import {useCallback, useState} from "react";
-import {CircleCheck, CircleX, Pen, Plus, Trash2} from "lucide-react";
+import React, {useCallback, useState} from "react";
+import {CircleCheck, CircleX, Flame, Pen, Plus, Trash2} from "lucide-react";
 import {
     Dialog, DialogClose,
     DialogContent,
@@ -28,6 +28,7 @@ import {UpdateFormTipoPapel} from "@/components/tipoPapel/components/UpdateFormT
 import {toast} from "sonner";
 import {deleteTipoPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import SelectFilter from "@/components/SelectFilter";
 
 export default function TipoPapelPage() {
     // DIALOGS
@@ -36,11 +37,18 @@ export default function TipoPapelPage() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
+    const [selectTipoPaper, setSelectTipoPaper] = useState<string>("1");
+    const [page, setPage] = useState<number>(1);
 
     // USE QUERY
     const tiposPapelQuery = useTipoPapel();
 
     // HANDLES
+    const handleTipoPapelChange = useCallback(async (value: string) => {
+        await setPage(1);
+        setSelectTipoPaper(value);
+    }, []);
+
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
         tiposPapelQuery.refetch();
@@ -87,6 +95,16 @@ export default function TipoPapelPage() {
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                        <SelectFilter
+                            list={tiposPapelQuery.data!}
+                            itemSelected={selectTipoPaper}
+                            handleItemSelect={handleTipoPapelChange}
+                            value={"id"}
+                            nombre={"nombreFiltro"}
+                            id={"id"}
+                            all={true}
+                            icon={<Flame className="h-3 w-3"/>}
+                        />
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button size="sm" className="h-7 gap-1">
