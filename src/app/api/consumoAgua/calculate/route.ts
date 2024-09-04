@@ -290,7 +290,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             });
 
             for (const period of allPeriodsBetweenYears) {
-                const anioId = await getAnioId(period.anio.toString());
+                const anioId = await getAnioId(period.anio!.toString());
                 const factorEmisionAgua = await prisma.factorEmisionAgua.findFirst({
                     where: { anio_id: anioId },
                 });
