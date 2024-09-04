@@ -1,7 +1,7 @@
 "use client";
 
 import React, {useCallback, useState} from "react";
-import {Pen, Plus, Trash2} from "lucide-react";
+import {Flame, Pen, Plus, Trash2} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -43,6 +43,7 @@ import {deleteTipoCombustibleFactor} from "@/components/tipoCombustible/services
 import {FromTipoCombustible} from "@/components/tipoCombustible/components/FormTipoCombustible";
 import {TipoCombustibleFactorCollection} from "@/components/tipoCombustible/services/tipoCombustibleFactor.interface";
 import {UpdateFormTipoCombustible} from "@/components/tipoCombustible/components/UpdateFormTipoCombustible";
+import SelectFilter from "@/components/SelectFilter";
 
 export default function TipoCombustibleFactorPage() {
     //DIALOGS
@@ -53,6 +54,7 @@ export default function TipoCombustibleFactorPage() {
     const [idForDelete, setIdForDelete] = useState<number>(0);
     const [selectTipoCombustibleFactor, setSelectTipoCombustibleFactor] = useState<string>("");
     const [page, setPage] = useState<number>(1);
+    const [selectTipoCombustible, setSelectTipoCombustible] = useState<string>("");
 
     //USE QUERIES
     const tipoCombustibleQuery = useTipoCombustibleFactorPaginate({
@@ -64,12 +66,12 @@ export default function TipoCombustibleFactorPage() {
     const tiposCombustible = useTipoCombustible();
 
     // HANDLES
-    const handleTipoCombustibleFactorChange = useCallback(async (value: string) => {
+    const handleTipoCombustibleChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectTipoCombustibleFactor(value);
         await tipoCombustibleQuery.refetch();
     }, [tipoCombustibleQuery]);
-
+    
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
         tipoCombustibleQuery.refetch();
@@ -120,6 +122,16 @@ export default function TipoCombustibleFactorPage() {
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                        <SelectFilter
+                            list={tiposCombustible.data!}
+                            itemSelected={selectTipoCombustible}
+                            handleItemSelect={handleTipoCombustibleChange}
+                            value={"id"}
+                            nombre={"nombre"}
+                            id={"id"}
+                            all={true}
+                            icon={<Flame className="h-3 w-3"/>}
+                        />
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button size="sm" className="h-7 gap-1">
