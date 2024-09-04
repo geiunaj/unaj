@@ -277,7 +277,7 @@ async function main() {
                             tipo: type,
                             tipoEquipo: faker.lorem.word(),
                             consumo: faker.number.float({min: 0, max: 100}),
-                            tipoCombustibleFactor_id: faker.helpers.arrayElement(allTipoCombustibleFactor).id,
+                            tipoCombustible_id: faker.helpers.arrayElement(allTiposCombustible).id,
                             mes_id: mes.id,
                             anio_id: anio.id,
                             sede_id: sede.id,

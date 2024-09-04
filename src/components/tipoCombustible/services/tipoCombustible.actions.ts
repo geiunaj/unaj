@@ -25,7 +25,6 @@ export async function getTiposCombustible(): Promise<
     return data;
 }
 
-
 export async function getTiposCombustiblePaginate(
     {
         tipoCombustibleId,

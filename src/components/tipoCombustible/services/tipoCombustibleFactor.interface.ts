@@ -1,6 +1,6 @@
 import {Anio} from "@/components/anio/services/anio.interface";
 
-export interface TipoCombustible {
+export interface TipoCombustibleFactor {
     id: number;
     nombre: string;
     abreviatura: string;
@@ -9,13 +9,13 @@ export interface TipoCombustible {
     updated_at: Date;
 }
 
-export interface TipoCombustibleRequest {
+export interface TipoCombustibleFactorRequest {
     nombre: string;
     abreviatura: string;
     unidad: string;
 }
 
-export interface TipoCombustibleFactorRequest {
+export interface TipoCombustibleFactorFactorRequest {
     tipoCombustible_id: number;
     valorCalorico: number;
     factorEmisionCO2: number;
@@ -31,30 +31,28 @@ interface Meta {
     totalPages: number;
 }
 
-export interface TipoCombustibleCollectionPaginate {
-    data: TipoCombustibleCollection[];
+export interface TipoCombustibleFactorCollectionPaginate {
+    data: TipoCombustibleFactorCollection[];
     meta: Meta
 }
 
-export interface TipoCombustibleCollection {
+export interface TipoCombustibleFactorCollection {
     id: number;
-    nombre: string;
-    abreviatura: string;
-    unidad: string;
-    // valorCalorico: number;
-    // factorEmisionCO2: number;
-    // factorEmisionCH4: number;
-    // factorEmisionN2O: number;
-    // anio: Anio;
-    created_at: Date;
-    updated_at: Date;
+    valorCalorico: number;
+    factorEmisionCO2: number;
+    factorEmisionCH4: number;
+    factorEmisionN2O: number;
+    anio_id: number;
+    tipoCombustible_id: number;
+    anio: string;
+    tipoCombustible: string;
 }
 
-export interface CreateTipoCombustibleProps {
+export interface CreateTipoCombustibleFactorProps {
     onClose: () => void;
 }
 
-export interface UpdateTipoCombustibleProps {
+export interface UpdateTipoCombustibleFactorProps {
     onClose: () => void;
     id: number;
 }

@@ -14,8 +14,8 @@ import {
     Droplets,
     CarTaxiFront,
     UserRound,
-    Gauge 
-    
+    Gauge,
+    FlaskConical,
 } from "lucide-react";
 
 export interface MenuItem {
@@ -41,7 +41,8 @@ export const iconComponents: Record<string, any> = {
     Droplets,
     CarTaxiFront,
     UserRound,
-    Gauge
+    Gauge,
+    FlaskConical,
 };
 
 export const menu: MenuItem[] = [
@@ -86,6 +87,18 @@ export const menu: MenuItem[] = [
         href: "/taxi",
     },
     {
+        title: "Factores",
+        icon: "FlaskConical",
+        href: "/",
+        items: [
+            {
+                title: "Factores de Combustible",
+                icon: "Flame",
+                href: "/tipo-combustible-factor",
+            }
+        ],
+    },
+    {
         title: "Configuraciones",
         icon: "Settings",
         href: "/settings",
@@ -98,7 +111,7 @@ export const menu: MenuItem[] = [
             {
                 title: "Tipos de Combustible",
                 icon: "Flame",
-                href: "/tipoCombustible",
+                href: "/tipo-combustible",
             },
             {
                 title: "Tipos de Fertilizantes",
