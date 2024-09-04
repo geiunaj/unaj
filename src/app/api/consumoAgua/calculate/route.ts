@@ -273,62 +273,69 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         }
 
         let consumoArea = 0;
-        let factorEmisionAgua = 0;
-        
+        let factorEmisionAgua = 0;    
         let totalGEI = 0;
 
 
         for (const area of areas) {
-            const totalConsumo: number = consumoAguaCalculos.create({
-                data:{
+            const aguaCalculos = await prisma.consumoAguaCalculos.create({
+                data: {
                     consumoArea: 0,
-                    factorEmisionAgua:0,
                     totalGEI: 0,
                     areaId: area.id,
                     periodoCalculoId: period.id,
                     created_at: new Date(),
                     updated_at: new Date(),
-
-                }
-            })
-            const totalGEI: number = totalConsumo * factorEmision / 1000;
-            const calculoConsumoAgua: consumoAguaCalculoRequest = {
-                consumoArea: totalConsumo,
-                factorEmision: factorEmision,
-                totalGEI: totalGEI,
-                areaId: area.id,
-                periodoCalculoId: period.id,
-            };
-            const newConsumoAguaCalculo = await prisma.consumoAguaCalculos.create({
-                data: {
-                    consumoArea: calculoConsumoAgua.consumoArea,
-                    factorEmision: calculoConsumoAgua.factorEmision,
-                    totalGEI: calculoConsumoAgua.totalGEI,
-                    areaId: calculoConsumoAgua.areaId,
-                    periodoCalculoId: calculoConsumoAgua.periodoCalculoId,
-
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                },
-                include: {
-                    area: {include: {sede: true,}},
                 },
             });
 
-            consumoAguaCalculos.push(newConsumoAguaCalculo);
-        }
-        const formattedConsumoAguaCalculos: any[] = consumoAguaCalculos
-            .map((consumoAguaCalculo: any) => {
-                if (consumoAguaCalculo.consumoArea !== 0) {
-                    return formatConsumoAguaCalculo(consumoAguaCalculo);
-                }
-                return null;
-            })
-            .filter((combustibleCalculo) => combustibleCalculo !== null);
+            for (const period of allPeriodsBetweenYears) {
+                const anioId = await getAnioId(period.anio.toString());
+                const factorEmisionAgua = await prisma.factorEmisionAgua.findFirst({
+                    where: { anio_id: anioId },
+                });
 
-        return NextResponse.json(formattedConsumoAguaCalculos);
+                if (!factorEmisionAgua) return new NextResponse("No se encontró el factor de emisión para el año seleccionado", { status: 404 });
+
+                let whereOptionDetails = {
+                    areaId: area.id,
+                    anio_mes: { gte: period.from, lte: period.to },
+                };
+
+                const consumoAgua = await prisma.consumoAgua.findMany({
+                    where: whereOptionDetails
+                });
+
+                const totalConsumo = consumoAgua.reduce((acc, consumo) => acc + consumo.consumo, 0);
+
+                const totalEmisiones = factorEmisionAgua.factor * totalConsumo;
+
+                await prisma.consumoAguaCalculosDetail.create({
+                    data: {
+                        areaId: area.id,
+                        consumoArea: totalConsumo,
+                        totalGEI: totalEmisiones,
+                        factorEmisionAguaId: factorEmisionAgua.id,
+                        consumoAguaCalculosId: aguaCalculos.id,
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                    },
+                });
+            }
+
+            await prisma.consumoAguaCalculos.update({
+                where: { id: aguaCalculos.id },
+                data: {
+                    consumoArea: consumoArea,
+                    totalGEI: totalGEI,
+                    updated_at: new Date(),
+                },
+            });
+        }
+
+        return NextResponse.json({ message: "Cálculo realizado exitosamente" });
     } catch (error) {
-        console.error("Error calculando consumo de agua", error);
-        return new NextResponse("Error calculando consumo de agua", {status: 500,});
+        console.error("Error calculating water consumption", error);
+        return new NextResponse("Error calculating water consumption", { status: 500 });
     }
 }
