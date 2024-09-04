@@ -675,6 +675,16 @@ async function main() {
         }
     }
 
+    for (const anio of allAnios) {
+        await prisma.factorEmisionAgua.create({
+            data: {
+                factor: 0.344,
+                anio_id: anio.id,
+            }
+        })
+    }
+
+
     for (const sede of allSedes) {
         for (const anio of allAnios) {
             for (const mes of allMeses) {

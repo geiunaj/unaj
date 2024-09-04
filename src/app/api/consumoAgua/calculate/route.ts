@@ -26,7 +26,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             },
         });
 
-        if (!period ) {
+        if (!period) {
             period = await prisma.periodoCalculo.create({
                 data: {
                     fechaInicio: dateFrom ? dateFrom : undefined,
@@ -38,7 +38,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         }
 
         if (!period && all) return new NextResponse("Periodo no encontrado", {status: 404,});
-
 
         const whereOptions = {
             area: {
@@ -60,13 +59,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                         sede: true
                     }
                 },
+                ConsumoAguaCalculosDetail: {
+                    include: {
+                        factorEmisionAgua: {
+                            include: {
+                                anio: true
+                            }
+                        }
+                    }
+                }
+
             },
             orderBy: [{area: {nombre: "asc"}}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
         const formattedConsumoAguaCalculos: any[] = consumoAguaCalculos
-            .map((consumoAguaCalculo: any,index:number) => {
+            .map((consumoAguaCalculo: any, index: number) => {
                 if (consumoAguaCalculo.consumoArea !== 0) {
                     consumoAguaCalculo.id = index + 1;
                     return formatConsumoAguaCalculo(consumoAguaCalculo);
@@ -101,8 +110,6 @@ interface WhereAnioMes {
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
-        const consumoAguaCalculos = [];
-
         const body: consumoAguaCalcRequest = await req.json();
         const sedeId = body.sedeId;
         const dateFrom = body.from;
@@ -111,8 +118,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         let yearFrom, yearTo, monthFrom, monthTo;
         let yearFromId, yearToId, mesFromId, mesToId;
 
-        if (dateFrom) [yearFrom,monthFrom] = dateFrom.split("-");
-        if (dateTo) [yearTo,monthTo] = dateTo.split("-");
+        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
         if (yearFrom) yearFromId = await getAnioId(yearFrom);
         if (yearTo) yearToId = await getAnioId(yearTo);
         if (monthFrom) mesFromId = parseInt(monthFrom);
@@ -136,30 +143,33 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             });
         }
 
-        const areas = await prisma.area.findMany(
-            {
-                where: {
-                    sede_id: sedeId ? Number(sedeId) : undefined,
-                },
-            }
-        );
+        const areas = await prisma.area.findMany({
+            where: {sede_id: sedeId},
+        });
 
         const whereOptionsConsumoAgua = {
             area: {sede_id: sedeId ? Number(sedeId) : undefined,},
             fuenteAgua: "Red Publica",
         } as {
-            areaId?: number;
+            area_id?: number;
             area: { sede_id: number };
             anio_mes?: { gte?: number; lte?: number };
         };
 
         await prisma.consumoAguaCalculosDetail.deleteMany({
-            where:{
-                consumoAguaCaluclos:{
-                    periodoCalculoId : period.id
+            where: {
+                consumoAguaCaluclos: {
+                    periodoCalculoId: period.id
                 }
             }
         })
+
+        await prisma.consumoAguaCalculos.deleteMany({
+            where: {
+                area: {sede_id: sedeId ? Number(sedeId) : undefined,},
+                periodoCalculoId: period.id,
+            },
+        });
 
         const factorEmision: number = 0.344;
         const allPeriodsBetweenYears: WhereAnioMes[] = [];
@@ -272,10 +282,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         }
 
-        let consumoArea = 0;
-        let factorEmisionAgua = 0;    
-        let totalGEI = 0;
+        console.log("allPeriodsBetweenYears", allPeriodsBetweenYears);
 
+        let consumoArea = 0;
+        let totalGEI = 0;
 
         for (const area of areas) {
             const aguaCalculos = await prisma.consumoAguaCalculos.create({
@@ -292,22 +302,20 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             for (const period of allPeriodsBetweenYears) {
                 const anioId = await getAnioId(period.anio!.toString());
                 const factorEmisionAgua = await prisma.factorEmisionAgua.findFirst({
-                    where: { anio_id: anioId },
+                    where: {anio_id: anioId},
                 });
 
-                if (!factorEmisionAgua) return new NextResponse("No se encontró el factor de emisión para el año seleccionado", { status: 404 });
+                if (!factorEmisionAgua) return new NextResponse("No se encontró el factor de emisión para el año seleccionado", {status: 404});
 
-                let whereOptionDetails = {
-                    areaId: area.id,
-                    anio_mes: { gte: period.from, lte: period.to },
-                };
+                let whereOptionDetails = whereOptionsConsumoAgua;
+                whereOptionDetails.area_id = area.id;
+                whereOptionDetails.anio_mes = {gte: period.from, lte: period.to};
 
                 const consumoAgua = await prisma.consumoAgua.findMany({
                     where: whereOptionDetails
                 });
 
                 const totalConsumo = consumoAgua.reduce((acc, consumo) => acc + consumo.consumo, 0);
-
                 const totalEmisiones = factorEmisionAgua.factor * totalConsumo;
 
                 await prisma.consumoAguaCalculosDetail.create({
@@ -321,10 +329,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                         updated_at: new Date(),
                     },
                 });
+
+                consumoArea += totalConsumo;
+                totalGEI += totalEmisiones;
             }
 
             await prisma.consumoAguaCalculos.update({
-                where: { id: aguaCalculos.id },
+                where: {id: aguaCalculos.id},
                 data: {
                     consumoArea: consumoArea,
                     totalGEI: totalGEI,
@@ -333,9 +344,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             });
         }
 
-        return NextResponse.json({ message: "Cálculo realizado exitosamente" });
+        return NextResponse.json({message: "Cálculo realizado exitosamente"});
     } catch (error) {
         console.error("Error calculating water consumption", error);
-        return new NextResponse("Error calculating water consumption", { status: 500 });
+        return new NextResponse("Error calculating water consumption", {status: 500});
     }
 }

@@ -47,7 +47,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const totalRecords = await prisma.energiaCalculos.count({
             where: whereOptions
         });
-
         const totalPages = Math.ceil(totalRecords / perPage);
 
         const electricidadCalculos = await prisma.energiaCalculos.findMany({
@@ -152,7 +151,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         });
 
         const factorConversion: number = 277.7778;
-
         const allPeriodsBetweenYears: WhereAnioMes[] = [];
 
         if (dateFrom && dateTo) {

@@ -12,7 +12,7 @@ import {Badge} from "@/components/ui/badge";
 import {useRouter} from "next/navigation";
 import ButtonBack from "@/components/ButtonBack";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {FileSpreadsheet} from "lucide-react";
+import {Building, FileSpreadsheet} from "lucide-react";
 import CustomPagination from "@/components/Pagination";
 import {
     Popover,
@@ -28,7 +28,10 @@ import {
     useConsumoAguaCalculosReport,
 } from "@/components/consumoAgua/lib/consumoAguaCalculos.hooks";
 import {createCalculosConsumoAgua} from "@/components/consumoAgua/services/consumoAguaCalculos.actions";
-import {consumoAguaCalculosCollectionItem} from "@/components/consumoAgua/services/consumoAguaCalculos.interface";
+import {
+    consumoAguaCalculosCollectionItem,
+    FactoresEmision
+} from "@/components/consumoAgua/services/consumoAguaCalculos.interface";
 import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import {useElectricidadCalculosReport} from "@/components/consumoElectricidad/lib/electricidadCalculos.hooks";
@@ -43,10 +46,10 @@ export default function ConsumoAguaCalculate() {
     const {push} = useRouter();
 
     // SELECTS - FILTERS
-    const [selectedSede, setSelectedSede] = useState<string>("");
+    const [selectedSede, setSelectedSede] = useState<string>("1");
     const [page, setPage] = useState<number>(1);
-    const [from, setFrom] = useState<string>("");
-    const [to, setTo] = useState<string>("");
+    const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
+    const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     // HOOKS
     const consumoAguaCalculos = useConsumoAguaCalculos({
@@ -200,7 +203,7 @@ export default function ConsumoAguaCalculate() {
                                 nombre={"name"}
                                 id={"id"}
                                 all={true}
-                                // icon={<Building className="h-3 w-3"/>}
+                                icon={<Building className="h-3 w-3"/>}
                             />
 
                             <ReportComponent
@@ -292,8 +295,13 @@ export default function ConsumoAguaCalculate() {
                                             {consumoAguaCalculosItem.consumoArea}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {consumoAguaCalculosItem.factorEmision}
+                                    <TableCell className="text-xs flex gap-2 justify-center sm:text-sm">
+                                        {consumoAguaCalculosItem.factoresEmision.map((factorEmision: FactoresEmision) => (
+                                            <Badge key={factorEmision.anio + factorEmision.factor} variant="secondary">
+                                                {factorEmision.factor}<span
+                                                className="text-[8px] ps-[2px] text-muted-foreground">{factorEmision.anio}</span>
+                                            </Badge>
+                                        ))}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {consumoAguaCalculosItem.totalGEI}

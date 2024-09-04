@@ -22,10 +22,15 @@ export interface consumoAguaCalculosCollectionItem {
     periodoCalculoId: number;
     id: number;
     consumoArea: number;
-    factorEmision: number;
     totalGEI: number;
     area: string;
     sede: string;
+    factoresEmision: FactoresEmision[];
+}
+
+export interface FactoresEmision {
+    anio: string;
+    factor: number;
 }
 
 export interface Meta {
