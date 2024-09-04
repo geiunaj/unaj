@@ -13,15 +13,13 @@ import {Building, FileSpreadsheet} from "lucide-react";
 import SelectFilter from "@/components/SelectFilter";
 import {
     CombustionCalcResponse,
-    combustionCalculosResource
 } from "@/components/combustion/services/combustionCalculate.interface";
 import {Badge} from "@/components/ui/badge";
-import {useParams, useRouter} from "next/navigation";
+import {useRouter} from "next/navigation";
 import ButtonCalculate from "@/components/ButtonCalculate";
 import ButtonBack from "@/components/ButtonBack";
 import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
-import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {
@@ -32,6 +30,8 @@ import {
 } from "@/components/combustion/lib/combustionCalculos.hooks";
 import {createCombustionCalculate} from "@/components/combustion/services/combustionCalculate.actions";
 import CustomPagination from "@/components/Pagination";
+import {formatPeriod} from "@/lib/utils/core.function";
+import {ReportRequest} from "@/lib/interfaces/globals";
 
 interface CombustionCalculateProps {
     tipo: Tipo;
@@ -128,7 +128,7 @@ export default function CombustibleCalculate({
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
         const data = await combustionCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), `REPORTE DE CALCULOS DE COMBUSTION ${tipo.toUpperCase()}`, `COMBUSTION-${tipo.toUpperCase()}`);
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CALCULOS DE COMBUSTION ${tipo.toUpperCase()}`, `COMBUSTION-${tipo.toUpperCase()}`);
     }
 
     const handleClick = () => {

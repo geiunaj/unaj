@@ -1,5 +1,5 @@
 import {toast} from "sonner";
-import {ReportRequest} from "@/components/ReportComponent";
+import {ReportRequest} from "@/lib/interfaces/globals";
 
 export const successToast = (body: string, description: string = new Date().toLocaleString()) => {
     return toast.success(body, {

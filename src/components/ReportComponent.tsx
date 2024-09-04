@@ -1,22 +1,20 @@
-import {Button} from "@/components/ui/button";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import {ArrowLeftFromLine, ArrowRightFromLine, FileSpreadsheet, FileText} from "lucide-react";
+import {ArrowLeftFromLine, ArrowRightFromLine} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {useQuery} from "@tanstack/react-query";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import React, {forwardRef, useImperativeHandle} from "react";
+import {ReportRequest} from "@/lib/interfaces/globals";
 
 interface ReportPopoverProps {
     onSubmit: (data: ReportRequest) => void;
@@ -29,13 +27,6 @@ interface ReportPopoverProps {
     handleToChange?: (value: string) => void;
     handleYearFromChange?: (value: string) => void;
     handleYearToChange?: (value: string) => void;
-}
-
-export interface ReportRequest {
-    from?: string;
-    to?: string;
-    yearFrom?: string;
-    yearTo?: string;
 }
 
 const Report = z.object({

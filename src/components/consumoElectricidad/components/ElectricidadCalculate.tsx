@@ -24,10 +24,11 @@ import {createCalculosElectricidad} from "@/components/consumoElectricidad/servi
 import {Building, FileSpreadsheet} from "lucide-react";
 import CustomPagination from "@/components/Pagination";
 import ReportComponent from "@/components/ReportComponent";
-import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import GenerateReport from "@/lib/utils/generateReport";
 import {Button} from "@/components/ui/button";
+import {ReportRequest} from "@/lib/interfaces/globals";
+import {formatPeriod} from "@/lib/utils/core.function";
 
 export default function ElectricidadCalculate() {
     const {push} = useRouter();
@@ -113,7 +114,7 @@ export default function ElectricidadCalculate() {
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
         const data = await electricidadCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), `REPORTE DE CALCULOS DE CONSUMO DE ELECTRICIDAD`, "ELECTRICIDAD-CALCULOS");
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CALCULOS DE CONSUMO DE ELECTRICIDAD`, "ELECTRICIDAD-CALCULOS");
     }
 
     const handleClick = () => {

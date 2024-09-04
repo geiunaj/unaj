@@ -41,7 +41,7 @@ import {
     useConsumoAgua, useConsumoAguaReport,
     useMes, useSede,
 } from "../lib/consumoAgua.hooks";
-import {errorToast, successToast} from "@/lib/utils/core.function";
+import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {
     Building,
@@ -56,10 +56,10 @@ import CustomPagination from "@/components/Pagination";
 import {deleteConsumoAgua} from "../services/consumoAgua.actions";
 import {FormConsumoAgua} from "./FormConsumoAgua";
 import {UpdateFormConsumoAgua} from "./UpdateFormConsumoAgua";
-import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
+import {ReportRequest} from "@/lib/interfaces/globals";
 
 
 export default function ConsumoAguaPage() {

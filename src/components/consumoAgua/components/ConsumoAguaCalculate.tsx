@@ -14,15 +14,7 @@ import ButtonBack from "@/components/ButtonBack";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {Building, FileSpreadsheet} from "lucide-react";
 import CustomPagination from "@/components/Pagination";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import {Button} from "@/components/ui/button";
-import ReportCalculatePopover, {
-    ReportCalculateRequest,
-} from "@/components/ReportCalculatePopover";
 import {
     useConsumoAguaCalculos,
     useConsumoAguaCalculosReport,
@@ -32,15 +24,14 @@ import {
     consumoAguaCalculosCollectionItem,
     FactoresEmision
 } from "@/components/consumoAgua/services/consumoAguaCalculos.interface";
-import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
-import {useElectricidadCalculosReport} from "@/components/consumoElectricidad/lib/electricidadCalculos.hooks";
 import {useAnio, useSede} from "../lib/consumoAgua.hooks";
-import {SelectContent} from "@radix-ui/react-select";
 import SelectFilter from "@/components/SelectFilter";
 import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import ButtonCalculate from "@/components/ButtonCalculate";
+import {formatPeriod} from "@/lib/utils/core.function";
+import {ReportRequest} from "@/lib/interfaces/globals";
 
 export default function ConsumoAguaCalculate() {
     const {push} = useRouter();
@@ -130,7 +121,7 @@ export default function ConsumoAguaCalculate() {
         to,
     });
 
-    const handleClickExcelReport = async (period: ReportCalculateRequest) => {
+    const handleClickExcelReport = async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10},
             {header: "AREA", key: "area", width: 20},

@@ -44,7 +44,7 @@ import {
     useSede,
 } from "../lib/electricidad.hooks";
 import {deleteElectricidad} from "../services/electricidad.actions";
-import {errorToast, successToast} from "@/lib/utils/core.function";
+import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {
     Building,
@@ -57,10 +57,10 @@ import {
 } from "lucide-react";
 import CustomPagination from "@/components/Pagination";
 import {UpdateFormElectricidad} from "@/components/consumoElectricidad/components/UpdateFormElectricidad";
-import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
+import {ReportRequest} from "@/lib/interfaces/globals";
 
 export default function ElectricidadPage() {
     //NAVIGATION
@@ -225,7 +225,7 @@ export default function ElectricidadPage() {
         await GenerateReport(
             data.data!.data,
             columns,
-            formatPeriod(period),
+            formatPeriod(period, true),
             `REPORTE DE CONSUMO DE ENERGÍA ELÉCTRICA`,
             "consumo-electricidad"
         );

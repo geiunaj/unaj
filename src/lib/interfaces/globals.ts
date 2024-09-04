@@ -3,3 +3,10 @@ export interface WhereAnioMes {
     to?: number;
     anio?: number;
 }
+
+export interface ReportRequest {
+    from?: string;
+    to?: string;
+    yearFrom?: string;
+    yearTo?: string;
+}

@@ -47,12 +47,12 @@ import {
 } from "@/components/combustion/lib/combustion.hook";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {deleteCombustion} from "@/components/combustion/services/combustion.actions";
-import {errorToast, successToast} from "@/lib/utils/core.function";
+import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import CustomPagination from "@/components/Pagination";
-import {formatPeriod, ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import ReportComponent from "@/components/ReportComponent";
+import {ReportRequest} from "@/lib/interfaces/globals";
 
 export default function CombustiblePage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;

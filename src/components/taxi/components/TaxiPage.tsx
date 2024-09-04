@@ -5,7 +5,6 @@ import {Button, buttonVariants} from "@/components/ui/button";
 import {
     Building,
     Calendar,
-    File,
     FileSpreadsheet,
     Pen,
     Plus,
@@ -31,8 +30,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-
-import {useSedeStore} from "@/components/sede/lib/sede.store";
 import {
     Dialog,
     DialogClose,
@@ -42,10 +39,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import {useAnioStore} from "@/components/anio/lib/anio.store";
 import SelectFilter from "@/components/SelectFilter";
-import {TaxiCollection, TaxiCollectionItem} from "../service/taxi.interface";
-import {usetaxiStore} from "../lib/taxi.store";
+import {TaxiCollectionItem} from "../service/taxi.interface";
 import {deleteTaxi} from "../service/taxi.actions";
 import {
     useAnios,
@@ -53,15 +48,11 @@ import {
 } from "@/components/consumoPapel/lib/consumoPapel.hook";
 import {useMeses} from "@/components/consumoElectricidad/lib/electricidadCalculos.hooks";
 import {useTaxi} from "../lib/taxi.hook";
-import {errorToast, successToast} from "@/lib/utils/core.function";
+import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {Badge} from "@/components/ui/badge";
 import {FormTaxi} from "./FormTaxi";
 import {UpdateFormTaxi} from "./UpdateFromTaxi";
-import ReportPopover, {
-    formatPeriod,
-    ReportRequest,
-} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import {
     Popover,
@@ -70,6 +61,7 @@ import {
 } from "@/components/ui/popover";
 import CustomPagination from "@/components/Pagination";
 import {useRouter} from "next/navigation";
+import {ReportRequest} from "@/lib/interfaces/globals";
 
 export default function TaxiPage() {
     //NAVIGATION
@@ -158,7 +150,7 @@ export default function TaxiPage() {
         setIsDeleteDialogOpen(true);
     };
 
-    const handleClickReport = (period: ReportRequest) => {
+    const handleClickReport = async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10},
             {header: "UNIDAD CONTRATANTE", key: "unidadContratante", width: 15},
@@ -169,13 +161,7 @@ export default function TaxiPage() {
             {header: "AÑO", key: "anio", width: 15},
             {header: "MESS", key: "mes", width: 20},
         ];
-
-        GenerateReport(
-            taxiQuery.data!.data,
-            columns,
-            formatPeriod(period),
-            "REPORTE DE TAXIS CONTRATADOS"
-        );
+        await GenerateReport(taxiQuery.data!.data, columns, formatPeriod(period), "REPORTE DE TAXIS CONTRATADOS", "Taxis Contratados");
     };
 
     if (
@@ -245,17 +231,6 @@ export default function TaxiPage() {
                     </div>
 
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button size="sm" className="h-7 gap-1" variant="outline">
-                                    <FileSpreadsheet className="h-3.5 w-3.5"/>
-                                    Reporte
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-80">
-                                <ReportPopover onClick={(data) => handleClickReport(data)}/>
-                            </PopoverContent>
-                        </Popover>
                         {/* <ButtonCalculate onClick={handleCalculate} /> */}
 
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

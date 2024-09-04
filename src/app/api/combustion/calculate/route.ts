@@ -148,6 +148,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         await prisma.combustibleCalculos.deleteMany({
             where: {
+                tipo: tipo,
                 sedeId: sedeId,
                 periodoCalculoId: period.id,
             },

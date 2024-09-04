@@ -42,19 +42,11 @@ export async function PUT(
             nombre,
             abreviatura,
             unidad,
-            valorCalorico,
-            factorEmisionCO2,
-            factorEmisionCH4,
-            factorEmisionN2O,
         }: TipoCombustibleRequest = body;
         if (
             (nombre && typeof nombre !== "string") ||
             (abreviatura && typeof abreviatura !== "string") ||
-            (unidad && typeof unidad !== "string") ||
-            (valorCalorico && typeof valorCalorico !== "number") ||
-            (factorEmisionCO2 && typeof factorEmisionCO2 !== "number") ||
-            (factorEmisionCH4 && typeof factorEmisionCH4 !== "number") ||
-            (factorEmisionN2O && typeof factorEmisionN2O !== "number")
+            (unidad && typeof unidad !== "string")
         ) {
             return new NextResponse("Missing or invalid required fields", {status: 404});
         }
@@ -63,10 +55,6 @@ export async function PUT(
             nombre: nombre,
             abreviatura: abreviatura,
             unidad: unidad,
-            valorCalorico: valorCalorico,
-            factorEmisionCO2: factorEmisionCO2,
-            factorEmisionCH4: factorEmisionCH4,
-            factorEmisionN2O: factorEmisionN2O,
         }
 
         const tipoCombustible = await prisma.tipoCombustible.update({
