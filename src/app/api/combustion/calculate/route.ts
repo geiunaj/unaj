@@ -6,6 +6,7 @@ import {
 } from "@/components/combustion/services/combustionCalculate.interface";
 import {formatCombustibleCalculo} from "@/lib/resources/combustionCalculateResource";
 import {getAnioId} from "@/lib/utils";
+import {WhereAnioMes} from "@/lib/interfaces/globals";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
@@ -88,10 +89,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
-        const combustibleCalculos = [];
-
         const body: CombustionCalcRequest = await req.json();
-        console.log(body);
         const sedeId = body.sedeId;
         const tipo = body.tipo;
         const dateFrom = body.from;
@@ -125,22 +123,206 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             });
         }
 
+        const tiposCombustible = await prisma.tipoCombustible.findMany();
+
         const whereOptionsCombustion = {
             tipo: tipo,
             sede_id: sedeId,
         } as {
             tipo?: string;
             sede_id?: number;
+            tipoCombustible_id?: number;
             anio_mes?: {
                 gte?: number;
                 lte?: number;
             };
         };
 
+        await prisma.combustibleCalculosDetail.deleteMany({
+            where: {
+                combustibleCalculos: {
+                    periodoCalculoId: period.id,
+                },
+            },
+        });
+
+        await prisma.combustibleCalculos.deleteMany({
+            where: {
+                sedeId: sedeId,
+                periodoCalculoId: period.id,
+            },
+        });
+
+        const allPeriodsBetweenYears: WhereAnioMes[] = [];
+
+        if (dateFrom && dateTo) {
+            if (!yearFrom || !yearTo || !mesFromId || !mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+            let currentYear = Number(yearFrom);
+
+            while (currentYear <= Number(yearTo)) {
+                if (currentYear === Number(yearFrom) && currentYear === Number(yearTo)) {
+                    // Caso especial: el from y to están en el mismo año
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + mesFromId,
+                        to: currentYear * 100 + mesToId,
+                        anio: currentYear,
+                    });
+                } else if (currentYear === Number(yearFrom)) {
+                    // Primer año: desde el mes especificado hasta diciembre
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + mesFromId,
+                        to: currentYear * 100 + 12,
+                        anio: currentYear,
+                    });
+                } else if (currentYear === Number(yearTo)) {
+                    // Último año: desde enero hasta el mes especificado
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + 1,
+                        to: currentYear * 100 + mesToId,
+                        anio: currentYear,
+                    });
+                } else {
+                    // Años intermedios: de enero a diciembre
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + 1,
+                        to: currentYear * 100 + 12,
+                        anio: currentYear,
+                    });
+                }
+
+                currentYear++;
+            }
+        } else if (dateFrom) {
+            // Lógica para solo from
+            if (!mesFromId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+
+            const lastYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "desc"},
+            });
+
+            if (!lastYear) return new NextResponse("Error buscando el último año", {status: 404});
+
+            let currentYear = Number(yearFrom);
+
+            while (currentYear <= Number(lastYear.nombre)) {
+                const startMonth = currentYear === Number(yearFrom) ? mesFromId : 1;
+
+                allPeriodsBetweenYears.push({
+                    from: currentYear * 100 + startMonth,
+                    to: currentYear * 100 + 12,
+                    anio: currentYear,
+                });
+
+                currentYear++;
+            }
+        } else if (dateTo) {
+            // Lógica para solo to
+            if (!mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+
+            const firstYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "asc"},
+            });
+
+            if (!firstYear) return new NextResponse("Error buscando el primer año", {status: 404});
+
+            let currentYear = Number(firstYear.nombre);
+
+            while (currentYear <= Number(yearTo)) {
+                const endMonth = currentYear === Number(yearTo) ? mesToId : 12;
+
+                allPeriodsBetweenYears.push({
+                    from: currentYear * 100 + 1,
+                    to: currentYear * 100 + endMonth,
+                    anio: currentYear,
+                });
+
+                currentYear++;
+            }
+        } else {
+            // Lógica para cuando no hay ni from ni to
+            const firstYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "asc"},
+            });
+            const lastYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "desc"},
+            });
+
+            if (!firstYear || !lastYear) return new NextResponse("Error buscando años", {status: 404});
+            let currentYear = Number(firstYear.nombre);
+            while (currentYear <= Number(lastYear.nombre)) {
+                allPeriodsBetweenYears.push({
+                    from: currentYear * 100 + 1,
+                    to: currentYear * 100 + 12,
+                    anio: currentYear,
+                });
+
+                currentYear++;
+            }
+        }
+
+        console.log("allPeriodsBetweenYears", allPeriodsBetweenYears);
+
+        let consumoTipoCombustible = 0;
+        let consumoTotal = 0;
+        let totalEmisionCO2 = 0;
+        let totalEmisionCH4 = 0;
+        let totalEmisionN2O = 0;
+        let totalGEI = 0;
+
+        for (const tipoCombustible of tiposCombustible) {
+            const tipoCombustibleCalculos = await prisma.combustibleCalculos.create({
+                data: {
+                    tipo: tipo,
+                    consumoTotal: 0,
+                    valorCalorico: 0,
+                    consumo: 0,
+                    emisionCO2: 0,
+                    emisionCH4: 0,
+                    emisionN2O: 0,
+                    totalGEI: 0,
+                    periodoCalculoId: period.id,
+                    sedeId: sedeId,
+                    tipoCombustibleId: tipoCombustible.id,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+
+            for (const period of allPeriodsBetweenYears) {
+                const anio_id = await getAnioId(String(period.anio));
+                const factorTipoCombustible = await prisma.tipoCombustibleFactor.findFirst({
+                    where: {anio_id},
+                });
+
+                if (!factorTipoCombustible) return new NextResponse(`Agregue el factor de tipo de combustible para el año ${anio_id}`, {status: 404});
+
+                let whereOptionDetails = whereOptionsCombustion;
+                whereOptionDetails.tipoCombustible_id = tipoCombustible.id;
+                whereOptionDetails.anio_mes = {gte: period.from, lte: period.to,};
+
+                const combustibles = await prisma.combustible.findMany({
+                    where: whereOptionDetails,
+                });
+
+                const consumoTipoCombustible: number = combustibles.reduce((acc, combustible) => {
+                    if (combustible.anio_id === anio_id) {
+                        return acc + combustible.consumo;
+                    }
+                    return acc;
+                }, 0);
+
+                const consumo = factorTipoCombustible.valorCalorico * consumoTipoCombustible;
+                const emisionCO2 = factorTipoCombustible.factorEmisionCO2 * consumo;
+                const emisionCH4 = factorTipoCombustible.factorEmisionCH4 * consumo;
+                const emisionN2O = factorTipoCombustible.factorEmisionN2O * consumo;
+                const totalEmisionesAnuales = emisionCO2 + emisionCH4 + emisionN2O;
+
+            }
+        }
+
+
         const from = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
         const to = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
-
-        console.log(from, to);
 
         if (from && to) {
             whereOptionsCombustion.anio_mes = {gte: from, lte: to,};
@@ -152,7 +334,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         console.log(whereOptionsCombustion);
 
-        const tiposCombustible = await prisma.tipoCombustible.findMany();
         const combustibles = await prisma.combustible.findMany({
             where: whereOptionsCombustion,
         });

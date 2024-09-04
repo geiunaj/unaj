@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import {ElectricidadCalcRequest} from "@/components/consumoElectricidad/services/electricidadCalculos.interface";
 import {formatElectricidadCalculo} from "@/lib/resources/electricidadCalculateResource";
 import {getAnioId} from "@/lib/utils";
+import {WhereAnioMes} from "@/lib/interfaces/globals";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
@@ -86,12 +87,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         console.error("Error buscando calculos", error);
         return new NextResponse("Error buscando calculos", {status: 500,});
     }
-}
-
-interface WhereAnioMes {
-    from?: number;
-    to?: number;
-    anio?: number;
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -269,7 +264,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         }
 
         console.log("allPeriodsBetweenYears", allPeriodsBetweenYears);
-
 
         let consumoArea = 0;
         let consumoTotal = 0;
