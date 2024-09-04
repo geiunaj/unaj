@@ -216,7 +216,6 @@ model combustibleCalculos {
   id                Int    @id @default(autoincrement())
   tipo              String @db.VarChar(45)
   consumoTotal      Float  @db.Float
-  valorCalorico     Float  @db.Float
   consumo           Float  @db.Float
   emisionCO2        Float  @db.Float
   emisionCH4        Float  @db.Float

@@ -274,7 +274,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 data: {
                     tipo: tipo,
                     consumoTotal: 0,
-                    valorCalorico: 0,
                     consumo: 0,
                     emisionCO2: 0,
                     emisionCH4: 0,
@@ -287,6 +286,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     updated_at: new Date(),
                 },
             });
+
+            console.log(allPeriodsBetweenYears);
 
             for (const period of allPeriodsBetweenYears) {
                 const anio_id = await getAnioId(String(period.anio));
@@ -304,98 +305,62 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     where: whereOptionDetails,
                 });
 
-                const consumoTipoCombustible: number = combustibles.reduce((acc, combustible) => {
+                const totalConsumoTipoCombustible: number = combustibles.reduce((acc, combustible) => {
                     if (combustible.anio_id === anio_id) {
                         return acc + combustible.consumo;
                     }
                     return acc;
                 }, 0);
 
-                const consumo = factorTipoCombustible.valorCalorico * consumoTipoCombustible;
+                const consumo = factorTipoCombustible.valorCalorico * totalConsumoTipoCombustible;
                 const emisionCO2 = factorTipoCombustible.factorEmisionCO2 * consumo;
                 const emisionCH4 = factorTipoCombustible.factorEmisionCH4 * consumo;
                 const emisionN2O = factorTipoCombustible.factorEmisionN2O * consumo;
                 const totalEmisionesAnuales = emisionCO2 + emisionCH4 + emisionN2O;
 
+                await prisma.combustibleCalculosDetail.create({
+                    data: {
+                        tipo: tipo,
+                        tipoCombustibleFactorId: factorTipoCombustible.id,
+                        consumoTotal: totalConsumoTipoCombustible,
+                        valorCalorico: factorTipoCombustible.valorCalorico,
+                        consumo: consumo,
+                        emisionCO2: emisionCO2,
+                        emisionCH4: emisionCH4,
+                        emisionN2O: emisionN2O,
+                        totalGEI: totalEmisionesAnuales,
+                        sedeId: sedeId,
+                        combustibleCalculosId: tipoCombustibleCalculos.id,
+
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                    },
+                });
+
+                consumoTipoCombustible += totalConsumoTipoCombustible;
+                consumoTotal += consumo;
+                totalEmisionCO2 += emisionCO2;
+                totalEmisionCH4 += emisionCH4;
+                totalEmisionN2O += emisionN2O;
+                totalGEI += totalEmisionesAnuales;
             }
-        }
 
+            await prisma.combustibleCalculos.update({
+                where: {id: tipoCombustibleCalculos.id},
+                data: {
+                    consumoTotal: consumoTipoCombustible,
+                    consumo: consumoTotal,
+                    emisionCO2: totalEmisionCO2,
+                    emisionCH4: totalEmisionCH4,
+                    emisionN2O: totalEmisionN2O,
+                    totalGEI: totalGEI,
 
-        const from = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
-        const to = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
-
-        if (from && to) {
-            whereOptionsCombustion.anio_mes = {gte: from, lte: to,};
-        } else if (from) {
-            whereOptionsCombustion.anio_mes = {gte: from,};
-        } else if (to) {
-            whereOptionsCombustion.anio_mes = {lte: to,};
-        }
-
-        console.log(whereOptionsCombustion);
-
-        const combustibles = await prisma.combustible.findMany({
-            where: whereOptionsCombustion,
-        });
-
-        await prisma.combustibleCalculos.deleteMany({
-            where: {
-                tipo: tipo,
-                sedeId: sedeId,
-                periodoCalculoId: period.id,
-            },
-        });
-
-        for (const tipoCombustible of tiposCombustible) {
-            const totalConsumo: number = combustibles.reduce((acc, combustible) => {
-                if (combustible.tipoCombustible_id === tipoCombustible.id) {
-                    return acc + combustible.consumo;
+                    updated_at: new Date(),
                 }
-                return acc;
-            }, 0);
-
-            const valorCalorico = tipoCombustible.valorCalorico;
-            const consumo = valorCalorico * totalConsumo;
-
-            const totalEmisionCO2: number =
-                tipoCombustible.factorEmisionCO2 * consumo;
-            const totalEmisionCH4: number =
-                tipoCombustible.factorEmisionCH4 * consumo;
-            const totalEmisionN2O: number =
-                tipoCombustible.factorEmisionN2O * consumo;
-            const totalGEI: number =
-                totalEmisionCO2 + totalEmisionCH4 + totalEmisionN2O;
-
-            const calculoCombustible: CombustionCalculosRequest = {
-                tipo: tipo,
-                tipoCombustibleId: tipoCombustible.id,
-                consumoTotal: totalConsumo,
-                valorCalorico: valorCalorico,
-                consumo: consumo,
-                emisionCO2: totalEmisionCO2,
-                emisionCH4: totalEmisionCH4,
-                emisionN2O: totalEmisionN2O,
-                totalGEI: totalGEI,
-                periodoCalculoId: period.id,
-                sedeId: sedeId,
-            };
-
-            const tipoCombustibleCreate = await prisma.combustibleCalculos.create({
-                data: calculoCombustible,
-                include: {
-                    tipoCombustible: true,
-                    sede: true,
-                },
-            });
-
-            combustibleCalculos.push(tipoCombustibleCreate);
+            })
         }
 
-        const formattedCombustibleCalculos: any[] = combustibleCalculos.map(
-            (combustibleCalculo) => formatCombustibleCalculo(combustibleCalculo)
-        );
-
-        return NextResponse.json(formattedCombustibleCalculos);
+        return NextResponse.json({message: "Cálculo realizado exitosamente"});
     } catch (error) {
         console.error("Error calculating combustion", error);
         return new NextResponse("Error calculating combustion", {status: 500});
