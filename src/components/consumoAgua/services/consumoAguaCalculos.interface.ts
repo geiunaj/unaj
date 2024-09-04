@@ -26,6 +26,7 @@ export interface consumoAguaCalculosCollectionItem {
     area: string;
     sede: string;
     factoresEmision: FactoresEmision[];
+    factoresEmisionString: string;
 }
 
 export interface FactoresEmision {

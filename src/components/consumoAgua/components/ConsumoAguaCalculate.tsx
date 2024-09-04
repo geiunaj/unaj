@@ -134,8 +134,8 @@ export default function ConsumoAguaCalculate() {
         const columns = [
             {header: "N°", key: "id", width: 10},
             {header: "AREA", key: "area", width: 20},
-            {header: "CONSUMO TOTAL", key: "consumoTotal", width: 25},
-            {header: "FACTOR DE EMISIÓN", key: "factorEmision", width: 25},
+            {header: "CONSUMO TOTAL", key: "consumoArea", width: 25},
+            {header: "FACTOR DE EMISIÓN", key: "factoresEmisionString", width: 25},
             {header: "TOTAL GEI", key: "totalGEI", width: 20},
         ];
         await setFrom(period.from ?? "");
@@ -160,7 +160,8 @@ export default function ConsumoAguaCalculate() {
         consumoAguaCalculos.isLoading ||
         sedes.isLoading ||
         anios.isLoading ||
-        consumoAguaCalculos.isLoading
+        consumoAguaCalculos.isLoading ||
+        conusmoAguaCalculosReport.isLoading
     ) {
         return <SkeletonTable/>;
     }
@@ -169,7 +170,8 @@ export default function ConsumoAguaCalculate() {
         consumoAguaCalculos.isError ||
         sedes.isError ||
         anios.isError ||
-        consumoAguaCalculos.isError
+        consumoAguaCalculos.isError ||
+        conusmoAguaCalculosReport.isError
     ) {
         return <div>Error</div>;
     }
@@ -232,12 +234,10 @@ export default function ConsumoAguaCalculate() {
                                 fileName={`REPORTE CALCULOS DE CONSUMO DE ENERGÍA_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
-                                    {header: "AREA", key: "area", width: 15},
-                                    {header: "CONSUMO TOTAL", key: "consumoTotal", width: 15},
-                                    {header: "EMISIONES DE CO2", key: "emisionCO2", width: 15},
-                                    {header: "EMISIONES DE CH4", key: "emisionCH4", width: 15},
-                                    {header: "EMISIONES DE N20", key: "emisionN2O", width: 15},
-                                    {header: "TOTAL GEI", key: "totalGEI", width: 15},
+                                    {header: "AREA", key: "area", width: 25},
+                                    {header: "CONSUMO TOTAL", key: "consumoArea", width: 15},
+                                    {header: "FACTOR DE EMISIÓN", key: "factoresEmisionString", width: 35},
+                                    {header: "TOTAL GEI", key: "totalGEI", width: 20},
                                 ]}
                                 title="REPORTE DE CALCULOS DE CONSUMO DE ENERGÍA"
                                 period={formatPeriod({from, to}, true)}

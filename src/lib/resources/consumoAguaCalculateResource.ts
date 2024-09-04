@@ -11,6 +11,10 @@ export function formatConsumoAguaCalculo(combustibleCalculo: any) {
         return {anio: detalle.factorEmisionAgua.anio.nombre, factor: detalle.factorEmisionAgua.factor};
     });
 
+    const factoresEmisionString = factoresEmision.map((detalle: any) => {
+        return `${detalle.anio}: ${detalle.factor}`;
+    }).join(', ');
+
     return {
         areaId: undefined,
         periodoCalculoId: undefined,
@@ -20,5 +24,6 @@ export function formatConsumoAguaCalculo(combustibleCalculo: any) {
         area: area.nombre,
         sede: area.sede.name,
         factoresEmision,
+        factoresEmisionString,
     };
 }
