@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
-import {TipoCombustibleFactorRequest} from "@/components/tipoCombustible/services/tipoCombustible.interface";
 import {formatTipoCombustibleFactor} from "@/lib/resources/tipoCombustibleFactor";
+import {TipoCombustibleFactorRequest} from "@/components/tipoCombustible/services/tipoCombustibleFactor.interface";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const perPage = parseInt(searchParams.get("perPage") ?? "0");
         const page = parseInt(searchParams.get("page") ?? "1");
 
-        const whereOptions = tipoCombustibleId ? {id: parseInt(tipoCombustibleId)} : {};
+        const whereOptions = tipoCombustibleId ? {tipoCombustible_id: parseInt(tipoCombustibleId)} : {};
         const tiposCombustibleFactor = await prisma.tipoCombustibleFactor.findMany({
             where: whereOptions,
             include: {anio: true, tipoCombustible: true},

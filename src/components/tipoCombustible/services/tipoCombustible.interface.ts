@@ -15,15 +15,6 @@ export interface TipoCombustibleRequest {
     unidad: string;
 }
 
-export interface TipoCombustibleFactorRequest {
-    tipoCombustible_id: number;
-    valorCalorico: number;
-    factorEmisionCO2: number;
-    factorEmisionCH4: number;
-    factorEmisionN2O: number;
-    anio_id: number;
-}
-
 interface Meta {
     page: number;
     perPage: number;

@@ -10,12 +10,6 @@ export interface TipoCombustibleFactor {
 }
 
 export interface TipoCombustibleFactorRequest {
-    nombre: string;
-    abreviatura: string;
-    unidad: string;
-}
-
-export interface TipoCombustibleFactorFactorRequest {
     tipoCombustible_id: number;
     valorCalorico: number;
     factorEmisionCO2: number;
