@@ -19,16 +19,26 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const dateTo = searchParams.get("to") ?? undefined;
         const all = searchParams.get("all") === "true";
 
-        const period = await prisma.periodoCalculo.findFirst({
+        let period = await prisma.periodoCalculo.findFirst({
             where: {
                 fechaInicio: dateFrom ? dateFrom : undefined,
                 fechaFin: dateTo ? dateTo : undefined,
             },
         });
 
-        if (!period && all) {
-            return new NextResponse("Periodo no encontrado", {status: 404,});
+        if (!period ) {
+            period = await prisma.periodoCalculo.create({
+                data: {
+                    fechaInicio: dateFrom ? dateFrom : undefined,
+                    fechaFin: dateTo ? dateTo : undefined,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                }
+            })
         }
+
+        if (!period && all) return new NextResponse("Periodo no encontrado", {status: 404,});
+
 
         const whereOptions = {
             area: {
@@ -56,8 +66,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         });
 
         const formattedConsumoAguaCalculos: any[] = consumoAguaCalculos
-            .map((consumoAguaCalculo: any) => {
+            .map((consumoAguaCalculo: any,index:number) => {
                 if (consumoAguaCalculo.consumoArea !== 0) {
+                    consumoAguaCalculo.id = index + 1;
                     return formatConsumoAguaCalculo(consumoAguaCalculo);
                 }
                 return null;
@@ -80,6 +91,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     }
 }
 
+
+interface WhereAnioMes {
+    from?: number;
+    to?: number;
+    anio?: number;
+}
+
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         const consumoAguaCalculos = [];
@@ -92,8 +111,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         let yearFrom, yearTo, monthFrom, monthTo;
         let yearFromId, yearToId, mesFromId, mesToId;
 
-        if (dateFrom) [monthFrom, yearFrom] = dateFrom.split("-");
-        if (dateTo) [monthTo, yearTo] = dateTo.split("-");
+        if (dateFrom) [yearFrom,monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo,monthTo] = dateTo.split("-");
         if (yearFrom) yearFromId = await getAnioId(yearFrom);
         if (yearTo) yearToId = await getAnioId(yearTo);
         if (monthFrom) mesFromId = parseInt(monthFrom);
@@ -129,46 +148,149 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             area: {sede_id: sedeId ? Number(sedeId) : undefined,},
             fuenteAgua: "Red Publica",
         } as {
-            area: {
-                sede_id?: number;
-            }
-            anio_mes?: {
-                gte?: number;
-                lte?: number;
-            };
+            areaId?: number;
+            area: { sede_id: number };
+            anio_mes?: { gte?: number; lte?: number };
         };
 
-        const from = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
-        const to = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
-
-        if (from && to) {
-            whereOptionsConsumoAgua.anio_mes = {gte: from, lte: to,};
-        } else if (from) {
-            whereOptionsConsumoAgua.anio_mes = {gte: from,};
-        } else if (to) {
-            whereOptionsConsumoAgua.anio_mes = {lte: to,};
-        }
-
-        const consumoAgua = await prisma.consumoAgua.findMany({
-            where: whereOptionsConsumoAgua
-        });
-
-        await prisma.consumoAguaCalculos.deleteMany({
-            where: {
-                area: {sede_id: sedeId ? Number(sedeId) : undefined,},
-                periodoCalculoId: period.id,
-            },
-        });
+        await prisma.consumoAguaCalculosDetail.deleteMany({
+            where:{
+                consumoAguaCaluclos:{
+                    periodoCalculoId : period.id
+                }
+            }
+        })
 
         const factorEmision: number = 0.344;
+        const allPeriodsBetweenYears: WhereAnioMes[] = [];
+
+        if (dateFrom && dateTo) {
+            if (!yearFrom || !yearTo || !mesFromId || !mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+
+            let currentYear = Number(yearFrom);
+
+            while (currentYear <= Number(yearTo)) {
+                if (currentYear === Number(yearFrom) && currentYear === Number(yearTo)) {
+                    // Caso especial: el from y to están en el mismo año
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + mesFromId,
+                        to: currentYear * 100 + mesToId,
+                        anio: currentYear,
+                    });
+                } else if (currentYear === Number(yearFrom)) {
+                    // Primer año: desde el mes especificado hasta diciembre
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + mesFromId,
+                        to: currentYear * 100 + 12,
+                        anio: currentYear,
+                    });
+                } else if (currentYear === Number(yearTo)) {
+                    // Último año: desde enero hasta el mes especificado
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + 1,
+                        to: currentYear * 100 + mesToId,
+                        anio: currentYear,
+                    });
+                } else {
+                    // Años intermedios: de enero a diciembre
+                    allPeriodsBetweenYears.push({
+                        from: currentYear * 100 + 1,
+                        to: currentYear * 100 + 12,
+                        anio: currentYear,
+                    });
+                }
+
+                currentYear++;
+            }
+        } else if (dateFrom) {
+            // Lógica para solo from
+            if (!mesFromId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+
+            const lastYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "desc"},
+            });
+
+            if (!lastYear) return new NextResponse("Error buscando el último año", {status: 404});
+
+            let currentYear = Number(yearFrom);
+
+            while (currentYear <= Number(lastYear.nombre)) {
+                const startMonth = currentYear === Number(yearFrom) ? mesFromId : 1;
+
+                allPeriodsBetweenYears.push({
+                    from: currentYear * 100 + startMonth,
+                    to: currentYear * 100 + 12,
+                    anio: currentYear,
+                });
+
+                currentYear++;
+            }
+        } else if (dateTo) {
+            // Lógica para solo to
+            if (!mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+
+            const firstYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "asc"},
+            });
+
+            if (!firstYear) return new NextResponse("Error buscando el primer año", {status: 404});
+
+            let currentYear = Number(firstYear.nombre);
+
+            while (currentYear <= Number(yearTo)) {
+                const endMonth = currentYear === Number(yearTo) ? mesToId : 12;
+
+                allPeriodsBetweenYears.push({
+                    from: currentYear * 100 + 1,
+                    to: currentYear * 100 + endMonth,
+                    anio: currentYear,
+                });
+
+                currentYear++;
+            }
+        } else {
+            // Lógica para cuando no hay ni from ni to
+            const firstYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "asc"},
+            });
+            const lastYear = await prisma.anio.findFirst({
+                orderBy: {nombre: "desc"},
+            });
+
+            if (!firstYear || !lastYear) return new NextResponse("Error buscando años", {status: 404});
+
+            let currentYear = Number(firstYear.nombre);
+
+            while (currentYear <= Number(lastYear.nombre)) {
+                allPeriodsBetweenYears.push({
+                    from: currentYear * 100 + 1,
+                    to: currentYear * 100 + 12,
+                    anio: currentYear,
+                });
+
+                currentYear++;
+            }
+        }
+
+        let consumoArea = 0;
+        let factorEmisionAgua = 0;
+        
+        let totalGEI = 0;
+
 
         for (const area of areas) {
-            const totalConsumo: number = consumoAgua.reduce((acc, consumoAgua) => {
-                if (consumoAgua.area_id === area.id) {
-                    return acc + consumoAgua.consumo;
+            const totalConsumo: number = consumoAguaCalculos.create({
+                data:{
+                    consumoArea: 0,
+                    factorEmisionAgua:0,
+                    totalGEI: 0,
+                    areaId: area.id,
+                    periodoCalculoId: period.id,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+
                 }
-                return acc;
-            }, 0);
+            })
             const totalGEI: number = totalConsumo * factorEmision / 1000;
             const calculoConsumoAgua: consumoAguaCalculoRequest = {
                 consumoArea: totalConsumo,

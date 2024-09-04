@@ -101,6 +101,7 @@ model Anio {
   factorConversionSEIN  factorConversionSEIN[]
   ConsumoAgua           ConsumoAgua[]
   tipoCombustibleFactor tipoCombustibleFactor[]
+  FactorEmisionAgua     FactorEmisionAgua[]
 }
 
 model Combustible {
@@ -283,11 +284,12 @@ model area {
 
   sede Sede? @relation(fields: [sede_id], references: [id])
 
-  ConsumoAgua           ConsumoAgua[]
-  ConsumoAguaCalculos   ConsumoAguaCalculos[]
-  consumoEnergia        consumoEnergia[]
-  EnergiaCalculos       EnergiaCalculos[]
-  EnergiaCalculosDetail EnergiaCalculosDetail[]
+  ConsumoAgua               ConsumoAgua[]
+  ConsumoAguaCalculos       ConsumoAguaCalculos[]
+  consumoEnergia            consumoEnergia[]
+  EnergiaCalculos           EnergiaCalculos[]
+  EnergiaCalculosDetail     EnergiaCalculosDetail[]
+  ConsumoAguaCalculosDetail ConsumoAguaCalculosDetail[]
 }
 
 model EnergiaCalculos {
@@ -382,10 +384,18 @@ model ConsumoAgua {
   area area? @relation(fields: [area_id], references: [id])
 }
 
+model FactorEmisionAgua {
+  id      Int   @id @default(autoincrement())
+  factor  Float @db.Float
+  anio_id Int
+
+  anio                      Anio                        @relation(fields: [anio_id], references: [id])
+  ConsumoAguaCalculosDetail ConsumoAguaCalculosDetail[]
+}
+
 model ConsumoAguaCalculos {
   id               Int   @id @default(autoincrement())
   consumoArea      Float @db.Float
-  factorEmision    Float @db.Float
   totalGEI         Float @db.Float
   areaId           Int
   periodoCalculoId Int?  @db.Int
@@ -393,8 +403,25 @@ model ConsumoAguaCalculos {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  area           area?           @relation(fields: [areaId], references: [id])
-  PeriodoCalculo PeriodoCalculo? @relation(fields: [periodoCalculoId], references: [id])
+  area                      area?                       @relation(fields: [areaId], references: [id])
+  PeriodoCalculo            PeriodoCalculo?             @relation(fields: [periodoCalculoId], references: [id])
+  ConsumoAguaCalculosDetail ConsumoAguaCalculosDetail[]
+}
+
+model ConsumoAguaCalculosDetail {
+  id                    Int   @id @default(autoincrement())
+  consumoArea           Float @db.Float
+  factorEmisionAguaId   Int
+  totalGEI              Float @db.Float
+  areaId                Int
+  consumoAguaCalculosId Int   @db.Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  area                area?               @relation(fields: [areaId], references: [id])
+  consumoAguaCaluclos ConsumoAguaCalculos @relation(fields: [consumoAguaCalculosId], references: [id])
+  factorEmisionAgua   FactorEmisionAgua?  @relation(fields: [factorEmisionAguaId], references: [id])
 }
 
 model PeriodoCalculo {
