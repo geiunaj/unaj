@@ -16,6 +16,7 @@ import {
     UserRound,
     Gauge,
     FlaskConical,
+    PlugZap,
 } from "lucide-react";
 
 export interface MenuItem {
@@ -43,6 +44,7 @@ export const iconComponents: Record<string, any> = {
     UserRound,
     Gauge,
     FlaskConical,
+    PlugZap,
 };
 
 export const menu: MenuItem[] = [
@@ -100,6 +102,11 @@ export const menu: MenuItem[] = [
                 title: "Factor de Fertilizante",
                 icon: "Sprout",
                 href: "/fertilizante-factor",
+            },
+            {
+                title: "Factor de Emision SEIN",
+                icon: "PlugZap",
+                href: "/factor-emision-SEIN",
             }
         ],
     },

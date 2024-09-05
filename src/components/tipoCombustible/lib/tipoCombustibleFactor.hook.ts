@@ -1,7 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {
     getTiposCombustible,
-    getTiposCombustiblePaginate,
     TiposCombustibleIndex
 } from "../services/tipoCombustible.actions";
 import {getTiposCombustibleFactorPaginate} from "@/components/tipoCombustible/services/tipoCombustibleFactor.actions";

@@ -33,22 +33,7 @@ const TipoCombustible = z.object({
     nombre: z.string().min(1, "Ingrese un nombre"),
     abreviatura: z.string().min(1, "Ingrese una abreviatura"),
     unidad: z.string().min(1, "Ingrese una unidad"),
-    valorCalorico: z.preprocess(
-        (val) => parseFloat(val as string),
-        z.number().min(0, "Ingresa un valor mayor a 0")
-    ),
-    factorEmisionCO2: z.preprocess(
-        (val) => parseFloat(val as string),
-        z.number().min(0, "Ingresa un valor mayor a 0")
-    ),
-    factorEmisionCH4: z.preprocess(
-        (val) => parseFloat(val as string),
-        z.number().min(0, "Ingresa un valor mayor a 0")
-    ),
-    factorEmisionN2O: z.preprocess(
-        (val) => parseFloat(val as string),
-        z.number().min(0, "Ingresa un valor mayor a 0")
-    ),
+   
 });
 
 export function UpdateFormTipoCombustible({
@@ -61,10 +46,7 @@ export function UpdateFormTipoCombustible({
             nombre: "",
             abreviatura: "",
             unidad: "",
-            valorCalorico: 0,
-            factorEmisionCO2: 0,
-            factorEmisionCH4: 0,
-            factorEmisionN2O: 0,
+            
         },
     });
 
@@ -81,10 +63,7 @@ export function UpdateFormTipoCombustible({
                 nombre: tipoCombustibleData.nombre,
                 abreviatura: tipoCombustibleData.abreviatura,
                 unidad: tipoCombustibleData.unidad,
-                valorCalorico: tipoCombustibleData.valorCalorico,
-                factorEmisionCO2: tipoCombustibleData.factorEmisionCO2,
-                factorEmisionCH4: tipoCombustibleData.factorEmisionCH4,
-                factorEmisionN2O: tipoCombustibleData.factorEmisionN2O,
+               
             });
         }
     }, [tipoCombustible.data, id]);
@@ -98,10 +77,7 @@ export function UpdateFormTipoCombustible({
             nombre: data.nombre,
             abreviatura: data.abreviatura,
             unidad: data.unidad,
-            valorCalorico: data.valorCalorico,
-            factorEmisionCO2: data.factorEmisionCO2,
-            factorEmisionCH4: data.factorEmisionCH4,
-            factorEmisionN2O: data.factorEmisionN2O,
+            
         };
         try {
             const response = await updateTipoCombustible(id, tipoCombustibleRequest);
@@ -186,87 +162,6 @@ export function UpdateFormTipoCombustible({
                             />
                         </div>
 
-                        <div className="flex gap-5">
-                            {/*VALOR CALORICO*/}
-                            <FormField
-                                control={form.control}
-                                name="valorCalorico"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2 ">
-                                        <FormLabel className="mt-2 w-full">
-                                            Valor Calorico
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* factorEmisionCO2 */}
-                            <FormField
-                                control={form.control}
-                                name="factorEmisionCO2"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor de Emisión CO2</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        <div className="flex gap-5">
-                            {/* factorEmisionCH4 */}
-                            <FormField
-                                control={form.control}
-                                name="factorEmisionCH4"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor de Emision CH4</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* factorEmisionN2O */}
-                            <FormField
-                                control={form.control}
-                                name="factorEmisionN2O"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor de Emisión CO2</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
 
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-blue-700">

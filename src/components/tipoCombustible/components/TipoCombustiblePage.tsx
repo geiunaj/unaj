@@ -237,7 +237,7 @@ export default function TipoCombustiblePage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
+                        <DialogTitle>Actualizar Registro de Tipo de Combustible</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
 
