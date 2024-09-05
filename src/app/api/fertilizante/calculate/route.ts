@@ -96,10 +96,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
-        const fertilizanteCalculos = [];
         const body: FertilizanteCalcRequest = await req.json();
         const sedeId = body.sedeId;
-
         const yearFrom = body.from;
         const yearTo = body.to;
 
@@ -208,14 +206,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     // anio: true,
                 },
             });
-            fertilizanteCalculos.push(tipoFertilizanteCreate);
         }
 
-        const formattedFertilizanteCalculos: any[] = fertilizanteCalculos.map(
-            (fertilizanteCalculo) => formatFertilizanteCalculo(fertilizanteCalculo)
-        );
-
-        return NextResponse.json(formattedFertilizanteCalculos);
+        return NextResponse.json({message: "Cálculo realizado exitosamente"});
     } catch (error) {
         console.error("Error calculating fertilizante", error);
         return new NextResponse("Error calculating fertilizante", {

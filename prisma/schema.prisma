@@ -333,7 +333,7 @@ model combustibleCalculosDetail {
 // // A1_5 - FERTILIZANTES
 // model factorEmision {
 //   id                   Int                    @id @default(autoincrement())
-//   valor                Float                  @db.Float
+//   valor                Float          s        @db.Float
 //   fertilizanteCalculos fertilizanteCalculos[]
 // }
 
@@ -354,6 +354,12 @@ model fertilizanteCalculos {
   sede             Sede?             @relation(fields: [sedeId], references: [id])
   periodoCalculo   PeriodoCalculo?   @relation(fields: [periodoCalculoId], references: [id])
   TipoFertilizante TipoFertilizante? @relation(fields: [tipofertilizanteId], references: [id])
+}
+
+model fertilizanteCalculosDetail {
+  id                      Int   @id @default(autoincrement())
+  tipofertilizanteId      Int
+  consumoTipoFertilizante Float @db.Float
 }
 
 model consumoEnergia {

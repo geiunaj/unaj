@@ -8,7 +8,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {Building} from "lucide-react";
+import {Building, FileSpreadsheet} from "lucide-react";
 import SelectFilter from "@/components/SelectFilter";
 import {Badge} from "@/components/ui/badge";
 import {FertilizanteCalcResponse} from "../services/fertilizanteCalculate.interface";
@@ -25,16 +25,20 @@ import {
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {createFertilizanteCalculate} from "@/components/fertilizantes/services/fertilizanteCalculate.actions";
 import {ReportRequest} from "@/lib/interfaces/globals";
+import {Button} from "@/components/ui/button";
+import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 
 export default function FertilizanteCalculate() {
     const {push} = useRouter();
 
     // SELECTS - FILTERS
     const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [yearFrom, setYearFrom] = useState<string>(new Date().getFullYear().toString());
-    const [yearTo, setYearTo] = useState<string>(new Date().getFullYear().toString());
     const [page, setPage] = useState(1);
 
+    const [yearFrom, setYearFrom] = useState<string>(new Date().getFullYear().toString());
+    const [yearTo, setYearTo] = useState<string>(new Date().getFullYear().toString());
+
+    // HOOKS
     const fertilizanteCalculos = useFertilizanteCalculos({
         sedeId: parseInt(selectedSede),
         yearFrom: yearFrom,
@@ -48,6 +52,7 @@ export default function FertilizanteCalculate() {
     });
 
     const sedes = useSedes();
+
     const handleFertilizante = () => {
         push("/fertilizante");
     };
@@ -84,7 +89,7 @@ export default function FertilizanteCalculate() {
     }, [selectedSede, yearFrom, yearTo, fertilizanteCalculos, fertilizanteCalculosReport]);
 
 
-    const handleClickReport = useCallback(async (period: ReportRequest) => {
+    const handleClickExcelReport = useCallback(async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10,},
             {header: "TIPO", key: "clase", width: 15,},
@@ -95,8 +100,10 @@ export default function FertilizanteCalculate() {
             {header: "AÑO", key: "anio", width: 15,},
             {header: "SEDE", key: "sede", width: 20,}
         ];
+        await setYearFrom(period.yearFrom ?? "");
+        await setYearTo(period.yearTo ?? "");
         const data = await fertilizanteCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMIIONES DE FERTILIZANTES", "FERTILIZANTES");
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMIIONES DE FERTILIZANTES", "Fertilizantes");
     }, [fertilizanteCalculosReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
@@ -117,46 +124,78 @@ export default function FertilizanteCalculate() {
 
     return (
         <div className="w-full max-w-[1150px] h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="flex gap-4 items-center">
                     <ButtonBack onClick={handleFertilizante}/>
                     <div className="font-Manrope">
                         <h1 className="text-base text-foreground font-bold">
-                            Cálculo de emisiones por fertilizantes
+                            Emisiones de Fertilizantes
                         </h1>
                         <h2 className="text-xs sm:text-sm text-muted-foreground">
                             Huella de carbono
                         </h2>
                     </div>
                 </div>
-                <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+                <div className="flex flex-col items-end gap-2">
                     <div
-                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center w-1/2">
-                        <SelectFilter
-                            list={sedes.data!}
-                            itemSelected={selectedSede}
-                            handleItemSelect={handleSedeChange}
-                            value={"id"}
-                            nombre={"name"}
-                            id={"id"}
-                            icon={<Building className="h-3 w-3"/>}
-                        />
+                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
+                        <div
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
+                            <SelectFilter
+                                list={sedes.data!}
+                                itemSelected={selectedSede}
+                                handleItemSelect={handleSedeChange}
+                                value={"id"}
+                                nombre={"name"}
+                                id={"id"}
+                                icon={<Building className="h-3 w-3"/>}
+                            />
 
-                        <ReportComponent
-                            onSubmit={handleClickReport}
-                            ref={submitFormRef}
-                            yearFrom={yearFrom}
-                            yearTo={yearTo}
-                            handleYearFromChange={handleYearFromChange}
-                            handleYearToChange={handleYearToChange}
-                        />
+                            <ReportComponent
+                                onSubmit={handleClickExcelReport}
+                                ref={submitFormRef}
+                                yearFrom={yearFrom}
+                                yearTo={yearTo}
+                                handleYearFromChange={handleYearFromChange}
+                                handleYearToChange={handleYearToChange}
+                            />
 
+                        </div>
+                        <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-2">
+                            <Button
+                                onClick={handleClick}
+                                size="sm"
+                                variant="outline"
+                                className="flex items-center gap-2 h-7"
+                            >
+                                <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                Excel
+                            </Button>
+
+                            <ExportPdfReport
+                                data={fertilizanteCalculosReport.data!.data}
+                                fileName={`REPORTE CALCULOS DE FERTILIZANTES_${formatPeriod({yearFrom, yearTo}, true)}`}
+                                columns={[
+                                    {header: "N°", key: "id", width: 5},
+                                    {header: "AREA", key: "area", width: 15},
+                                    {header: "CONSUMO TOTAL", key: "consumoTotal", width: 15},
+                                    {header: "EMISIONES DE CO2", key: "emisionCO2", width: 15},
+                                    {header: "EMISIONES DE CH4", key: "emisionCH4", width: 15},
+                                    {header: "EMISIONES DE N20", key: "emisionN2O", width: 15},
+                                    {header: "TOTAL GEI", key: "totalGEI", width: 15},
+                                ]}
+                                title="REPORTE DE CALCULOS DE FERTILIZANTES"
+                                period={formatPeriod({yearFrom, yearTo}, true)}
+                            />
+
+                            <ButtonCalculate
+                                onClick={handleCalculate}
+                                variant="default"
+                                text="Calcular"
+                            />
+                        </div>
                     </div>
-                    <ButtonCalculate
-                        onClick={handleCalculate}
-                        variant="default"
-                        text="Calcular"
-                    />
+
                 </div>
             </div>
 
@@ -188,6 +227,14 @@ export default function FertilizanteCalculate() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
+                        {fertilizanteCalculos.data!.data.length === 0 && (
+                            <TableRow>
+                                <TableCell colSpan={7} className="text-center">
+                                    Click en el botón <strong className="text-primary">Calcular</strong> para obtener
+                                    los resultados
+                                </TableCell>
+                            </TableRow>
+                        )}
                         {fertilizanteCalculos.data!.data.map(
                             (FertilizanteCalculate: FertilizanteCalcResponse) => (
                                 <TableRow

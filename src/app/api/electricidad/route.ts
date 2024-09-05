@@ -94,8 +94,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
-        const formattedElectricidad: electricidadCollectionItem[] = electricidad.map(
-            (electricidad) => formatElectricidad(electricidad)
+        const formattedElectricidad: any[] = electricidad.map(
+            (electricidad, index) => {
+                const consumo = formatElectricidad(electricidad);
+                consumo.rn = index + 1;
+                return consumo;
+            }
         );
 
         return NextResponse.json({

@@ -31,6 +31,7 @@ export interface electricidadCollectionItem {
     sede: string;
     anio: string;
     mes: string;
+    rn: number;
 }
 
 export interface Meta {

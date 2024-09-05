@@ -26,7 +26,6 @@ export const formatPeriod = (period: ReportRequest, withMonth = false) => {
     period.to = period.to !== 'all' ? period.to : "";
     period.yearFrom = period.yearFrom !== 'all' ? period.yearFrom : "";
     period.yearTo = period.yearTo !== 'all' ? period.yearTo : "";
-    console.log(period);
     if (withMonth) {
         if (period.from && period.to) {
             return `DESDE ${period.from} HASTA ${period.to}`;

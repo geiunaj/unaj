@@ -46,10 +46,10 @@ import {deleteFertilizante} from "@/components/fertilizantes/services/fertilizan
 import {UpdateFormFertilizantes} from "@/components/fertilizantes/components/UpdateFormFertilizante";
 import CustomPagination from "@/components/Pagination";
 import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
-import {ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
+import {ReportRequest} from "@/lib/interfaces/globals";
 
 
 export default function FertilizantePage() {
@@ -85,6 +85,17 @@ export default function FertilizantePage() {
             page: page,
         }
     );
+
+    const fertilizanteReport = useFertilizanteReport(
+        {
+            tipoFertilizanteId: selectedTipoFertilizanteId ? parseInt(selectedTipoFertilizanteId) : undefined,
+            claseFertilizante: selectedClaseFertilizante,
+            sedeId: parseInt(selectedSede),
+            yearFrom: yearFrom,
+            yearTo: yearTo,
+        }
+    );
+
     const tipoFertilizante = useTipoFertilizante(selectedClaseFertilizante);
     const claseFertilizante = useClaseFertilizante();
     const sedes = useSede();
@@ -105,33 +116,38 @@ export default function FertilizantePage() {
         await setPage(1);
         await setSelectedClaseFertilizante(value);
         await setSelectedTipoFertilizanteId("");
-        await fertilizante.refetch();
         await tipoFertilizante.refetch();
-    }, [fertilizante, tipoFertilizante]);
+        await fertilizante.refetch();
+        await fertilizanteReport.refetch();
+    }, [fertilizante, fertilizanteReport, tipoFertilizante]);
 
     const handleSedeChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedSede(value);
         await fertilizante.refetch();
-    }, [fertilizante]);
+        await fertilizanteReport.refetch();
+    }, [fertilizante, fertilizanteReport]);
 
     const handleYearFromChange = useCallback(async (value: string) => {
         await setPage(1);
         await setYearFrom(value);
         await fertilizante.refetch();
-    }, [fertilizante]);
+        await fertilizanteReport.refetch();
+    }, [fertilizante, fertilizanteReport]);
 
     const handleYearToChange = useCallback(async (value: string) => {
         await setPage(1);
         await setYearTo(value);
         await fertilizante.refetch();
-    }, [fertilizante]);
+        await fertilizanteReport.refetch();
+    }, [fertilizante, fertilizanteReport]);
 
     const handleTipoFertilizanteChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedTipoFertilizanteId(value);
         await fertilizante.refetch();
-    }, [fertilizante]);
+        await fertilizanteReport.refetch();
+    }, [fertilizante, fertilizanteReport]);
 
     const handleCalculate = () => {
         push("/fertilizante/calculos");
@@ -140,12 +156,14 @@ export default function FertilizantePage() {
     const handleClose = useCallback(async () => {
         setIsDialogOpen(false);
         await fertilizante.refetch();
-    }, [fertilizante]);
+        await fertilizanteReport.refetch();
+    }, [fertilizante, fertilizanteReport]);
 
     const handleCloseUpdate = useCallback(async () => {
         setIsUpdateDialogOpen(false);
         await fertilizante.refetch();
-    }, [fertilizante]);
+        await fertilizanteReport.refetch();
+    }, [fertilizante, fertilizanteReport]);
 
     const handleDelete = useCallback(async () => {
         try {
@@ -156,22 +174,13 @@ export default function FertilizantePage() {
             errorToast(error.response.data.message);
         }
         await fertilizante.refetch();
-    }, [fertilizante, idForDelete]);
+        await fertilizanteReport.refetch();
+    }, [fertilizante, fertilizanteReport, idForDelete]);
 
     const handlePageChage = async (page: number) => {
         await setPage(page);
         await fertilizante.refetch();
     }
-
-    const fertilizanteReport = useFertilizanteReport(
-        {
-            tipoFertilizanteId: selectedTipoFertilizanteId ? parseInt(selectedTipoFertilizanteId) : undefined,
-            claseFertilizante: selectedClaseFertilizante,
-            sedeId: parseInt(selectedSede),
-            yearFrom: yearFrom,
-            yearTo: yearTo,
-        }
-    );
 
     const handleClickReport = useCallback(async (period: ReportRequest) => {
         const columns = [
@@ -197,12 +206,12 @@ export default function FertilizantePage() {
     };
 
     if (fertilizante.isLoading || claseFertilizante.isLoading || tipoFertilizante.isLoading
-        || sedes.isLoading || anios.isLoading) {
+        || sedes.isLoading || anios.isLoading || fertilizanteReport.isLoading) {
         return <SkeletonTable/>;
     }
 
     if (fertilizante.isError || claseFertilizante.isError || tipoFertilizante.isError
-        || sedes.isError || anios.isError) {
+        || sedes.isError || anios.isError || fertilizanteReport.isError) {
         return <div>Error al cargar los datos</div>;
     }
 
@@ -271,10 +280,10 @@ export default function FertilizantePage() {
                             </Button>
 
                             <ExportPdfReport
-                                data={fertilizante.data!.data}
+                                data={fertilizanteReport.data!.data}
                                 fileName={`REPORTE DE FERTILIZANTES_${formatPeriod({yearFrom, yearTo}, true)}`}
                                 columns={[
-                                    {header: "N°", key: "id", width: 5,},
+                                    {header: "N°", key: "rn", width: 5,},
                                     {header: "TIPO", key: "clase", width: 20,},
                                     {header: "FERTILIZANTE", key: "tipoFertilizante", width: 25,},
                                     {header: "CANTIDAD", key: "cantidad", width: 20,},

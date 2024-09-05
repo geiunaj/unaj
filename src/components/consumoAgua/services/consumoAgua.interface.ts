@@ -24,6 +24,7 @@ export interface consumoAguaCollectionItem {
     sede: string;
     mes: string;
     anio: string;
+    rn: number;
 }
 
 export interface Meta {

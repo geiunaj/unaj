@@ -30,6 +30,7 @@ export interface fertilizanteCollectionItem {
     clase: string;
     tipoFertilizante: string;
     porcentajeNit: number;
+    rn: number;
 }
 
 //PARA EL SHOW

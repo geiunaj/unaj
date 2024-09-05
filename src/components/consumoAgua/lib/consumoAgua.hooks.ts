@@ -33,16 +33,17 @@ export const useConsumoAgua = ({
     });
 };
 
-export const useConsumoAguaReport = ({
-                                         sedeId,
-                                         areaId,
-                                         mesId,
-                                         from,
-                                         to,
-                                         sort,
-                                         direction,
-                                         page,
-                                     }: getConsumoAguaInterface) => {
+export const useConsumoAguaReport = (
+    {
+        sedeId,
+        areaId,
+        mesId,
+        from,
+        to,
+        sort,
+        direction,
+        page,
+    }: getConsumoAguaInterface) => {
     return useQuery({
         queryKey: ["ConsumoAguaReport"],
         queryFn: () => getConsumoAguaReport(sedeId, areaId, mesId, from, to, sort, direction, page),

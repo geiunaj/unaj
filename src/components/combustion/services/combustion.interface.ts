@@ -25,6 +25,7 @@ export interface CombustionCollectionItem {
     tipoCombustible: string;
     unidad: string;
     sede: string;
+    rn: number;
 }
 
 export interface Meta {

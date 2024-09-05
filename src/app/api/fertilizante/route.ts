@@ -63,7 +63,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         });
 
         const formattedFertilizantes: Fertilizante[] = fertilizantes.map(
-            (fertilizante) => formaFertilizante(fertilizante)
+            (fertilizante, index) => {
+                const newFertilizante = formaFertilizante(fertilizante);
+                newFertilizante.rn = index + 1;
+                return newFertilizante
+            }
         );
 
         return NextResponse.json({

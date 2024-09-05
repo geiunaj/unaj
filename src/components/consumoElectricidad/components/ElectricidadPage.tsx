@@ -324,7 +324,7 @@ export default function ElectricidadPage() {
                                     true
                                 )}`}
                                 columns={[
-                                    {header: "N°", key: "id", width: 5},
+                                    {header: "N°", key: "rn", width: 5},
                                     {header: "NUMERO DE SUMINISTRO", key: "numeroSuministro", width: 20},
                                     {header: "CONSUMO", key: "consumo", width: 15},
                                     {header: "MES", key: "mes", width: 15},

@@ -300,7 +300,7 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
                                     to
                                 }, true)}`}
                                 columns={[
-                                    {header: "N°", key: "id", width: 5,},
+                                    {header: "N°", key: "rn", width: 5,},
                                     {header: "TIPO", key: "tipo", width: 10,},
                                     {header: "TIPO DE EQUIPO", key: "tipoEquipo", width: 20,},
                                     {header: "CONSUMO", key: "consumo", width: 10,},

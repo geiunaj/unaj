@@ -61,7 +61,6 @@ import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ReportRequest} from "@/lib/interfaces/globals";
 
-
 export default function ConsumoAguaPage() {
     //NAVIGATION
     const {push} = useRouter();
@@ -301,7 +300,7 @@ export default function ConsumoAguaPage() {
                                 data={consumoAguaReport.data!.data}
                                 fileName={`REPORTE DE CONSUMO DE AGUA_${formatPeriod({from, to}, true)}`}
                                 columns={[
-                                    {header: "N°", key: "id", width: 5},
+                                    {header: "N°", key: "rn", width: 5},
                                     {header: "CÓDIGO MEDIDOR", key: "codigoMedidor", width: 15},
                                     {header: "CONSUMO", key: "consumo", width: 15},
                                     {header: "FUENTE DE AGUA", key: "fuenteAgua", width: 15},

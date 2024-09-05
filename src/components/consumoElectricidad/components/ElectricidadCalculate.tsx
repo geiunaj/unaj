@@ -40,7 +40,6 @@ export default function ElectricidadCalculate() {
     const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
     const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
-
     // HOOKS
     const electricidadCalculos = useElectricidadCalculos({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
@@ -122,7 +121,6 @@ export default function ElectricidadCalculate() {
             submitFormRef.current.submitForm();
         }
     };
-
 
     if (electricidadCalculos.isLoading || sedes.isLoading || anios.isLoading || electricidadCalculosReport.isLoading) {
         return <SkeletonTable/>;

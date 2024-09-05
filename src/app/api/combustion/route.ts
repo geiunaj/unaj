@@ -80,8 +80,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
-        const formattedCombustibles: Combustible[] = combustibles.map(
-            (combustible) => formatCombustible(combustible)
+        const formattedCombustibles: any[] = combustibles.map(
+            (combustible, index) => {
+                const consumo = formatCombustible(combustible);
+                consumo.rn = index + 1;
+                return consumo;
+            }
         );
 
         return NextResponse.json({
