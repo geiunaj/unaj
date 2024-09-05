@@ -95,15 +95,16 @@ model Anio {
   created_at DateTime
   updated_at DateTime
 
-  combustibles          Combustible[]
-  fertilizante          Fertilizante[]
-  consumoPapel          ConsumoPapel[]
-  Taxi                  Taxi[]
-  consumoEnergia        consumoEnergia[]
-  factorConversionSEIN  factorConversionSEIN[]
-  ConsumoAgua           ConsumoAgua[]
-  tipoCombustibleFactor tipoCombustibleFactor[]
-  FactorEmisionAgua     FactorEmisionAgua[]
+  combustibles              Combustible[]
+  fertilizante              Fertilizante[]
+  consumoPapel              ConsumoPapel[]
+  Taxi                      Taxi[]
+  consumoEnergia            consumoEnergia[]
+  factorConversionSEIN      factorConversionSEIN[]
+  ConsumoAgua               ConsumoAgua[]
+  tipoCombustibleFactor     tipoCombustibleFactor[]
+  FactorEmisionAgua         FactorEmisionAgua[]
+  FactorEmisionFertilizante FactorEmisionFertilizante[]
 }
 
 model Combustible {
@@ -148,6 +149,17 @@ model TipoFertilizante {
 
   fertilizantes        Fertilizante[]
   fertilizanteCalculos fertilizanteCalculos[]
+}
+
+model FactorEmisionFertilizante {
+  id                      Int    @id @default(autoincrement())
+  valor                   Float  @db.Float
+  anio_id                 Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  anio                 Anio                  @relation(fields: [anio_id], references: [id])
 }
 
 model Fertilizante {
@@ -278,9 +290,9 @@ model fertilizanteCalculos {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  sede             Sede?             @relation(fields: [sedeId], references: [id])
-  periodoCalculo   PeriodoCalculo?   @relation(fields: [periodoCalculoId], references: [id])
-  TipoFertilizante TipoFertilizante? @relation(fields: [tipofertilizanteId], references: [id])
+  sede                      Sede?                       @relation(fields: [sedeId], references: [id])
+  periodoCalculo            PeriodoCalculo?             @relation(fields: [periodoCalculoId], references: [id])
+  TipoFertilizante          TipoFertilizante?           @relation(fields: [tipofertilizanteId], references: [id])
 }
 
 model consumoEnergia {
