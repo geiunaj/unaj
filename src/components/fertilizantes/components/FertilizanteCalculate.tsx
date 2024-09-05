@@ -1,6 +1,5 @@
 "use client";
-import React, {useEffect, useState, useCallback, useRef} from "react";
-import {Button} from "@/components/ui/button";
+import React, {useState, useCallback, useRef} from "react";
 import {
     Table,
     TableBody,
@@ -9,18 +8,14 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {Building, Calculator} from "lucide-react";
-import {useSedeStore} from "@/components/sede/lib/sede.store";
-import {useAnioStore} from "@/components/anio/lib/anio.store";
+import {Building} from "lucide-react";
 import SelectFilter from "@/components/SelectFilter";
 import {Badge} from "@/components/ui/badge";
-import {useFertilizanteCalculateStore} from "../lib/fertilizanteCalculate.store";
 import {FertilizanteCalcResponse} from "../services/fertilizanteCalculate.interface";
 import ButtonCalculate from "@/components/ButtonCalculate";
 import ButtonBack from "@/components/ButtonBack";
 import {useRouter} from "next/navigation";
 import ReportComponent from "@/components/ReportComponent";
-import {ReportRequest} from "@/components/ReportPopover";
 import GenerateReport from "@/lib/utils/generateReport";
 import {formatPeriod} from "@/lib/utils/core.function";
 import {
@@ -28,8 +23,8 @@ import {
     useFertilizanteCalculosReport, useSedes
 } from "@/components/fertilizantes/lib/fertilizantesCalculos.hooks";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {createCalculosElectricidad} from "@/components/consumoElectricidad/services/electricidadCalculos.actions";
 import {createFertilizanteCalculate} from "@/components/fertilizantes/services/fertilizanteCalculate.actions";
+import {ReportRequest} from "@/lib/interfaces/globals";
 
 export default function FertilizanteCalculate() {
     const {push} = useRouter();
