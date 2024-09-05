@@ -5,7 +5,23 @@ import {TipoPapelRequest} from "@/components/tipoPapel/services/tipoPapel.interf
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
-        const tiposPapel = await prisma.tipoPapel.findMany();
+        const {searchParams} = new URL(req.url);
+        const perPage = parseInt(searchParams.get("perPage") ?? "0");
+        const page = parseInt(searchParams.get("page") ?? "1");
+
+        const tiposPapel = await prisma.tipoPapel.findMany({
+            ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
+        });
+
+        if (perPage > 0) {
+            const totalRecords = await prisma.tipoPapel.count();
+            const totalPages = Math.ceil(totalRecords / perPage);
+            return NextResponse.json({
+                data: tiposPapel.map(formatTipoPapel),
+                meta: {page, perPage, totalRecords, totalPages},
+            });
+        }
+
         return NextResponse.json(tiposPapel.map(formatTipoPapel));
     } catch (error) {
         console.error("Error al cargar los tipos de Papel", error);
@@ -19,13 +35,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const tipoPapel = await prisma.tipoPapel.create({
             data: {
                 nombre: body.nombre,
+                ancho: body.ancho,
+                largo: body.largo,
+                area: body.ancho * body.largo,
                 gramaje: body.gramaje,
                 unidad_paquete: body.unidad_paquete,
-                is_certificado: body.is_certificado,
-                is_reciclable: body.is_reciclable,
                 porcentaje_reciclado: body.porcentaje_reciclado,
+                porcentaje_virgen: 100 - body.porcentaje_reciclado,
                 nombre_certificado: body.nombre_certificado,
-
                 created_at: new Date(),
                 updated_at: new Date(),
             },

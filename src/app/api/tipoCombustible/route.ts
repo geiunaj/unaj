@@ -6,18 +6,15 @@ import {formatTipoPapel} from "@/lib/resources/tipoPapel.resource";
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
-        const tipoCombustibleId = searchParams.get("tipoCombustibleId");
         const perPage = parseInt(searchParams.get("perPage") ?? "0");
         const page = parseInt(searchParams.get("page") ?? "1");
 
-        const whereOptions = tipoCombustibleId ? {id: parseInt(tipoCombustibleId)} : {};
         const tiposCombustible = await prisma.tipoCombustible.findMany({
-            where: whereOptions,
             ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
         });
 
         if (perPage > 0) {
-            const totalRecords = await prisma.combustible.count({where: whereOptions});
+            const totalRecords = await prisma.tipoCombustible.count();
             const totalPages = Math.ceil(totalRecords / perPage);
             return NextResponse.json({
                 data: tiposCombustible,

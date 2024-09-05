@@ -95,6 +95,11 @@ export const menu: MenuItem[] = [
                 title: "Factores de Combustible",
                 icon: "Flame",
                 href: "/tipo-combustible-factor",
+            },
+            {
+                title: "Factor de Fertilizante",
+                icon: "Sprout",
+                href: "/fertilizante-factor",
             }
         ],
     },
@@ -116,7 +121,7 @@ export const menu: MenuItem[] = [
             {
                 title: "Tipos de Fertilizantes",
                 icon: "Sprout",
-                href: "/tipoFertilizante",
+                href: "/tipo-fertilizante",
             },
             {
                 title: "Area",

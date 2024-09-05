@@ -1,48 +1,33 @@
-import {Sede} from "@prisma/client";
 import api from "../../../../config/api";
-import {
-    ClaseFertilizante,
-    TipoFertilizanteFactor,
-    TipoFertilizanteFactorCollection,
-    TipoFertilizanteFactorRequest, TipoFertilizanteFactorResource
-} from "./tipoFertilizante.interface";
 import {AxiosRequestConfig, AxiosResponse} from "axios";
+import {FactorEmisionFertilizanteIndex} from "@/components/tipoFertilizante/lib/tipoFertilizanteFactor.hook";
+import {
+    FertilizanteFactorCollectionPaginate
+} from "@/components/tipoFertilizante/services/tipoFertilizanteFactor.interface";
 
 interface Response {
     message: string;
 }
 
-export async function getTiposFertilizanteFactor(clase?: string): Promise<TipoFertilizanteFactorCollection[]> {
+
+export async function getFactorEmisionFertilizantePage(
+    {
+        anioId,
+        page = 1,
+        perPage = 10,
+    }: FactorEmisionFertilizanteIndex): Promise<FertilizanteFactorCollectionPaginate> {
     const config: AxiosRequestConfig = {
         params: {
-            clase
+            anioId,
+            page,
+            perPage,
         },
     };
-    const {data} = await api.get<TipoFertilizanteFactorCollection[]>("/api/tipoFertilizante", config);
+    const {data} = await api.get<FertilizanteFactorCollectionPaginate>(
+        "/api/tipoFertilizante/factor",
+        config
+    );
     return data;
-}
-
-export async function getTipoFertilizanteFactorById(id: number): Promise<TipoFertilizanteFactorResource> {
-    const {data} = await api.get<TipoFertilizanteFactorResource>(`/api/tipoFertilizante/${id}`);
-    return data;
-}
-
-export async function getClaseFertilizante(): Promise<ClaseFertilizante[]> {
-    try {
-        const {data} = await api.get<ClaseFertilizante[]>("/api/tipoFertilizante/clase");
-        return data;
-    } catch (error) {
-        console.error("Error en getClaseFertilizante: ", error);
-        return [];
-    }
-}
-
-export async function createTipoFertilizanteFactor(tipoFertilizante: TipoFertilizanteFactorRequest): Promise<AxiosResponse<Response>> {
-    return await api.post("/api/tipoFertilizante", tipoFertilizante);
-}
-
-export async function updateTipoFertilizanteFactor(id: number, tipoFertilizante: TipoFertilizanteFactorRequest): Promise<AxiosResponse<Response>> {
-    return await api.put(`/api/tipoFertilizante/${id}`, tipoFertilizante);
 }
 
 export async function deleteTipoFertilizanteFactor(id: number): Promise<AxiosResponse<Response>> {

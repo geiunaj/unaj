@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {getClaseFertilizante, getFactorEmisionFertilizantePage, getTiposFertilizante} from "../services/tipoFertilizante.actions";
+import {getFactorEmisionFertilizantePage} from "@/components/tipoFertilizante/services/tipoFertilizanteFactor.actions";
 
 
 export interface FactorEmisionFertilizanteIndex {
@@ -13,7 +13,7 @@ export const useFertilizanteFactor = (
         anioId,
         page,
         perPage,
-    } : FactorEmisionFertilizanteIndex
+    }: FactorEmisionFertilizanteIndex
 ) => {
     return useQuery({
         queryKey: ['factorEmisionFertilizante'],

@@ -355,10 +355,10 @@ async function main() {
         },
     ];
 
-    for(const anio of allAnios){
+    for (const anio of allAnios) {
         await prisma.factorEmisionFertilizante.create({
             data: {
-                
+
                 valor: 0.0125,
                 anio_id: anio.id,
 
@@ -564,6 +564,7 @@ async function main() {
                 gramaje: tipo.gramaje,
                 unidad_paquete: tipo.unidad_paquete,
                 porcentaje_reciclado: tipo.porcentaje_reciclado,
+                porcentaje_virgen: tipo.porcentaje_virgen,
                 nombre_certificado: tipo.nombre_certificado,
                 created_at: new Date(),
                 updated_at: new Date(),

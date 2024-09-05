@@ -138,19 +138,16 @@ export default function TipoPapelPage() {
                                 NOMBRE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                GRAMAJE
+                                GRAMAJE [g/m²]
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 UNIDAD
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CERTIFICADO
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                RECICLADO
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 % RECICLADO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                % VIRGEN
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 NOMBRE CERTIFICADO
@@ -174,21 +171,13 @@ export default function TipoPapelPage() {
                                     className="text-xs sm:text-sm">
                                     <Badge variant="default">{item.unidad_paquete}</Badge>
                                 </TableCell>
-                                <TableCell className="text-xs sm:text-sm">
-                                    <div className="flex justify-center">
-                                        {item.is_certificado ? (<CircleCheck className="w-5 text-blue-700"/>) :
-                                            <CircleX className="w-5 text-gray-600"/>}
-                                    </div>
-                                </TableCell>
-                                <TableCell className="text-xs sm:text-sm">
-                                    <div className="flex justify-center">
-                                        {item.is_reciclable ? (<CircleCheck className="w-5 text-blue-700"/>) :
-                                            <CircleX className="w-5 text-gray-600"/>}
-                                    </div>
+                                <TableCell
+                                    className="text-xs sm:text-sm">
+                                    {item.porcentaje_reciclado}
                                 </TableCell>
                                 <TableCell
                                     className="text-xs sm:text-sm">
-                                    {item.porcentaje_reciclado !== 0 ? item.porcentaje_reciclado : ""}
+                                    {item.porcentaje_virgen}
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.nombre_certificado}</TableCell>
                                 <TableCell className="text-xs sm:text-sm p-1">

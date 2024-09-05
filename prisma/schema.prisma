@@ -108,6 +108,7 @@ model Anio {
   FactorEmisionAgua          FactorEmisionAgua[]
   FactorTipoPapel            FactorTipoPapel[]
   ConsumoPapelCalculosDetail ConsumoPapelCalculosDetail[]
+  FactorEmisionFertilizante  FactorEmisionFertilizante[]
 }
 
 model Combustible {
@@ -152,6 +153,17 @@ model TipoFertilizante {
 
   fertilizantes        Fertilizante[]
   fertilizanteCalculos fertilizanteCalculos[]
+}
+
+model FactorEmisionFertilizante {
+  id      Int   @id @default(autoincrement())
+  valor   Float @db.Float
+  anio_id Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  anio Anio @relation(fields: [anio_id], references: [id])
 }
 
 model Fertilizante {
