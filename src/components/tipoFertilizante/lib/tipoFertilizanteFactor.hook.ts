@@ -1,19 +1,27 @@
 import {useQuery} from "@tanstack/react-query";
-import {getClaseFertilizante, getTiposFertilizante} from "../services/tipoFertilizante.actions";
+import {getClaseFertilizante, getFactorEmisionFertilizantePage, getTiposFertilizante} from "../services/tipoFertilizante.actions";
 
 
-export const useTipoFertilizanteFactor = (selectedClase: string) => {
-    return useQuery({
-        queryKey: ['tiposFertilizante'],
-        queryFn: () => getTiposFertilizante(selectedClase),
-        refetchOnWindowFocus: false,
-    });
+export interface FactorEmisionFertilizanteIndex {
+    anioId?: string;
+    page?: number;
+    perPage?: number;
 }
 
-export const useClaseFertilizante = () => {
+export const useFertilizanteFactor = (
+    {
+        anioId,
+        page,
+        perPage,
+    } : FactorEmisionFertilizanteIndex
+) => {
     return useQuery({
-        queryKey: ['claseFertilizante'],
-        queryFn: () => getClaseFertilizante(),
+        queryKey: ['factorEmisionFertilizante'],
+        queryFn: () => getFactorEmisionFertilizantePage({
+            anioId,
+            page,
+            perPage,
+        }),
         refetchOnWindowFocus: false,
     });
 }

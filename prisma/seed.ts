@@ -355,6 +355,19 @@ async function main() {
         },
     ];
 
+    for(const anio of allAnios){
+        await prisma.factorEmisionFertilizante.create({
+            data: {
+                
+                valor: 0.0125,
+                anio_id: anio.id,
+
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+
     for (const tipo of tiposFertilizantes) {
         await prisma.tipoFertilizante.create({
             data: {

@@ -35,7 +35,7 @@ export function UpdateFormArea({id, onClose}: UpdateAreaProps) {
     });
 
     const area = useQuery({
-        queryKey: ['areaForm'],
+        queryKey: ['areaForm',id],
         queryFn: () => getAreaById(id),
         refetchOnWindowFocus: false,
     });
