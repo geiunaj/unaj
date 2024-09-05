@@ -62,8 +62,8 @@ export async function createFertilizanteCalculate(
 
     const body = {
         sedeId,
-        yearFrom,
-        yearTo,
+        from: yearFrom,
+        to: yearTo,
     };
 
     const {data} = await api.post("/api/fertilizante/calculate", body);

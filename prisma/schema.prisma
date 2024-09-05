@@ -50,6 +50,7 @@ model Sede {
   combustibleCalculosDetail  combustibleCalculosDetail[]
   ConsumoPapelCalculosDetail ConsumoPapelCalculosDetail[]
   ConsumoPapelCalculos       ConsumoPapelCalculos[]
+  fertilizanteCalculosDetail fertilizanteCalculosDetail[]
 }
 
 model tipoCombustibleFactor {
@@ -151,8 +152,9 @@ model TipoFertilizante {
   created_at          DateTime @default(now())
   updated_at          DateTime @updatedAt
 
-  fertilizantes        Fertilizante[]
-  fertilizanteCalculos fertilizanteCalculos[]
+  fertilizantes              Fertilizante[]
+  fertilizanteCalculos       fertilizanteCalculos[]
+  fertilizanteCalculosDetail fertilizanteCalculosDetail[]
 }
 
 model FactorEmisionFertilizante {
@@ -163,7 +165,8 @@ model FactorEmisionFertilizante {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  anio Anio @relation(fields: [anio_id], references: [id])
+  anio                       Anio                         @relation(fields: [anio_id], references: [id])
+  fertilizanteCalculosDetail fertilizanteCalculosDetail[]
 }
 
 model Fertilizante {
@@ -351,15 +354,31 @@ model fertilizanteCalculos {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  sede             Sede?             @relation(fields: [sedeId], references: [id])
-  periodoCalculo   PeriodoCalculo?   @relation(fields: [periodoCalculoId], references: [id])
-  TipoFertilizante TipoFertilizante? @relation(fields: [tipofertilizanteId], references: [id])
+  sede                       Sede?                        @relation(fields: [sedeId], references: [id])
+  periodoCalculo             PeriodoCalculo?              @relation(fields: [periodoCalculoId], references: [id])
+  TipoFertilizante           TipoFertilizante?            @relation(fields: [tipofertilizanteId], references: [id])
+  fertilizanteCalculosDetail fertilizanteCalculosDetail[]
 }
 
 model fertilizanteCalculosDetail {
-  id                      Int   @id @default(autoincrement())
-  tipofertilizanteId      Int
-  consumoTipoFertilizante Float @db.Float
+  id                     Int   @id @default(autoincrement())
+  tipofertilizanteId     Int
+  factorEmisionId        Int
+  consumo                Float @db.Float
+  cantidadAporte         Float @db.Float
+  emisionDirecta         Float @db.Float
+  totalEmisionesDirectas Float @db.Float
+  emisionGEI             Float @db.Float
+  sedeId                 Int   @db.Int
+  fertilizanteCalculosId Int   @db.Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  TipoFertilizante     TipoFertilizante          @relation(fields: [tipofertilizanteId], references: [id])
+  factorEmision        FactorEmisionFertilizante @relation(fields: [factorEmisionId], references: [id])
+  sede                 Sede?                     @relation(fields: [sedeId], references: [id])
+  fertilizanteCalculos fertilizanteCalculos      @relation(fields: [fertilizanteCalculosId], references: [id])
 }
 
 model consumoEnergia {
@@ -532,6 +551,8 @@ model PeriodoCalculo {
   id                   Int                    @id @default(autoincrement())
   fechaInicio          String?
   fechaFin             String?
+  yearInicio           String?
+  yearFin              String?
   created_at           DateTime               @default(now())
   updated_at           DateTime               @updatedAt
   ConsumoAguaCalculos  ConsumoAguaCalculos[]

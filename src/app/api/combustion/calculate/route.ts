@@ -1,8 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {
-    CombustionCalcRequest,
-    CombustionCalculosRequest
+    CombustionCalcRequest
 } from "@/components/combustion/services/combustionCalculate.interface";
 import {formatCombustibleCalculo} from "@/lib/resources/combustionCalculateResource";
 import {getAnioId} from "@/lib/utils";
