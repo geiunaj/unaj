@@ -37,17 +37,19 @@ model User {
 }
 
 model Sede {
-  id                        Int                         @id @default(autoincrement())
-  name                      String                      @db.VarChar(45)
-  combustibles              Combustible[]
-  fertilizante              Fertilizante[]
-  ConsumoPapel              ConsumoPapel[]
-  combustibleCalculos       combustibleCalculos[]
-  taxi                      Taxi[]
-  fertilizanteCalculos      fertilizanteCalculos[]
-  area                      area[]
-  User                      User[]
-  combustibleCalculosDetail combustibleCalculosDetail[]
+  id                         Int                          @id @default(autoincrement())
+  name                       String                       @db.VarChar(45)
+  combustibles               Combustible[]
+  fertilizante               Fertilizante[]
+  ConsumoPapel               ConsumoPapel[]
+  combustibleCalculos        combustibleCalculos[]
+  taxi                       Taxi[]
+  fertilizanteCalculos       fertilizanteCalculos[]
+  area                       area[]
+  User                       User[]
+  combustibleCalculosDetail  combustibleCalculosDetail[]
+  ConsumoPapelCalculosDetail ConsumoPapelCalculosDetail[]
+  ConsumoPapelCalculos       ConsumoPapelCalculos[]
 }
 
 model tipoCombustibleFactor {
@@ -95,15 +97,17 @@ model Anio {
   created_at DateTime
   updated_at DateTime
 
-  combustibles          Combustible[]
-  fertilizante          Fertilizante[]
-  consumoPapel          ConsumoPapel[]
-  Taxi                  Taxi[]
-  consumoEnergia        consumoEnergia[]
-  factorConversionSEIN  factorConversionSEIN[]
-  ConsumoAgua           ConsumoAgua[]
-  tipoCombustibleFactor tipoCombustibleFactor[]
-  FactorEmisionAgua     FactorEmisionAgua[]
+  combustibles               Combustible[]
+  fertilizante               Fertilizante[]
+  consumoPapel               ConsumoPapel[]
+  Taxi                       Taxi[]
+  consumoEnergia             consumoEnergia[]
+  factorConversionSEIN       factorConversionSEIN[]
+  ConsumoAgua                ConsumoAgua[]
+  tipoCombustibleFactor      tipoCombustibleFactor[]
+  FactorEmisionAgua          FactorEmisionAgua[]
+  FactorTipoPapel            FactorTipoPapel[]
+  ConsumoPapelCalculosDetail ConsumoPapelCalculosDetail[]
 }
 
 model Combustible {
@@ -171,17 +175,36 @@ model Fertilizante {
 model TipoPapel {
   id                   Int     @id @default(autoincrement())
   nombre               String  @db.VarChar(50)
-  gramaje              Float   @db.Float
+  largo                Float   @db.Float //cm
+  ancho                Float   @db.Float //cm
+  area                 Float   @db.Float //m2
+  gramaje              Float   @db.Float //densidad
   unidad_paquete       String  @db.VarChar(45)
-  is_certificado       Boolean @default(false)
-  is_reciclable        Boolean @default(false)
   porcentaje_reciclado Float?  @db.Float
+  porcentaje_virgen    Float?  @db.Float
   nombre_certificado   String? @db.VarChar(50)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  consumoPapel ConsumoPapel[]
+  consumoPapel         ConsumoPapel[]
+  FactorTipoPapel      FactorTipoPapel[]
+  ConsumoPapelCalculos ConsumoPapelCalculos[]
+}
+
+model FactorTipoPapel {
+  id          Int   @id @default(autoincrement())
+  tipoPapelId Int
+  reciclado   Float @db.Float
+  virgen      Float @db.Float
+  anioId      Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  tipoPapel                  TipoPapel                    @relation(fields: [tipoPapelId], references: [id])
+  anio                       Anio                         @relation(fields: [anioId], references: [id])
+  ConsumoPapelCalculosDetail ConsumoPapelCalculosDetail[]
 }
 
 model ConsumoPapel {
@@ -198,6 +221,44 @@ model ConsumoPapel {
   tipoPapel TipoPapel @relation(fields: [tipoPapel_id], references: [id])
   anio      Anio      @relation(fields: [anio_id], references: [id])
   sede      Sede?     @relation(fields: [sede_id], references: [id])
+}
+
+model ConsumoPapelCalculos {
+  id           Int   @id @default(autoincrement())
+  tipoPapel_id Int
+  cantidad     Float @db.Float // registro
+  consumo      Float @db.Float
+  period_id    Int
+  sede_id      Int
+  totalGEI     Float @db.Float
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  tipoPapel TipoPapel      @relation(fields: [tipoPapel_id], references: [id])
+  sede      Sede?          @relation(fields: [sede_id], references: [id])
+  Periodo   PeriodoCalculo @relation(fields: [period_id], references: [id])
+
+  ConsumoPapelCalculosDetail ConsumoPapelCalculosDetail[]
+}
+
+model ConsumoPapelCalculosDetail {
+  id                     Int   @id @default(autoincrement())
+  cantidad               Float @db.Float // registro
+  factorTipoPapelId      Int
+  consumo                Float @db.Float
+  totalGEI               Float @db.Float
+  consumoPapelCalculosId Int   @db.Int
+  sedeId                 Int   @db.Int
+  anioId                 Int   @db.Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  factorTipoPapel      FactorTipoPapel      @relation(fields: [factorTipoPapelId], references: [id])
+  consumoPapelCalculos ConsumoPapelCalculos @relation(fields: [consumoPapelCalculosId], references: [id])
+  sede                 Sede?                @relation(fields: [sedeId], references: [id])
+  anio                 Anio?                @relation(fields: [anioId], references: [id])
 }
 
 // CALCULOS
@@ -459,4 +520,5 @@ model PeriodoCalculo {
   EnergiaCalculos      EnergiaCalculos[]
   fertilizanteCalculos fertilizanteCalculos[]
   combustibleCalculos  combustibleCalculos[]
+  ConsumoPapelCalculos ConsumoPapelCalculos[]
 }

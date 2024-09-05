@@ -1,9 +1,12 @@
-import {ConsumoPapelCollectionItem, ConsumoPapelRequest} from "@/components/consumoPapel/services/consumoPapel.interface";
+import {
+    ConsumoPapelCollectionItem,
+    ConsumoPapelRequest
+} from "@/components/consumoPapel/services/consumoPapel.interface";
 import {formatConsumoPapel} from "@/lib/resources/papelResource";
 import prisma from "@/lib/prisma";
 import {NextRequest, NextResponse} from "next/server";
-import { getAnioId } from "@/lib/utils";
-import { number } from "zod";
+import {getAnioId} from "@/lib/utils";
+import {number} from "zod";
 
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
@@ -27,7 +30,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         if (yearFrom) yearFromId = await getAnioId(yearFrom);
         if (yearTo) yearToId = await getAnioId(yearTo);
-        
+
 
         const whereOptions = {
 
@@ -42,21 +45,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             }
         };
 
-        // let anioId;
-        // if (anio) {
-        //     const anioRecord = await prisma.anio.findFirst({
-        //         where: {
-        //             nombre: anio,
-        //         },
-        //     });
-        //     anioId = anioRecord ? anioRecord.id : undefined;
-        // }
-        // const whereOptions = {
-        //     sede_id: sedeId ? parseInt(sedeId) : undefined,
-        //     tipoPapel_id: tipoPapelId ? parseInt(tipoPapelId) : undefined,
-        //     anio_id: anioId,
-        // };
-  
         const totalRecords = await prisma.consumoPapel.count({where: whereOptions});
         const totalPages = Math.ceil(totalRecords / perPage);
 
@@ -72,13 +60,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 ? [{tipoPapel_id: 'asc'}, {anio_id: 'asc'}, {sede_id: 'asc'}]
                 : sort
 
-                ? [{[sort]: direction || 'desc'}]
-                : [{tipoPapel_id: 'asc'}, {anio: {nombre: 'asc'}}],
+                    ? [{[sort]: direction || 'desc'}]
+                    : [{tipoPapel_id: 'asc'}, {anio: {nombre: 'asc'}}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
-        const  formattedConsumoPapel: ConsumoPapelCollectionItem[] = 
-        consumopapel.map((consumopapel) => formatConsumoPapel(consumopapel));
+        const formattedConsumoPapel: ConsumoPapelCollectionItem[] =
+            consumopapel.map((consumopapel) => formatConsumoPapel(consumopapel));
 
 
         return NextResponse.json(
