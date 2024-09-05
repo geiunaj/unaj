@@ -91,14 +91,14 @@ export default function FertilizanteCalculate() {
 
     const handleClickExcelReport = useCallback(async (period: ReportRequest) => {
         const columns = [
-            {header: "N°", key: "id", width: 10,},
-            {header: "TIPO", key: "clase", width: 15,},
-            {header: "FERTILIZANTE", key: "tipoFertilizante", width: 40,},
-            {header: "CANTIDAD", key: "cantidad", width: 15,},
-            {header: "NITRÓGENO %", key: "porcentajeNit", width: 20,},
-            {header: "FICHA TECNICA", key: "is_ficha", width: 15,},
-            {header: "AÑO", key: "anio", width: 15,},
-            {header: "SEDE", key: "sede", width: 20,}
+            {header: "N°", key: "id", width: 10},
+            {header: "FERTILIZANTE", key: "tipoFertilizante", width: 30},
+            {header: "CONSUMO", key: "consumo", width: 25},
+            {header: "UNIDAD", key: "unidad", width: 15},
+            {header: "NITRÓGENO[%]", key: "porcentajeNitrogeno", width: 20},
+            {header: "APORTE NITRÓGENO", key: "cantidadAporte", width: 25},
+            {header: "EMISIONES DE N20", key: "totalEmisionesDirectas", width: 25},
+            {header: "TOTAL GEI", key: "emisionGEI", width: 20},
         ];
         await setYearFrom(period.yearFrom ?? "");
         await setYearTo(period.yearTo ?? "");
@@ -177,15 +177,16 @@ export default function FertilizanteCalculate() {
                                 fileName={`REPORTE CALCULOS DE FERTILIZANTES_${formatPeriod({yearFrom, yearTo}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
-                                    {header: "AREA", key: "area", width: 15},
-                                    {header: "CONSUMO TOTAL", key: "consumoTotal", width: 15},
-                                    {header: "EMISIONES DE CO2", key: "emisionCO2", width: 15},
-                                    {header: "EMISIONES DE CH4", key: "emisionCH4", width: 15},
-                                    {header: "EMISIONES DE N20", key: "emisionN2O", width: 15},
-                                    {header: "TOTAL GEI", key: "totalGEI", width: 15},
+                                    {header: "FERTILIZANTE", key: "tipoFertilizante", width: 20},
+                                    {header: "CONSUMO", key: "consumo", width: 15},
+                                    {header: "UNIDAD", key: "unidad", width: 10},
+                                    {header: "NITRÓGENO[%]", key: "porcentajeNitrogeno", width: 10},
+                                    {header: "APORTE NITRÓGENO", key: "cantidadAporte", width: 15},
+                                    {header: "EMISIONES DE N20", key: "totalEmisionesDirectas", width: 15},
+                                    {header: "TOTAL GEI", key: "emisionGEI", width: 10},
                                 ]}
                                 title="REPORTE DE CALCULOS DE FERTILIZANTES"
-                                period={formatPeriod({yearFrom, yearTo}, true)}
+                                period={formatPeriod({yearFrom, yearTo})}
                             />
 
                             <ButtonCalculate
@@ -204,7 +205,7 @@ export default function FertilizanteCalculate() {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                TIPO DE COMBUSTIBLE
+                                FERTILIZANTE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 CONSUMO
@@ -213,13 +214,13 @@ export default function FertilizanteCalculate() {
                                 UNIDAD
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                PORCENTAJE NITROGENO
+                                % NITROGENO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                CANTIDAD DE APORTE DE NITROGENO
+                                APORTE DE NITROGENO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                TOTAL DE EMISIONES DIRECTAS DE N2O
+                                EMISIONES DE N2O
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 EMISIONES GEI

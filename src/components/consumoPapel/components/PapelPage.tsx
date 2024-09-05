@@ -215,7 +215,7 @@ export default function PapelPage() {
 
     return (
         <div className="w-full max-w-[1150px] h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="font-Manrope">
                     <h1 className="text-base text-foreground font-bold">
                         Consumo de Papel
