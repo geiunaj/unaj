@@ -134,7 +134,7 @@ export default function ConsumoPapelCalculate() {
                     <ButtonBack onClick={handleConsumoPapel}/>
                     <div className="font-Manrope">
                         <h1 className="text-base text-foreground font-bold">
-                            Emisiones de Fertilizantes
+                            Emisiones de Consumo de Papel
                         </h1>
                         <h2 className="text-xs sm:text-sm text-muted-foreground">
                             Huella de carbono
@@ -179,7 +179,7 @@ export default function ConsumoPapelCalculate() {
 
                             <ExportPdfReport
                                 data={consumoPapelCalculosReport.data!.data}
-                                fileName={`REPORTE CALCULOS DE FERTILIZANTES_${formatPeriod({yearFrom, yearTo}, true)}`}
+                                fileName={`REPORTE DE EMISIONES DE PAPEL_${formatPeriod({yearFrom, yearTo}, true)}`}
                                 columns={[
                                     {header: "N°", key: "rn", width: 10},
                                     {header: "TIPO PAPEL", key: "tipoPapel", width: 15},
@@ -190,7 +190,7 @@ export default function ConsumoPapelCalculate() {
                                     {header: "SEDE", key: "sede", width: 15},
                                     {header: "TOTAL GEI", key: "totalGEI", width: 15},
                                 ]}
-                                title="REPORTE DE CALCULOS DE FERTILIZANTES"
+                                title="REPORTE DE EMISIONES DE PAPEL"
                                 period={formatPeriod({yearFrom, yearTo})}
                             />
 
