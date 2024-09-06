@@ -448,7 +448,7 @@ export default function ElectricidadPage() {
 
             {/*MODAL UPDATE*/}
             <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
-                <DialogTrigger asChild></DialogTrigger>cccc
+                <DialogTrigger asChild></DialogTrigger>
                 <DialogContent className="max-w-lg border-2">
                     <DialogHeader>
                         <DialogTitle>Actualizar Registro de cosumo de Electricidad</DialogTitle>

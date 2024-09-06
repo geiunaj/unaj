@@ -5,6 +5,7 @@ import {
     Menu,
 } from "lucide-react";
 import {Button} from "@/components/ui/button";
+import {signOut} from "next-auth/react";
 import {
     DropdownMenu,
     DropdownMenuContent, DropdownMenuGroup,
@@ -38,6 +39,23 @@ export default function Header() {
     const handleItemClick = (item: MenuItem) => {
         setItemActive(item.href);
         router.push(item.href);
+    };
+
+    const handleSignOut = async () => {
+        console.log("Sign out");
+
+        // Cerrar sesión y esperar a que se complete
+        const response = await signOut({
+            redirect: false, // Desactivar redirección automática
+        });
+
+        // Verificar que la respuesta sea válida antes de redirigir
+        if (response?.url) {
+            console.log("Cerrando sesión correctamente", response);
+            router.push(response.url);
+        } else {
+            console.log("Error al cerrar sesión", response);
+        }
     };
 
     const className = (classname: string, href: string) => {
@@ -161,7 +179,7 @@ export default function Header() {
                             </DropdownMenuPortal>
                         </DropdownMenuSub>
                     </DropdownMenuGroup>
-                    <DropdownMenuItem className="text-xs">Cerrar Sesión</DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs" onClick={handleSignOut}>Cerrar Sesión</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </header>
