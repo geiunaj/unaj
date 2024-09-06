@@ -93,17 +93,19 @@ export default function FertilizanteCalculate() {
         const columns = [
             {header: "N°", key: "id", width: 10},
             {header: "FERTILIZANTE", key: "tipoFertilizante", width: 30},
+            {header: "SEDE", key: "sede", width: 20},
             {header: "CONSUMO", key: "consumo", width: 25},
             {header: "UNIDAD", key: "unidad", width: 15},
             {header: "NITRÓGENO[%]", key: "porcentajeNitrogeno", width: 20},
             {header: "APORTE NITRÓGENO", key: "cantidadAporte", width: 25},
             {header: "EMISIONES DE N20", key: "totalEmisionesDirectas", width: 25},
             {header: "TOTAL GEI", key: "emisionGEI", width: 20},
+            
         ];
         await setYearFrom(period.yearFrom ?? "");
         await setYearTo(period.yearTo ?? "");
         const data = await fertilizanteCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMIIONES DE FERTILIZANTES", "Fertilizantes");
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE FERTILIZANTES", "Fertilizantes");
     }, [fertilizanteCalculosReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
@@ -178,6 +180,7 @@ export default function FertilizanteCalculate() {
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
                                     {header: "FERTILIZANTE", key: "tipoFertilizante", width: 20},
+                                    {header: "SEDE", key: "sede", width: 20},
                                     {header: "CONSUMO", key: "consumo", width: 15},
                                     {header: "UNIDAD", key: "unidad", width: 10},
                                     {header: "NITRÓGENO[%]", key: "porcentajeNitrogeno", width: 10},
