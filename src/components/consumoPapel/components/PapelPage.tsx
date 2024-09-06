@@ -142,7 +142,7 @@ export default function PapelPage() {
 //   );
 
     const handleCalculate = () => {
-        push("/fertilizante/calculos");
+        push("/papel/calculos");
     };
 
     const handleClose = useCallback(() => {
@@ -183,12 +183,14 @@ export default function PapelPage() {
 
     const handleClickReport = useCallback(async (period: ReportRequest) => {
         const columns = [
-            {header: "N°", key: "id", width: 10,},
-            {header: "TIPO PAPEL", key: "nombre", width: 40,},
-            {header: "CANTIDAD", key: "cantidad", width: 15,},
-            // {header: "NITRÓGENO %", key: "porcentajeNit", width: 20,},
-            // {header: "FICHA TECNICA", key: "is_ficha", width: 15,},
-            {header: "AÑO", key: "anio", width: 15,},
+            {header: "N°", key: "rn", width: 10,},
+            {header: "TIPO PAPEL", key: "nombre", width: 20,},
+            {header: "CANTIDAD", key: "cantidad_paquete", width: 15,},
+            {header: "GRAMAJE", key: "gramaje", width: 15,},
+            {header: "UNIDAD", key: "unidad_paquete", width: 20,},
+            {header: "RECICLADO[%]", key: "porcentaje_reciclado", width: 20,},
+            {header: "CERTIFICADO", key: "nombre_certificado", width: 15,},
+            {header: "AÑO", key: "anio", width: 10,},
             {header: "SEDE", key: "sede", width: 20,}
         ];
         const data = await ConsumoPapelReport.refetch();

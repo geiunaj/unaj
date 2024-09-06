@@ -217,8 +217,8 @@ model FactorTipoPapel {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  tipoPapel                  TipoPapel                    @relation(fields: [tipoPapelId], references: [id])
-  anio                       Anio                         @relation(fields: [anioId], references: [id])
+  tipoPapel                  TipoPapel?                   @relation(fields: [tipoPapelId], references: [id])
+  anio                       Anio?                        @relation(fields: [anioId], references: [id])
   ConsumoPapelCalculosDetail ConsumoPapelCalculosDetail[]
 }
 
