@@ -429,7 +429,7 @@ export default function ConsumoAguaPage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
+                        <DialogTitle>Actualizar Registro de Consumo de Agua</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
                     <UpdateFormConsumoAgua

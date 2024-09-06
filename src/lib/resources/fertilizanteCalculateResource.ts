@@ -40,6 +40,7 @@ export function formatFertilizanteCalculo(fertilizanteCalculo: any) {
         emisionGEI,
         anioId,
         sedeId,
+        sede,
         TipoFertilizante: TipoFertilizante,
         
         ...rest
@@ -56,10 +57,10 @@ export function formatFertilizanteCalculo(fertilizanteCalculo: any) {
         emisionDirecta: Number(emisionDirecta.toFixed(5)),
         totalEmisionesDirectas: Number(totalEmisionesDirectas.toFixed(5)),
         emisionGEI: Number(emisionGEI.toFixed(5)),
+        sede: sede.name,
         created_at: undefined,
         updated_at: undefined,
         anio: undefined,
-        sede: undefined,
     };
     
 }
