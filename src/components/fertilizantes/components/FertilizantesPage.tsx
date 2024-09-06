@@ -281,7 +281,7 @@ export default function FertilizantePage() {
 
                             <ExportPdfReport
                                 data={fertilizanteReport.data!.data}
-                                fileName={`REPORTE DE FERTILIZANTES_${formatPeriod({yearFrom, yearTo}, true)}`}
+                                fileName={`REPORTE DE FERTILIZANTES_${formatPeriod({yearFrom, yearTo})}`}
                                 columns={[
                                     {header: "N°", key: "rn", width: 5,},
                                     {header: "TIPO", key: "clase", width: 20,},

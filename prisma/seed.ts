@@ -61,11 +61,16 @@ async function main() {
         });
     }
 
-    // Crear 5 sedes
-    for (let i = 0; i < 5; i++) {
+    const sedesNames = [
+        "Sede Ayabacas",
+        "Sede CENTRAL",
+        "Sede La Capilla",
+    ]
+
+    for (const sedeName of sedesNames) {
         await prisma.sede.create({
             data: {
-                name: `Sede ${i + 1}`,
+                name: sedeName,
             },
         });
     }

@@ -55,13 +55,11 @@ export interface ConsumoPapelCollectionItem {
     id: number;
     nombre: string;
     cantidad_paquete: number;
-    comentario: null | string;
-    // anio_id: number;
-    // sede_id: number;
+    comentario: null;
+    anio_id: number;
+    sede_id: number;
     gramaje: number;
     unidad_paquete: string;
-    is_certificado: boolean;
-    is_reciclable: boolean;
     porcentaje_reciclado: number;
     nombre_certificado: string;
     anio: string;

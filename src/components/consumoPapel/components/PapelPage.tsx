@@ -1,8 +1,8 @@
 "use client";
 
-import {useCallback, useState} from "react";
+import React, {useCallback, useRef, useState} from "react";
 import SelectFilter from "@/components/SelectFilter";
-import {Building, File, Pen, Plus, Trash2} from "lucide-react";
+import {Building, File, FileSpreadsheet, Pen, Plus, Trash2} from "lucide-react";
 import ButtonCalculate from "@/components/ButtonCalculate";
 import {
     Dialog,
@@ -55,6 +55,7 @@ import {useRouter} from "next/navigation";
 import GenerateReport from "@/lib/utils/generateReport";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import ReportComponent from "@/components/ReportComponent";
+import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 
 export default function PapelPage() {
     const {push} = useRouter();
@@ -183,7 +184,7 @@ export default function PapelPage() {
     const handleClickReport = useCallback(async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10,},
-            {header: "TIPO PAPEL", key: "tipoPapel", width: 40,},
+            {header: "TIPO PAPEL", key: "nombre", width: 40,},
             {header: "CANTIDAD", key: "cantidad", width: 15,},
             // {header: "NITRÓGENO %", key: "porcentajeNit", width: 20,},
             // {header: "FICHA TECNICA", key: "is_ficha", width: 15,},
@@ -194,22 +195,19 @@ export default function PapelPage() {
         await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE CONSUMO DE PAPEL", "Consumo de Papel");
     }, [ConsumoPapelReport]);
 
+    const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
 
-    if (
-        sedeQuery.isLoading ||
-        consumoPapelQuery.isLoading ||
-        tiposPapelQuery.isLoading ||
-        aniosQuery.isLoading
-    ) {
+    const handleClick = () => {
+        if (submitFormRef.current) {
+            submitFormRef.current.submitForm();
+        }
+    };
+
+    if (sedeQuery.isLoading || consumoPapelQuery.isLoading || tiposPapelQuery.isLoading || aniosQuery.isLoading || ConsumoPapelReport.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (
-        sedeQuery.isError ||
-        consumoPapelQuery.isError ||
-        tiposPapelQuery.isError ||
-        aniosQuery.isError
-    ) {
+    if (sedeQuery.isError || consumoPapelQuery.isError || tiposPapelQuery.isError || aniosQuery.isError || ConsumoPapelReport.isError) {
         return <div>Error</div>;
     }
 
@@ -225,10 +223,10 @@ export default function PapelPage() {
                     </h2>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-
-                    <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+                    <div
+                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
                         <div
-                            className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
                             <SelectFilter
                                 list={tiposPapelQuery.data!}
                                 itemSelected={selectedTipoPapel}
@@ -251,8 +249,45 @@ export default function PapelPage() {
                                 all={true}
                             />
 
+                            <ReportComponent
+                                onSubmit={handleClickReport}
+                                ref={submitFormRef}
+                                yearFrom={yearFrom}
+                                yearTo={yearTo}
+                                handleYearFromChange={handleYearFromChange}
+                                handleYearToChange={handleYearToChange}
+                            />
+
                         </div>
-                        <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                        <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-2">
+                            <Button
+                                onClick={handleClick}
+                                size="sm"
+                                variant="outline"
+                                className="flex items-center gap-2 h-7"
+                            >
+                                <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                Excel
+                            </Button>
+
+                            <ExportPdfReport
+                                data={ConsumoPapelReport.data!.data}
+                                fileName={`REPORTE DE PAPEL_${formatPeriod({yearFrom, yearTo})}`}
+                                columns={[
+                                    {header: "N°", key: "rn", width: 5,},
+                                    {header: "TIPO PAPEL", key: "nombre", width: 15,},
+                                    {header: "CANTIDAD", key: "cantidad_paquete", width: 10,},
+                                    {header: "GRAMAJE", key: "gramaje", width: 10,},
+                                    {header: "UNIDAD", key: "unidad_paquete", width: 15,},
+                                    {header: "RECICLADO[%]", key: "porcentaje_reciclado", width: 10,},
+                                    {header: "CERTIFICADO", key: "nombre_certificado", width: 10,},
+                                    {header: "AÑO", key: "anio", width: 10,},
+                                    {header: "SEDE", key: "sede", width: 15,}
+                                ]}
+                                title="REPORTE DE PAPEL"
+                                period={formatPeriod({yearFrom, yearTo})}
+                            />
+
                             <ButtonCalculate onClick={handleCalculate}/>
 
                             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -273,15 +308,9 @@ export default function PapelPage() {
                                     <FormPapel onClose={handleClose}/>
                                 </DialogContent>
                             </Dialog>
+
                         </div>
                     </div>
-                    <ReportComponent
-                        yearFrom={yearFrom}
-                        yearTo={yearTo}
-                        handleYearFromChange={handleYearFromChange}
-                        handleYearToChange={handleYearToChange}
-                        onSubmit={() => console.log("")}/>
-
                 </div>
             </div>
 

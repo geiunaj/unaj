@@ -7,6 +7,7 @@ import prisma from "@/lib/prisma";
 import {NextRequest, NextResponse} from "next/server";
 import {getAnioId} from "@/lib/utils";
 import {number} from "zod";
+import {formatElectricidad} from "@/lib/resources/electricidadResource";
 
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
@@ -66,7 +67,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         });
 
         const formattedConsumoPapel: ConsumoPapelCollectionItem[] =
-            consumopapel.map((consumopapel) => formatConsumoPapel(consumopapel));
+            consumopapel.map((consumopapel, index) => {
+                const consumo = formatConsumoPapel(consumopapel)
+                consumo.rn = index + 1;
+                return consumo;
+            });
 
 
         return NextResponse.json(
