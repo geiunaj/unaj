@@ -1,6 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
-import {getConsumoPapel, getConsumoPapelById} from "@/components/consumoPapel/services/consumoPapel.actions";
+import {
+    getConsumoPapel,
+    getConsumoPapelById,
+    getConsumoPapelReport
+} from "@/components/consumoPapel/services/consumoPapel.actions";
 import {getTiposPapel} from "@/components/tipoPapel/services/tipoPapel.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 
@@ -13,8 +17,8 @@ interface getConsumoPapelInterface {
     direction?: string;
     page?: number;
 
-  
-  }
+
+}
 
 export const useConsumosPapel = (
     {
@@ -35,19 +39,19 @@ export const useConsumosPapel = (
 
 export const useConsumoPapelReport =
     ({
-        tipoPapelId,
-        sedeId,
-        yearFrom,
-        yearTo,
-        sort,
-        direction,
-    }: getConsumoPapelInterface) => {
-    return useQuery({
-        queryKey: ['consumoPapelReport'],
-        queryFn: () => getConsumoPapel(tipoPapelId, sedeId, yearFrom, yearTo, sort, direction),
-        refetchOnWindowFocus: false,
-    });
-}
+         tipoPapelId,
+         sedeId,
+         yearFrom,
+         yearTo,
+         sort,
+         direction,
+     }: getConsumoPapelInterface) => {
+        return useQuery({
+            queryKey: ['consumoPapelReport'],
+            queryFn: () => getConsumoPapelReport(tipoPapelId, sedeId, yearFrom, yearTo, sort, direction),
+            refetchOnWindowFocus: false,
+        });
+    }
 
 export const useSedes = () => {
     return useQuery({

@@ -11,7 +11,6 @@ import {
 import {Building, FileSpreadsheet} from "lucide-react";
 import SelectFilter from "@/components/SelectFilter";
 import {Badge} from "@/components/ui/badge";
-import {FertilizanteCalcResponse} from "../services/fertilizanteCalculate.interface";
 import ButtonCalculate from "@/components/ButtonCalculate";
 import ButtonBack from "@/components/ButtonBack";
 import {useRouter} from "next/navigation";
@@ -27,8 +26,13 @@ import {createFertilizanteCalculate} from "@/components/fertilizantes/services/f
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {Button} from "@/components/ui/button";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
+import {
+    useConsumoPapelCalculos,
+    useConsumoPapelCalculosReport
+} from "@/components/consumoPapel/lib/consumoPapelCalculos.hooks";
+import {ConsumoPapelCalculoResponse} from "@/components/consumoPapel/services/consumoPapelCalculate.interface";
 
-export default function FertilizanteCalculate() {
+export default function ConsumoPapelCalculate() {
     const {push} = useRouter();
 
     // SELECTS - FILTERS
@@ -39,13 +43,13 @@ export default function FertilizanteCalculate() {
     const [yearTo, setYearTo] = useState<string>(new Date().getFullYear().toString());
 
     // HOOKS
-    const fertilizanteCalculos = useFertilizanteCalculos({
+    const consumoPapelCalculos = useConsumoPapelCalculos({
         sedeId: parseInt(selectedSede),
         yearFrom: yearFrom,
         yearTo: yearTo,
         page,
     });
-    const fertilizanteCalculosReport = useFertilizanteCalculosReport({
+    const consumoPapelCalculosReport = useConsumoPapelCalculosReport({
         sedeId: parseInt(selectedSede),
         yearFrom: yearFrom,
         yearTo: yearTo,
@@ -53,30 +57,30 @@ export default function FertilizanteCalculate() {
 
     const sedes = useSedes();
 
-    const handleFertilizante = () => {
-        push("/fertilizante");
+    const handleConsumoPapel = () => {
+        push("/consumoPapel");
     };
 
     const handleSedeChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedSede(value);
-        await fertilizanteCalculos.refetch();
-        await fertilizanteCalculosReport.refetch();
-    }, [fertilizanteCalculos, fertilizanteCalculosReport]);
+        await consumoPapelCalculos.refetch();
+        await consumoPapelCalculosReport.refetch();
+    }, [consumoPapelCalculos, consumoPapelCalculosReport]);
 
     const handleYearFromChange = useCallback(async (value: string) => {
         await setPage(1);
         await setYearFrom(value);
-        await fertilizanteCalculos.refetch();
-        await fertilizanteCalculosReport.refetch();
-    }, [fertilizanteCalculos, fertilizanteCalculosReport]);
+        await consumoPapelCalculos.refetch();
+        await consumoPapelCalculosReport.refetch();
+    }, [consumoPapelCalculos, consumoPapelCalculosReport]);
 
     const handleYearToChange = useCallback(async (value: string) => {
         await setPage(1);
         await setYearTo(value);
-        await fertilizanteCalculos.refetch();
-        await fertilizanteCalculosReport.refetch();
-    }, [fertilizanteCalculos, fertilizanteCalculosReport]);
+        await consumoPapelCalculos.refetch();
+        await consumoPapelCalculosReport.refetch();
+    }, [consumoPapelCalculos, consumoPapelCalculosReport]);
 
     const handleCalculate = useCallback(async () => {
         await createFertilizanteCalculate({
@@ -84,9 +88,9 @@ export default function FertilizanteCalculate() {
             yearFrom,
             yearTo,
         });
-        fertilizanteCalculos.refetch();
-        fertilizanteCalculosReport.refetch();
-    }, [selectedSede, yearFrom, yearTo, fertilizanteCalculos, fertilizanteCalculosReport]);
+        consumoPapelCalculos.refetch();
+        consumoPapelCalculosReport.refetch();
+    }, [selectedSede, yearFrom, yearTo, consumoPapelCalculos, consumoPapelCalculosReport]);
 
 
     const handleClickExcelReport = useCallback(async (period: ReportRequest) => {
@@ -102,9 +106,9 @@ export default function FertilizanteCalculate() {
         ];
         await setYearFrom(period.yearFrom ?? "");
         await setYearTo(period.yearTo ?? "");
-        const data = await fertilizanteCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE FERTILIZANTES", "Fertilizantes");
-    }, [fertilizanteCalculosReport]);
+        const data = await consumoPapelCalculosReport.refetch();
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE PAPEL", "consumo-papel");
+    }, [consumoPapelCalculosReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
 
@@ -114,11 +118,11 @@ export default function FertilizanteCalculate() {
         }
     };
 
-    if (fertilizanteCalculos.isLoading || fertilizanteCalculosReport.isLoading || sedes.isLoading) {
+    if (consumoPapelCalculos.isLoading || consumoPapelCalculosReport.isLoading || sedes.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (fertilizanteCalculos.isError || fertilizanteCalculosReport.isError || sedes.isError) {
+    if (consumoPapelCalculos.isError || consumoPapelCalculosReport.isError || sedes.isError) {
         return <div>Error al cargar los datos</div>;
     }
 
@@ -126,7 +130,7 @@ export default function FertilizanteCalculate() {
         <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="flex gap-4 items-center">
-                    <ButtonBack onClick={handleFertilizante}/>
+                    <ButtonBack onClick={handleConsumoPapel}/>
                     <div className="font-Manrope">
                         <h1 className="text-base text-foreground font-bold">
                             Emisiones de Fertilizantes
@@ -173,7 +177,7 @@ export default function FertilizanteCalculate() {
                             </Button>
 
                             <ExportPdfReport
-                                data={fertilizanteCalculosReport.data!.data}
+                                data={consumoPapelCalculosReport.data!.data}
                                 fileName={`REPORTE CALCULOS DE FERTILIZANTES_${formatPeriod({yearFrom, yearTo}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
@@ -205,22 +209,19 @@ export default function FertilizanteCalculate() {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FERTILIZANTE
+                                TIPO PAPEL
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                CANTIDAD
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 CONSUMO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                UNIDAD
+                                RECICLADO[%]
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                % NITROGENO
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                APORTE DE NITROGENO
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                EMISIONES DE N2O
+                                VIRGEN[%]
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 EMISIONES GEI
@@ -228,7 +229,7 @@ export default function FertilizanteCalculate() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {fertilizanteCalculos.data!.data.length === 0 && (
+                        {consumoPapelCalculos.data!.data.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={7} className="text-center">
                                     Click en el botón <strong className="text-primary">Calcular</strong> para obtener
@@ -236,14 +237,17 @@ export default function FertilizanteCalculate() {
                                 </TableCell>
                             </TableRow>
                         )}
-                        {fertilizanteCalculos.data!.data.map(
-                            (FertilizanteCalculate: FertilizanteCalcResponse) => (
+                        {consumoPapelCalculos.data!.data.map(
+                            (FertilizanteCalculate: ConsumoPapelCalculoResponse) => (
                                 <TableRow
                                     className="text-center"
                                     key={FertilizanteCalculate.id}
                                 >
                                     <TableCell className="text-xs sm:text-sm text-start">
-                                        {FertilizanteCalculate.tipoFertilizante}
+                                        {FertilizanteCalculate.tipoPapel}
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {FertilizanteCalculate.cantidad}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">
@@ -251,22 +255,14 @@ export default function FertilizanteCalculate() {
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.unidad}
+                                        {FertilizanteCalculate.porcentajeReciclado}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.porcentajeNitrogeno}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default">
-                                            {FertilizanteCalculate.cantidadAporte}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.totalEmisionesDirectas}
+                                        {FertilizanteCalculate.porcentajeVirgen}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="default">
-                                            {FertilizanteCalculate.emisionGEI}
+                                            {FertilizanteCalculate.totalGEI}
                                         </Badge>
                                     </TableCell>
                                 </TableRow>

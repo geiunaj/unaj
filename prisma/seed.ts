@@ -580,6 +580,21 @@ async function main() {
     const allTiposPapel = await prisma.tipoPapel.findMany();
 
     for (const tipoPapel of allTiposPapel) {
+        for (const anio of allAnios) {
+            await prisma.factorTipoPapel.create({
+                data: {
+                    tipoPapelId: tipoPapel.id,
+                    reciclado: 100,
+                    virgen: 0,
+                    anioId: anio.id,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+        }
+    }
+
+    for (const tipoPapel of allTiposPapel) {
         for (const sede of allSedes) {
             for (const anio of allAnios) {
                 await prisma.consumoPapel.create({
