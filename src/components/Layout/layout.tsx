@@ -22,28 +22,29 @@ const LayoutWrapper = ({children}: { children: React.ReactNode }) => {
         return <LayoutSkeleton/>;
     }
 
-    // return session ? (
-    return (
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-        >
-            <div className="sm:grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-                <div className="hidden border-r bg-muted/40 md:block">
-                    <Sidebar/>
+    return <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+    >
+        {
+            session ? (
+                <div className="sm:grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+                    <div className="hidden border-r bg-muted/40 md:block">
+                        <Sidebar/>
+                    </div>
+                    <div className="flex flex-col">
+                        <Header/>
+                        <main className="flex flex-1 flex-col items-center gap-4 p-2 lg:gap-6 lg:p-6 transition-all">
+                            {children}
+                        </main>
+                    </div>
                 </div>
-                <div className="flex flex-col">
-                    <Header/>
-                    <main className="flex flex-1 flex-col items-center gap-4 p-2 lg:gap-6 lg:p-6 transition-all">
-                        {children}
-                    </main>
-                </div>
-            </div>
-        </ThemeProvider>
-    );
-    // : (<LoginPage/>);
+            ) : <LoginPage/>
+        }
+    </ThemeProvider>
+    // );
 };
 
 export default LayoutWrapper;

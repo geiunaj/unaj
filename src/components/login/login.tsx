@@ -63,27 +63,29 @@ export default function LoginPage() {
 
     return (
         <div className="flex">
-            <div className="w-2/3">
+            <div className="w-0 sm:w-2/3">
                 <Image
                     src={fondo}
+                    width={2691}
+                    height={1024}
                     className="w-full h-screen object-cover"
                     alt="Fondo UNAJ"/>
             </div>
-            <div className="w-1/3">
-                <div className="flex items-center justify-center min-h-screen max-w-screen-sm">
-                    <div className="p-8">
+            <div className="w-full sm:w-1/3 ">
+                <div className="flex items-center justify-center h-full max-w-screen-sm">
+                    <div className="px-10 sm:p-8">
                         <div className="flex flex-col items-center justify-center">
-                            <Image src={logo} className="w-56 h-16 mb-14" alt="Logo UNAJ"/>
-                            <h2 className="text-2xl text-blue-800 font-bold mb-2">
+                            <Image width={224} height={64} src={logo} className="w-56 h-16 mb-14" alt="Logo UNAJ"/>
+                            <h2 className="text-2xl font-bold mb-2">
                                 Iniciar Sesión
                             </h2>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                                 Bienvenido a la UNAJ Virtual, por favor inicie sesión para
                                 continuar.
                             </p>
                             <Form {...form}>
                                 <form
-                                    className="pt-8 w-full flex flex-col gap-4"
+                                    className="pt-4 w-full flex flex-col gap-2"
                                     onSubmit={form.handleSubmit(submit)}
                                 >
                                     <FormField
@@ -116,7 +118,7 @@ export default function LoginPage() {
                                             </FormItem>
                                         )}
                                     />
-                                    <Button type="submit" className="w-full bg-blue-900">
+                                    <Button type="submit" className="mt-6 w-full">
                                         Iniciar Sesión
                                     </Button>
                                 </form>
