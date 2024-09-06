@@ -171,6 +171,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         let totalConsumo = 0;
         let totalEmisionGEI = 0;
 
+        console.log(tiposPapel);
+        console.log(allYears);
 
         for (const tipoPapel of tiposPapel) {
             if (!tipoPapel.area || !tipoPapel.gramaje || !tipoPapel.porcentaje_reciclado || !tipoPapel.porcentaje_virgen) return new NextResponse(`El tipo de papel ${tipoPapel.nombre} no tiene todos los datos necesarios`, {status: 400});

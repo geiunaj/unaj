@@ -30,5 +30,6 @@ export interface ConsumoPapelCalculoResponse {
     tipoPapel: string;
     porcentajeReciclado: number;
     porcentajeVirgen: number;
+    sede: string;
     rn: number;
 }

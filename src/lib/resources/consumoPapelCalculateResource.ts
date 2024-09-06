@@ -1,6 +1,7 @@
 export function formatConsumoPapelCalculo(consumoPapelCalculo: any) {
     const {
         tipoPapel,
+        sede,
         ...rest
     } = consumoPapelCalculo;
 
@@ -13,7 +14,7 @@ export function formatConsumoPapelCalculo(consumoPapelCalculo: any) {
         factorVirgen: tipoPapel.factor_virgen,
         created_at: undefined,
         updated_at: undefined,
-        sede: undefined,
+        sede: sede.name,
     };
 
 }

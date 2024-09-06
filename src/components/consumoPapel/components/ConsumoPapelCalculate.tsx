@@ -31,6 +31,7 @@ import {
     useConsumoPapelCalculosReport
 } from "@/components/consumoPapel/lib/consumoPapelCalculos.hooks";
 import {ConsumoPapelCalculoResponse} from "@/components/consumoPapel/services/consumoPapelCalculate.interface";
+import {createConsumoPapelCalculate} from "@/components/consumoPapel/services/consumoPapelCalculate.actions";
 
 export default function ConsumoPapelCalculate() {
     const {push} = useRouter();
@@ -83,26 +84,26 @@ export default function ConsumoPapelCalculate() {
     }, [consumoPapelCalculos, consumoPapelCalculosReport]);
 
     const handleCalculate = useCallback(async () => {
-        await createFertilizanteCalculate({
+        await createConsumoPapelCalculate({
             sedeId: selectedSede ? Number(selectedSede) : undefined,
             yearFrom,
             yearTo,
         });
-        consumoPapelCalculos.refetch();
-        consumoPapelCalculosReport.refetch();
+        await consumoPapelCalculos.refetch();
+        await consumoPapelCalculosReport.refetch();
     }, [selectedSede, yearFrom, yearTo, consumoPapelCalculos, consumoPapelCalculosReport]);
 
 
     const handleClickExcelReport = useCallback(async (period: ReportRequest) => {
         const columns = [
-            {header: "N°", key: "id", width: 10},
-            {header: "FERTILIZANTE", key: "tipoFertilizante", width: 30},
-            {header: "CONSUMO", key: "consumo", width: 25},
-            {header: "UNIDAD", key: "unidad", width: 15},
-            {header: "NITRÓGENO[%]", key: "porcentajeNitrogeno", width: 20},
-            {header: "APORTE NITRÓGENO", key: "cantidadAporte", width: 25},
-            {header: "EMISIONES DE N20", key: "totalEmisionesDirectas", width: 25},
-            {header: "TOTAL GEI", key: "emisionGEI", width: 20},
+            {header: "N°", key: "rn", width: 10},
+            {header: "TIPO PAPEL", key: "tipoPapel", width: 30},
+            {header: "CANTIDAD", key: "cantidad", width: 25},
+            {header: "CONSUMO", key: "consumo", width: 15},
+            {header: "RECICLADO[%]", key: "porcentajeReciclado", width: 20},
+            {header: "VIRGEN[%]", key: "porcentajeVirgen", width: 25},
+            {header: "SEDE", key: "sede", width: 25},
+            {header: "TOTAL GEI", key: "totalGEI", width: 10},
         ];
         await setYearFrom(period.yearFrom ?? "");
         await setYearTo(period.yearTo ?? "");
@@ -180,14 +181,14 @@ export default function ConsumoPapelCalculate() {
                                 data={consumoPapelCalculosReport.data!.data}
                                 fileName={`REPORTE CALCULOS DE FERTILIZANTES_${formatPeriod({yearFrom, yearTo}, true)}`}
                                 columns={[
-                                    {header: "N°", key: "id", width: 5},
-                                    {header: "FERTILIZANTE", key: "tipoFertilizante", width: 20},
+                                    {header: "N°", key: "rn", width: 10},
+                                    {header: "TIPO PAPEL", key: "tipoPapel", width: 15},
+                                    {header: "CANTIDAD", key: "cantidad", width: 10},
                                     {header: "CONSUMO", key: "consumo", width: 15},
-                                    {header: "UNIDAD", key: "unidad", width: 10},
-                                    {header: "NITRÓGENO[%]", key: "porcentajeNitrogeno", width: 10},
-                                    {header: "APORTE NITRÓGENO", key: "cantidadAporte", width: 15},
-                                    {header: "EMISIONES DE N20", key: "totalEmisionesDirectas", width: 15},
-                                    {header: "TOTAL GEI", key: "emisionGEI", width: 10},
+                                    {header: "RECICLADO[%]", key: "porcentajeReciclado", width: 10},
+                                    {header: "VIRGEN[%]", key: "porcentajeVirgen", width: 10},
+                                    {header: "SEDE", key: "sede", width: 15},
+                                    {header: "TOTAL GEI", key: "totalGEI", width: 15},
                                 ]}
                                 title="REPORTE DE CALCULOS DE FERTILIZANTES"
                                 period={formatPeriod({yearFrom, yearTo})}
