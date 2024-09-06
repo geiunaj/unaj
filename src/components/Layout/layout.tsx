@@ -29,7 +29,7 @@ const LayoutWrapper = ({children}: { children: React.ReactNode }) => {
         disableTransitionOnChange
     >
         {
-            session ? (
+            true ?  (
                 <div className="sm:grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
                     <div className="hidden border-r bg-muted/40 md:block">
                         <Sidebar/>

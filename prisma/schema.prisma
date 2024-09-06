@@ -8,6 +8,7 @@ generator client {
 }
 
 model Access {
+  @@map("access")
   id           Int      @id @default(autoincrement())
   type_user_id Int
   type_user    TypeUser @relation(fields: [type_user_id], references: [id])
@@ -16,6 +17,7 @@ model Access {
 }
 
 model TypeUser {
+  @@map("typeuser")
   id        Int      @id @default(autoincrement())
   type_name String   @db.VarChar(45)
   users     User[]
@@ -23,6 +25,7 @@ model TypeUser {
 }
 
 model User {
+  @@map("user")
   id           Int      @id @default(autoincrement())
   name         String   @db.VarChar(255)
   email        String   @unique
@@ -37,6 +40,7 @@ model User {
 }
 
 model Sede {
+  @@map("sede")
   id                         Int                          @id @default(autoincrement())
   name                       String                       @db.VarChar(45)
   combustibles               Combustible[]
@@ -54,6 +58,7 @@ model Sede {
 }
 
 model tipoCombustibleFactor {
+  @@map("tipocombustiblefactor")
   id                        Int                         @id @default(autoincrement())
   valorCalorico             Float                       @db.Float
   factorEmisionCO2          Float                       @db.Float
@@ -69,6 +74,7 @@ model tipoCombustibleFactor {
 }
 
 model tipoCombustible {
+  @@map("tipocombustible")
   id          Int    @id @default(autoincrement())
   nombre      String @db.VarChar(45)
   abreviatura String @db.VarChar(45)
@@ -82,6 +88,7 @@ model tipoCombustible {
 }
 
 model Mes {
+  @@map("mes")
   id             Int              @id @default(autoincrement())
   nombre         String           @db.VarChar(45)
   created_at     DateTime
@@ -93,6 +100,7 @@ model Mes {
 }
 
 model Anio {
+  @@map("anio")
   id         Int      @id @default(autoincrement())
   nombre     String   @db.VarChar(45)
   created_at DateTime
@@ -113,6 +121,7 @@ model Anio {
 }
 
 model Combustible {
+  @@map("combustible")
   id                 Int    @id @default(autoincrement())
   tipo               String @db.VarChar(45)
   tipoEquipo         String @db.VarChar(45)
@@ -133,6 +142,7 @@ model Combustible {
 }
 
 model Documento {
+  @@map("documento")
   id        Int    @id @default(autoincrement())
   nombre    String @db.VarChar(255)
   contenido Bytes
@@ -144,6 +154,7 @@ model Documento {
 }
 
 model TipoFertilizante {
+  @@map("tipofertilizante")
   id                  Int      @id @default(autoincrement())
   clase               String   @db.VarChar(45) // Organico o Sintetico
   nombre              String   @db.VarChar(45)
@@ -158,6 +169,7 @@ model TipoFertilizante {
 }
 
 model FactorEmisionFertilizante {
+  @@map("factoremisionfertilizante")
   id      Int   @id @default(autoincrement())
   valor   Float @db.Float
   anio_id Int
@@ -170,6 +182,7 @@ model FactorEmisionFertilizante {
 }
 
 model Fertilizante {
+  @@map("fertilizante")
   id                  Int     @id @default(autoincrement())
   tipoFertilizante_id Int
   cantidad            Float   @db.Float
@@ -188,6 +201,7 @@ model Fertilizante {
 }
 
 model TipoPapel {
+  @@map("tipopapel")
   id                   Int     @id @default(autoincrement())
   nombre               String  @db.VarChar(50)
   largo                Float   @db.Float //cm
@@ -208,6 +222,7 @@ model TipoPapel {
 }
 
 model FactorTipoPapel {
+  @@map("factortipopapel")
   id          Int   @id @default(autoincrement())
   tipoPapelId Int
   reciclado   Float @db.Float
@@ -223,6 +238,7 @@ model FactorTipoPapel {
 }
 
 model ConsumoPapel {
+  @@map("consumopapel")
   id               Int     @id @default(autoincrement())
   tipoPapel_id     Int
   cantidad_paquete Int
@@ -239,6 +255,7 @@ model ConsumoPapel {
 }
 
 model ConsumoPapelCalculos {
+  @@map("consumopapelcalculos")
   id           Int   @id @default(autoincrement())
   tipoPapel_id Int
   cantidad     Float @db.Float // registro
@@ -258,6 +275,7 @@ model ConsumoPapelCalculos {
 }
 
 model ConsumoPapelCalculosDetail {
+  @@map("consumopapelcalculosdetail")
   id                     Int   @id @default(autoincrement())
   cantidad               Float @db.Float // registro
   factorTipoPapelId      Int
@@ -279,6 +297,7 @@ model ConsumoPapelCalculosDetail {
 // CALCULOS
 // POTENCIAL DE CALIENTAMIENTO GLOBAL
 model GWP {
+  @@map("gwp")
   id         Int      @id @default(autoincrement())
   nombre     String   @db.VarChar(45)
   formula    String   @db.VarChar(45)
@@ -289,6 +308,7 @@ model GWP {
 
 // A1_1 COMBUSTIBLES
 model combustibleCalculos {
+  @@map("combustiblecalculos")
   id                Int    @id @default(autoincrement())
   tipo              String @db.VarChar(45)
   consumoTotal      Float  @db.Float
@@ -312,6 +332,7 @@ model combustibleCalculos {
 }
 
 model combustibleCalculosDetail {
+  @@map("combustiblecalculosdetail")
   id                      Int    @id @default(autoincrement())
   tipo                    String @db.VarChar(45)
   tipoCombustibleFactorId Int
@@ -341,6 +362,7 @@ model combustibleCalculosDetail {
 // }
 
 model fertilizanteCalculos {
+  @@map("fertilizantecalculos")
   id                     Int    @id @default(autoincrement())
   tipofertilizanteId     Int
   consumoTotal           Float  @db.Float
@@ -361,6 +383,7 @@ model fertilizanteCalculos {
 }
 
 model fertilizanteCalculosDetail {
+  @@map("fertilizantecalculosdetail")
   id                     Int   @id @default(autoincrement())
   tipofertilizanteId     Int
   factorEmisionId        Int
@@ -382,6 +405,7 @@ model fertilizanteCalculosDetail {
 }
 
 model consumoEnergia {
+  @@map("consumoenergia")
   id               Int    @id @default(autoincrement())
   areaId           Int
   numeroSuministro String @db.VarChar(45)
@@ -399,6 +423,7 @@ model consumoEnergia {
 }
 
 model area {
+  @@map("area")
   id         Int      @id @default(autoincrement())
   nombre     String   @db.VarChar(45)
   created_at DateTime @default(now())
@@ -416,6 +441,7 @@ model area {
 }
 
 model EnergiaCalculos {
+  @@map("energiacalculos")
   id               Int   @id @default(autoincrement())
   consumoArea      Float @db.Float
   factorConversion Float @db.Float
@@ -436,6 +462,7 @@ model EnergiaCalculos {
 }
 
 model EnergiaCalculosDetail {
+  @@map("energiacalculosdetail")
   id                     Int   @id @default(autoincrement())
   consumoArea            Float @db.Float
   factorConversion       Float @db.Float
@@ -457,6 +484,7 @@ model EnergiaCalculosDetail {
 }
 
 model factorConversionSEIN {
+  @@map("factorconversionsein")
   id         Int      @id @default(autoincrement())
   factorCO2  Float    @db.Float
   factorCH4  Float    @db.Float
@@ -470,6 +498,7 @@ model factorConversionSEIN {
 }
 
 model Taxi {
+  @@map("taxi")
   id                Int    @id @default(autoincrement())
   unidadContratante String
   lugarSalida       String
@@ -490,6 +519,7 @@ model Taxi {
 
 // AGUA A3_5
 model ConsumoAgua {
+  @@map("consumoagua")
   id            Int     @id @default(autoincrement())
   consumo       Float   @db.Float
   codigoMedidor String? @db.VarChar(45)
@@ -508,6 +538,7 @@ model ConsumoAgua {
 }
 
 model FactorEmisionAgua {
+  @@map("factoremisionagua")
   id      Int   @id @default(autoincrement())
   factor  Float @db.Float
   anio_id Int
@@ -517,6 +548,7 @@ model FactorEmisionAgua {
 }
 
 model ConsumoAguaCalculos {
+  @@map("consumoaguacalculos")
   id               Int   @id @default(autoincrement())
   consumoArea      Float @db.Float
   totalGEI         Float @db.Float
@@ -532,6 +564,7 @@ model ConsumoAguaCalculos {
 }
 
 model ConsumoAguaCalculosDetail {
+  @@map("consumoaguacalculosdetail")
   id                    Int   @id @default(autoincrement())
   consumoArea           Float @db.Float
   factorEmisionAguaId   Int
@@ -548,6 +581,7 @@ model ConsumoAguaCalculosDetail {
 }
 
 model PeriodoCalculo {
+  @@map("periodocalculo")
   id                   Int                    @id @default(autoincrement())
   fechaInicio          String?
   fechaFin             String?
