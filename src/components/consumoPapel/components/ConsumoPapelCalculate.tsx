@@ -59,7 +59,7 @@ export default function ConsumoPapelCalculate() {
     const sedes = useSedes();
 
     const handleConsumoPapel = () => {
-        push("/consumoPapel");
+        push("/papel");
     };
 
     const handleSedeChange = useCallback(async (value: string) => {
@@ -213,6 +213,9 @@ export default function ConsumoPapelCalculate() {
                                 TIPO PAPEL
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                GRAMAJE
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 CANTIDAD
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
@@ -244,8 +247,11 @@ export default function ConsumoPapelCalculate() {
                                     className="text-center"
                                     key={FertilizanteCalculate.id}
                                 >
-                                    <TableCell className="text-xs sm:text-sm text-start">
+                                    <TableCell className="text-xs sm:text-sm">
                                         {FertilizanteCalculate.tipoPapel}
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {FertilizanteCalculate.gramaje}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {FertilizanteCalculate.cantidad}

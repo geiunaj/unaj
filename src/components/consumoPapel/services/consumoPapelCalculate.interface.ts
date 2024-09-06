@@ -22,6 +22,7 @@ export interface ConsumoPapelCalculoRequest {
 export interface ConsumoPapelCalculoResponse {
     id: number;
     tipoPapel_id: number;
+    gramaje: number;
     cantidad: number;
     consumo: number;
     period_id: number;

@@ -8,6 +8,7 @@ export function formatConsumoPapelCalculo(consumoPapelCalculo: any) {
     return {
         ...rest,
         tipoPapel: tipoPapel.nombre,
+        gramaje: tipoPapel.gramaje,
         porcentajeReciclado: tipoPapel.porcentaje_reciclado,
         porcentajeVirgen: tipoPapel.porcentaje_virgen,
         factorReciclado: tipoPapel.factor_reciclado,
