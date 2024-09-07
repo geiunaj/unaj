@@ -282,7 +282,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         }
 
-        console.log("allPeriodsBetweenYears", allPeriodsBetweenYears);
 
         let consumoArea = 0;
         let totalGEI = 0;

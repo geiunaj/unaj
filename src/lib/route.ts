@@ -31,19 +31,19 @@
 //       },
 //     });
 
-//     console.log("User:", user);
+//     // console.log("User:", user);
 
 //     if (!user) {
-//       console.log("User not found");
+//       // console.log("User not found");
 //       return NextResponse.json({ message: "Invalido email o contraseña" });
 //     }
 
 //     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-//     console.log("Password valid:", isPasswordValid);
+//     // console.log("Password valid:", isPasswordValid);
 
 //     if (!isPasswordValid) {
-//       console.log("Invalid password");
+//       // console.log("Invalid password");
 //       return NextResponse.json({ message: "Invalido email o contraseña" });
 //     }
 

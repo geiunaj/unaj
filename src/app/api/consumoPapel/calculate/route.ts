@@ -37,7 +37,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             });
         }
 
-        console.log(period);
 
         const whereOptions = {
             sede_id: sedeId ? parseInt(sedeId) : undefined,
@@ -111,7 +110,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             });
         }
 
-        console.log(period);
 
         const whereOptionsConsumoPapel = {
             sede_id: sedeId,
@@ -170,9 +168,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         let totalTipoPapel = 0;
         let totalConsumo = 0;
         let totalEmisionGEI = 0;
-
-        console.log(tiposPapel);
-        console.log(allYears);
 
         for (const tipoPapel of tiposPapel) {
             if (!tipoPapel.area || !tipoPapel.gramaje || !tipoPapel.porcentaje_reciclado || !tipoPapel.porcentaje_virgen) return new NextResponse(`El tipo de papel ${tipoPapel.nombre} no tiene todos los datos necesarios`, {status: 400});

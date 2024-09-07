@@ -70,7 +70,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 lte: to,
             };
         }
-        console.log(whereOptions);
 
         const totalRecords = await prisma.consumoEnergia.count({where: whereOptions});
         const totalPages = Math.ceil(totalRecords / perPage);

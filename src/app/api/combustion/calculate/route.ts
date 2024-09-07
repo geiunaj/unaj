@@ -260,8 +260,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         }
 
-        console.log("allPeriodsBetweenYears", allPeriodsBetweenYears);
-
         let consumoTipoCombustible = 0;
         let consumoTotal = 0;
         let totalEmisionCO2 = 0;
@@ -286,8 +284,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     updated_at: new Date(),
                 },
             });
-
-            console.log(allPeriodsBetweenYears);
 
             for (const period of allPeriodsBetweenYears) {
                 const anio_id = await getAnioId(String(period.anio));

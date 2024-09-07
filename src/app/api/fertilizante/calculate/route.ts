@@ -40,7 +40,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             });
         }
 
-        console.log(period);
 
         const whereOptions = {
             sedeId: sedeId ? parseInt(sedeId) : undefined,
@@ -111,8 +110,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 },
             });
         }
-
-        console.log(period);
 
         const whereOptionsFertilizante = {
             sede_id: sedeId,

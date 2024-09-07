@@ -757,7 +757,7 @@ async function main() {
         }
     }
 
-    console.log({adminType, user});
+    // // console.log({adminType, user});
 }
 
 main()

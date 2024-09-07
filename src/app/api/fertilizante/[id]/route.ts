@@ -8,7 +8,6 @@ export async function GET(
     req: NextRequest,
     {params}: { params: { id: string } }
 ): Promise<NextResponse> {
-    console.log(params.id);
     try {
         const id = parseInt(params.id, 10);
         if (isNaN(id)) {
@@ -50,8 +49,6 @@ export async function PUT(
         }
         
         const body = await req.json();
-        console.log(body);
-
         // Validate required fields
         const {cantidad, is_ficha, tipoFertilizante_id, anio_id, sede_id} = body;
         if (

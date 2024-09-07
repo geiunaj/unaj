@@ -66,7 +66,7 @@
 //     createCombustion: async (combustion: CombustionRequest) => {
 //         try {
 //             const data = await createCombustion(combustion);
-//             console.log("Combustion created:", data);
+//             // console.log("Combustion created:", data);
 //         } catch (error) {
 //             console.error("Error creating combustion:", error);
 //         }
@@ -81,7 +81,7 @@
 //     updateCombustion: async (id: number, combustion: CombustionRequest) => {
 //         try {
 //             const data = await updateCombustion(id, combustion);
-//             console.log("Combustion updated:", data);
+//             // console.log("Combustion updated:", data);
 //         } catch (error) {
 //             console.error("Error updating combustion data:", error);
 //         }
@@ -89,7 +89,7 @@
 //     deleteCombustion: async (id: number) => {
 //         try {
 //             const data = await deleteCombustion(id);
-//             console.log("Combustion deleted:", data);
+//             // console.log("Combustion deleted:", data);
 //         } catch (error) {
 //             console.error("Error deleting combustion:", error);
 //         }

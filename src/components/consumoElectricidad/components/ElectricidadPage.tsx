@@ -218,7 +218,7 @@ export default function ElectricidadPage() {
             {header: "AÑO", key: "anio", width: 15},
             {header: "MES", key: "mes", width: 30},
         ];
-        console.log(period);
+        // console.log(period);
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
         const data = await electricidadReport.refetch();

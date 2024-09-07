@@ -56,7 +56,7 @@ export default function LoginPage() {
         if (result.error) {
             console.error("Login fallido:", result.error);
         } else {
-            console.log("Login exitoso");
+            // console.log("Login exitoso");
             navigation.push("/home");
         }
     };

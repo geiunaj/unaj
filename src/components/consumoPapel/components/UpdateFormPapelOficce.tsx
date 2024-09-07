@@ -89,7 +89,7 @@ export function UpdateFormPapel({onClose, id}: UpdateConsumoPapelProps) {
     const loadForm = useCallback(async () => {
         if (papel.data) {
             const consumoPapel = await papel.data;
-            console.log(consumoPapel);
+            // console.log(consumoPapel);
             form.reset({
                 type_hoja: consumoPapel.tipoPapel.id.toString(),
                 quantity_packaging: consumoPapel.cantidad_paquete,

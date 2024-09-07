@@ -9,7 +9,6 @@ export async function GET(
     req: NextRequest,
     {params}: { params: { id: string } }
 ): Promise<NextResponse> {
-    console.log(params.id);
     try {
         const id = parseInt(params.id, 10);
         if (isNaN(id)) {

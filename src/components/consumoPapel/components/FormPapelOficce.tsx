@@ -76,7 +76,7 @@ export function FormPapel({onClose}: CreateConsumoPapelProps) {
             anio_id: Number(data.anio),
             comentario: data.comentary,
         };
-        console.log(consumoPapelRequest);
+        // console.log(consumoPapelRequest);
         await createConsumoPapel(consumoPapelRequest);
         onClose();
     };

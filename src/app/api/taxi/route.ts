@@ -86,7 +86,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
-        // console.log(taxi);
+        // // console.log(taxi);
 
         const formattedTaxi: TaxiCollectionItem[] = taxi.map(
             (taxi) => formatTaxi(taxi)

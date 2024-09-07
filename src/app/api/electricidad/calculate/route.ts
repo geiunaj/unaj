@@ -262,8 +262,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         }
 
-        console.log("allPeriodsBetweenYears", allPeriodsBetweenYears);
-
         let consumoArea = 0;
         let consumoTotal = 0;
         let totalEmisionCO2 = 0;

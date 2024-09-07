@@ -7,7 +7,6 @@ export async function GET(
     req: NextRequest,
     {params}: { params: { id: string } }
 ): Promise<NextResponse> {
-    console.log(params.id);
     try {
         const id = parseInt(params.id);
         const combustible = await prisma.combustible.findUnique({

@@ -110,7 +110,7 @@ export function UpdateFormFertilizantes({
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
-            console.log(error.response.data);
+            // console.log(error.response.data);
         }
     };
 
