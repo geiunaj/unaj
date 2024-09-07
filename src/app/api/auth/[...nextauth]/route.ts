@@ -43,6 +43,7 @@ const authOptions = {
             },
         }),
     ],
+    secret: process.env.SECRET,
 
     // Puedes agregar más configuraciones aquí, por ejemplo:
     // callbacks: {},

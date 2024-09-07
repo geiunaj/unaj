@@ -30,6 +30,7 @@ export interface TipoPapelRequest {
     nombre: string;
     ancho: number;
     largo: number;
+    area?: number;
     gramaje: number;
     unidad_paquete: string;
     porcentaje_reciclado: number;

@@ -79,7 +79,7 @@ export function FormTaxi({onClose}: CreateTaxiProps) {
             unidadContratante: data.unidad_contratante,
             lugarSalida: data.lugar_salida,
             lugarDestino: data.lugar_destino,
-            monto: data.monto,
+            montoGastado: data.monto,
             anio_id: Number(data.anio),
             sede_id: Number(data.sede),
             mes_id: Number(data.mes),

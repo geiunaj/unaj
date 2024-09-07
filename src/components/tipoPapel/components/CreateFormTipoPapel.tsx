@@ -34,7 +34,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const parseNumber = (val: unknown) => parseFloat(val as string);
+const parseNumber = (val: any) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
 const TipoPapel = z
@@ -87,12 +87,12 @@ export function CreateFormTipoPapel({ onClose }: CreateTipoPapelProps) {
   const onSubmit = async (data: z.infer<typeof TipoPapel>) => {
     const tipoPapelRequest: TipoPapelRequest = {
       nombre: data.nombre,
+      ancho: 1,
+      largo: 1,
       gramaje: data.gramaje,
-      unidad_paquete: data.unidad_paquete,
-      is_certificado: data.is_certificado,
-      is_reciclable: data.is_reciclable,
-      porcentaje_reciclado: data.porcentaje_reciclado,
-      nombre_certificado: data.nombre_certificado,
+      unidad_paquete: data.unidad_paquete ?? "",
+      porcentaje_reciclado: data.porcentaje_reciclado ?? 0,
+      nombre_certificado: data.nombre_certificado ?? "",
     };
     try {
       const response = await createTipoPapel(tipoPapelRequest);
