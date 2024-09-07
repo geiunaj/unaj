@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 export async function GET() {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    return NextResponse.json({ status: "conectado" });
+    return NextResponse.json({ status: "connected" });
   } catch (error: any) {
     return NextResponse.json({ status: "error", error: error.message });
   }
