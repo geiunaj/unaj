@@ -1,6 +1,7 @@
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 generator client {
@@ -60,10 +61,10 @@ model Sede {
 model tipoCombustibleFactor {
   @@map("tipocombustiblefactor")
   id                        Int                         @id @default(autoincrement())
-  valorCalorico             Float                       @db.Float
-  factorEmisionCO2          Float                       @db.Float
-  factorEmisionCH4          Float                       @db.Float
-  factorEmisionN2O          Float                       @db.Float
+  valorCalorico             Float
+  factorEmisionCO2          Float
+  factorEmisionCH4          Float
+  factorEmisionN2O          Float
   anio_id                   Int
   tipoCombustible_id        Int
   created_at                DateTime
@@ -125,7 +126,7 @@ model Combustible {
   id                 Int    @id @default(autoincrement())
   tipo               String @db.VarChar(45)
   tipoEquipo         String @db.VarChar(45)
-  consumo            Float  @db.Float
+  consumo            Float
   tipoCombustible_id Int
   mes_id             Int
   anio_id            Int
@@ -158,7 +159,7 @@ model TipoFertilizante {
   id                  Int      @id @default(autoincrement())
   clase               String   @db.VarChar(45) // Organico o Sintetico
   nombre              String   @db.VarChar(45)
-  porcentajeNitrogeno Float    @db.Float
+  porcentajeNitrogeno Float
   unidad              String   @db.VarChar(45)
   created_at          DateTime @default(now())
   updated_at          DateTime @updatedAt
@@ -171,7 +172,7 @@ model TipoFertilizante {
 model FactorEmisionFertilizante {
   @@map("factoremisionfertilizante")
   id      Int   @id @default(autoincrement())
-  valor   Float @db.Float
+  valor   Float
   anio_id Int
 
   created_at DateTime @default(now())
@@ -185,7 +186,7 @@ model Fertilizante {
   @@map("fertilizante")
   id                  Int     @id @default(autoincrement())
   tipoFertilizante_id Int
-  cantidad            Float   @db.Float
+  cantidad            Float
   is_ficha            Boolean @default(false)
   ficha_id            Int?    @unique
   sede_id             Int?
@@ -204,13 +205,13 @@ model TipoPapel {
   @@map("tipopapel")
   id                   Int     @id @default(autoincrement())
   nombre               String  @db.VarChar(50)
-  largo                Float   @db.Float //cm
-  ancho                Float   @db.Float //cm
-  area                 Float   @db.Float //m2
-  gramaje              Float   @db.Float //densidad
+  largo                Float // cm
+  ancho                Float // cm
+  area                 Float // m2
+  gramaje              Float // densidad
   unidad_paquete       String  @db.VarChar(45)
-  porcentaje_reciclado Float?  @db.Float
-  porcentaje_virgen    Float?  @db.Float
+  porcentaje_reciclado Float?
+  porcentaje_virgen    Float?
   nombre_certificado   String? @db.VarChar(50)
 
   created_at DateTime @default(now())
@@ -225,8 +226,8 @@ model FactorTipoPapel {
   @@map("factortipopapel")
   id          Int   @id @default(autoincrement())
   tipoPapelId Int
-  reciclado   Float @db.Float
-  virgen      Float @db.Float
+  reciclado   Float
+  virgen      Float
   anioId      Int
 
   created_at DateTime @default(now())
@@ -258,11 +259,11 @@ model ConsumoPapelCalculos {
   @@map("consumopapelcalculos")
   id           Int   @id @default(autoincrement())
   tipoPapel_id Int
-  cantidad     Float @db.Float // registro
-  consumo      Float @db.Float
+  cantidad     Float // registro
+  consumo      Float
   period_id    Int
   sede_id      Int
-  totalGEI     Float @db.Float
+  totalGEI     Float
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -277,13 +278,13 @@ model ConsumoPapelCalculos {
 model ConsumoPapelCalculosDetail {
   @@map("consumopapelcalculosdetail")
   id                     Int   @id @default(autoincrement())
-  cantidad               Float @db.Float // registro
+  cantidad               Float // registro
   factorTipoPapelId      Int
-  consumo                Float @db.Float
-  totalGEI               Float @db.Float
-  consumoPapelCalculosId Int   @db.Int
-  sedeId                 Int   @db.Int
-  anioId                 Int   @db.Int
+  consumo                Float
+  totalGEI               Float
+  consumoPapelCalculosId Int
+  sedeId                 Int
+  anioId                 Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -301,7 +302,7 @@ model GWP {
   id         Int      @id @default(autoincrement())
   nombre     String   @db.VarChar(45)
   formula    String   @db.VarChar(45)
-  valor      Float    @db.Float
+  valor      Float
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
@@ -311,14 +312,14 @@ model combustibleCalculos {
   @@map("combustiblecalculos")
   id                Int    @id @default(autoincrement())
   tipo              String @db.VarChar(45)
-  consumoTotal      Float  @db.Float
-  consumo           Float  @db.Float
-  emisionCO2        Float  @db.Float
-  emisionCH4        Float  @db.Float
-  emisionN2O        Float  @db.Float
-  totalGEI          Float  @db.Float
-  sedeId            Int    @db.Int
-  periodoCalculoId  Int?   @db.Int
+  consumoTotal      Float
+  consumo           Float
+  emisionCO2        Float
+  emisionCH4        Float
+  emisionN2O        Float
+  totalGEI          Float
+  sedeId            Int
+  periodoCalculoId  Int?
   tipoCombustibleId Int
 
   created_at DateTime @default(now())
@@ -336,15 +337,15 @@ model combustibleCalculosDetail {
   id                      Int    @id @default(autoincrement())
   tipo                    String @db.VarChar(45)
   tipoCombustibleFactorId Int
-  consumoTotal            Float  @db.Float
-  valorCalorico           Float  @db.Float
-  consumo                 Float  @db.Float
-  emisionCO2              Float  @db.Float
-  emisionCH4              Float  @db.Float
-  emisionN2O              Float  @db.Float
-  totalGEI                Float  @db.Float
-  sedeId                  Int    @db.Int
-  combustibleCalculosId   Int    @db.Int
+  consumoTotal            Float
+  valorCalorico           Float
+  consumo                 Float
+  emisionCO2              Float
+  emisionCH4              Float
+  emisionN2O              Float
+  totalGEI                Float
+  sedeId                  Int
+  combustibleCalculosId   Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -357,7 +358,7 @@ model combustibleCalculosDetail {
 // // A1_5 - FERTILIZANTES
 // model factorEmision {
 //   id                   Int                    @id @default(autoincrement())
-//   valor                Float          s        @db.Float
+//   valor                Float          s
 //   fertilizanteCalculos fertilizanteCalculos[]
 // }
 
@@ -365,13 +366,13 @@ model fertilizanteCalculos {
   @@map("fertilizantecalculos")
   id                     Int    @id @default(autoincrement())
   tipofertilizanteId     Int
-  consumoTotal           Float  @db.Float
-  cantidadAporte         Float  @db.Float
-  emisionDirecta         Float  @db.Float
-  totalEmisionesDirectas Float  @db.Float
-  emisionGEI             Float? @db.Float
-  sedeId                 Int    @db.Int
-  periodoCalculoId       Int?   @db.Int
+  consumoTotal           Float
+  cantidadAporte         Float
+  emisionDirecta         Float
+  totalEmisionesDirectas Float
+  emisionGEI             Float?
+  sedeId                 Int
+  periodoCalculoId       Int?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -387,13 +388,13 @@ model fertilizanteCalculosDetail {
   id                     Int   @id @default(autoincrement())
   tipofertilizanteId     Int
   factorEmisionId        Int
-  consumo                Float @db.Float
-  cantidadAporte         Float @db.Float
-  emisionDirecta         Float @db.Float
-  totalEmisionesDirectas Float @db.Float
-  emisionGEI             Float @db.Float
-  sedeId                 Int   @db.Int
-  fertilizanteCalculosId Int   @db.Int
+  consumo                Float
+  cantidadAporte         Float
+  emisionDirecta         Float
+  totalEmisionesDirectas Float
+  emisionGEI             Float
+  sedeId                 Int
+  fertilizanteCalculosId Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -409,7 +410,7 @@ model consumoEnergia {
   id               Int    @id @default(autoincrement())
   areaId           Int
   numeroSuministro String @db.VarChar(45)
-  consumo          Float  @db.Float
+  consumo          Float
   mes_id           Int
   anio_id          Int
   anio_mes         Int
@@ -443,15 +444,15 @@ model area {
 model EnergiaCalculos {
   @@map("energiacalculos")
   id               Int   @id @default(autoincrement())
-  consumoArea      Float @db.Float
-  factorConversion Float @db.Float
-  consumoTotal     Float @db.Float
-  emisionCO2       Float @db.Float
-  emisionCH4       Float @db.Float
-  emisionN2O       Float @db.Float
-  totalGEI         Float @db.Float
-  areaId           Int   @db.Int
-  periodoCalculoId Int?  @db.Int
+  consumoArea      Float
+  factorConversion Float
+  consumoTotal     Float
+  emisionCO2       Float
+  emisionCH4       Float
+  emisionN2O       Float
+  totalGEI         Float
+  areaId           Int
+  periodoCalculoId Int?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -464,16 +465,16 @@ model EnergiaCalculos {
 model EnergiaCalculosDetail {
   @@map("energiacalculosdetail")
   id                     Int   @id @default(autoincrement())
-  consumoArea            Float @db.Float
-  factorConversion       Float @db.Float
-  factorConversionSEINId Int   @db.Int
-  consumoTotal           Float @db.Float
-  emisionCO2             Float @db.Float
-  emisionCH4             Float @db.Float
-  emisionN2O             Float @db.Float
-  totalGEI               Float @db.Float
+  consumoArea            Float
+  factorConversion       Float
+  factorConversionSEINId Int
+  consumoTotal           Float
+  emisionCO2             Float
+  emisionCH4             Float
+  emisionN2O             Float
+  totalGEI               Float
   areaId                 Int
-  energiaCalculosId      Int   @db.Int
+  energiaCalculosId      Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -486,9 +487,9 @@ model EnergiaCalculosDetail {
 model factorConversionSEIN {
   @@map("factorconversionsein")
   id         Int      @id @default(autoincrement())
-  factorCO2  Float    @db.Float
-  factorCH4  Float    @db.Float
-  factorN2O  Float    @db.Float
+  factorCO2  Float
+  factorCH4  Float
+  factorN2O  Float
   anioId     Int      @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -521,7 +522,7 @@ model Taxi {
 model ConsumoAgua {
   @@map("consumoagua")
   id            Int     @id @default(autoincrement())
-  consumo       Float   @db.Float
+  consumo       Float
   codigoMedidor String? @db.VarChar(45)
   fuenteAgua    String  @db.VarChar(45) // Red Publica o Pozo
   area_id       Int?
@@ -540,7 +541,7 @@ model ConsumoAgua {
 model FactorEmisionAgua {
   @@map("factoremisionagua")
   id      Int   @id @default(autoincrement())
-  factor  Float @db.Float
+  factor  Float
   anio_id Int
 
   anio                      Anio                        @relation(fields: [anio_id], references: [id])
@@ -550,10 +551,10 @@ model FactorEmisionAgua {
 model ConsumoAguaCalculos {
   @@map("consumoaguacalculos")
   id               Int   @id @default(autoincrement())
-  consumoArea      Float @db.Float
-  totalGEI         Float @db.Float
+  consumoArea      Float
+  totalGEI         Float
   areaId           Int
-  periodoCalculoId Int?  @db.Int
+  periodoCalculoId Int?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -566,11 +567,11 @@ model ConsumoAguaCalculos {
 model ConsumoAguaCalculosDetail {
   @@map("consumoaguacalculosdetail")
   id                    Int   @id @default(autoincrement())
-  consumoArea           Float @db.Float
+  consumoArea           Float
   factorEmisionAguaId   Int
-  totalGEI              Float @db.Float
+  totalGEI              Float
   areaId                Int
-  consumoAguaCalculosId Int   @db.Int
+  consumoAguaCalculosId Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
