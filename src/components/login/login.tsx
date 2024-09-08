@@ -62,7 +62,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex">
+        <div className="flex bg-muted dark:bg-transparent">
             <div className="w-0 sm:w-2/3">
                 <Image
                     src={fondo}
