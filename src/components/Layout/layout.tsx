@@ -19,16 +19,7 @@ const LayoutWrapper = ({children}: { children: React.ReactNode }) => {
     }, [status]);
 
     if (loading) {
-        return (
-            <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-            >
-                <LayoutSkeleton/>
-            </ThemeProvider>
-        )
+        return <LayoutSkeleton/>;
     }
 
     return <ThemeProvider
