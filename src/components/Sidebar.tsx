@@ -86,7 +86,7 @@ export default function Sidebar() {
                                 type="single"
                                 collapsible
                                 value={isAccordionOpen ? item.title : ""}
-                                className={isAccordionOpen ? "bg-muted" : ""}
+                                className={isAccordionOpen ? "bg-muted rounded" : ""}
                                 onValueChange={(value) => handleAccordionChange(value)}
                             >
                                 <AccordionItem className="border-0" value={item.title}>
