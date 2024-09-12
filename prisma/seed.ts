@@ -11,6 +11,7 @@ async function main() {
             type_name: "admin",
         },
     });
+    console.log("Type User created");
 
     // Crear un usuario con el tipo de usuario creado
     const hashedPassword = await bcrypt.hash("password123", 10);
@@ -23,6 +24,7 @@ async function main() {
             type_user_id: adminType.id,
         },
     });
+    console.log("User created");
 
     // Crear los meses
     const meses = [
@@ -48,6 +50,7 @@ async function main() {
             },
         });
     }
+    console.log("Months created");
 
     // Crear los últimos 5 años
     const currentYear = new Date().getFullYear();
@@ -60,6 +63,7 @@ async function main() {
             },
         });
     }
+    console.log("Years created");
 
     const sedesNames = [
         "Sede Ayabacas",
@@ -74,6 +78,7 @@ async function main() {
             },
         });
     }
+    console.log("Sedes created");
 
     // Crear los tipos de combustible
     const tiposCombustible = [
@@ -246,6 +251,7 @@ async function main() {
             },
         });
     }
+    console.log("Fuel types created");
 
     const allTiposCombustible = await prisma.tipoCombustible.findMany();
 
@@ -266,9 +272,9 @@ async function main() {
             });
         }
     }
+    console.log("Fuel types factors created");
 
     const allSedes = await prisma.sede.findMany();
-    const allTipoCombustibleFactor = await prisma.tipoCombustibleFactor.findMany();
     const types = ["estacionaria", "movil"];
 
     // Crear datos aleatorios para Combustible
@@ -295,6 +301,7 @@ async function main() {
             }
         }
     }
+    console.log("Fuel data created");
 
     // Crear tipos de Fertilizantes
     const tiposFertilizantes = [
@@ -372,6 +379,7 @@ async function main() {
             },
         });
     }
+    console.log("Fertilizer emission factors created");
 
     for (const tipo of tiposFertilizantes) {
         await prisma.tipoFertilizante.create({
@@ -386,6 +394,7 @@ async function main() {
             },
         });
     }
+    console.log("Fertilizer types created");
 
     // Crear datos para GWP
     const gwpData = [
@@ -431,6 +440,7 @@ async function main() {
             },
         });
     }
+    console.log("GWP data created");
 
     for (let i = 0; i < 100; i++) {
         await prisma.documento.create({
@@ -442,6 +452,7 @@ async function main() {
             },
         });
     }
+    console.log("Documents created");
 
     const allTiposFertilizantes = await prisma.tipoFertilizante.findMany();
     // const allDocument = await prisma.documento.findMany(); // Asumiendo que 'document' es el nombre correcto del modelo
@@ -466,6 +477,7 @@ async function main() {
             }
         }
     }
+    console.log("Fertilizer data created");
 
     const tipoPapel = [
         // A3
@@ -576,6 +588,7 @@ async function main() {
             },
         });
     }
+    console.log("Paper types created");
 
     const allTiposPapel = await prisma.tipoPapel.findMany();
 
@@ -593,6 +606,7 @@ async function main() {
             });
         }
     }
+    console.log("Paper factors created");
 
     for (const tipoPapel of allTiposPapel) {
         for (const sede of allSedes) {
@@ -611,6 +625,7 @@ async function main() {
             }
         }
     }
+    console.log("Paper consumption created");
 
     //Datos Factor de Emisión SEIN
 
@@ -657,6 +672,7 @@ async function main() {
             },
         });
     }
+    console.log("SEIN emission factors created");
 
     //Datos prueba para area
 
@@ -672,6 +688,7 @@ async function main() {
             });
         }
     }
+    console.log("Areas created");
 
     const allAreas = await prisma.area.findMany({
         include: {
@@ -701,6 +718,7 @@ async function main() {
             }
         }
     }
+    console.log("Energy consumption created");
 
     // Datos prueba para consumo de Agua
     for (const area of allAreas) {
@@ -725,6 +743,7 @@ async function main() {
             }
         }
     }
+    console.log("Water consumption created");
 
     for (const anio of allAnios) {
         await prisma.factorEmisionAgua.create({
@@ -734,6 +753,7 @@ async function main() {
             }
         })
     }
+    console.log("Water emission factor created");
 
     for (const sede of allSedes) {
         for (const anio of allAnios) {
@@ -756,6 +776,181 @@ async function main() {
             }
         }
     }
+    console.log("Taxi data created");
+
+    const TipoEquipoRefrigerante = [
+        {nombre: "Refrigeradora doméstica"},
+        {nombre: "Aplicación comercial - pequeño"},
+        {nombre: "Aplicación comercial - mediano y grande"},
+        {nombre: "Refrigeración en transporte"},
+        {nombre: "Refrigeración industrial"},
+        {nombre: "Chillers"},
+        {nombre: "Aire acondicionado residencial y comercial"},
+        {nombre: "Aire acondicionado móvil"},
+    ];
+
+    for (const tipo of TipoEquipoRefrigerante) {
+        await prisma.tipoEquipoRefrigerante.create({
+            data: {
+                nombre: tipo.nombre,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+    console.log("Refrigerant equipment types created");
+
+    const TipoRefrigerante = [
+        {nombre: "Trifluoroprop-1-ene", formula: "C3H2F4"},
+        {nombre: "HFC-23", formula: "CHF3"},
+        {nombre: "HFC-32", formula: "CH2F2"},
+        {nombre: "HFC-41", formula: "CH3F"},
+        {nombre: "HFC-125", formula: "CHF2CF3"},
+        {nombre: "HFC-134", formula: "CHF2CHF2"},
+        {nombre: "HFC-134a", formula: "CH2FCF3"},
+        {nombre: "HFC-143", formula: "CH2FCHF2"},
+        {nombre: "HFC-143a", formula: "CH3CF3"},
+        {nombre: "HFC-152", formula: "CH2FCH2F"},
+        {nombre: "HFC-152a", formula: "CH3CHF2"},
+        {nombre: "HFC-161", formula: "CH3CH2F"},
+        {nombre: "HFC-227ca", formula: "CF3CF2CHF2"},
+        {nombre: "HFC-227ea", formula: "CF3CHFCF3"},
+        {nombre: "HFC-236cb", formula: "CH2FCF2CF3"},
+        {nombre: "HFC-236ea", formula: "CHF2CHFCF3"},
+        {nombre: "HFC-236fa", formula: "CF3CH2CF3"},
+        {nombre: "HFC-245ca", formula: "CH2FCF2CHF2"},
+        {nombre: "HFC-245cb", formula: "CF3CF2CH3"},
+        {nombre: "HFC-245ea", formula: "CHF2CHFCHF2"},
+        {nombre: "HFC-245eb", formula: "CH2FCHFCF3"},
+        {nombre: "HFC-245fa", formula: "CHF2CH2CF3"},
+        {nombre: "HFC-263fb", formula: "CH3CH2CF3"},
+        {nombre: "HFC-272ca", formula: "CH3CF2CH3"},
+        {nombre: "HFC-329p", formula: "CHF2CF2CF2CF3"},
+        {nombre: "HFC-365mfc", formula: "CH3CF2CH2CF3"},
+        {nombre: "HFC-43-10mee", formula: "CF3CHFCHFCF2CF3"},
+        {nombre: "HFC-1132a", formula: "CH2=CF2"},
+        {nombre: "HFC-1141", formula: "CH2=CHF"},
+        {nombre: "(Z)-HFC-1225ye", formula: "CF3CF=CHF(Z)"},
+        {nombre: "(E)-HFC-1225ye", formula: "CF3CF=CHF(E)"},
+        {nombre: "(Z)-HFC-1234ze", formula: "CF3CH=CHF(Z)"},
+        {nombre: "HFC-1234yf", formula: "CF3CF=CH2"},
+        {nombre: "(E)-HFC-1234ze", formula: "trans-CF3CH=CHF"},
+        {nombre: "(Z)-HFC-1336", formula: "CF3CH=CHCF3(Z)"},
+        {nombre: "HFC-1243zf", formula: "CF3CH=CH2"},
+        {nombre: "HFC-1345zfc", formula: "C2F5CH=CH2"},
+        {nombre: "Nonafluorohex-1-ene", formula: "C4F9CH=CH2"},
+        {nombre: "Tridecafluorooct-1-ene", formula: "C6F13CH=CH2"},
+        {nombre: "Heptadecafluorodec-1-ene", formula: "C8F17CH=CH2"},
+    ];
+
+    for (const tipo of TipoRefrigerante) {
+        await prisma.tipoRefrigerante.create({
+            data: {
+                nombre: tipo.nombre,
+                formula: tipo.formula,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+    console.log("Refrigerant types created");
+
+    const FactorTipoRefrigerante = [
+        {PCA: 1, tipoRefrigeranteId: 1},
+        {PCA: 12400, tipoRefrigeranteId: 2},
+        {PCA: 677, tipoRefrigeranteId: 3},
+        {PCA: 116, tipoRefrigeranteId: 4},
+        {PCA: 3170, tipoRefrigeranteId: 5},
+        {PCA: 1120, tipoRefrigeranteId: 6},
+        {PCA: 1300, tipoRefrigeranteId: 7},
+        {PCA: 328, tipoRefrigeranteId: 8},
+        {PCA: 4800, tipoRefrigeranteId: 9},
+        {PCA: 16, tipoRefrigeranteId: 10},
+        {PCA: 138, tipoRefrigeranteId: 11},
+        {PCA: 4, tipoRefrigeranteId: 12},
+        {PCA: 2640, tipoRefrigeranteId: 13},
+        {PCA: 3350, tipoRefrigeranteId: 14},
+        {PCA: 1210, tipoRefrigeranteId: 15},
+        {PCA: 1330, tipoRefrigeranteId: 16},
+        {PCA: 8060, tipoRefrigeranteId: 17},
+        {PCA: 716, tipoRefrigeranteId: 18},
+        {PCA: 4620, tipoRefrigeranteId: 19},
+        {PCA: 235, tipoRefrigeranteId: 20},
+        {PCA: 290, tipoRefrigeranteId: 21},
+        {PCA: 858, tipoRefrigeranteId: 22},
+        {PCA: 76, tipoRefrigeranteId: 23},
+        {PCA: 144, tipoRefrigeranteId: 24},
+        {PCA: 2360, tipoRefrigeranteId: 25},
+        {PCA: 804, tipoRefrigeranteId: 26},
+        {PCA: 1650, tipoRefrigeranteId: 27},
+        {PCA: 0, tipoRefrigeranteId: 28},
+        {PCA: 0, tipoRefrigeranteId: 29},
+        {PCA: 0, tipoRefrigeranteId: 30},
+        {PCA: 0, tipoRefrigeranteId: 31},
+        {PCA: 0, tipoRefrigeranteId: 32},
+        {PCA: 0, tipoRefrigeranteId: 33},
+        {PCA: 1, tipoRefrigeranteId: 34},
+        {PCA: 2, tipoRefrigeranteId: 35},
+        {PCA: 0, tipoRefrigeranteId: 36},
+        {PCA: 0, tipoRefrigeranteId: 37},
+        {PCA: 0, tipoRefrigeranteId: 38},
+        {PCA: 0, tipoRefrigeranteId: 39},
+        {PCA: 0, tipoRefrigeranteId: 40},
+    ];
+
+    for (const anio of allAnios) {
+        for (const factor of FactorTipoRefrigerante) {
+            await prisma.factorTipoRefrigerante.create({
+                data: {
+                    PCA100: factor.PCA,
+                    anioId: anio.id,
+                    tipoRefrigeranteId: factor.tipoRefrigeranteId,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+        }
+    }
+    console.log("Refrigerant factors created");
+
+    const tiposRegistro = [
+        "I", // Instalación
+        "O", // Operación
+        "D", // Disposición
+    ];
+
+    const allTipoEquipoRefrigerante = await prisma.tipoEquipoRefrigerante.findMany();
+    const allTipoRefrigerante = await prisma.tipoRefrigerante.findMany();
+
+    for (const sede of allSedes) {
+        for (const anio of allAnios) {
+            for (const tipo of tiposRegistro) {
+                for (const tipoEquipo of allTipoEquipoRefrigerante) {
+                    for (const tipoRefrigerante of allTipoRefrigerante) {
+                        await prisma.refrigerante.create({
+                            data: {
+                                tipo: tipo,
+                                tipoEquipoRefrigeranteId: tipoEquipo.id,
+                                tipoRefrigeranteId: tipoRefrigerante.id,
+                                sedeId: sede.id,
+                                anioId: anio.id,
+                                numeroEquipos: faker.number.int({min: 1, max: 10}),
+                                cargaAnual: faker.number.float({min: 0.05, max: 10000}),
+                                fugaInstalacion: faker.number.float({min: 0, max: 100}),
+                                fugaUso: faker.number.float({min: 0, max: 100}),
+                                tiempoUso: faker.number.float({min: 1, max: 10}),
+                                fraccionDisposicion: faker.number.float({min: 0, max: 100}),
+                                fraccionRecuperacion: faker.number.float({min: 0, max: 100}),
+                                created_at: new Date(),
+                                updated_at: new Date(),
+                            },
+                        });
+                    }
+                }
+            }
+        }
+    }
+    console.log("Refrigerant data created");
 
     // // console.log({adminType, user});
 }

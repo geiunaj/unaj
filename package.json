@@ -10,9 +10,8 @@
     "postinstall": "npx prisma generate",
     "lint": "next lint",
     "export": "next export",
-    "migrate:reset": "prisma migrate reset --force --skip-seed",
-    "seed": "ts-node prisma/seed.ts",
-    "db:reset": "npm run migrate:reset && npm run seed"
+    "reset:seed": "npx prisma migrate reset && npx prisma db push && ts-node prisma/seed.ts",
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
