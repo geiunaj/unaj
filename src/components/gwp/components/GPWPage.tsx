@@ -37,6 +37,8 @@ import {deleteTipoCombustible} from "@/components/tipoCombustible/services/tipoC
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import { useGPW } from "../lib/gwp.hook";
 import { GPWCollection } from "../services/gwp.interface";
+import { UpdateFormGWP } from "./UpdateGWP";
+import { CreateFormGWP } from "./AddGWP";
 
 export default function GPWPage() {
     //DIALOGS
@@ -111,7 +113,7 @@ export default function GPWPage() {
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                {/* <FromTipoCombustible onClose={handleClose}/> */}
+                                <CreateFormGWP onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -195,10 +197,10 @@ export default function GPWPage() {
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
 
-                    {/* <UpdateFormTipoCombustible
+                    <UpdateFormGWP
                         onClose={handleCloseUpdate}
                         id={idForUpdate}
-                    /> */}
+                    />
                 </DialogContent>
             </Dialog>
 

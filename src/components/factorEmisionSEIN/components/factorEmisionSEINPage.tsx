@@ -41,6 +41,8 @@ import SelectFilter from "@/components/SelectFilter";
 import { useFactorEmisionSEINPaginate } from "../lib/factorEmisionSEIN.hook";
 import { useAnio } from "@/components/combustion/lib/combustion.hook";
 import { FactorEmisionSEINCollection } from "../services/factorEmisionSEIN.interface";
+import { FormFactorSEIN } from "./createFactorEmisionSEIN";
+import { UpdateFormFactorSEIN } from "./updateFactorEmisionSEIN";
 
 export default function FactorEmisionSEINPage() {
   //DIALOGS
@@ -153,7 +155,7 @@ export default function FactorEmisionSEINPage() {
                   </DialogDescription>
                   <DialogClose />
                 </DialogHeader>
-                {/* <FromTipoCombustible onClose={handleClose}/> */}
+                <FormFactorSEIN onClose={handleClose} />
               </DialogContent>
             </Dialog>
           </div>
@@ -168,16 +170,16 @@ export default function FactorEmisionSEINPage() {
                 N°
               </TableHead>
               <TableHead className="text-xs sm:text-sm font-bold text-center">
-                FE CO2
-                <p className="text-xs font-extrabold">[tCO2/MWh]</p>
+                CO2 [tCO2/MWh]
+                {/* <p className="text-xs font-extrabold">[tCO2/MWh]</p> */}
               </TableHead>
               <TableHead className="text-xs sm:text-sm font-bold text-center">
-                FE CH4
-                <p className="text-xs font-extrabold">[tCH4/MWh]</p>
+                CH4 [tCH4/MWh]
+                {/* <p className="text-xs font-extrabold">[tCH4/MWh]</p> */}
               </TableHead>
               <TableHead className="text-xs sm:text-sm font-bold text-center">
-                FE N2O
-                <p className="text-xs font-extrabold">[tN2o/MWh]</p>
+                N2O [tN2o/MWh]
+                {/* <p className="text-xs font-extrabold">[tN2o/MWh]</p> */}
               </TableHead>
               <TableHead className="text-xs sm:text-sm font-bold text-center">
                 AÑO
@@ -248,11 +250,11 @@ export default function FactorEmisionSEINPage() {
         <DialogTrigger asChild></DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
+            <DialogTitle>Actualizar Registro</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
 
-          <UpdateFormTipoCombustible
+          <UpdateFormFactorSEIN
             onClose={handleCloseUpdate}
             id={idForUpdate}
           />
