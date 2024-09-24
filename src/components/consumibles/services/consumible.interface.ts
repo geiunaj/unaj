@@ -1,15 +1,15 @@
-export interface CreateRefrigeranteProps {
+export interface CreateConsumibleProps {
     onClose: () => void;
 }
 
-export interface UpdateRefrigeranteProps {
+export interface UpdateConsumibleProps {
     id: number;
     onClose: () => void;
 }
 
 //PARA EL INDEX
-export interface RefrigeranteCollection {
-    data: RefrigeranteCollectionItem[];
+export interface ConsumibleCollection {
+    data: ConsumibleCollectionItem[];
     meta: Meta;
 }
 
@@ -20,7 +20,7 @@ export interface Meta {
     totalRecords: number;
 }
 
-export interface RefrigeranteCollectionItem {
+export interface ConsumibleCollectionItem {
     id: number;
     cantidad: number;
     is_ficha: string;
@@ -28,15 +28,15 @@ export interface RefrigeranteCollectionItem {
     anio: number;
     sede: string;
     clase: string;
-    tipoRefrigerante: string;
+    tipoConsumible: string;
     porcentajeNit: number;
     rn: number;
 }
 
 //PARA EL SHOW
-export interface RefrigeranteResource {
+export interface ConsumibleResource {
     id: number;
-    tipoRefrigerante_id: number;
+    tipoConsumible_id: number;
     cantidad: number;
     is_ficha: boolean;
     ficha_id: number;
@@ -44,7 +44,7 @@ export interface RefrigeranteResource {
     anio_id: number;
     created_at: Date;
     updated_at: Date;
-    tipoRefrigerante: TipoRefrigerante;
+    tipoConsumible: TipoConsumible;
     anio: Anio;
     sede: Sede;
 }
@@ -61,7 +61,7 @@ export interface Sede {
     name: string;
 }
 
-export interface TipoRefrigerante {
+export interface TipoConsumible {
     id: number;
     clase: string;
     nombre: string;
@@ -71,8 +71,8 @@ export interface TipoRefrigerante {
     updated_at: Date;
 }
 
-export interface RefrigeranteRequest {
-    tipoRefrigerante_id: number;
+export interface ConsumibleRequest {
+    tipoConsumible_id: number;
     cantidad: number;
     is_ficha?: boolean;
     ficha_id?: number;

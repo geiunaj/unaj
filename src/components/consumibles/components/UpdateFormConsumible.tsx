@@ -22,22 +22,22 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Switch} from "@/components/ui/switch";
 import {
-    FertilizanteRequest,
-    UpdateFertilizanteProps,
-} from "../services/fertilizante.interface";
+    ConsumibleRequest,
+    UpdateConsumibleProps,
+} from "@/components/consumibles/services/consumible.interface";
 import {useQuery} from "@tanstack/react-query";
 import {
-    getClaseFertilizante,
-    getTiposFertilizante
-} from "@/components/tipoFertilizante/services/tipoFertilizante.actions";
-import {updateFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
+    getClaseConsumible,
+    getTiposConsumible
+} from "@/components/tipoConsumible/services/tipoConsumible.actions";
+import {updateConsumible} from "@/components/consumibles/services/consumible.actions";
 import SkeletonForm from "@/components/Layout/skeletonForm";
-import {useAnio, useFertilizanteId, useSede} from "@/components/fertilizantes/lib/fertilizante.hook";
+import {useAnio, useConsumibleId, useSede} from "@/components/consumibles/lib/consumible.hook";
 import {successToast} from "@/lib/utils/core.function";
 
-const Fertilizante = z.object({
-    clase: z.string().min(1, "Seleccione una clase de fertilizante"),
-    tipoFertilizante_id: z.string().min(1, "Seleccione un tipo de fertilizante"),
+const Consumible = z.object({
+    clase: z.string().min(1, "Seleccione una clase de consumible"),
+    tipoConsumible_id: z.string().min(1, "Seleccione un tipo de consumible"),
     is_ficha: z.boolean(),
     fichatecnica: z.string().optional(),
     sede: z.string().min(1, "Seleccione una sede"),
@@ -46,16 +46,16 @@ const Fertilizante = z.object({
         z.number().min(0, "Ingresa un valor mayor a 0")),
 });
 
-export function UpdateFormFertilizantes({
-                                            id, onClose,
-                                        }: UpdateFertilizanteProps) {
+export function UpdateFormConsumible({
+                                         id, onClose,
+                                     }: UpdateConsumibleProps) {
     const [isFicha, setIsFicha] = useState(false);
 
-    const form = useForm<z.infer<typeof Fertilizante>>({
-        resolver: zodResolver(Fertilizante),
+    const form = useForm<z.infer<typeof Consumible>>({
+        resolver: zodResolver(Consumible),
         defaultValues: {
             clase: "",
-            tipoFertilizante_id: "",
+            tipoConsumible_id: "",
             cantidad: 0,
             is_ficha: false,
             fichatecnica: "",
@@ -65,48 +65,48 @@ export function UpdateFormFertilizantes({
     });
 
     // HOOKS
-    const fertilizante = useFertilizanteId(id);
+    const consumible = useConsumibleId(id);
     const sedes = useSede();
     const anios = useAnio();
-    const tiposFertilizante = useQuery({
-        queryKey: ['tipoFertilizante'],
-        queryFn: () => getTiposFertilizante(form.getValues().clase),
+    const tiposConsumible = useQuery({
+        queryKey: ['tipoConsumible'],
+        queryFn: () => getTiposConsumible(form.getValues().clase),
         refetchOnWindowFocus: false,
     });
-    const claseFertilizante = useQuery({
-        queryKey: ['claseFertilizante'],
-        queryFn: () => getClaseFertilizante(),
+    const claseConsumible = useQuery({
+        queryKey: ['claseConsumible'],
+        queryFn: () => getClaseConsumible(),
         refetchOnWindowFocus: false,
     });
 
     const loadForm = useCallback(async () => {
-        if (fertilizante.data) {
-            const fertilizanteData = await fertilizante.data;
+        if (consumible.data) {
+            const consumibleData = await consumible.data;
             form.reset({
-                clase: fertilizanteData.tipoFertilizante.clase,
-                tipoFertilizante_id: fertilizanteData.tipoFertilizante.id.toString(),
-                cantidad: fertilizanteData.cantidad,
-                is_ficha: fertilizanteData.is_ficha,
-                sede: fertilizanteData.sede.id.toString(),
-                anio: fertilizanteData.anio.id.toString(),
+                clase: consumibleData.tipoConsumible.clase,
+                tipoConsumible_id: consumibleData.tipoConsumible.id.toString(),
+                cantidad: consumibleData.cantidad,
+                is_ficha: consumibleData.is_ficha,
+                sede: consumibleData.sede.id.toString(),
+                anio: consumibleData.anio.id.toString(),
             });
         }
-    }, [fertilizante.data, id]);
+    }, [consumible.data, id]);
 
     useEffect(() => {
         loadForm();
     }, [loadForm, id]);
 
-    const onSubmit = async (data: z.infer<typeof Fertilizante>) => {
-        const fertilizanteRequest: FertilizanteRequest = {
-            tipoFertilizante_id: parseInt(data.tipoFertilizante_id),
+    const onSubmit = async (data: z.infer<typeof Consumible>) => {
+        const consumibleRequest: ConsumibleRequest = {
+            tipoConsumible_id: parseInt(data.tipoConsumible_id),
             cantidad: data.cantidad,
             sede_id: parseInt(data.sede),
             is_ficha: data.is_ficha,
             anio_id: parseInt(data.anio),
         };
         try {
-            const response = await updateFertilizante(id, fertilizanteRequest);
+            const response = await updateConsumible(id, consumibleRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -115,11 +115,11 @@ export function UpdateFormFertilizantes({
     };
 
     const onClaseChange = useCallback(() => {
-        form.setValue("tipoFertilizante_id", "");
-        tiposFertilizante.refetch();
-    }, [form, tiposFertilizante]);
+        form.setValue("tipoConsumible_id", "");
+        tiposConsumible.refetch();
+    }, [form, tiposConsumible]);
 
-    if (fertilizante.isLoading || sedes.isLoading || anios.isLoading || tiposFertilizante.isLoading || claseFertilizante.isLoading) {
+    if (consumible.isLoading || sedes.isLoading || anios.isLoading || tiposConsumible.isLoading || claseConsumible.isLoading) {
         return <SkeletonForm/>;
     }
 
@@ -167,7 +167,7 @@ export function UpdateFormFertilizantes({
                             control={form.control}
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Clase de Fertilizante</FormLabel>
+                                    <FormLabel>Clase de Consumible</FormLabel>
                                     <Select
                                         onValueChange={(value) => {
                                             field.onChange(value);
@@ -178,12 +178,12 @@ export function UpdateFormFertilizantes({
                                     >
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Clase de Fertilizante"/>
+                                                <SelectValue placeholder="Clase de Consumible"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {claseFertilizante.data!.map((clase) => (
+                                                {claseConsumible.data!.map((clase) => (
                                                     <SelectItem key={clase.nombre} value={clase.nombre}>
                                                         {clase.nombre}
                                                     </SelectItem>
@@ -195,27 +195,27 @@ export function UpdateFormFertilizantes({
                             )}
                         />
 
-                        {/* Tipo de Fertilizante */}
+                        {/* Tipo de Consumible */}
                         <FormField
-                            name="tipoFertilizante_id"
+                            name="tipoConsumible_id"
                             control={form.control}
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Nombre de Fertilizante</FormLabel>
+                                    <FormLabel>Nombre de Consumible</FormLabel>
                                     <Select
-                                        disabled={tiposFertilizante.data!.length === 0}
+                                        disabled={tiposConsumible.data!.length === 0}
                                         onValueChange={field.onChange}
                                         value={field.value}
                                         defaultValue={field.value}
                                     >
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Nombre de Fertilizante"/>
+                                                <SelectValue placeholder="Nombre de Consumible"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {tiposFertilizante.data!.map((tipo) => (
+                                                {tiposConsumible.data!.map((tipo) => (
                                                     <SelectItem key={tipo.id} value={tipo.id.toString()}>
                                                         {tipo.nombre}
                                                     </SelectItem>
@@ -234,7 +234,7 @@ export function UpdateFormFertilizantes({
                                 name="cantidad"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Cantidad de fertilizante</FormLabel>
+                                        <FormLabel>Cantidad de consumible</FormLabel>
                                         <FormControl>
                                             <Input
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"

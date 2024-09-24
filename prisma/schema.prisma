@@ -64,6 +64,9 @@ model Sede {
   Refrigerante               Refrigerante[]
   RefrigeranteCalculos       RefrigeranteCalculos[]
   RefrigeranteCalculosDetail RefrigeranteCalculosDetail[]
+  Consumible                 Consumible[]
+  ConsumibleCalculos         ConsumibleCalculos[]
+  ConsumibleCalculosDetail   ConsumibleCalculosDetail[]
 
   @@map("sede")
 }
@@ -109,6 +112,7 @@ model Mes {
   Taxi           Taxi[]
   consumoEnergia consumoEnergia[]
   ConsumoAgua    ConsumoAgua[]
+  Consumible     Consumible[]
 
   @@map("mes")
 }
@@ -134,6 +138,9 @@ model Anio {
   Refrigerante               Refrigerante[]
   FactorTipoRefrigerante     FactorTipoRefrigerante[]
   RefrigeranteCalculosDetail RefrigeranteCalculosDetail[]
+  FactorTipoConsumible       FactorTipoConsumible[]
+  Consumible                 Consumible[]
+  ConsumibleCalculosDetail   ConsumibleCalculosDetail[]
 
   @@map("anio")
 }
@@ -637,6 +644,7 @@ model PeriodoCalculo {
   combustibleCalculos         combustibleCalculos[]
   ConsumoPapelCalculos        ConsumoPapelCalculos[]
   ConsumoRefrigeranteCalculos RefrigeranteCalculos[]
+  ConsumibleCalculos          ConsumibleCalculos[]
 
   @@map("periodocalculo")
 }
@@ -746,4 +754,139 @@ model RefrigeranteCalculosDetail {
   refrigeranteCalculos   RefrigeranteCalculos?   @relation(fields: [refrigeranteCalculosId], references: [id])
   sede                   Sede?                   @relation(fields: [sedeId], references: [id])
   anio                   Anio?                   @relation(fields: [anioId], references: [id])
+}
+
+// CONSUMIBLES GENERALES
+model CategoriaConsumible {
+  id             Int              @id @default(autoincrement())
+  nombre         String
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
+  TipoConsumible TipoConsumible[]
+
+  @@map("categoriaconsumible")
+}
+
+model GrupoConsumible {
+  id             Int              @id @default(autoincrement())
+  nombre         String
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
+  TipoConsumible TipoConsumible[]
+
+  @@map("grupoconsumible")
+}
+
+model ProcesoConsumible {
+  id             Int              @id @default(autoincrement())
+  nombre         String
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
+  TipoConsumible TipoConsumible[]
+
+  @@map("procesoconsumible")
+}
+
+model DescripcionConsumible {
+  id             Int              @id @default(autoincrement())
+  descripcion    String
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
+  TipoConsumible TipoConsumible[]
+
+  @@map("descripcionconsumible")
+}
+
+model TipoConsumible {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  unidad        String
+  descripcionId Int
+  categoriaId   Int
+  grupoId       Int
+  procesoId     Int
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  descripcion              DescripcionConsumible?     @relation(fields: [descripcionId], references: [id])
+  categoria                CategoriaConsumible        @relation(fields: [categoriaId], references: [id])
+  grupo                    GrupoConsumible            @relation(fields: [grupoId], references: [id])
+  proceso                  ProcesoConsumible          @relation(fields: [procesoId], references: [id])
+  FactorTipoConsumible     FactorTipoConsumible[]
+  Consumible               Consumible[]
+  ConsumibleCalculos       ConsumibleCalculos[]
+  ConsumibleCalculosDetail ConsumibleCalculosDetail[]
+
+  @@map("tipoconsumible")
+}
+
+model FactorTipoConsumible {
+  id               Int      @id @default(autoincrement())
+  factor           Float
+  tipoConsumibleId Int
+  anioId           Int
+  fuente           String?
+  link             String?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  tipoConsumible           TipoConsumible?            @relation(fields: [tipoConsumibleId], references: [id])
+  anio                     Anio?                      @relation(fields: [anioId], references: [id])
+  ConsumibleCalculosDetail ConsumibleCalculosDetail[]
+
+  @@map("factortipoconsumible")
+}
+
+model Consumible {
+  id               Int      @id @default(autoincrement())
+  tipoConsumibleId Int
+  sedeId           Int
+  mesId            Int
+  anioId           Int
+  pesoTotal        Float
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  tipoConsumible TipoConsumible? @relation(fields: [tipoConsumibleId], references: [id])
+  sede           Sede?           @relation(fields: [sedeId], references: [id])
+  mes            Mes?            @relation(fields: [mesId], references: [id])
+  anio           Anio?           @relation(fields: [anioId], references: [id])
+
+  @@map("consumible")
+}
+
+model ConsumibleCalculos {
+  id               Int      @id @default(autoincrement())
+  tipoConsumibleId Int
+  periodoCalculoId Int
+  sedeId           Int
+  pesoTotal        Float
+  totalGEI         Float
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  tipoConsumible TipoConsumible? @relation(fields: [tipoConsumibleId], references: [id])
+  sede           Sede?           @relation(fields: [sedeId], references: [id])
+  PeriodoCalculo PeriodoCalculo? @relation(fields: [periodoCalculoId], references: [id])
+
+  @@map("consumiblecalculos")
+}
+
+model ConsumibleCalculosDetail {
+  id                     Int      @id @default(autoincrement())
+  tipoConsumibleId       Int
+  factorTipoConsumibleId Int
+  anioId                 Int
+  sedeId                 Int
+  pesoTotal              Float
+  totalGEI               Float
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
+
+  tipoConsumible       TipoConsumible?       @relation(fields: [tipoConsumibleId], references: [id])
+  factorTipoConsumible FactorTipoConsumible? @relation(fields: [factorTipoConsumibleId], references: [id])
+  anio                 Anio?                 @relation(fields: [anioId], references: [id])
+  sede                 Sede?                 @relation(fields: [sedeId], references: [id])
+
+  @@map("consumiblecalculosdetail")
 }

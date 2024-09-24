@@ -1,11 +1,11 @@
 "use client";
 import LayoutWrapper from "@/components/Layout/layout";
-import FertilizanteCalculate from "@/components/fertilizantes/components/FertilizanteCalculate";
+import ConsumiblesCalculate from "@/components/consumibles/components/ConsumiblesCalculate";
 
 export default function Page() {
     return (
         <LayoutWrapper>
-            <FertilizanteCalculate/>
+            <ConsumiblesCalculate/>
         </LayoutWrapper>
     );
 }

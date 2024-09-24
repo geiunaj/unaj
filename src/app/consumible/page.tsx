@@ -1,12 +1,12 @@
 "use client";
 
 import LayoutWrapper from "@/components/Layout/layout";
-import RefrigerantePage from "@/components/fertilizantes/components/RefrigerantePage";
+import ConsumiblePage from "@/components/consumibles/components/ConsumiblesPage";
 
 export default function Page() {
     return (
         <LayoutWrapper>
-            <RefrigerantePage/>
+            <ConsumiblePage/>
         </LayoutWrapper>
     );
 }

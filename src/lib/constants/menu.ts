@@ -17,6 +17,7 @@ import {
     Gauge,
     FlaskConical,
     PlugZap,
+    Milk,
 } from "lucide-react";
 
 export interface MenuItem {
@@ -45,6 +46,7 @@ export const iconComponents: Record<string, any> = {
     Gauge,
     FlaskConical,
     PlugZap,
+    Milk,
 };
 
 export const menu: MenuItem[] = [
@@ -82,6 +84,16 @@ export const menu: MenuItem[] = [
         title: "Consumo de Papel",
         icon: "FileText",
         href: "/papel",
+    },
+    {
+        title: "Activos Fijos",
+        icon: "FileText",
+        href: "/activos",
+    },
+    {
+        title: "Consumibles Generales",
+        icon: "Milk",
+        href: "/consumible",
     },
     {
         title: "Taxis Contratados",

@@ -11,7 +11,7 @@ import {
 import {Building, FileSpreadsheet} from "lucide-react";
 import SelectFilter from "@/components/SelectFilter";
 import {Badge} from "@/components/ui/badge";
-import {FertilizanteCalcResponse} from "../services/fertilizanteCalculate.interface";
+import {FertilizanteCalcResponse} from "@/components/consumibles/services/fertilizanteCalculate.interface";
 import ButtonCalculate from "@/components/ButtonCalculate";
 import ButtonBack from "@/components/ButtonBack";
 import {useRouter} from "next/navigation";
@@ -28,7 +28,7 @@ import {ReportRequest} from "@/lib/interfaces/globals";
 import {Button} from "@/components/ui/button";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 
-export default function FertilizanteCalculate() {
+export default function ConsumiblesCalculate() {
     const {push} = useRouter();
 
     // SELECTS - FILTERS
@@ -100,7 +100,7 @@ export default function FertilizanteCalculate() {
             {header: "APORTE NITRÓGENO", key: "cantidadAporte", width: 25},
             {header: "EMISIONES DE N20", key: "totalEmisionesDirectas", width: 25},
             {header: "TOTAL GEI", key: "emisionGEI", width: 20},
-            
+
         ];
         await setYearFrom(period.yearFrom ?? "");
         await setYearTo(period.yearTo ?? "");

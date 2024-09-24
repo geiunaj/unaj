@@ -3,30 +3,30 @@ import {getSedes} from "@/components/sede/services/sede.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {getMes} from "@/components/mes/services/mes.actions";
 import {
-    getRefrigeranteWCalculate,
-    getRefrigeranteWCalculateReport
-} from "@/components/fertilizantes/services/fertilizanteCalculate.actions";
+    getConsumibleCalculate,
+    getConsumibleCalculateReport
+} from "@/components/consumibles/services/consumibleCalculate.actions";
 
-interface getRefrigeranteWCalculoInterface {
+interface getConsumibleCalculoInterface {
     sedeId: number;
     yearFrom?: string;
     yearTo?: string;
     page?: number;
 }
 
-export const useRefrigeranteWCalculos =
-    ({sedeId, yearFrom, yearTo, page}: getRefrigeranteWCalculoInterface) => {
+export const useConsumibleCalculos =
+    ({sedeId, yearFrom, yearTo, page}: getConsumibleCalculoInterface) => {
         return useQuery({
-            queryKey: ['fertilizanteCalculos'],
-            queryFn: () => getRefrigeranteWCalculate({sedeId, yearFrom, yearTo, page}),
+            queryKey: ['consumibleCalculos'],
+            queryFn: () => getConsumibleCalculate({sedeId, yearFrom, yearTo, page}),
             refetchOnWindowFocus: false,
         });
     }
-export const useRefrigeranteWCalculosReport =
-    ({sedeId, yearFrom, yearTo}: getRefrigeranteWCalculoInterface) => {
+export const useConsumibleCalculosReport =
+    ({sedeId, yearFrom, yearTo}: getConsumibleCalculoInterface) => {
         return useQuery({
-            queryKey: ['fertilizanteCalculosReport'],
-            queryFn: () => getRefrigeranteWCalculateReport({sedeId, yearFrom, yearTo}),
+            queryKey: ['consumibleCalculosReport'],
+            queryFn: () => getConsumibleCalculateReport({sedeId, yearFrom, yearTo}),
             refetchOnWindowFocus: false,
         });
     }

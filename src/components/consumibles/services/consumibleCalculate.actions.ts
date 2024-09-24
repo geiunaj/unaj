@@ -1,29 +1,29 @@
 import api from "../../../../config/api";
 import {AxiosRequestConfig} from "axios";
 import {
-    RefrigeranteCalculosCollection,
-} from "@/components/refrigerantes/services/refrigeranteCalculate.interface";
+    ConsumibleCalculosCollection,
+} from "@/components/consumibles/services/consumibleCalculate.interface";
 
-interface GetRefrigeranteProps {
+interface GetConsumibleProps {
     sedeId?: number,
     yearFrom?: string,
     yearTo?: string,
     page?: number
 }
 
-interface CreateCalculosRefrigeranteProps {
+interface CreateCalculosConsumibleProps {
     sedeId?: number;
     yearFrom?: string;
     yearTo?: string;
 }
 
-export async function getRefrigeranteCalculate(
+export async function getConsumibleCalculate(
     {
         sedeId,
         yearFrom,
         yearTo,
         page,
-    }: GetRefrigeranteProps): Promise<RefrigeranteCalculosCollection> {
+    }: GetConsumibleProps): Promise<ConsumibleCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
@@ -32,16 +32,16 @@ export async function getRefrigeranteCalculate(
             page,
         }
     };
-    const {data} = await api.get<RefrigeranteCalculosCollection>("/api/refrigerante/calculate", config);
+    const {data} = await api.get<ConsumibleCalculosCollection>("/api/consumible/calculate", config);
     return data;
 }
 
-export async function getRefrigeranteCalculateReport(
+export async function getConsumibleCalculateReport(
     {
         sedeId,
         yearFrom,
         yearTo,
-    }: GetRefrigeranteProps): Promise<RefrigeranteCalculosCollection> {
+    }: GetConsumibleProps): Promise<ConsumibleCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
@@ -50,17 +50,17 @@ export async function getRefrigeranteCalculateReport(
             all: true
         }
     };
-    const {data} = await api.get("/api/refrigerante/calculate", config);
+    const {data} = await api.get("/api/consumible/calculate", config);
     return data;
 }
 
-export async function createRefrigeranteCalculate(
+export async function createConsumibleCalculate(
     {
         sedeId,
         yearFrom,
         yearTo,
-    }: CreateCalculosRefrigeranteProps):
-    Promise<RefrigeranteCalculosCollection> {
+    }: CreateCalculosConsumibleProps):
+    Promise<ConsumibleCalculosCollection> {
 
     const body = {
         sedeId,
@@ -68,6 +68,6 @@ export async function createRefrigeranteCalculate(
         to: yearTo,
     };
 
-    const {data} = await api.post("/api/refrigerante/calculate", body);
+    const {data} = await api.post("/api/consumible/calculate", body);
     return data;
 }

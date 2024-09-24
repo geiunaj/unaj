@@ -1,5 +1,5 @@
-export interface RefrigeranteCalculosCollection {
-    data: RefrigeranteCalcResponse[];
+export interface ConsumibleCalculosCollection {
+    data: ConsumibleCalcResponse[];
     meta: Meta;
 }
 
@@ -11,8 +11,8 @@ interface Meta {
 }
 
 
-export interface RefrigeranteCalc {
-    tipoRefrigeranteId: number;
+export interface ConsumibleCalc {
+    tipoConsumibleId: number;
     consumoTotal: number;
     cantidadAporte: number;
     emisionDirecta: number;
@@ -23,16 +23,16 @@ export interface RefrigeranteCalc {
     periodoCalculoId: number;
 }
 
-export interface RefrigeranteCalcRequest {
+export interface ConsumibleCalcRequest {
     sedeId: number;
     from: string;
     to: string;
 }
 
-export interface RefrigeranteCalcResponse {
+export interface ConsumibleCalcResponse {
     id: number;
     consumo: number;
-    tipoRefrigerante: string;
+    tipoConsumible: string;
     unidad: string;
     clase: string;
     porcentajeNitrogeno: number;

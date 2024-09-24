@@ -24,7 +24,7 @@ import {Switch} from "@/components/ui/switch";
 import {
     CreateFertilizanteProps,
     FertilizanteRequest,
-} from "../services/fertilizante.interface";
+} from "@/components/consumibles/services/fertilizante.interface";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
@@ -47,7 +47,7 @@ const Fertilizante = z.object({
         z.number().min(0, "Ingresa un valor mayor a 0")),
 });
 
-export function FormFertilizantes({onClose}: CreateFertilizanteProps) {
+export function FormConsumibles({onClose}: CreateFertilizanteProps) {
     const [isFicha, setIsFicha] = useState(false);
 
     const form = useForm<z.infer<typeof Fertilizante>>({
