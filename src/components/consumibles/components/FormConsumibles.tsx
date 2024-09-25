@@ -20,46 +20,40 @@ import {
 } from "@/components/ui/select";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-import {Switch} from "@/components/ui/switch";
 import {
-    CreateFertilizanteProps,
-    FertilizanteRequest,
-} from "@/components/consumibles/services/fertilizante.interface";
+    CreateConsumibleProps,
+    ConsumibleRequest,
+} from "@/components/consumibles/services/consumible.interface";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {
-    getClaseFertilizante,
-    getTiposFertilizante
-} from "@/components/tipoFertilizante/services/tipoFertilizante.actions";
-import {createFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
+    getClaseConsumible,
+    getTiposConsumible
+} from "@/components/tipoConsumible/services/tipoConsumible.actions";
+import {createConsumible} from "@/components/consumibles/services/consumible.actions";
 import SkeletonForm from "@/components/Layout/skeletonForm";
+import {getMes} from "@/components/mes/services/mes.actions";
 
-const Fertilizante = z.object({
-    clase: z.string().min(1, "Seleccione una clase de fertilizante"),
-    tipoFertilizante_id: z.string().min(1, "Seleccione un tipo de fertilizante"),
-    is_ficha: z.boolean(),
-    fichatecnica: z.string().optional(),
+const Consumible = z.object({
+    tipoConsumibleId: z.string().min(1, "Seleccione un tipo de consumible"),
+    pesoTotal: z.preprocess((val) => parseFloat(val as string,),
+        z.number().min(0, "Ingresa un valor mayor a 0")),
     sede: z.string().min(1, "Seleccione una sede"),
     anio: z.string().min(1, "Seleccione un año"),
-    cantidad: z.preprocess((val) => parseFloat(val as string,),
-        z.number().min(0, "Ingresa un valor mayor a 0")),
+    mes: z.string().min(1, "Seleccione un mes"),
 });
 
-export function FormConsumibles({onClose}: CreateFertilizanteProps) {
-    const [isFicha, setIsFicha] = useState(false);
-
-    const form = useForm<z.infer<typeof Fertilizante>>({
-        resolver: zodResolver(Fertilizante),
+export function FormConsumibles({onClose}: CreateConsumibleProps) {
+    const form = useForm<z.infer<typeof Consumible>>({
+        resolver: zodResolver(Consumible),
         defaultValues: {
-            clase: "",
-            tipoFertilizante_id: "",
-            cantidad: 0,
-            is_ficha: false,
-            fichatecnica: "",
+            tipoConsumibleId: "",
+            pesoTotal: 0,
             sede: "",
             anio: "",
+            mes: "1",
         },
     });
 
@@ -74,27 +68,32 @@ export function FormConsumibles({onClose}: CreateFertilizanteProps) {
         queryFn: () => getAnio(),
         refetchOnWindowFocus: false,
     });
-    const tiposFertilizante = useQuery({
-        queryKey: ['tipoFertilizante'],
-        queryFn: () => getTiposFertilizante(form.getValues().clase),
+    const meses = useQuery({
+        queryKey: ["mes"],
+        queryFn: () => getMes(),
         refetchOnWindowFocus: false,
     });
-    const claseFertilizante = useQuery({
-        queryKey: ['claseFertilizante'],
-        queryFn: () => getClaseFertilizante(),
+    const tiposConsumible = useQuery({
+        queryKey: ['tipoConsumible'],
+        queryFn: () => getTiposConsumible(),
+        refetchOnWindowFocus: false,
+    });
+    const claseConsumible = useQuery({
+        queryKey: ['claseConsumible'],
+        queryFn: () => getClaseConsumible(),
         refetchOnWindowFocus: false,
     });
 
-    const onSubmit = async (data: z.infer<typeof Fertilizante>) => {
-        const fertilizanteRequest: FertilizanteRequest = {
-            tipoFertilizante_id: parseInt(data.tipoFertilizante_id),
-            cantidad: data.cantidad,
-            sede_id: parseInt(data.sede),
-            is_ficha: data.is_ficha,
-            anio_id: parseInt(data.anio),
+    const onSubmit = async (data: z.infer<typeof Consumible>) => {
+        const consumibleRequest: ConsumibleRequest = {
+            tipoConsumibleId: parseInt(data.tipoConsumibleId),
+            pesoTotal: data.pesoTotal,
+            sedeId: parseInt(data.sede),
+            anioId: parseInt(data.anio),
+            mesId: parseInt(data.mes),
         };
         try {
-            const response = await createFertilizante(fertilizanteRequest);
+            const response = await createConsumible(consumibleRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -103,15 +102,15 @@ export function FormConsumibles({onClose}: CreateFertilizanteProps) {
     };
 
     const onClaseChange = useCallback(() => {
-        form.setValue("tipoFertilizante_id", "");
-        tiposFertilizante.refetch();
-    }, [form, tiposFertilizante]);
+        form.setValue("tipoConsumibleId", "");
+        tiposConsumible.refetch();
+    }, [form, tiposConsumible]);
 
-    if (sedes.isLoading || anios.isLoading || tiposFertilizante.isLoading || claseFertilizante.isLoading) {
+    if (sedes.isLoading || anios.isLoading || tiposConsumible.isLoading || claseConsumible.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (sedes.isError || anios.isError || tiposFertilizante.isError || claseFertilizante.isError) {
+    if (sedes.isError || anios.isError || tiposConsumible.isError || claseConsumible.isError) {
         onClose();
         errorToast("Error al cargar los datos");
     }
@@ -154,54 +153,22 @@ export function FormConsumibles({onClose}: CreateFertilizanteProps) {
                             )}
                         />
 
-                        {/* Clase */}
+                        {/* Tipo de Consumible */}
                         <FormField
-                            name="clase"
+                            name="tipoConsumibleId"
                             control={form.control}
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Clase de Fertilizante</FormLabel>
-                                    <Select
-                                        onValueChange={(value) => {
-                                            field.onChange(value);
-                                            onClaseChange();
-                                        }}
-                                    >
-                                        <FormControl className="w-full">
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Clase de Fertilizante"/>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {claseFertilizante.data!.map((clase) => (
-                                                    <SelectItem key={clase.nombre} value={clase.nombre}>
-                                                        {clase.nombre}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Tipo de Fertilizante */}
-                        <FormField
-                            name="tipoFertilizante_id"
-                            control={form.control}
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <FormLabel>Nombre de Fertilizante</FormLabel>
+                                    <FormLabel>Nombre de Consumible</FormLabel>
                                     <Select onValueChange={field.onChange}>
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Nombre de Fertilizante"/>
+                                                <SelectValue placeholder="Nombre de Consumible"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {tiposFertilizante.data!.map((tipo) => (
+                                                {tiposConsumible.data!.map((tipo) => (
                                                     <SelectItem key={tipo.id} value={tipo.id.toString()}>
                                                         {tipo.nombre}
                                                     </SelectItem>
@@ -217,10 +184,10 @@ export function FormConsumibles({onClose}: CreateFertilizanteProps) {
                             {/* Cantidad */}
                             <FormField
                                 control={form.control}
-                                name="cantidad"
+                                name="pesoTotal"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Cantidad de fertilizante</FormLabel>
+                                        <FormLabel>Cantidad de consumible</FormLabel>
                                         <FormControl>
                                             <Input
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
@@ -234,6 +201,7 @@ export function FormConsumibles({onClose}: CreateFertilizanteProps) {
                                     </FormItem>
                                 )}
                             />
+
                             {/* Año */}
                             <FormField
                                 control={form.control}
@@ -263,46 +231,39 @@ export function FormConsumibles({onClose}: CreateFertilizanteProps) {
                                     </FormItem>
                                 )}
                             />
-                        </div>
 
-                        {/* is_ficha */}
-                        <FormField
-                            control={form.control}
-                            name="is_ficha"
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <div className="flex justify-between">
-                                        <FormLabel>Ficha técnica</FormLabel>
-                                        <FormControl>
-                                            <Switch
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                            />
-                                        </FormControl>
-                                    </div>
-                                </FormItem>
-                            )}
-                        />
-
-                        {isFicha && (
+                            {/* Mes */}
                             <FormField
                                 control={form.control}
-                                name="fichatecnica"
+                                name="mes"
                                 render={({field}) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <Input
-                                                className="w-full p-2 rounded mt-1 focus:outline-none focus-visible:ring-offset-0"
-                                                type="file"
-                                                placeholder="Suba la ficha tecnica"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
+                                    <FormItem className="pt-2 w-1/2">
+                                        <FormLabel>Mes</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl className="w-full">
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Selecciona el año"/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {meses.data!.map((mes) => (
+                                                        <SelectItem key={mes.id} value={mes.id.toString()}>
+                                                            {mes.nombre}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                     </FormItem>
                                 )}
                             />
-                        )}
+                        </div>
+
+
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-blue-700">
                                 Guardar

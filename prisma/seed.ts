@@ -1,11 +1,3 @@
-import {
-    categoriaConsumibles,
-    descripcionConsumibles,
-    grupoConsumibles,
-    procesoConsumibles,
-    tipoConsumibles
-} from "./constans";
-
 const {PrismaClient} = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const {faker} = require("@faker-js/faker");
@@ -851,114 +843,362 @@ async function main() {
         {nombre: "Heptadecafluorodec-1-ene", formula: "C8F17CH=CH2"},
     ];
 
-    for (const tipo of TipoRefrigerante) {
-        await prisma.tipoRefrigerante.create({
-            data: {
-                nombre: tipo.nombre,
-                formula: tipo.formula,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
-    }
-    console.log("Refrigerant types created");
+    // for (const tipo of TipoRefrigerante) {
+    //     await prisma.tipoRefrigerante.create({
+    //         data: {
+    //             nombre: tipo.nombre,
+    //             formula: tipo.formula,
+    //             created_at: new Date(),
+    //             updated_at: new Date(),
+    //         },
+    //     });
+    // }
+    // console.log("Refrigerant types created");
+    //
+    // const FactorTipoRefrigerante = [
+    //     {PCA: 1, tipoRefrigeranteId: 1},
+    //     {PCA: 12400, tipoRefrigeranteId: 2},
+    //     {PCA: 677, tipoRefrigeranteId: 3},
+    //     {PCA: 116, tipoRefrigeranteId: 4},
+    //     {PCA: 3170, tipoRefrigeranteId: 5},
+    //     {PCA: 1120, tipoRefrigeranteId: 6},
+    //     {PCA: 1300, tipoRefrigeranteId: 7},
+    //     {PCA: 328, tipoRefrigeranteId: 8},
+    //     {PCA: 4800, tipoRefrigeranteId: 9},
+    //     {PCA: 16, tipoRefrigeranteId: 10},
+    //     {PCA: 138, tipoRefrigeranteId: 11},
+    //     {PCA: 4, tipoRefrigeranteId: 12},
+    //     {PCA: 2640, tipoRefrigeranteId: 13},
+    //     {PCA: 3350, tipoRefrigeranteId: 14},
+    //     {PCA: 1210, tipoRefrigeranteId: 15},
+    //     {PCA: 1330, tipoRefrigeranteId: 16},
+    //     {PCA: 8060, tipoRefrigeranteId: 17},
+    //     {PCA: 716, tipoRefrigeranteId: 18},
+    //     {PCA: 4620, tipoRefrigeranteId: 19},
+    //     {PCA: 235, tipoRefrigeranteId: 20},
+    //     {PCA: 290, tipoRefrigeranteId: 21},
+    //     {PCA: 858, tipoRefrigeranteId: 22},
+    //     {PCA: 76, tipoRefrigeranteId: 23},
+    //     {PCA: 144, tipoRefrigeranteId: 24},
+    //     {PCA: 2360, tipoRefrigeranteId: 25},
+    //     {PCA: 804, tipoRefrigeranteId: 26},
+    //     {PCA: 1650, tipoRefrigeranteId: 27},
+    //     {PCA: 0, tipoRefrigeranteId: 28},
+    //     {PCA: 0, tipoRefrigeranteId: 29},
+    //     {PCA: 0, tipoRefrigeranteId: 30},
+    //     {PCA: 0, tipoRefrigeranteId: 31},
+    //     {PCA: 0, tipoRefrigeranteId: 32},
+    //     {PCA: 0, tipoRefrigeranteId: 33},
+    //     {PCA: 1, tipoRefrigeranteId: 34},
+    //     {PCA: 2, tipoRefrigeranteId: 35},
+    //     {PCA: 0, tipoRefrigeranteId: 36},
+    //     {PCA: 0, tipoRefrigeranteId: 37},
+    //     {PCA: 0, tipoRefrigeranteId: 38},
+    //     {PCA: 0, tipoRefrigeranteId: 39},
+    //     {PCA: 0, tipoRefrigeranteId: 40},
+    // ];
+    //
+    // for (const anio of allAnios) {
+    //     for (const factor of FactorTipoRefrigerante) {
+    //         await prisma.factorTipoRefrigerante.create({
+    //             data: {
+    //                 PCA100: factor.PCA,
+    //                 anioId: anio.id,
+    //                 tipoRefrigeranteId: factor.tipoRefrigeranteId,
+    //                 created_at: new Date(),
+    //                 updated_at: new Date(),
+    //             },
+    //         });
+    //     }
+    // }
+    // console.log("Refrigerant factors created");
+    //
+    // const tiposRegistro = [
+    //     "I", // Instalación
+    //     "O", // Operación
+    //     "D", // Disposición
+    // ];
+    //
+    // const allTipoEquipoRefrigerante = await prisma.tipoEquipoRefrigerante.findMany();
+    // const allTipoRefrigerante = await prisma.tipoRefrigerante.findMany();
+    //
+    // for (const sede of allSedes) {
+    //     for (const anio of allAnios) {
+    //         for (const tipo of tiposRegistro) {
+    //             for (const tipoEquipo of allTipoEquipoRefrigerante) {
+    //                 for (const tipoRefrigerante of allTipoRefrigerante) {
+    //                     await prisma.refrigerante.create({
+    //                         data: {
+    //                             tipo: tipo,
+    //                             tipoEquipoRefrigeranteId: tipoEquipo.id,
+    //                             tipoRefrigeranteId: tipoRefrigerante.id,
+    //                             sedeId: sede.id,
+    //                             anioId: anio.id,
+    //                             numeroEquipos: faker.number.int({min: 1, max: 10}),
+    //                             cargaAnual: faker.number.float({min: 0.05, max: 10000}),
+    //                             fugaInstalacion: faker.number.float({min: 0, max: 100}),
+    //                             fugaUso: faker.number.float({min: 0, max: 100}),
+    //                             tiempoUso: faker.number.float({min: 1, max: 10}),
+    //                             fraccionDisposicion: faker.number.float({min: 0, max: 100}),
+    //                             fraccionRecuperacion: faker.number.float({min: 0, max: 100}),
+    //                             created_at: new Date(),
+    //                             updated_at: new Date(),
+    //                         },
+    //                     });
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // console.log("Refrigerant data created");
 
-    const FactorTipoRefrigerante = [
-        {PCA: 1, tipoRefrigeranteId: 1},
-        {PCA: 12400, tipoRefrigeranteId: 2},
-        {PCA: 677, tipoRefrigeranteId: 3},
-        {PCA: 116, tipoRefrigeranteId: 4},
-        {PCA: 3170, tipoRefrigeranteId: 5},
-        {PCA: 1120, tipoRefrigeranteId: 6},
-        {PCA: 1300, tipoRefrigeranteId: 7},
-        {PCA: 328, tipoRefrigeranteId: 8},
-        {PCA: 4800, tipoRefrigeranteId: 9},
-        {PCA: 16, tipoRefrigeranteId: 10},
-        {PCA: 138, tipoRefrigeranteId: 11},
-        {PCA: 4, tipoRefrigeranteId: 12},
-        {PCA: 2640, tipoRefrigeranteId: 13},
-        {PCA: 3350, tipoRefrigeranteId: 14},
-        {PCA: 1210, tipoRefrigeranteId: 15},
-        {PCA: 1330, tipoRefrigeranteId: 16},
-        {PCA: 8060, tipoRefrigeranteId: 17},
-        {PCA: 716, tipoRefrigeranteId: 18},
-        {PCA: 4620, tipoRefrigeranteId: 19},
-        {PCA: 235, tipoRefrigeranteId: 20},
-        {PCA: 290, tipoRefrigeranteId: 21},
-        {PCA: 858, tipoRefrigeranteId: 22},
-        {PCA: 76, tipoRefrigeranteId: 23},
-        {PCA: 144, tipoRefrigeranteId: 24},
-        {PCA: 2360, tipoRefrigeranteId: 25},
-        {PCA: 804, tipoRefrigeranteId: 26},
-        {PCA: 1650, tipoRefrigeranteId: 27},
-        {PCA: 0, tipoRefrigeranteId: 28},
-        {PCA: 0, tipoRefrigeranteId: 29},
-        {PCA: 0, tipoRefrigeranteId: 30},
-        {PCA: 0, tipoRefrigeranteId: 31},
-        {PCA: 0, tipoRefrigeranteId: 32},
-        {PCA: 0, tipoRefrigeranteId: 33},
-        {PCA: 1, tipoRefrigeranteId: 34},
-        {PCA: 2, tipoRefrigeranteId: 35},
-        {PCA: 0, tipoRefrigeranteId: 36},
-        {PCA: 0, tipoRefrigeranteId: 37},
-        {PCA: 0, tipoRefrigeranteId: 38},
-        {PCA: 0, tipoRefrigeranteId: 39},
-        {PCA: 0, tipoRefrigeranteId: 40},
+    const categoriaConsumibles = [
+        {nombre: "INSUMOS ALIMENTARIOS"},
+        {nombre: "MATERIAL DE LIMPIEZA"},
+        {nombre: "MATERIAL DE OFICINA"},
     ];
+    const grupoConsumibles = [
+        {nombre: "Aceite vegetal"},
+        {nombre: "Acrílico"},
+        {nombre: "Agua embotellada"},
+        {nombre: "Almendras"},
+        {nombre: "Arroz"},
+        {nombre: "Avena"},
+        {nombre: "Azucar"},
+        {nombre: "Café"},
+        {nombre: "Caramelos"},
+        {nombre: "Cartón"},
+        {nombre: "Cartón plastificado"},
+        {nombre: "Chocolate"},
+        {nombre: "Desinfectante"},
+        {nombre: "Detergente"},
+        {nombre: "Galletas"},
+        {nombre: "Gaseosa"},
+        {nombre: "Hojas"},
+        {nombre: "Huevos"},
+        {nombre: "Jabón"},
+        {nombre: "Jugo"},
+        {nombre: "Lapicero"},
+        {nombre: "leche evaporada"},
+        {nombre: "Legumbres y otros granos"},
+        {nombre: "Lejía"},
+        {nombre: "Madera"},
+        {nombre: "Mani"},
+        {nombre: "Mantequilla"},
+        {nombre: "Manzana"},
+        {nombre: "Metal"},
+        {nombre: "Pan"},
+        {nombre: "Papel higiénico"},
+        {nombre: "Plátano"},
+        {nombre: "Plumón"},
+        {nombre: "Polipropileno"},
+        {nombre: "Queso"},
+        {nombre: "Soda cáustica"},
+        {nombre: "Tinta líquida"},
+        {nombre: "Toner"},
+        {nombre: "Yogurt"},
 
-    for (const anio of allAnios) {
-        for (const factor of FactorTipoRefrigerante) {
-            await prisma.factorTipoRefrigerante.create({
-                data: {
-                    PCA100: factor.PCA,
-                    anioId: anio.id,
-                    tipoRefrigeranteId: factor.tipoRefrigeranteId,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                },
-            });
-        }
-    }
-    console.log("Refrigerant factors created");
-
-    const tiposRegistro = [
-        "I", // Instalación
-        "O", // Operación
-        "D", // Disposición
     ];
-
-    const allTipoEquipoRefrigerante = await prisma.tipoEquipoRefrigerante.findMany();
-    const allTipoRefrigerante = await prisma.tipoRefrigerante.findMany();
-
-    for (const sede of allSedes) {
-        for (const anio of allAnios) {
-            for (const tipo of tiposRegistro) {
-                for (const tipoEquipo of allTipoEquipoRefrigerante) {
-                    for (const tipoRefrigerante of allTipoRefrigerante) {
-                        await prisma.refrigerante.create({
-                            data: {
-                                tipo: tipo,
-                                tipoEquipoRefrigeranteId: tipoEquipo.id,
-                                tipoRefrigeranteId: tipoRefrigerante.id,
-                                sedeId: sede.id,
-                                anioId: anio.id,
-                                numeroEquipos: faker.number.int({min: 1, max: 10}),
-                                cargaAnual: faker.number.float({min: 0.05, max: 10000}),
-                                fugaInstalacion: faker.number.float({min: 0, max: 100}),
-                                fugaUso: faker.number.float({min: 0, max: 100}),
-                                tiempoUso: faker.number.float({min: 1, max: 10}),
-                                fraccionDisposicion: faker.number.float({min: 0, max: 100}),
-                                fraccionRecuperacion: faker.number.float({min: 0, max: 100}),
-                                created_at: new Date(),
-                                updated_at: new Date(),
-                            },
-                        });
-                    }
-                }
-            }
-        }
-    }
-    console.log("Refrigerant data created");
+    const procesoConsumibles = [
+        {nombre: "Paper and board for (fat) food packaging"},
+        {nombre: "toner module production, laser printer, colour | toner module, laser printer, colour | APOS, U"},
+        {nombre: "Life Cycle Comparison Report on a Ballpoint Pen"},
+        {nombre: "Water, bottled, processed in FR | Ambient (long) | Already packed - PET | at packaging"},
+        {nombre: "Soda, sugar and caffeine"},
+        {nombre: "Biscuit"},
+        {nombre: "Peanuts, unsalted"},
+        {nombre: "Printing Ink, Black, conventional"},
+        {nombre: "PP (Polypropylene)"},
+        {nombre: "Paper, woodfree uncoated, bleached"},
+        {nombre: "Steel hot rolled sheet USA"},
+        {nombre: "market for soap | soap | APOS, U - GLO"},
+        {nombre: "    Coffee"},
+        {nombre: "Cheese, 20+"},
+        {nombre: "Granulated sugar"},
+        {nombre: "Apple"},
+        {nombre: "Oil, sunflower"},
+        {nombre: "Yogurt, whole"},
+        {nombre: "Oak, European FSC/PEFC 710 (kg/m3)"},
+        {nombre: "Butter, salted"},
+        {nombre: "Sodium Hypochlorite, NaOCl (Plasticseurope 2013)"},
+        {nombre: "Rice, white"},
+        {nombre: "Syrup, sweetened"},
+        {nombre: "Declaración Ambiental de producto Prodotti Tissue in pura cellulosa per uso igienico e domestico"},
+        {nombre: "Chicken egg"},
+        {nombre: "Bread, whole wheat"},
+        {nombre: "Almonds, without membrane"},
+        {nombre: "Chocolate, milk"},
+        {nombre: "Board (solid) and recycled paper (test liner and fluting) in Europe"},
+        {nombre: "Oatmeal"},
+        {nombre: "Banana"},
+        {nombre: "Milk, whole"},
+        {nombre: "MMA (Methyl methacrylate)"},
+    ];
+    const descripcionConsumibles = [
+        {descripcion: "ABASTECIMIENTO"},
+        {descripcion: "ACADEMICA"},
+        {descripcion: "ADMINISTRACION"},
+        {descripcion: "ADMISION"},
+        {descripcion: "ALIMENTARIAS"},
+        {descripcion: "AMBIENTAL"},
+        {descripcion: "ASEOSRIA"},
+        {descripcion: "ASUNT ACADEM"},
+        {descripcion: "BIENESTAR"},
+        {descripcion: "CALIDAD"},
+        {descripcion: "CIENCIAS"},
+        {descripcion: "CONTABILIDAD"},
+        {descripcion: "CONTROL INST"},
+        {descripcion: "ECONOMIA"},
+        {descripcion: "EJECTUTORA"},
+        {descripcion: "EMPRESAS"},
+        {descripcion: "FORMULADORA"},
+        {descripcion: "GENERALES"},
+        {descripcion: "GESTION EMPRESARIAL"},
+        {descripcion: "GESTION PUBL"},
+        {descripcion: "GESTION Y CIENCIAS"},
+        {descripcion: "IMAGEN"},
+        {descripcion: "INDUSTRIAL"},
+        {descripcion: "INGENIERIA"},
+        {descripcion: "INVERSIONES"},
+        {descripcion: "INVESTIGACION"},
+        {descripcion: "MECATRONICA"},
+        {descripcion: "PLANEAMIENTO"},
+        {descripcion: "PRESIDENCIA"},
+        {descripcion: "PRESUPUESTO"},
+        {descripcion: "PROYECCION"},
+        {descripcion: "RELACIONES"},
+        {descripcion: "RENOVABLES"},
+        {descripcion: "RH"},
+        {descripcion: "SECRETARIA GENERAL"},
+        {descripcion: "SISTEMAS"},
+        {descripcion: "TECNOLOGIAS"},
+        {descripcion: "TESORERIA"},
+        {descripcion: "TEXTIL"},
+    ];
+    const tipoConsumibles = [
+        {nombre: "ACEITE VEGETAL COMESTIBLE", unidad: "kg", factor: 0.12089},
+        {nombre: "AGUA DE MESA SIN GAS X 20 L + ENVASE", unidad: "kg", factor: 0.12089},
+        {nombre: "AGUA DE MESA SIN GAS X 625 mL", unidad: "kg", factor: 0.726214729},
+        {nombre: "AGUA DE MESA SIN GAS X 625 mL X 15", unidad: "kg", factor: 0.404862053},
+        {nombre: "AGUA MINERAL SIN GAS X 20 L", unidad: "kg", factor: 0.026855},
+        {nombre: "AGUA MINERAL SIN GAS X 355 mL", unidad: "kg", factor: 0.351411564},
+        {nombre: "AGUA MINERAL SIN GAS X 625 mL APROX.", unidad: "kg", factor: 0.12089},
+        {nombre: "ALMENDRA (KG)", unidad: "kg", factor: 0.448021789},
+        {
+            nombre: "ARCHIVADOR DE CARTON PLASTIFICADO CON PALANCA LOMO ANCHO TAMAÑO OFICIO",
+            unidad: "kg",
+            factor: 0.448021789
+        },
+        {nombre: "ARCHIVADOR DE PLÁSTICO DE PALANCA LOMO ANCHO TAMAÑO A4", unidad: "kg", factor: 0.026855},
+        {nombre: "ARCHIVADOR DE PLÁSTICO DE PALANCA LOMO ANCHO TAMAÑO A5", unidad: "kg", factor: 0.438471383},
+        {nombre: "ARROZ EXTRA", unidad: "kg", factor: 0.438471383},
+        {nombre: "ATUN EN FILETE EN ACEITE VEGETAL X 170 g", unidad: "kg", factor: 0.438471383},
+        {nombre: "AZUCAR RUBIA DOMESTICA", unidad: "kg", factor: 0.438471383},
+        {nombre: "BEBIDA GASEOSA X 285 mL", unidad: "kg", factor: 0.438471383},
+        {nombre: "BEBIDA GASEOSA X 300 mL AMARILLA", unidad: "kg", factor: 0.438471383},
+        {nombre: "BEBIDA GASEOSA X 350 mL", unidad: "kg", factor: 0.438471383},
+        {nombre: "BEBIDA GASEOSA X 600 mL", unidad: "kg", factor: 0.438471383},
+        {nombre: "BOLÍGRAFO (LAPICERO) DE TINTA LÍQUIDA PUNTA FINA COLOR AZUL", unidad: "kg", factor: 0.438471383},
+        {nombre: "BOLIGRAFO (LAPICERO) DE TINTA SECA PUNTA FINA COLOR NEGRO", unidad: "kg", factor: 0.438471383},
+        {nombre: "BOLIGRAFO (LAPICERO) DE TINTA SECA PUNTA MEDIA COLOR AZUL", unidad: "kg", factor: 0.438471383},
+        {nombre: "BOLIGRAFO (LAPICERO) DE TINTA SECA PUNTA MEDIA ECOLOGICO", unidad: "kg", factor: 0.438471383},
+        {nombre: "BOLIGRAFO (LAPICERO) TINTA GEL PUNTA FINA COLOR AZUL", unidad: "kg", factor: 0.438471383},
+        {nombre: "CAFÉ INSTANTÁNEO X 250 g", unidad: "kg", factor: 0.438471383},
+        {nombre: "CAÑIHUA TOSTADA MOLIDA", unidad: "kg", factor: 0.438471383},
+        {nombre: "CARAMELO DURO (CIENTO)", unidad: "kg", factor: 0.438471383},
+        {nombre: "CHOCOLATE EN PASTA X 400 g", unidad: "kg", factor: 0.438471383},
+        {nombre: "CINTA DE PAPEL PARA ENMASCARAR - MASKING TAPE 2 in X 40 yd", unidad: "kg", factor: 0.438471383},
+        {nombre: "CLIP DE METAL 33 mm X 101", unidad: "kg", factor: 0.438471383},
+        {nombre: "CLIP MARIPOSA DE METAL 45 mm X 53", unidad: "kg", factor: 0.438471383},
+        {
+            nombre: "CUADERNO DOBLE ESPIRAL DE PAPEL BOND 90 g 20 cm X 20 cm X 50 HOJAS",
+            unidad: "kg",
+            factor: 0.438471383
+        },
+        {nombre: "DESINFECTANTE LIMPIADOR AROMATICO X 3.785 L APROX.", unidad: "kg", factor: 0.438471383},
+        {nombre: "DETERGENTE EN POLVO X 15 kg", unidad: "kg", factor: 0.438471383},
+        {nombre: "ENGRAPADOR GRANDE DE OFICINA (150 HOJAS)", unidad: "kg", factor: 0.438471383},
+        {nombre: "ENGRAPADOR GRANDE DE OFICINA (50 HOJAS)", unidad: "kg", factor: 0.438471383},
+        {nombre: "ESENCIA DE PANETÓN X 1 L", unidad: "kg", factor: 0.438471383},
+        {nombre: "FOLDER MANILA TAMAÑO A4 COLOR AMARILLO", unidad: "kg", factor: 0.438471383},
+        {nombre: "FOLDER MANILA TAMAÑO OFICIO COLOR AMARILLO", unidad: "kg", factor: 0.438471383},
+        {nombre: "FRUTA CONFITADA (KG)", unidad: "kg", factor: 0.438471383},
+        {nombre: "GALLETA DULCE X 270 g APROX. X 6", unidad: "kg", factor: 0.438471383},
+        {nombre: "GALLETA SALADA X 24 g APROX. X 6", unidad: "kg", factor: 0.438471383},
+        {nombre: "GALLETA SALADA X 30 g APROX. X 6", unidad: "kg", factor: 0.438471383},
+        {nombre: "HOJUELAS DE AVENA (KG)", unidad: "kg", factor: 0.438471383},
+        {nombre: "JABÓN DE TOCADOR LÍQUIDO X 3.8 L", unidad: "kg", factor: 0.438471383},
+        {nombre: "JABON DE TOCADOR LIQUIDO X 4 L", unidad: "kg", factor: 0.438471383},
+        {nombre: "JUGO DE FRUTAS X 350 mL", unidad: "kg", factor: 0.438471383},
+        {nombre: "LECHE EVAPORADA ENTERA X 400 g APROX. X 6", unidad: "kg", factor: 0.438471383},
+        {nombre: "LEJIA (HIPOCLORITO DE SODIO) AL 6%", unidad: "kg", factor: 0.438471383},
+        {nombre: "LENTEJA CALIDAD 2 - SUPERIOR (KG)", unidad: "kg", factor: 0.438471383},
+        {nombre: "MANTECA VEGETAL A GRANEL", unidad: "kg", factor: 0.438471383},
+        {nombre: "MANZANA CHILENA (AL PESO) (KG)", unidad: "kg", factor: 0.438471383},
+        {nombre: "MARGARINA SIN SAL A GRANEL", unidad: "kg", factor: 0.404862053},
+        {nombre: "MICA PORTAPAPELES DE POLIPROPILENO TAMAÑO A4 (CIENTO)", unidad: "kg", factor: 2.305375489},
+        {nombre: "MOTA PARA PIZARRA ACRILICA", unidad: "kg", factor: 0.438471383},
+        {nombre: "NOTA AUTOADHESIVA 3 in X 3 in (7.6 cm X 7.6 cm) APROX. X 500 HOJAS", unidad: "kg", factor: 0.026855},
+        {nombre: "NUMERADOR AUTOMATICO DE METAL DE 8 DIGITOS", unidad: "kg", factor: 0.026855},
+        {nombre: "PAPEL HIGIENICO HOJA SIMPLE BLANCO X 500 m X 4", unidad: "kg", factor: 0.026855},
+        {nombre: "PECANA (KG)", unidad: "kg", factor: 0.026855},
+        {nombre: "PERFORADOR DE 2 ESPIGAS PARA 275 HOJAS APROX.", unidad: "kg", factor: 0.026855},
+        {nombre: "PERFORADOR DE 2 ESPIGAS PARA 45 HOJAS APROX.", unidad: "kg", factor: 0.026855},
+        {nombre: "PLÁTANO DE SEDA ÓRGANICO", unidad: "kg", factor: 0.026855},
+        {nombre: "PLUMON MARCADOR DE TINTA AL AGUA DOBLE PUNTA (PUNTA FINA Y MEDIANA)", unidad: "kg", factor: 0.026855},
+        {nombre: "PLUMON PARA PIZARRA ACRILICA PUNTA GRUESA RECARGABLE COLOR AZUL", unidad: "kg", factor: 0.026855},
+        {nombre: "PLUMON PARA PIZARRA ACRILICA PUNTA GRUESA RECARGABLE COLOR NEGRO", unidad: "kg", factor: 0.026855},
+        {nombre: "PLUMON PARA PIZARRA ACRILICA PUNTA GRUESA RECARGABLE COLOR ROJO", unidad: "kg", factor: 0.026855},
+        {nombre: "PLUMON RESALTADOR PUNTA GRUESA BISELADA", unidad: "kg", factor: 1.63},
+        {nombre: "PRE MEZCLA DE PANETON", unidad: "kg", factor: 1.63},
+        {nombre: "QUESO PARIA (KG)", unidad: "kg", factor: 0.12089},
+        {nombre: "SOBRE MANILA TAMAÑO A4", unidad: "kg", factor: 0.404862053},
+        {nombre: "SOBRE MANILA TAMAÑO A5.", unidad: "kg", factor: 0.026855},
+        {nombre: "SOBRE MANILA TAMAÑO EXTRAOFICIO", unidad: "kg", factor: 0.026855},
+        {nombre: "SODA CAUSTICA (AL PESO) (KG)", unidad: "kg", factor: 0.026855},
+        {nombre: "SURTIDO DE MANI, PASAS Y HABAS X 250 g", unidad: "kg", factor: 0.026855},
+        {nombre: "TABLERO ACRILICO TAMAÑO A4 CON SUJETADOR DE METAL 176.00", unidad: "kg", factor: 0.026855},
+        {nombre: "TINTA DE IMPRESIÓN PARA EPSON COD. REF. T544120AL NEGRO", unidad: "kg", factor: 0.026855},
+        {nombre: "TINTA DE IMPRESIÓN PARA EPSON COD. REF. T544220AL CIAN", unidad: "kg", factor: 0.026855},
+        {nombre: "TINTA DE IMPRESIÓN PARA EPSON COD. REF. T544320AL MAGENTA", unidad: "kg", factor: 0.026855},
+        {
+            nombre: "TINTA LIQUIDA SOLVENTE PARA CABEZAL DE IMPRESION DE PLOTTER X 1 gal CIAN",
+            unidad: "kg",
+            factor: 0.026855
+        },
+        {nombre: "TINTA PARA ALMOHADILLA DE SELLO AUTOENTINTABLE X 30 mL COLOR AZUL", unidad: "kg", factor: 0.026855},
+        {nombre: "TÓNER DE IMPRESIÓN PARA HP COD. REF. 78A CE278A NEGRO", unidad: "kg", factor: 1.63},
+        {nombre: "TÓNER DE IMPRESIÓN PARA HP COD. REF. 85A CE285A NEGRO", unidad: "kg", factor: 3.7},
+        {nombre: "TÓNER DE IMPRESIÓN PARA HP COD. REF. 85A CE285AD NEGRO", unidad: "kg", factor: 2.305375489},
+        {
+            nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514C A9E8430 CIAN",
+            unidad: "kg",
+            factor: 2.305375489
+        },
+        {
+            nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514K A9E8130 NEGRO",
+            unidad: "kg",
+            factor: 1.72068
+        },
+        {
+            nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514M A9E8330 MAGENTA",
+            unidad: "kg",
+            factor: 0.214301737
+        },
+        {
+            nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514Y A9E8230 AMARILLO",
+            unidad: "kg",
+            factor: 0.214301737
+        },
+        {nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 516 NEGRO", unidad: "kg", factor: 1.621671579},
+        {nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 618 NEGRO", unidad: "kg", factor: 6.776576767},
+        {nombre: "TÓNER DE IMPRESIÓN PARA KYOCERA COD. REF. TK 7227 NEGRO", unidad: "kg", factor: 1.621671579},
+        {nombre: "WAFER RELLENO DE VAINILLA X 29 g APROX. X 6", unidad: "kg", factor: 12.7511},
+        {nombre: "YEMA DE HUEVO LIQUIDO (KG)", unidad: "kg", factor: 12.7511},
+        {nombre: "YOGURT X 1 L", unidad: "kg", factor: 1.63},
+        {nombre: "YOGURT X 1 L SABOR FRESA", unidad: "kg", factor: 1.63},
+        {nombre: "YOGURT X 180 mL", unidad: "kg", factor: 1.63},
+    ];
 
     for (const descripcion of descripcionConsumibles) {
         await prisma.descripcionConsumible.create({
@@ -1006,7 +1246,7 @@ async function main() {
     const allProcesoConsumibles = await prisma.procesoConsumible.findMany();
 
     for (const tipoConsumible of tipoConsumibles) {
-        await prisma.tipoConsumible.create({
+        const newTipoConsumible = await prisma.tipoConsumible.create({
             data: {
                 nombre: tipoConsumible.nombre,
                 unidad: tipoConsumible.unidad,
@@ -1014,14 +1254,51 @@ async function main() {
                 categoriaId: faker.helpers.arrayElement(allCategoriaConsumibles).id,
                 grupoId: faker.helpers.arrayElement(allGrupoConsumibles).id,
                 procesoId: faker.helpers.arrayElement(allProcesoConsumibles).id,
-
-
-
                 created_at: new Date(),
                 updated_at: new Date(),
             },
         });
+
+        for (const anio of allAnios) {
+            await prisma.factorTipoConsumible.create({
+                data: {
+                    factor: tipoConsumible.factor,
+                    tipoConsumibleId: newTipoConsumible.id,
+                    anioId: anio.id,
+                    fuente: "Manual de Emisiones",
+                    link: "/",
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+        }
     }
+
+    const allTipoConsumibles = await prisma.tipoConsumible.findMany();
+
+    for (const sede of allSedes) {
+        for (const anio of allAnios) {
+            for (const mes of allMeses) {
+                const anio_mes = anio.nombre * 100 + mes.id;
+                for (const tipoConsumible of allTipoConsumibles) {
+                    await prisma.consumible.create({
+                        data: {
+                            tipoConsumibleId: tipoConsumible.id,
+                            sedeId: sede.id,
+                            mesId: mes.id,
+                            anioId: anio.id,
+                            pesoTotal: faker.number.float({min: 0, max: 100}),
+                            anio_mes,
+                            created_at: new Date(),
+                            updated_at: new Date(),
+                        },
+                    });
+                }
+            }
+        }
+    }
+    console.log("Consumables data created");
+
 
     // console.log({adminType, user});
 }

@@ -104,35 +104,6 @@ export function CreateFormTipoConsumible({
                             )}
                         />
 
-                        <FormField
-                            name="clase"
-                            control={form.control}
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Clase</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                    >
-                                        <FormControl className="w-full">
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Seleciona la clase"/>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <FormMessage/>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {claseQuery.data!.map((clase) => (
-                                                    <SelectItem key={clase.nombre} value={clase.nombre.toString()}>
-                                                        {clase.nombre}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </FormItem>
-                            )}
-                        />
 
                         <div className="flex gap-5">
                             {/*PORCENTAJE DE NITROGENO*/}

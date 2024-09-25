@@ -34,33 +34,28 @@ import {updateConsumible} from "@/components/consumibles/services/consumible.act
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {useAnio, useConsumibleId, useSede} from "@/components/consumibles/lib/consumible.hook";
 import {successToast} from "@/lib/utils/core.function";
+import {getMes} from "@/components/mes/services/mes.actions";
 
 const Consumible = z.object({
-    clase: z.string().min(1, "Seleccione una clase de consumible"),
-    tipoConsumible_id: z.string().min(1, "Seleccione un tipo de consumible"),
-    is_ficha: z.boolean(),
-    fichatecnica: z.string().optional(),
+    tipoConsumibleId: z.string().min(1, "Seleccione un tipo de consumible"),
+    pesoTotal: z.preprocess((val) => parseFloat(val as string,),
+        z.number().min(0, "Ingresa un valor mayor a 0")),
     sede: z.string().min(1, "Seleccione una sede"),
     anio: z.string().min(1, "Seleccione un año"),
-    cantidad: z.preprocess((val) => parseFloat(val as string,),
-        z.number().min(0, "Ingresa un valor mayor a 0")),
+    mes: z.string().min(1, "Seleccione un mes"),
 });
 
 export function UpdateFormConsumible({
                                          id, onClose,
                                      }: UpdateConsumibleProps) {
-    const [isFicha, setIsFicha] = useState(false);
-
     const form = useForm<z.infer<typeof Consumible>>({
         resolver: zodResolver(Consumible),
         defaultValues: {
-            clase: "",
-            tipoConsumible_id: "",
-            cantidad: 0,
-            is_ficha: false,
-            fichatecnica: "",
+            tipoConsumibleId: "",
+            pesoTotal: 0,
             sede: "",
             anio: "",
+            mes: "1",
         },
     });
 
@@ -68,14 +63,14 @@ export function UpdateFormConsumible({
     const consumible = useConsumibleId(id);
     const sedes = useSede();
     const anios = useAnio();
-    const tiposConsumible = useQuery({
-        queryKey: ['tipoConsumible'],
-        queryFn: () => getTiposConsumible(form.getValues().clase),
+    const meses = useQuery({
+        queryKey: ["mes"],
+        queryFn: () => getMes(),
         refetchOnWindowFocus: false,
     });
-    const claseConsumible = useQuery({
-        queryKey: ['claseConsumible'],
-        queryFn: () => getClaseConsumible(),
+    const tiposConsumible = useQuery({
+        queryKey: ['tipoConsumible'],
+        queryFn: () => getTiposConsumible(),
         refetchOnWindowFocus: false,
     });
 
@@ -83,12 +78,11 @@ export function UpdateFormConsumible({
         if (consumible.data) {
             const consumibleData = await consumible.data;
             form.reset({
-                clase: consumibleData.tipoConsumible.clase,
-                tipoConsumible_id: consumibleData.tipoConsumible.id.toString(),
-                cantidad: consumibleData.cantidad,
-                is_ficha: consumibleData.is_ficha,
-                sede: consumibleData.sede.id.toString(),
-                anio: consumibleData.anio.id.toString(),
+                tipoConsumibleId: consumibleData.tipoConsumibleId.toString(),
+                pesoTotal: consumibleData.pesoTotal,
+                sede: consumibleData.sedeId.toString(),
+                anio: consumibleData.anioId.toString(),
+                mes: consumibleData.mesId.toString(),
             });
         }
     }, [consumible.data, id]);
@@ -99,11 +93,11 @@ export function UpdateFormConsumible({
 
     const onSubmit = async (data: z.infer<typeof Consumible>) => {
         const consumibleRequest: ConsumibleRequest = {
-            tipoConsumible_id: parseInt(data.tipoConsumible_id),
-            cantidad: data.cantidad,
-            sede_id: parseInt(data.sede),
-            is_ficha: data.is_ficha,
-            anio_id: parseInt(data.anio),
+            tipoConsumibleId: parseInt(data.tipoConsumibleId),
+            pesoTotal: data.pesoTotal,
+            sedeId: parseInt(data.sede),
+            anioId: parseInt(data.anio),
+            mesId: parseInt(data.mes),
         };
         try {
             const response = await updateConsumible(id, consumibleRequest);
@@ -115,11 +109,11 @@ export function UpdateFormConsumible({
     };
 
     const onClaseChange = useCallback(() => {
-        form.setValue("tipoConsumible_id", "");
+        form.setValue("tipoConsumibleId", "");
         tiposConsumible.refetch();
     }, [form, tiposConsumible]);
 
-    if (consumible.isLoading || sedes.isLoading || anios.isLoading || tiposConsumible.isLoading || claseConsumible.isLoading) {
+    if (consumible.isLoading || sedes.isLoading || anios.isLoading || tiposConsumible.isLoading) {
         return <SkeletonForm/>;
     }
 
@@ -161,43 +155,9 @@ export function UpdateFormConsumible({
                             )}
                         />
 
-                        {/* Clase */}
-                        <FormField
-                            name="clase"
-                            control={form.control}
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <FormLabel>Clase de Consumible</FormLabel>
-                                    <Select
-                                        onValueChange={(value) => {
-                                            field.onChange(value);
-                                            onClaseChange();
-                                        }}
-                                        value={field.value}
-                                        defaultValue={field.value}
-                                    >
-                                        <FormControl className="w-full">
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Clase de Consumible"/>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {claseConsumible.data!.map((clase) => (
-                                                    <SelectItem key={clase.nombre} value={clase.nombre}>
-                                                        {clase.nombre}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </FormItem>
-                            )}
-                        />
-
                         {/* Tipo de Consumible */}
                         <FormField
-                            name="tipoConsumible_id"
+                            name="tipoConsumibleId"
                             control={form.control}
                             render={({field}) => (
                                 <FormItem className="pt-2">
@@ -228,13 +188,13 @@ export function UpdateFormConsumible({
                         />
 
                         <div className="flex gap-4">
-                            {/* Cantidad */}
+                            {/* Peso total */}
                             <FormField
                                 control={form.control}
-                                name="cantidad"
+                                name="pesoTotal"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Cantidad de consumible</FormLabel>
+                                        <FormLabel>Peso Total de Consumible</FormLabel>
                                         <FormControl>
                                             <Input
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
@@ -278,46 +238,39 @@ export function UpdateFormConsumible({
                                     </FormItem>
                                 )}
                             />
-                        </div>
-
-                        {/* is_ficha */}
-                        <FormField
-                            control={form.control}
-                            name="is_ficha"
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <div className="flex justify-between">
-                                        <FormLabel>Ficha técnica</FormLabel>
-                                        <FormControl>
-                                            <Switch
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                            />
-                                        </FormControl>
-                                    </div>
-                                </FormItem>
-                            )}
-                        />
-
-                        {isFicha && (
+                            {/* Mes */}
                             <FormField
                                 control={form.control}
-                                name="fichatecnica"
+                                name="mes"
                                 render={({field}) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <Input
-                                                className="w-full p-2 rounded mt-1 focus:outline-none focus-visible:ring-offset-0"
-                                                type="file"
-                                                placeholder="Suba la ficha tecnica"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
+                                    <FormItem className="pt-2 w-1/2">
+                                        <FormLabel>Mes</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                            value={field.value}
+                                        >
+                                            <FormControl className="w-full">
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Selecciona el año"/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {meses.data!.map((anio) => (
+                                                        <SelectItem key={anio.id} value={anio.id.toString()}>
+                                                            {anio.nombre}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                     </FormItem>
                                 )}
                             />
-                        )}
+                        </div>
+
+                       
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-blue-700">
                                 Guardar

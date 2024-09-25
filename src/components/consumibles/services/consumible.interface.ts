@@ -22,31 +22,40 @@ export interface Meta {
 
 export interface ConsumibleCollectionItem {
     id: number;
-    cantidad: number;
-    is_ficha: string;
-    ficha_id: number;
-    anio: number;
-    sede: string;
-    clase: string;
+    tipoConsumibleId: number;
+    sedeId: number;
+    anioId: number;
+    mesId: number;
+    anio_mes: number;
+    pesoTotal: number;
     tipoConsumible: string;
-    porcentajeNit: number;
+    categoria: string;
+    grupo: string;
+    proceso: string;
+    unidad: string;
+    mes: string;
+    anio: string;
+    sede: string;
     rn: number;
 }
 
 //PARA EL SHOW
 export interface ConsumibleResource {
     id: number;
-    tipoConsumible_id: number;
-    cantidad: number;
-    is_ficha: boolean;
-    ficha_id: number;
-    sede_id: number;
-    anio_id: number;
-    created_at: Date;
-    updated_at: Date;
-    tipoConsumible: TipoConsumible;
-    anio: Anio;
-    sede: Sede;
+    tipoConsumibleId: number;
+    sedeId: number;
+    anioId: number;
+    mesId: number;
+    anio_mes: number;
+    pesoTotal: number;
+    tipoConsumible: string;
+    categoria: string;
+    grupo: string;
+    proceso: string;
+    unidad: string;
+    mes: string;
+    anio: string;
+    sede: string;
 }
 
 export interface Anio {
@@ -72,10 +81,9 @@ export interface TipoConsumible {
 }
 
 export interface ConsumibleRequest {
-    tipoConsumible_id: number;
-    cantidad: number;
-    is_ficha?: boolean;
-    ficha_id?: number;
-    sede_id: number;
-    anio_id: number;
+    tipoConsumibleId: number;
+    sedeId: number;
+    anioId: number;
+    mesId: number;
+    pesoTotal: number;
 }

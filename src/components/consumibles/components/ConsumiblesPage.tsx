@@ -108,14 +108,12 @@ export default function ConsumiblePage() {
         tipoConsumibleId: selectedTipoConsumibleId
             ? parseInt(selectedTipoConsumibleId)
             : undefined,
-        claseConsumible: selectedClaseConsumible,
         sedeId: parseInt(selectedSede),
         yearFrom: yearFrom,
         yearTo: yearTo,
     });
 
-    const tipoConsumible = useTipoConsumible(selectedClaseConsumible);
-    const claseConsumible = useClaseConsumible();
+    const tipoConsumible = useTipoConsumible();
     const sedes = useSede();
     const anios = useAnio();
 
@@ -129,18 +127,6 @@ export default function ConsumiblePage() {
         setIdForDelete(id);
         setIsDeleteDialogOpen(true);
     };
-
-    const handleClaseConsumibleChange = useCallback(
-        async (value: string) => {
-            await setPage(1);
-            await setSelectedClaseConsumible(value);
-            await setSelectedTipoConsumibleId("");
-            await tipoConsumible.refetch();
-            await consumible.refetch();
-            await consumibleReport.refetch();
-        },
-        [consumible, consumibleReport, tipoConsumible]
-    );
 
     const handleSedeChange = useCallback(
         async (value: string) => {
@@ -219,11 +205,8 @@ export default function ConsumiblePage() {
         async (period: ReportRequest) => {
             const columns = [
                 {header: "N°", key: "id", width: 10},
-                {header: "TIPO", key: "clase", width: 15},
-                {header: "FERTILIZANTE", key: "tipoConsumible", width: 40},
-                {header: "CANTIDAD", key: "cantidad", width: 15},
-                {header: "NITRÓGENO %", key: "porcentajeNit", width: 20},
-                {header: "FICHA TECNICA", key: "is_ficha", width: 15},
+                {header: "CONSUMIBLE", key: "tipoConsumible", width: 40},
+                {header: "PESO TOTAL", key: "pesoTotal", width: 15},
                 {header: "AÑO", key: "anio", width: 15},
                 {header: "SEDE", key: "sede", width: 20},
             ];
@@ -232,7 +215,7 @@ export default function ConsumiblePage() {
                 data.data!.data,
                 columns,
                 formatPeriod(period),
-                "REPORTE DE FERTILIZANTES",
+                "REPORTE DE CONSUMIBLES",
                 "Consumibles"
             );
         },
@@ -249,7 +232,6 @@ export default function ConsumiblePage() {
 
     if (
         consumible.isLoading ||
-        claseConsumible.isLoading ||
         tipoConsumible.isLoading ||
         sedes.isLoading ||
         anios.isLoading ||
@@ -260,7 +242,6 @@ export default function ConsumiblePage() {
 
     if (
         consumible.isError ||
-        claseConsumible.isError ||
         tipoConsumible.isError ||
         sedes.isError ||
         anios.isError ||
@@ -283,15 +264,6 @@ export default function ConsumiblePage() {
                         className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
                         <div
                             className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
-                            <SelectFilter
-                                list={claseConsumible.data!}
-                                itemSelected={selectedClaseConsumible}
-                                handleItemSelect={handleClaseConsumibleChange}
-                                value={"nombre"}
-                                nombre={"nombre"}
-                                id={"nombre"}
-                                icon={<LeafyGreen className="h-3 w-3"/>}
-                            />
 
                             <SelectFilter
                                 list={tipoConsumible.data!}
@@ -336,7 +308,7 @@ export default function ConsumiblePage() {
 
                             <ExportPdfReport
                                 data={consumibleReport.data!.data}
-                                fileName={`REPORTE DE FERTILIZANTES_${formatPeriod({
+                                fileName={`REPORTE DE CONSUMIBLES_${formatPeriod({
                                     yearFrom,
                                     yearTo,
                                 })}`}
@@ -344,7 +316,7 @@ export default function ConsumiblePage() {
                                     {header: "N°", key: "rn", width: 5},
                                     {header: "TIPO", key: "clase", width: 20},
                                     {
-                                        header: "FERTILIZANTE",
+                                        header: "CONSUMIBLE",
                                         key: "tipoConsumible",
                                         width: 25,
                                     },
@@ -353,7 +325,7 @@ export default function ConsumiblePage() {
                                     {header: "AÑO", key: "anio", width: 10},
                                     {header: "SEDE", key: "sede", width: 10},
                                 ]}
-                                title="REPORTE DE FERTILIZANTES"
+                                title="REPORTE DE CONSUMIBLES"
                                 period={formatPeriod({yearFrom, yearTo})}
                             />
 
@@ -390,22 +362,28 @@ export default function ConsumiblePage() {
                                 TIPO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FERTILIZANTE
+                                CONSUMIBLE
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                GRUPO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                PROCESO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 {/*<Button variant="ghost" onClick={handleToggleCantidadSort}>*/}
-                                CANTIDAD
+                                PESO TOTAL
                                 {/*<ChevronsUpDown className="ml-2 h-3 w-3"/>*/}
                                 {/*</Button>*/}
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                % DE NITROGENO
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FICHA TECNICA
+                                UNIDAD
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                MES
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 ACCIONES
@@ -422,22 +400,28 @@ export default function ConsumiblePage() {
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {item.clase}
+                                        {item.categoria}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs text-start sm:text-sm">
                                         {item.tipoConsumible}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default">{item.cantidad}</Badge>
+                                        {item.grupo}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {item.porcentajeNit} %
+                                        {item.proceso}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {item.is_ficha}
+                                        <Badge variant="default">{item.pesoTotal}</Badge>
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {item.unidad}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.anio}
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {item.mes}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm p-1">
                                         <div className="flex justify-center gap-4">

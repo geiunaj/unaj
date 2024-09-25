@@ -1,8 +1,6 @@
 import api from "../../../../config/api";
 import {AxiosRequestConfig} from "axios";
-import {
-    ConsumibleCalculosCollection,
-} from "@/components/consumibles/services/consumibleCalculate.interface";
+import {ConsumibleCalculosCollection} from "@/components/consumibles/services/consumibleCalculate.interface";
 
 interface GetConsumibleProps {
     sedeId?: number,

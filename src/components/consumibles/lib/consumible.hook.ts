@@ -25,7 +25,6 @@ interface getConsumibleInterface {
 export const useConsumible =
     ({
          tipoConsumibleId,
-         claseConsumible,
          sedeId,
          yearFrom,
          yearTo,
@@ -35,7 +34,7 @@ export const useConsumible =
      }: getConsumibleInterface) => {
         return useQuery({
             queryKey: ['consumible'],
-            queryFn: () => getConsumible(tipoConsumibleId, claseConsumible, sedeId, yearFrom, yearTo, sort, direction, page),
+            queryFn: () => getConsumible(tipoConsumibleId, sedeId, yearFrom, yearTo, sort, direction, page),
             refetchOnWindowFocus: false,
         });
     }
@@ -65,10 +64,10 @@ export const useClaseConsumible = () => {
     });
 }
 
-export const useTipoConsumible = (clase: string) => {
+export const useTipoConsumible = () => {
     return useQuery({
         queryKey: ['tipoConsumible'],
-        queryFn: () => getTiposConsumible(clase),
+        queryFn: () => getTiposConsumible(),
         refetchOnWindowFocus: false,
     });
 }

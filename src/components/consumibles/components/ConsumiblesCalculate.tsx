@@ -11,7 +11,6 @@ import {
 import {Building, FileSpreadsheet} from "lucide-react";
 import SelectFilter from "@/components/SelectFilter";
 import {Badge} from "@/components/ui/badge";
-import {FertilizanteCalcResponse} from "@/components/consumibles/services/fertilizanteCalculate.interface";
 import ButtonCalculate from "@/components/ButtonCalculate";
 import ButtonBack from "@/components/ButtonBack";
 import {useRouter} from "next/navigation";
@@ -19,14 +18,15 @@ import ReportComponent from "@/components/ReportComponent";
 import GenerateReport from "@/lib/utils/generateReport";
 import {formatPeriod} from "@/lib/utils/core.function";
 import {
-    useFertilizanteCalculos,
-    useFertilizanteCalculosReport, useSedes
-} from "@/components/fertilizantes/lib/fertilizantesCalculos.hooks";
+    useConsumibleCalculos,
+    useConsumibleCalculosReport, useSedes
+} from "@/components/consumibles/lib/consumiblesCalculos.hooks";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {createFertilizanteCalculate} from "@/components/fertilizantes/services/fertilizanteCalculate.actions";
+import {createConsumibleCalculate} from "@/components/consumibles/services/consumibleCalculate.actions";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {Button} from "@/components/ui/button";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
+import {ConsumibleCalcResponse} from "@/components/consumibles/services/consumibleCalculate.interface";
 
 export default function ConsumiblesCalculate() {
     const {push} = useRouter();
@@ -39,13 +39,13 @@ export default function ConsumiblesCalculate() {
     const [yearTo, setYearTo] = useState<string>(new Date().getFullYear().toString());
 
     // HOOKS
-    const fertilizanteCalculos = useFertilizanteCalculos({
+    const consumibleCalculos = useConsumibleCalculos({
         sedeId: parseInt(selectedSede),
         yearFrom: yearFrom,
         yearTo: yearTo,
         page,
     });
-    const fertilizanteCalculosReport = useFertilizanteCalculosReport({
+    const consumibleCalculosReport = useConsumibleCalculosReport({
         sedeId: parseInt(selectedSede),
         yearFrom: yearFrom,
         yearTo: yearTo,
@@ -53,46 +53,46 @@ export default function ConsumiblesCalculate() {
 
     const sedes = useSedes();
 
-    const handleFertilizante = () => {
-        push("/fertilizante");
+    const handleConsumible = () => {
+        push("/consumible");
     };
 
     const handleSedeChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedSede(value);
-        await fertilizanteCalculos.refetch();
-        await fertilizanteCalculosReport.refetch();
-    }, [fertilizanteCalculos, fertilizanteCalculosReport]);
+        await consumibleCalculos.refetch();
+        await consumibleCalculosReport.refetch();
+    }, [consumibleCalculos, consumibleCalculosReport]);
 
     const handleYearFromChange = useCallback(async (value: string) => {
         await setPage(1);
         await setYearFrom(value);
-        await fertilizanteCalculos.refetch();
-        await fertilizanteCalculosReport.refetch();
-    }, [fertilizanteCalculos, fertilizanteCalculosReport]);
+        await consumibleCalculos.refetch();
+        await consumibleCalculosReport.refetch();
+    }, [consumibleCalculos, consumibleCalculosReport]);
 
     const handleYearToChange = useCallback(async (value: string) => {
         await setPage(1);
         await setYearTo(value);
-        await fertilizanteCalculos.refetch();
-        await fertilizanteCalculosReport.refetch();
-    }, [fertilizanteCalculos, fertilizanteCalculosReport]);
+        await consumibleCalculos.refetch();
+        await consumibleCalculosReport.refetch();
+    }, [consumibleCalculos, consumibleCalculosReport]);
 
     const handleCalculate = useCallback(async () => {
-        await createFertilizanteCalculate({
+        await createConsumibleCalculate({
             sedeId: selectedSede ? Number(selectedSede) : undefined,
             yearFrom,
             yearTo,
         });
-        fertilizanteCalculos.refetch();
-        fertilizanteCalculosReport.refetch();
-    }, [selectedSede, yearFrom, yearTo, fertilizanteCalculos, fertilizanteCalculosReport]);
+        consumibleCalculos.refetch();
+        consumibleCalculosReport.refetch();
+    }, [selectedSede, yearFrom, yearTo, consumibleCalculos, consumibleCalculosReport]);
 
 
     const handleClickExcelReport = useCallback(async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10},
-            {header: "FERTILIZANTE", key: "tipoFertilizante", width: 30},
+            {header: "FERTILIZANTE", key: "tipoConsumible", width: 30},
             {header: "SEDE", key: "sede", width: 20},
             {header: "CONSUMO", key: "consumo", width: 25},
             {header: "UNIDAD", key: "unidad", width: 15},
@@ -104,9 +104,9 @@ export default function ConsumiblesCalculate() {
         ];
         await setYearFrom(period.yearFrom ?? "");
         await setYearTo(period.yearTo ?? "");
-        const data = await fertilizanteCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE FERTILIZANTES", "Fertilizantes");
-    }, [fertilizanteCalculosReport]);
+        const data = await consumibleCalculosReport.refetch();
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE FERTILIZANTES", "Consumibles");
+    }, [consumibleCalculosReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
 
@@ -116,11 +116,11 @@ export default function ConsumiblesCalculate() {
         }
     };
 
-    if (fertilizanteCalculos.isLoading || fertilizanteCalculosReport.isLoading || sedes.isLoading) {
+    if (consumibleCalculos.isLoading || consumibleCalculosReport.isLoading || sedes.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (fertilizanteCalculos.isError || fertilizanteCalculosReport.isError || sedes.isError) {
+    if (consumibleCalculos.isError || consumibleCalculosReport.isError || sedes.isError) {
         return <div>Error al cargar los datos</div>;
     }
 
@@ -128,10 +128,10 @@ export default function ConsumiblesCalculate() {
         <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="flex gap-4 items-center">
-                    <ButtonBack onClick={handleFertilizante}/>
+                    <ButtonBack onClick={handleConsumible}/>
                     <div className="font-Manrope">
                         <h1 className="text-base text-foreground font-bold">
-                            Emisiones de Fertilizantes
+                            Emisiones de Consumibles
                         </h1>
                         <h2 className="text-xs sm:text-sm text-muted-foreground">
                             Huella de carbono
@@ -175,11 +175,11 @@ export default function ConsumiblesCalculate() {
                             </Button>
 
                             <ExportPdfReport
-                                data={fertilizanteCalculosReport.data!.data}
+                                data={consumibleCalculosReport.data!.data}
                                 fileName={`REPORTE CALCULOS DE FERTILIZANTES_${formatPeriod({yearFrom, yearTo}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
-                                    {header: "FERTILIZANTE", key: "tipoFertilizante", width: 20},
+                                    {header: "FERTILIZANTE", key: "tipoConsumible", width: 20},
                                     {header: "SEDE", key: "sede", width: 20},
                                     {header: "CONSUMO", key: "consumo", width: 15},
                                     {header: "UNIDAD", key: "unidad", width: 10},
@@ -231,7 +231,7 @@ export default function ConsumiblesCalculate() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {fertilizanteCalculos.data!.data.length === 0 && (
+                        {consumibleCalculos.data!.data.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={7} className="text-center">
                                     Click en el botón <strong className="text-primary">Calcular</strong> para obtener
@@ -239,37 +239,37 @@ export default function ConsumiblesCalculate() {
                                 </TableCell>
                             </TableRow>
                         )}
-                        {fertilizanteCalculos.data!.data.map(
-                            (FertilizanteCalculate: FertilizanteCalcResponse) => (
+                        {consumibleCalculos.data!.data.map(
+                            (ConsumibleCalculate: ConsumibleCalcResponse) => (
                                 <TableRow
                                     className="text-center"
-                                    key={FertilizanteCalculate.id}
+                                    key={ConsumibleCalculate.id}
                                 >
                                     <TableCell className="text-xs sm:text-sm text-start">
-                                        {FertilizanteCalculate.tipoFertilizante}
+                                        {ConsumibleCalculate.tipoConsumible}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">
-                                            {FertilizanteCalculate.consumo}
+                                            {ConsumibleCalculate.categoria}
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.unidad}
+                                        {ConsumibleCalculate.unidad}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.porcentajeNitrogeno}
+                                        {ConsumibleCalculate.grupo}
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {ConsumibleCalculate.proceso}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="default">
-                                            {FertilizanteCalculate.cantidadAporte}
+                                            {ConsumibleCalculate.pesoTotal}
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.totalEmisionesDirectas}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="default">
-                                            {FertilizanteCalculate.emisionGEI}
+                                            {ConsumibleCalculate.totalGEI}
                                         </Badge>
                                     </TableCell>
                                 </TableRow>

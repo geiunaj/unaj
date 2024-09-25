@@ -35,13 +35,13 @@ import {
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {
-    useFertilizanteFactor,
+    useConsumibleFactor,
 
-} from "../lib/tipoFertilizanteFactor.hook";
-import {deleteTipoFertilizanteFactor} from "../services/tipoFertilizanteFactor.actions";
+} from "../lib/tipoConsumibleFactor.hook";
+import {deleteTipoConsumibleFactor} from "../services/tipoConsumibleFactor.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {useAnio} from "@/components/combustion/lib/combustion.hook";
-import {FertilizanteFactorCollection} from "../services/tipoFertilizanteFactor.interface";
+import {ConsumibleFactorCollection} from "../services/tipoConsumibleFactor.interface";
 
 export default function ConsumibleFactorPage() {
 
@@ -60,7 +60,7 @@ export default function ConsumibleFactorPage() {
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
 
-    const factorEmisionQuery = useFertilizanteFactor({
+    const factorEmisionQuery = useConsumibleFactor({
         anioId: selectAnio,
         page,
         perPage: 10
@@ -89,7 +89,7 @@ export default function ConsumibleFactorPage() {
 
     const handleDelete = useCallback(async () => {
         try {
-            const response = await deleteTipoFertilizanteFactor(idForDelete);
+            const response = await deleteTipoConsumibleFactor(idForDelete);
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
@@ -118,7 +118,7 @@ export default function ConsumibleFactorPage() {
         <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Factor de Emisión de Fertilizante</h1>
+                    <h1 className="text-base text-foreground font-bold">Factor de Emisión de Consumible</h1>
                     <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
@@ -144,13 +144,13 @@ export default function ConsumibleFactorPage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle> Factor de Emision Directa Fertilizante</DialogTitle>
+                                    <DialogTitle> Factor de Emision Directa Consumible</DialogTitle>
                                     <DialogDescription>
-                                        Agregar Tipo de Fertilizante
+                                        Agregar Tipo de Consumible
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                {/* <CreateFormTipoFertilizanteFactor onClose={handleClose}/> */}
+                                {/* <CreateFormTipoConsumibleFactor onClose={handleClose}/> */}
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -174,7 +174,7 @@ export default function ConsumibleFactorPage() {
                     </TableHeader>
                     <TableBody>
                         {factorEmisionQuery.data!.data.map(
-                            (item: FertilizanteFactorCollection, index: number) => (
+                            (item: ConsumibleFactorCollection, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{index + 1}</Badge>
@@ -221,10 +221,10 @@ export default function ConsumibleFactorPage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
+                        <DialogTitle>Actualizar Registro de Consumible</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    {/* <UpdateFormTipoFertilizanteFactor onClose={handleCloseUpdate} id={idForUpdate}/> */}
+                    {/* <UpdateFormTipoConsumibleFactor onClose={handleCloseUpdate} id={idForUpdate}/> */}
                 </DialogContent>
             </Dialog>
 

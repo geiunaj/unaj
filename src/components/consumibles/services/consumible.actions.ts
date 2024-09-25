@@ -8,7 +8,6 @@ interface Response {
 
 export async function getConsumible(
     tipoConsumibleId?: number,
-    claseConsumible?: string,
     sedeId?: number,
     yearFrom?: string,
     yearTo?: string,
@@ -19,7 +18,6 @@ export async function getConsumible(
     const config: AxiosRequestConfig = {
         params: {
             tipoConsumibleId,
-            claseConsumible,
             sedeId,
             yearFrom,
             yearTo,

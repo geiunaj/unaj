@@ -1,23 +1,23 @@
 import {useQuery} from "@tanstack/react-query";
-import {getFactorEmisionFertilizantePage} from "@/components/tipoFertilizante/services/tipoFertilizanteFactor.actions";
+import {getFactorEmisionConsumiblePage} from "@/components/tipoConsumible/services/tipoConsumibleFactor.actions";
 
 
-export interface FactorEmisionFertilizanteIndex {
+export interface FactorEmisionConsumibleIndex {
     anioId?: string;
     page?: number;
     perPage?: number;
 }
 
-export const useFertilizanteFactor = (
+export const useConsumibleFactor = (
     {
         anioId,
         page,
         perPage,
-    }: FactorEmisionFertilizanteIndex
+    }: FactorEmisionConsumibleIndex
 ) => {
     return useQuery({
-        queryKey: ['factorEmisionFertilizante'],
-        queryFn: () => getFactorEmisionFertilizantePage({
+        queryKey: ['factorEmisionConsumible'],
+        queryFn: () => getFactorEmisionConsumiblePage({
             anioId,
             page,
             perPage,

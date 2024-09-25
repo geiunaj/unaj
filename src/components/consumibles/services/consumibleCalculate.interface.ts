@@ -10,7 +10,6 @@ interface Meta {
     totalRecords: number;
 }
 
-
 export interface ConsumibleCalc {
     tipoConsumibleId: number;
     consumoTotal: number;
@@ -31,13 +30,14 @@ export interface ConsumibleCalcRequest {
 
 export interface ConsumibleCalcResponse {
     id: number;
-    consumo: number;
+    tipoConsumibleId: number;
+    periodoCalculoId: number;
+    sedeId: number;
+    pesoTotal: number;
+    totalGEI: number;
     tipoConsumible: string;
+    categoria: string;
+    grupo: string;
+    proceso: string;
     unidad: string;
-    clase: string;
-    porcentajeNitrogeno: number;
-    cantidadAporte: number;
-    emisionDirecta: number;
-    totalEmisionesDirectas: number;
-    emisionGEI: number;
 }

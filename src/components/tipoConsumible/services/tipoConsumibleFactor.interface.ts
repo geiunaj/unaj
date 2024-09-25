@@ -1,4 +1,4 @@
-export interface FertilizanteFactor {
+export interface ConsumibleFactor {
     id: number;
     nombre: string;
     valor: number;
@@ -6,7 +6,7 @@ export interface FertilizanteFactor {
     updated_at: Date;
 }
 
-export interface FertilizanteFactorRequest {
+export interface ConsumibleFactorRequest {
     nombre: string;
     valor: number;
     anio_id: number;
@@ -19,14 +19,14 @@ interface Meta {
     totalPages: number;
 }
 
-export interface FertilizanteFactorCollectionPaginate {
-    data: FertilizanteFactorCollection[];
+export interface ConsumibleFactorCollectionPaginate {
+    data: ConsumibleFactorCollection[];
     meta: Meta
 }
 
-export interface FertilizanteFactorCollection {
+export interface ConsumibleFactorCollection {
     id: number;
-    nombre : string;
+    nombre: string;
     valor: number;
     anio_id: number;
     anio: string;
@@ -35,7 +35,7 @@ export interface FertilizanteFactorCollection {
     updated_at: Date;
 }
 
-export interface FertilizanteFactorResource {
+export interface ConsumibleFactorResource {
     id: number;
     clase: string;
     nombre: string;
@@ -44,11 +44,11 @@ export interface FertilizanteFactorResource {
 }
 
 
-export interface CreateFertilizanteFactorProps {
+export interface CreateConsumibleFactorProps {
     onClose: () => void;
 }
 
-export interface UpdateFertilizanteFactorProps {
+export interface UpdateConsumibleFactorProps {
     onClose: () => void;
     id: number;
 }

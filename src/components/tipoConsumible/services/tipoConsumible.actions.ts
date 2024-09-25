@@ -13,18 +13,8 @@ interface Response {
     message: string;
 }
 
-export async function getTiposConsumible(
-    clase?: string
-): Promise<TipoConsumibleCollection[]> {
-    const config: AxiosRequestConfig = {
-        params: {
-            clase,
-        },
-    };
-    const {data} = await api.get<TipoConsumibleCollection[]>(
-        "/api/tipoConsumible",
-        config
-    );
+export async function getTiposConsumible(): Promise<TipoConsumibleCollection[]> {
+    const {data} = await api.get<TipoConsumibleCollection[]>("/api/tipoConsumible");
     return data;
 }
 

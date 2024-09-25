@@ -17,18 +17,13 @@ import {useRouter} from "next/navigation";
 import ReportComponent from "@/components/ReportComponent";
 import GenerateReport from "@/lib/utils/generateReport";
 import {formatPeriod} from "@/lib/utils/core.function";
-import {
-    useFertilizanteCalculos,
-    useFertilizanteCalculosReport, useSedes
-} from "@/components/fertilizantes/lib/fertilizantesCalculos.hooks";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {createFertilizanteCalculate} from "@/components/fertilizantes/services/fertilizanteCalculate.actions";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {Button} from "@/components/ui/button";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {
     useConsumoPapelCalculos,
-    useConsumoPapelCalculosReport
+    useConsumoPapelCalculosReport, useSedes
 } from "@/components/consumoPapel/lib/consumoPapelCalculos.hooks";
 import {ConsumoPapelCalculoResponse} from "@/components/consumoPapel/services/consumoPapelCalculate.interface";
 import {createConsumoPapelCalculate} from "@/components/consumoPapel/services/consumoPapelCalculate.actions";

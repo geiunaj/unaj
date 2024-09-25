@@ -17,7 +17,7 @@ interface getConsumibleCalculoInterface {
 export const useConsumibleCalculos =
     ({sedeId, yearFrom, yearTo, page}: getConsumibleCalculoInterface) => {
         return useQuery({
-            queryKey: ['consumibleCalculos'],
+            queryKey: ['fertilizanteCalculos'],
             queryFn: () => getConsumibleCalculate({sedeId, yearFrom, yearTo, page}),
             refetchOnWindowFocus: false,
         });
@@ -25,7 +25,7 @@ export const useConsumibleCalculos =
 export const useConsumibleCalculosReport =
     ({sedeId, yearFrom, yearTo}: getConsumibleCalculoInterface) => {
         return useQuery({
-            queryKey: ['consumibleCalculosReport'],
+            queryKey: ['fertilizanteCalculosReport'],
             queryFn: () => getConsumibleCalculateReport({sedeId, yearFrom, yearTo}),
             refetchOnWindowFocus: false,
         });
