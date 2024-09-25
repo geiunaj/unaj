@@ -4,10 +4,7 @@ import {
     getConsumibleById,
     getConsumibleReport
 } from "@/components/consumibles/services/consumible.actions";
-import {
-    getClaseConsumible,
-    getTiposConsumible
-} from "@/components/tipoConsumible/services/tipoConsumible.actions";
+import {getTiposConsumible} from "@/components/tipoConsumible/services/tipoConsumible.actions";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 
@@ -15,8 +12,8 @@ interface getConsumibleInterface {
     tipoConsumibleId?: number;
     claseConsumible?: string;
     sedeId?: number;
-    yearFrom?: string;
-    yearTo?: string;
+    from?: string;
+    to?: string;
     sort?: string;
     direction?: string;
     page?: number;
@@ -26,15 +23,15 @@ export const useConsumible =
     ({
          tipoConsumibleId,
          sedeId,
-         yearFrom,
-         yearTo,
+         from,
+         to,
          sort,
          direction,
          page
      }: getConsumibleInterface) => {
         return useQuery({
-            queryKey: ['consumible'],
-            queryFn: () => getConsumible(tipoConsumibleId, sedeId, yearFrom, yearTo, sort, direction, page),
+            queryKey: ['consumibleH'],
+            queryFn: () => getConsumible(tipoConsumibleId, sedeId, from, to, sort, direction, page),
             refetchOnWindowFocus: false,
         });
     }
@@ -44,29 +41,21 @@ export const useConsumibleReport =
          tipoConsumibleId,
          claseConsumible,
          sedeId,
-         yearFrom,
-         yearTo,
+         from,
+         to,
          sort,
          direction,
      }: getConsumibleInterface) => {
         return useQuery({
-            queryKey: ['consumibleReport'],
-            queryFn: () => getConsumibleReport(tipoConsumibleId, claseConsumible, sedeId, yearFrom, yearTo, sort, direction),
+            queryKey: ['consumibleReportH'],
+            queryFn: () => getConsumibleReport(tipoConsumibleId, claseConsumible, sedeId, from, to, sort, direction),
             refetchOnWindowFocus: false,
         });
     }
 
-export const useClaseConsumible = () => {
-    return useQuery({
-        queryKey: ['claseConsumible'],
-        queryFn: () => getClaseConsumible(),
-        refetchOnWindowFocus: false,
-    });
-}
-
 export const useTipoConsumible = () => {
     return useQuery({
-        queryKey: ['tipoConsumible'],
+        queryKey: ['tipoConsumibleH'],
         queryFn: () => getTiposConsumible(),
         refetchOnWindowFocus: false,
     });
@@ -74,7 +63,7 @@ export const useTipoConsumible = () => {
 
 export const useSede = () => {
     return useQuery({
-        queryKey: ['sede'],
+        queryKey: ['sedeH'],
         queryFn: () => getSedes(),
         refetchOnWindowFocus: false,
     });
@@ -82,7 +71,7 @@ export const useSede = () => {
 
 export const useAnio = () => {
     return useQuery({
-        queryKey: ['anio'],
+        queryKey: ['anioH'],
         queryFn: () => getAnio(),
         refetchOnWindowFocus: false,
     });
@@ -90,7 +79,7 @@ export const useAnio = () => {
 
 export const useConsumibleId = (id: number) => {
     return useQuery({
-        queryKey: ["consumible", id],
+        queryKey: ["consumibleH", id],
         queryFn: () => getConsumibleById(id),
         refetchOnWindowFocus: false,
     });

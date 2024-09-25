@@ -1,40 +1,52 @@
 export interface TipoConsumible {
     id: number;
-    clase: string;
     nombre: string;
-    porcentajeNitrogeno: number;
-    created_at: Date;
-    updated_at: Date;
-}
-
-export interface ClaseConsumible {
-    nombre: string;
+    unidad: string;
+    descripcionId: number;
+    categoriaId: number;
+    grupoId: number;
+    procesoId: number;
+    descripcion: string;
+    categoria: string;
+    grupo: string;
+    proceso: string;
 }
 
 export interface TipoConsumibleCollection {
     id: number;
-    clase: string;
     nombre: string;
-    porcentajeNitrogeno: number;
     unidad: string;
-    created_at: Date;
-    updated_at: Date;
+    descripcionId: number;
+    categoriaId: number;
+    grupoId: number;
+    procesoId: number;
+    descripcion: string;
+    categoria: string;
+    grupo: string;
+    proceso: string;
 }
 
 export interface TipoConsumibleResource {
     id: number;
-    clase: string;
     nombre: string;
-    porcentajeNitrogeno: number;
     unidad: string;
+    descripcionId: number;
+    categoriaId: number;
+    grupoId: number;
+    procesoId: number;
+    descripcion: string;
+    categoria: string;
+    grupo: string;
+    proceso: string;
 }
-
 
 export interface TipoConsumibleRequest {
     nombre: string;
-    porcentajeNitrogeno: number;
     unidad: string;
-    clase: string;
+    descripcionId: number;
+    categoriaId: number;
+    grupoId: number;
+    procesoId: number;
 }
 
 export interface CreateTipoConsumibleProps {

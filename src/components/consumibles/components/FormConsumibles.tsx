@@ -29,7 +29,6 @@ import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {
-    getClaseConsumible,
     getTiposConsumible
 } from "@/components/tipoConsumible/services/tipoConsumible.actions";
 import {createConsumible} from "@/components/consumibles/services/consumible.actions";
@@ -78,11 +77,6 @@ export function FormConsumibles({onClose}: CreateConsumibleProps) {
         queryFn: () => getTiposConsumible(),
         refetchOnWindowFocus: false,
     });
-    const claseConsumible = useQuery({
-        queryKey: ['claseConsumible'],
-        queryFn: () => getClaseConsumible(),
-        refetchOnWindowFocus: false,
-    });
 
     const onSubmit = async (data: z.infer<typeof Consumible>) => {
         const consumibleRequest: ConsumibleRequest = {
@@ -106,11 +100,11 @@ export function FormConsumibles({onClose}: CreateConsumibleProps) {
         tiposConsumible.refetch();
     }, [form, tiposConsumible]);
 
-    if (sedes.isLoading || anios.isLoading || tiposConsumible.isLoading || claseConsumible.isLoading) {
+    if (sedes.isLoading || anios.isLoading || tiposConsumible.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (sedes.isError || anios.isError || tiposConsumible.isError || claseConsumible.isError) {
+    if (sedes.isError || anios.isError || tiposConsumible.isError) {
         onClose();
         errorToast("Error al cargar los datos");
     }

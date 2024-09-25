@@ -20,14 +20,12 @@ import {
 } from "@/components/ui/select";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-import {Switch} from "@/components/ui/switch";
 import {
     ConsumibleRequest,
     UpdateConsumibleProps,
 } from "@/components/consumibles/services/consumible.interface";
 import {useQuery} from "@tanstack/react-query";
 import {
-    getClaseConsumible,
     getTiposConsumible
 } from "@/components/tipoConsumible/services/tipoConsumible.actions";
 import {updateConsumible} from "@/components/consumibles/services/consumible.actions";
@@ -270,7 +268,7 @@ export function UpdateFormConsumible({
                             />
                         </div>
 
-                       
+
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-blue-700">
                                 Guardar

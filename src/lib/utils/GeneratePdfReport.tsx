@@ -154,7 +154,7 @@ const ReportDocument: React.FC<ReportDocumentProps> = ({data, columns, title, pe
     return (
         <Document>
             {pageNumbers.map((pageNumber) => (
-                <Page size="A4" orientation="landscape" key={pageNumber}>
+                <Page size="A3" orientation="landscape" key={pageNumber}>
                     <View style={styles.pageHeader}>
                         <Svg
                             width="842"

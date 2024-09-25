@@ -1,13 +1,13 @@
-import {Sede} from "@prisma/client";
 import api from "../../../../config/api";
 import {
-    ClaseConsumible,
-    TipoConsumible,
     TipoConsumibleCollection,
     TipoConsumibleRequest,
     TipoConsumibleResource,
 } from "./tipoConsumible.interface";
 import {AxiosRequestConfig, AxiosResponse} from "axios";
+import {DescripcionConsumible} from "@/components/tipoConsumible/services/descripcionConsumible.interface";
+import {GrupoConsumible} from "@/components/tipoConsumible/services/grupoConsumible.interface";
+import {CategoriaConsumible} from "@/components/tipoConsumible/services/categoriaConsumible.interface";
 
 interface Response {
     message: string;
@@ -27,18 +27,6 @@ export async function getTipoConsumibleById(
     return data;
 }
 
-export async function getClaseConsumible(): Promise<ClaseConsumible[]> {
-    try {
-        const {data} = await api.get<ClaseConsumible[]>(
-            "/api/tipoConsumible/clase"
-        );
-        return data;
-    } catch (error) {
-        console.error("Error en getClaseConsumible: ", error);
-        return [];
-    }
-}
-
 export async function createTipoConsumible(
     tipoConsumible: TipoConsumibleRequest
 ): Promise<AxiosResponse<Response>> {
@@ -56,4 +44,24 @@ export async function deleteTipoConsumible(
     id: number
 ): Promise<AxiosResponse<Response>> {
     return await api.delete(`/api/tipoConsumible/${id}`);
+}
+
+export async function getTipoConsumibleDescripcion(): Promise<DescripcionConsumible[]> {
+    const {data} = await api.get<DescripcionConsumible[]>(`/api/tipoConsumible/descripcion`);
+    return data;
+}
+
+export async function getTipoConsumibleGrupo(): Promise<GrupoConsumible[]> {
+    const {data} = await api.get<GrupoConsumible[]>(`/api/tipoConsumible/grupo`);
+    return data;
+}
+
+export async function getTipoConsumibleCategoria(): Promise<CategoriaConsumible[]> {
+    const {data} = await api.get<CategoriaConsumible[]>(`/api/tipoConsumible/categoria`);
+    return data;
+}
+
+export async function getTipoConsumibleProceso(): Promise<CategoriaConsumible[]> {
+    const {data} = await api.get<CategoriaConsumible[]>(`/api/tipoConsumible/proceso`);
+    return data;
 }

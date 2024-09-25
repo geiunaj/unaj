@@ -1,19 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
-import {getClaseFertilizante, getTiposFertilizante} from "../services/tipoFertilizante.actions";
+import {getTiposConsumible} from "../services/tipoConsumible.actions";
 
-
-export const useTipoFertilizante = (selectedClase: string) => {
+export const useTipoConsumible = () => {
     return useQuery({
-        queryKey: ['tiposFertilizante'],
-        queryFn: () => getTiposFertilizante(selectedClase),
-        refetchOnWindowFocus: false,
-    });
-}
-
-export const useClaseFertilizante = () => {
-    return useQuery({
-        queryKey: ['claseFertilizante'],
-        queryFn: () => getClaseFertilizante(),
+        queryKey: ['tiposConsumible'],
+        queryFn: () => getTiposConsumible(),
         refetchOnWindowFocus: false,
     });
 }

@@ -34,15 +34,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {
-    useClaseFertilizante,
-    useTipoFertilizante,
-} from "../lib/tipoFertilizante.hook";
-import {TipoFertilizanteCollection} from "../services/tipoFertilizante.interface";
 import {CreateFormTipoConsumible} from "./CreateFormTipoConsumible";
-import {deleteTipoFertilizante} from "../services/tipoFertilizante.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import {UpdateFormTipoFertilizante} from "@/components/tipoFertilizante/components/UpdateFormTipoFertilizante";
+import {UpdateFormTipoConsumible} from "@/components/tipoConsumible/components/UpdateFormTipoConsumible";
+import {useTipoConsumible} from "@/components/consumibles/lib/consumible.hook";
+import {deleteTipoConsumible} from "@/components/tipoConsumible/services/tipoConsumible.actions";
+import {TipoConsumibleCollection} from "@/components/tipoConsumible/services/tipoConsumible.interface";
 
 export default function TipoConsumiblePage() {
     //DIALOGS
@@ -57,42 +54,32 @@ export default function TipoConsumiblePage() {
     const COLUMS = [
         "N°",
         "NOMBRE",
-        "CLASE",
         "UNIDAD",
-        "% NITROGENO",
+        "DESCRIPCION",
+        "CATEGORIA",
+        "GRUPO",
+        "PROCESO",
         "ACCIONES",
     ];
 
 
     //USE QUERIES
-    const claseFertilizanteQuery = useClaseFertilizante();
-
-    const [selectedClase, setSelectedClase] = useState<string>("Orgánico");
-    const tipoFertilizanteQuery = useTipoFertilizante(selectedClase);
-
-    const handleClaseChange = useCallback(
-        async (value: string) => {
-            await setSelectedClase(value);
-            await tipoFertilizanteQuery.refetch();
-        },
-        [tipoFertilizanteQuery]
-    );
+    const tipoConsumibleQuery = useTipoConsumible();
 
     // HANDLES
-
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
-        tipoFertilizanteQuery.refetch();
-    }, [tipoFertilizanteQuery]);
+        tipoConsumibleQuery.refetch();
+    }, [tipoConsumibleQuery]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
-        tipoFertilizanteQuery.refetch();
-    }, [tipoFertilizanteQuery]);
+        tipoConsumibleQuery.refetch();
+    }, [tipoConsumibleQuery]);
 
     const handleDelete = useCallback(async () => {
         try {
-            const response = await deleteTipoFertilizante(idForDelete);
+            const response = await deleteTipoConsumible(idForDelete);
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
@@ -100,9 +87,9 @@ export default function TipoConsumiblePage() {
                 error.response?.data?.message || "Error al eliminar el tipo de fertilizante"
             );
         } finally {
-            await tipoFertilizanteQuery.refetch();
+            await tipoConsumibleQuery.refetch();
         }
-    }, [tipoFertilizanteQuery]);
+    }, [tipoConsumibleQuery]);
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
         setIsUpdateDialogOpen(true);
@@ -113,7 +100,7 @@ export default function TipoConsumiblePage() {
         setIsDeleteDialogOpen(true);
     };
 
-    if (tipoFertilizanteQuery.isLoading || claseFertilizanteQuery.isLoading) {
+    if (tipoConsumibleQuery.isLoading) {
         return <SkeletonTable/>;
     }
 
@@ -121,21 +108,13 @@ export default function TipoConsumiblePage() {
         <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Tipos de Fertilizante</h1>
+                    <h1 className="text-base text-foreground font-bold">Tipos de Consumible</h1>
                     <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div
                         className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
-                        <SelectFilter
-                            list={claseFertilizanteQuery.data!}
-                            itemSelected={selectedClase}
-                            handleItemSelect={handleClaseChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"nombre"}
-                            icon={<Bean className="h-3 w-3"/>}
-                        />
+
                     </div>
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -149,7 +128,7 @@ export default function TipoConsumiblePage() {
                                 <DialogHeader>
                                     <DialogTitle> TIPOS DE FERTILIZANTE</DialogTitle>
                                     <DialogDescription>
-                                        Agregar Tipo de Fertilizante
+                                        Agregar Tipo de Consumible
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
@@ -174,8 +153,8 @@ export default function TipoConsumiblePage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {tipoFertilizanteQuery.data!.map(
-                            (item: TipoFertilizanteCollection, index: number) => (
+                        {tipoConsumibleQuery.data!.map(
+                            (item: TipoConsumibleCollection, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{index + 1}</Badge>
@@ -184,13 +163,19 @@ export default function TipoConsumiblePage() {
                                         {item.nombre}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {item.clase}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
                                         {item.unidad}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default"> {item.porcentajeNitrogeno}</Badge>
+                                        {item.descripcion}
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {item.categoria}
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {item.grupo}
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {item.proceso}
                                     </TableCell>
 
                                     <TableCell className="text-xs sm:text-sm p-1">
@@ -228,10 +213,10 @@ export default function TipoConsumiblePage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Fertilizante</DialogTitle>
+                        <DialogTitle>Actualizar Registro de Consumible</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <UpdateFormTipoFertilizante onClose={handleCloseUpdate} id={idForUpdate}/>
+                    <UpdateFormTipoConsumible onClose={handleCloseUpdate} id={idForUpdate}/>
                 </DialogContent>
             </Dialog>
 

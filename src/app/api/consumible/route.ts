@@ -81,6 +81,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                     ? [{[sort]: direction || 'desc'}]
                     : [{anioId: 'desc'}, {mesId: 'desc'}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
+            // ...(limit ? {take: 100} : all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
         const formattedConsumibles: any[] = consumibles.map(

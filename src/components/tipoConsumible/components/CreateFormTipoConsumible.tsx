@@ -2,7 +2,6 @@ import React from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {toast} from "sonner";
 import {
     Form,
     FormControl,
@@ -16,13 +15,15 @@ import {Input} from "@/components/ui/input";
 import {Button} from "../../ui/button";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {
-    CreateTipoFertilizanteProps,
-    TipoFertilizanteRequest,
-} from "../services/tipoFertilizante.interface";
+    CreateTipoConsumibleProps,
+    TipoConsumibleRequest,
+} from "../services/tipoConsumible.interface";
 import {
-    createTipoFertilizante,
-    getClaseFertilizante,
-} from "../services/tipoFertilizante.actions";
+    createTipoConsumible,
+    getTipoConsumibleCategoria,
+    getTipoConsumibleDescripcion,
+    getTipoConsumibleGrupo, getTipoConsumibleProceso,
+} from "../services/tipoConsumible.actions";
 import {useQuery} from "@tanstack/react-query";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {errorToast, successToast} from "@/lib/utils/core.function";
@@ -30,41 +31,61 @@ import {errorToast, successToast} from "@/lib/utils/core.function";
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
-const TipoFertilizante = z.object({
+const TipoConsumible = z.object({
     nombre: z.string().min(1, requiredMessage("nombre")),
-    clase: z.string().min(1, requiredMessage("clase")),
-    porcentaje_nitrogeno: z.preprocess(parseNumber, z.number().min(1, requiredMessage("% de nitrogeno mayor a 1"))),
     unidad: z.string().min(1, requiredMessage("unidad")),
+    descripcionId: z.string().min(1, requiredMessage("descripcionId")),
+    categoriaId: z.string().min(1, requiredMessage("categoriaId")),
+    grupoId: z.string().min(1, requiredMessage("grupoId")),
+    procesoId: z.string().min(1, requiredMessage("procesoId")),
 });
 
 export function CreateFormTipoConsumible({
                                              onClose,
-                                         }: CreateTipoFertilizanteProps) {
-    const form = useForm<z.infer<typeof TipoFertilizante>>({
-        resolver: zodResolver(TipoFertilizante),
+                                         }: CreateTipoConsumibleProps) {
+    const form = useForm<z.infer<typeof TipoConsumible>>({
+        resolver: zodResolver(TipoConsumible),
         defaultValues: {
             nombre: "",
-            porcentaje_nitrogeno: 0,
             unidad: "",
-            clase: "",
+            descripcionId: "",
+            categoriaId: "",
+            grupoId: "",
+            procesoId: "",
         },
     });
-
-    const claseQuery = useQuery({
-        queryKey: ["clases"],
-        queryFn: () => getClaseFertilizante(),
+    const descripciones = useQuery({
+        queryKey: ['descripciones'],
+        queryFn: () => getTipoConsumibleDescripcion(),
+        refetchOnWindowFocus: false,
+    });
+    const grupos = useQuery({
+        queryKey: ['grupos'],
+        queryFn: () => getTipoConsumibleGrupo(),
+        refetchOnWindowFocus: false,
+    });
+    const categorias = useQuery({
+        queryKey: ['categorias'],
+        queryFn: () => getTipoConsumibleCategoria(),
+        refetchOnWindowFocus: false,
+    });
+    const procesos = useQuery({
+        queryKey: ['procesos'],
+        queryFn: () => getTipoConsumibleProceso(),
         refetchOnWindowFocus: false,
     });
 
-    const onSubmit = async (data: z.infer<typeof TipoFertilizante>) => {
-        const TipoFertilizanteRequest: TipoFertilizanteRequest = {
+    const onSubmit = async (data: z.infer<typeof TipoConsumible>) => {
+        const TipoConsumibleRequest: TipoConsumibleRequest = {
             nombre: data.nombre,
-            porcentajeNitrogeno: data.porcentaje_nitrogeno,
             unidad: data.unidad,
-            clase: data.clase,
+            descripcionId: Number(data.descripcionId),
+            categoriaId: Number(data.categoriaId),
+            grupoId: Number(data.grupoId),
+            procesoId: Number(data.procesoId),
         };
         try {
-            const response = await createTipoFertilizante(TipoFertilizanteRequest);
+            const response = await createTipoConsumible(TipoConsumibleRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -72,7 +93,7 @@ export function CreateFormTipoConsumible({
         }
     };
 
-    if (claseQuery.isFetching || claseQuery.isError) {
+    if (descripciones.isLoading) {
         return <SkeletonForm/>;
     }
 
@@ -104,45 +125,137 @@ export function CreateFormTipoConsumible({
                             )}
                         />
 
+                        {/*UNIDAD*/}
+                        <FormField
+                            control={form.control}
+                            name="unidad"
+                            render={({field}) => (
+                                <FormItem className="pt-2 w-full">
+                                    <FormLabel>Unidad</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            placeholder="Nombre del tipo de papel"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
                         <div className="flex gap-5">
-                            {/*PORCENTAJE DE NITROGENO*/}
+                            {/*CATEGORIA*/}
                             <FormField
+                                name="categoriaId"
                                 control={form.control}
-                                name="porcentaje_nitrogeno"
                                 render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Porcentaje de Nitrogeno</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                type="number"
-                                                step="0.01"
-                                                min={0}
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
+                                    <FormItem className="pt-2">
+                                        <FormLabel>Categoría</FormLabel>
+                                        <Select onValueChange={field.onChange}>
+                                            <FormControl className="w-full">
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Categoría"/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {categorias.data!.map((categoria) => (
+                                                        <SelectItem key={categoria.id}
+                                                                    value={categoria.id.toString()}>
+                                                            {categoria.nombre}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                     </FormItem>
                                 )}
                             />
 
-                            {/*UNIDAD*/}
+                            {/*PROCESO*/}
                             <FormField
+                                name="procesoId"
                                 control={form.control}
-                                name="unidad"
                                 render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Unidad</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="text"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="Unidad "
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
+                                    <FormItem className="pt-2">
+                                        <FormLabel>Proceso</FormLabel>
+                                        <Select onValueChange={field.onChange}>
+                                            <FormControl className="w-full">
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Proceso"/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {procesos.data!.map((proceso) => (
+                                                        <SelectItem key={proceso.id}
+                                                                    value={proceso.id.toString()}>
+                                                            {proceso.nombre}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <div className="flex gap-5">
+                            {/*DESCRIPCION*/}
+                            <FormField
+                                name="descripcionId"
+                                control={form.control}
+                                render={({field}) => (
+                                    <FormItem className="pt-2">
+                                        <FormLabel>Descripción</FormLabel>
+                                        <Select onValueChange={field.onChange}>
+                                            <FormControl className="w-full">
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Descripción"/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {descripciones.data!.map((descripcion) => (
+                                                        <SelectItem key={descripcion.id}
+                                                                    value={descripcion.id.toString()}>
+                                                            {descripcion.descripcion}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/*GRUPO*/}
+                            <FormField
+                                name="grupoId"
+                                control={form.control}
+                                render={({field}) => (
+                                    <FormItem className="pt-2">
+                                        <FormLabel>Grupo</FormLabel>
+                                        <Select onValueChange={field.onChange}>
+                                            <FormControl className="w-full">
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Grupo"/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {grupos.data!.map((grupo) => (
+                                                        <SelectItem key={grupo.id}
+                                                                    value={grupo.id.toString()}>
+                                                            {grupo.nombre}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                     </FormItem>
                                 )}
                             />

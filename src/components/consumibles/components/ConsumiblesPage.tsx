@@ -46,7 +46,6 @@ import {useRouter} from "next/navigation";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {
     useAnio,
-    useClaseConsumible,
     useConsumible,
     useConsumibleReport,
     useSede,
@@ -64,6 +63,7 @@ import GenerateReport from "@/lib/utils/generateReport";
 import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ReportRequest} from "@/lib/interfaces/globals";
+import {useMes} from "@/components/combustion/lib/combustion.hook";
 
 export default function ConsumiblePage() {
     // NAVIGATION
@@ -82,25 +82,22 @@ export default function ConsumiblePage() {
     //SELECTS - FILTERS
     const [selectedTipoConsumibleId, setSelectedTipoConsumibleId] =
         useState<string>("");
-    const [selectedClaseConsumible, setSelectedClaseConsumible] =
-        useState<string>("Orgánico");
     const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [yearFrom, setYearFrom] = useState<string>(
+    const [selectedAnio, setSelectedAnio] = useState<string>(
         new Date().getFullYear().toString()
     );
-    const [yearTo, setYearTo] = useState<string>(
-        new Date().getFullYear().toString()
-    );
+    const [selectedMes, setSelectedMes] = useState<string>("");
+    const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
+    const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     // HOOKS
     const consumible = useConsumible({
         tipoConsumibleId: selectedTipoConsumibleId
             ? parseInt(selectedTipoConsumibleId)
             : undefined,
-        claseConsumible: selectedClaseConsumible,
         sedeId: parseInt(selectedSede),
-        yearFrom: yearFrom,
-        yearTo: yearTo,
+        from,
+        to,
         page: page,
     });
 
@@ -109,13 +106,14 @@ export default function ConsumiblePage() {
             ? parseInt(selectedTipoConsumibleId)
             : undefined,
         sedeId: parseInt(selectedSede),
-        yearFrom: yearFrom,
-        yearTo: yearTo,
+        from,
+        to,
     });
 
     const tipoConsumible = useTipoConsumible();
     const sedes = useSede();
     const anios = useAnio();
+    const meses = useMes();
 
     // HANDLE FUNCTIONS
     const handleClickUpdate = (id: number) => {
@@ -138,25 +136,21 @@ export default function ConsumiblePage() {
         [consumible, consumibleReport]
     );
 
-    const handleYearFromChange = useCallback(
+    const handleFromChange = useCallback(
         async (value: string) => {
             await setPage(1);
-            await setYearFrom(value);
+            await setFrom(value);
             await consumible.refetch();
             await consumibleReport.refetch();
-        },
-        [consumible, consumibleReport]
-    );
+        }, [consumible, consumibleReport]);
 
-    const handleYearToChange = useCallback(
+    const handleToChange = useCallback(
         async (value: string) => {
             await setPage(1);
-            await setYearTo(value);
+            await setTo(value);
             await consumible.refetch();
             await consumibleReport.refetch();
-        },
-        [consumible, consumibleReport]
-    );
+        }, [consumible, consumibleReport]);
 
     const handleTipoConsumibleChange = useCallback(
         async (value: string) => {
@@ -204,17 +198,26 @@ export default function ConsumiblePage() {
     const handleClickReport = useCallback(
         async (period: ReportRequest) => {
             const columns = [
-                {header: "N°", key: "id", width: 10},
-                {header: "CONSUMIBLE", key: "tipoConsumible", width: 40},
-                {header: "PESO TOTAL", key: "pesoTotal", width: 15},
-                {header: "AÑO", key: "anio", width: 15},
+                {header: "N°", key: "rn", width: 5},
+                {header: "TIPO", key: "categoria", width: 25},
+                {
+                    header: "CONSUMIBLE",
+                    key: "tipoConsumible",
+                    width: 80,
+                },
+                {header: "GRUPO", key: "grupo", width: 20},
+                {header: "PROCESO", key: "proceso", width: 90},
+                {header: "PESO TOTAL", key: "pesoTotal", width: 20},
+                {header: "UNIDAD", key: "unidad", width: 10},
+                {header: "AÑO", key: "anio", width: 10},
+                {header: "MES", key: "mes", width: 20},
                 {header: "SEDE", key: "sede", width: 20},
             ];
             const data = await consumibleReport.refetch();
             await GenerateReport(
                 data.data!.data,
                 columns,
-                formatPeriod(period),
+                formatPeriod(period, true),
                 "REPORTE DE CONSUMIBLES",
                 "Consumibles"
             );
@@ -255,7 +258,7 @@ export default function ConsumiblePage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="font-Manrope">
                     <h1 className="text-base text-foreground font-bold">Consumibles</h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">
+                    <h2 className="text-xs text-muted-foreground">
                         Huella de carbono
                     </h2>
                 </div>
@@ -289,10 +292,11 @@ export default function ConsumiblePage() {
                             <ReportComponent
                                 onSubmit={handleClickReport}
                                 ref={submitFormRef}
-                                yearFrom={yearFrom}
-                                yearTo={yearTo}
-                                handleYearFromChange={handleYearFromChange}
-                                handleYearToChange={handleYearToChange}
+                                withMonth={true}
+                                from={from}
+                                to={to}
+                                handleFromChange={handleFromChange}
+                                handleToChange={handleToChange}
                             />
                         </div>
                         <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-2">
@@ -309,24 +313,27 @@ export default function ConsumiblePage() {
                             <ExportPdfReport
                                 data={consumibleReport.data!.data}
                                 fileName={`REPORTE DE CONSUMIBLES_${formatPeriod({
-                                    yearFrom,
-                                    yearTo,
-                                })}`}
+                                    from,
+                                    to,
+                                }, true)}`}
                                 columns={[
                                     {header: "N°", key: "rn", width: 5},
-                                    {header: "TIPO", key: "clase", width: 20},
+                                    {header: "TIPO", key: "categoria", width: 20},
                                     {
                                         header: "CONSUMIBLE",
                                         key: "tipoConsumible",
                                         width: 25,
                                     },
-                                    {header: "CANTIDAD", key: "cantidad", width: 20},
-                                    {header: "NITRÓGENO %", key: "porcentajeNit", width: 10},
+                                    {header: "GRUPO", key: "grupo", width: 20},
+                                    {header: "PROCESO", key: "proceso", width: 10},
+                                    {header: "PESO TOTAL", key: "pesoTotal", width: 10},
+                                    {header: "UNIDAD", key: "unidad", width: 10},
                                     {header: "AÑO", key: "anio", width: 10},
+                                    {header: "MES", key: "mes", width: 10},
                                     {header: "SEDE", key: "sede", width: 10},
                                 ]}
                                 title="REPORTE DE CONSUMIBLES"
-                                period={formatPeriod({yearFrom, yearTo})}
+                                period={formatPeriod({from, to}, true)}
                             />
 
                             <ButtonCalculate onClick={handleCalculate}/>
@@ -355,37 +362,34 @@ export default function ConsumiblePage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs font-bold text-center">
                                 N°
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs font-bold text-center">
                                 TIPO
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs font-bold text-center">
                                 CONSUMIBLE
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs font-bold text-center">
                                 GRUPO
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs font-bold text-center">
                                 PROCESO
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                {/*<Button variant="ghost" onClick={handleToggleCantidadSort}>*/}
+                            <TableHead className="text-xs font-bold text-center">
                                 PESO TOTAL
-                                {/*<ChevronsUpDown className="ml-2 h-3 w-3"/>*/}
-                                {/*</Button>*/}
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs font-bold text-center">
                                 UNIDAD
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs font-bold text-center">
                                 AÑO
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs font-bold text-center">
                                 MES
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs font-bold text-center">
                                 ACCIONES
                             </TableHead>
                         </TableRow>
@@ -394,36 +398,41 @@ export default function ConsumiblePage() {
                         {consumible.data!.data.map(
                             (item: ConsumibleCollectionItem, index: number) => (
                                 <TableRow key={item.id} className="text-center">
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs">
                                         <Badge variant="secondary">
                                             {10 * (page - 1) + index + 1}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell
+                                        className="text-xs w-[20%]  whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.categoria}
                                     </TableCell>
-                                    <TableCell className="text-xs text-start sm:text-sm">
+                                    <TableCell
+                                        className="text-xs text-start max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.tipoConsumible}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell
+                                        className="text-xs max-w-24 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.grupo}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell
+                                        className="text-xs max-w-48 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.proceso}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell
+                                        className="text-xs max-w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
                                         <Badge variant="default">{item.pesoTotal}</Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs">
                                         {item.unidad}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs">
                                         {item.anio}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs">
                                         {item.mes}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm p-1">
+                                    <TableCell className="text-xs p-1">
                                         <div className="flex justify-center gap-4">
                                             {/*UPDATE*/}
                                             <Button
