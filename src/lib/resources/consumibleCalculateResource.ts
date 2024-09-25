@@ -44,6 +44,8 @@ export function formatConsumibleCalculo(combustibleCalculo: any) {
         updated_at,
         tipoConsumible,
         sede,
+        pesoTotal,
+        totalGEI,
         ...rest
     } = combustibleCalculo;
 
@@ -51,6 +53,8 @@ export function formatConsumibleCalculo(combustibleCalculo: any) {
         ...rest,
         created_at: undefined,
         updated_at: undefined,
+        pesoTotal: pesoTotal.toFixed(3),
+        totalGEI: totalGEI.toFixed(3),
         tipoConsumible: tipoConsumible.nombre,
         descripcion: tipoConsumible.descripcion.nombre,
         categoria: tipoConsumible.categoria.nombre,

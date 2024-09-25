@@ -92,20 +92,18 @@ export default function ConsumiblesCalculate() {
     const handleClickExcelReport = useCallback(async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10},
-            {header: "FERTILIZANTE", key: "tipoConsumible", width: 30},
-            {header: "SEDE", key: "sede", width: 20},
-            {header: "CONSUMO", key: "consumo", width: 25},
-            {header: "UNIDAD", key: "unidad", width: 15},
-            {header: "NITRÓGENO[%]", key: "porcentajeNitrogeno", width: 20},
-            {header: "APORTE NITRÓGENO", key: "cantidadAporte", width: 25},
-            {header: "EMISIONES DE N20", key: "totalEmisionesDirectas", width: 25},
-            {header: "TOTAL GEI", key: "emisionGEI", width: 20},
-
+            {header: "CONSUMIBLE", key: "tipoConsumible", width: 80},
+            {header: "CATEGORIA", key: "categoria", width: 25},
+            {header: "UNIDAD", key: "unidad", width: 10},
+            {header: "GRUPO", key: "grupo", width: 25},
+            {header: "PROCESO", key: "proceso", width: 90},
+            {header: "PESO TOTAL", key: "pesoTotal", width: 20},
+            {header: "TOTAL GEI", key: "totalGEI", width: 20},
         ];
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
         const data = await consumibleCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE FERTILIZANTES", "Consumibles");
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE CONSUMIBLES", "Consumibles");
     }, [consumibleCalculosReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
@@ -177,19 +175,18 @@ export default function ConsumiblesCalculate() {
 
                             <ExportPdfReport
                                 data={consumibleCalculosReport.data!.data}
-                                fileName={`REPORTE CALCULOS DE FERTILIZANTES_${formatPeriod({from, to}, true)}`}
+                                fileName={`REPORTE CALCULOS DE CONSUMIBLES_${formatPeriod({from, to}, true)}`}
                                 columns={[
-                                    {header: "N°", key: "id", width: 5},
-                                    {header: "FERTILIZANTE", key: "tipoConsumible", width: 20},
-                                    {header: "SEDE", key: "sede", width: 20},
-                                    {header: "CONSUMO", key: "consumo", width: 15},
-                                    {header: "UNIDAD", key: "unidad", width: 10},
-                                    {header: "NITRÓGENO[%]", key: "porcentajeNitrogeno", width: 10},
-                                    {header: "APORTE NITRÓGENO", key: "cantidadAporte", width: 15},
-                                    {header: "EMISIONES DE N20", key: "totalEmisionesDirectas", width: 15},
-                                    {header: "TOTAL GEI", key: "emisionGEI", width: 10},
+                                    {header: "N°", key: "id", width: 10},
+                                    {header: "CONSUMIBLE", key: "tipoConsumible", width: 30},
+                                    {header: "CATEGORIA", key: "categoria", width: 20},
+                                    {header: "UNIDAD", key: "unidad", width: 25},
+                                    {header: "GRUPO", key: "grupo", width: 15},
+                                    {header: "PROCESO", key: "proceso", width: 20},
+                                    {header: "PESO TOTAL", key: "pesoTotal", width: 25},
+                                    {header: "TOTAL GEI", key: "totalGEI", width: 25},
                                 ]}
-                                title="REPORTE DE CALCULOS DE FERTILIZANTES"
+                                title="REPORTE DE CALCULOS DE CONSUMIBLES"
                                 period={formatPeriod({from, to})}
                             />
 
@@ -208,25 +205,25 @@ export default function ConsumiblesCalculate() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FERTILIZANTE
+                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                                CONSUMIBLE
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CONSUMO
+                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                                TIPO
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
                                 UNIDAD
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                % NITROGENO
+                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                                GRUPO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                APORTE DE NITROGENO
+                                PROCESO
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                EMISIONES DE N2O
+                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                                PESO TOTAL
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
                                 EMISIONES GEI
                             </TableHead>
                         </TableRow>
@@ -246,29 +243,27 @@ export default function ConsumiblesCalculate() {
                                     className="text-center"
                                     key={ConsumibleCalculate.id}
                                 >
-                                    <TableCell className="text-xs sm:text-sm text-start">
+                                    <TableCell className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis text-start">
                                         {ConsumibleCalculate.tipoConsumible}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary">
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                             {ConsumibleCalculate.categoria}
-                                        </Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         {ConsumibleCalculate.unidad}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         {ConsumibleCalculate.grupo}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs max-w-36 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {ConsumibleCalculate.proceso}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         <Badge variant="default">
                                             {ConsumibleCalculate.pesoTotal}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         <Badge variant="default">
                                             {ConsumibleCalculate.totalGEI}
                                         </Badge>
