@@ -116,7 +116,7 @@ export function CreateFormTipoConsumible({
                                         <Input
                                             type="text"
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Nombre del tipo de papel"
+                                            placeholder="Nombre del tipo de consumible"
                                             {...field}
                                         />
                                     </FormControl>
@@ -136,7 +136,7 @@ export function CreateFormTipoConsumible({
                                         <Input
                                             type="text"
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Nombre del tipo de papel"
+                                            placeholder="Unidad del tipo de consumible"
                                             {...field}
                                         />
                                     </FormControl>
@@ -151,7 +151,7 @@ export function CreateFormTipoConsumible({
                                 name="categoriaId"
                                 control={form.control}
                                 render={({field}) => (
-                                    <FormItem className="pt-2">
+                                    <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Categoría</FormLabel>
                                         <Select onValueChange={field.onChange}>
                                             <FormControl className="w-full">
@@ -179,7 +179,7 @@ export function CreateFormTipoConsumible({
                                 name="procesoId"
                                 control={form.control}
                                 render={({field}) => (
-                                    <FormItem className="pt-2">
+                                    <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Proceso</FormLabel>
                                         <Select onValueChange={field.onChange}>
                                             <FormControl className="w-full">
@@ -209,7 +209,7 @@ export function CreateFormTipoConsumible({
                                 name="descripcionId"
                                 control={form.control}
                                 render={({field}) => (
-                                    <FormItem className="pt-2">
+                                    <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Descripción</FormLabel>
                                         <Select onValueChange={field.onChange}>
                                             <FormControl className="w-full">
@@ -237,7 +237,7 @@ export function CreateFormTipoConsumible({
                                 name="grupoId"
                                 control={form.control}
                                 render={({field}) => (
-                                    <FormItem className="pt-2">
+                                    <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Grupo</FormLabel>
                                         <Select onValueChange={field.onChange}>
                                             <FormControl className="w-full">

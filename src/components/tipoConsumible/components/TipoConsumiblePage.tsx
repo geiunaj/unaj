@@ -1,6 +1,6 @@
 "use client";
 
-import {useCallback, useState} from "react";
+import React, {useCallback, useState} from "react";
 import SelectFilter from "@/components/SelectFilter";
 import {Pen, Plus, Trash2, Bean} from "lucide-react";
 import {
@@ -37,9 +37,13 @@ import SkeletonTable from "@/components/Layout/skeletonTable";
 import {CreateFormTipoConsumible} from "./CreateFormTipoConsumible";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {UpdateFormTipoConsumible} from "@/components/tipoConsumible/components/UpdateFormTipoConsumible";
-import {useTipoConsumible} from "@/components/consumibles/lib/consumible.hook";
 import {deleteTipoConsumible} from "@/components/tipoConsumible/services/tipoConsumible.actions";
-import {TipoConsumibleCollection} from "@/components/tipoConsumible/services/tipoConsumible.interface";
+import {
+    TipoConsumibleCollection,
+    TipoConsumibleCollectionItem
+} from "@/components/tipoConsumible/services/tipoConsumible.interface";
+import {useTipoConsumible} from "@/components/tipoConsumible/lib/tipoConsumible.hook";
+import CustomPagination from "@/components/Pagination";
 
 export default function TipoConsumiblePage() {
     //DIALOGS
@@ -50,6 +54,8 @@ export default function TipoConsumiblePage() {
     //IDS
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
+
+    const [page, setPage] = useState(1);
 
     const COLUMS = [
         "N°",
@@ -64,7 +70,7 @@ export default function TipoConsumiblePage() {
 
 
     //USE QUERIES
-    const tipoConsumibleQuery = useTipoConsumible();
+    const tipoConsumibleQuery = useTipoConsumible(page);
 
     // HANDLES
     const handleClose = useCallback(() => {
@@ -84,7 +90,7 @@ export default function TipoConsumiblePage() {
             successToast(response.data.message);
         } catch (error: any) {
             errorToast(
-                error.response?.data?.message || "Error al eliminar el tipo de fertilizante"
+                error.response?.data?.message || "Error al eliminar el tipo de consumible"
             );
         } finally {
             await tipoConsumibleQuery.refetch();
@@ -100,6 +106,11 @@ export default function TipoConsumiblePage() {
         setIsDeleteDialogOpen(true);
     };
 
+    const handlePageChage = async (page: number) => {
+        await setPage(page);
+        await tipoConsumibleQuery.refetch();
+    };
+
     if (tipoConsumibleQuery.isLoading) {
         return <SkeletonTable/>;
     }
@@ -112,10 +123,6 @@ export default function TipoConsumiblePage() {
                     <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
-                    <div
-                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
-
-                    </div>
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
@@ -126,7 +133,7 @@ export default function TipoConsumiblePage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle> TIPOS DE FERTILIZANTE</DialogTitle>
+                                    <DialogTitle> TIPOS DE CONSUMIBLE</DialogTitle>
                                     <DialogDescription>
                                         Agregar Tipo de Consumible
                                     </DialogDescription>
@@ -153,32 +160,35 @@ export default function TipoConsumiblePage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {tipoConsumibleQuery.data!.map(
-                            (item: TipoConsumibleCollection, index: number) => (
+                        {tipoConsumibleQuery.data!.data.map(
+                            (item: TipoConsumibleCollectionItem) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary">{index + 1}</Badge>
+                                        <Badge variant="secondary">{item.rn}</Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell
+                                        className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.nombre}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.unidad}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.descripcion}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.categoria}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell
+                                        className="text-xs max-w-24  whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.grupo}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell
+                                        className="text-xs max-w-48 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.proceso}
                                     </TableCell>
 
-                                    <TableCell className="text-xs sm:text-sm p-1">
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis p-1">
                                         <div className="flex justify-center gap-4">
                                             {/*UPDATE*/}
                                             <Button
@@ -206,6 +216,12 @@ export default function TipoConsumiblePage() {
                         )}
                     </TableBody>
                 </Table>
+                {tipoConsumibleQuery.data!.meta.totalPages > 1 && (
+                    <CustomPagination
+                        meta={tipoConsumibleQuery.data!.meta}
+                        onPageChange={handlePageChage}
+                    />
+                )}
             </div>
 
             {/*MODAL UPDATE*/}

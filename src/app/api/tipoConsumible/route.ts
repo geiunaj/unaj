@@ -2,17 +2,37 @@ import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {TipoConsumible, TipoConsumibleRequest} from "@/components/tipoConsumible/services/tipoConsumible.interface";
 import {formatTipoConsumible} from "@/lib/resources/tipoConsumibleResource";
+import {formatConsumible} from "@/lib/resources/consumibleResource";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
+        const {searchParams} = new URL(req.url);
+        const perPage = parseInt(searchParams.get("perPage") ?? "0");
+        const page = parseInt(searchParams.get("page") ?? "1");
         const tiposConsumible = await prisma.tipoConsumible.findMany({
             include: {
                 descripcion: true,
                 categoria: true,
                 grupo: true,
                 proceso: true,
-            }
+            },
+            ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
         });
+        if (perPage > 0) {
+            const totalRecords = await prisma.tipoConsumible.count();
+            const totalPages = Math.ceil(totalRecords / perPage);
+            const tiposConsumibleFormatted: any[] = tiposConsumible.map(
+                (consumible, index) => {
+                    const newConsumible = formatConsumible(consumible);
+                    newConsumible.rn = index + 1;
+                    return newConsumible;
+                }
+            );
+            return NextResponse.json({
+                data: tiposConsumibleFormatted,
+                meta: {page, perPage, totalRecords, totalPages},
+            });
+        }
         const formattedTipoConsumibles: TipoConsumible[] = tiposConsumible.map(formatTipoConsumible);
         return NextResponse.json(formattedTipoConsumibles);
     } catch (error) {

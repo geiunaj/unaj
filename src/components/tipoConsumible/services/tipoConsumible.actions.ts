@@ -1,6 +1,6 @@
 import api from "../../../../config/api";
 import {
-    TipoConsumibleCollection,
+    TipoConsumibleCollection, TipoConsumibleCollectionPaginate,
     TipoConsumibleRequest,
     TipoConsumibleResource,
 } from "./tipoConsumible.interface";
@@ -15,6 +15,17 @@ interface Response {
 
 export async function getTiposConsumible(): Promise<TipoConsumibleCollection[]> {
     const {data} = await api.get<TipoConsumibleCollection[]>("/api/tipoConsumible");
+    return data;
+}
+
+export async function getTiposConsumiblePaginate(page: number = 1): Promise<TipoConsumibleCollectionPaginate> {
+    const config: AxiosRequestConfig = {
+        params: {
+            perPage: 10,
+            page,
+        },
+    }
+    const {data} = await api.get<TipoConsumibleCollectionPaginate>("/api/tipoConsumible", config);
     return data;
 }
 
