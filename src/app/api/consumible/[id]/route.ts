@@ -1,7 +1,7 @@
-import {formatCombustible} from "@/lib/resources/combustionResource";
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
-import {formatConsumible} from "@/lib/resources/consumibleResource"; // Asegúrate de que la ruta sea correcta
+import {formatConsumible} from "@/lib/resources/consumibleResource";
+import {ConsumibleRequest} from "@/components/consumibles/services/consumible.interface"; // Asegúrate de que la ruta sea correcta
 
 // SHOW ROUTE -> PARAM [ID]
 export async function GET(
@@ -30,7 +30,7 @@ export async function GET(
         });
 
         if (!consumible) {
-            return new NextResponse("Combustible not found", {status: 404});
+            return new NextResponse("Consumible not found", {status: 404});
         }
         return NextResponse.json(formatConsumible(consumible));
     } catch (error) {
@@ -46,13 +46,11 @@ export async function PUT(
 ): Promise<NextResponse> {
     try {
         const id = parseInt(params.id);
-        const body = await req.json();
-
-        // VALIDATE BODY
-        if (!body.tipo || !body.tipoEquipo || !body.consumo || !body.tipoConsumible_id || !body.mes_id || !body.anioId || !body.sedeId) {
-            return new NextResponse("Missing required fields", {status: 400});
-        }
-
+        const body: ConsumibleRequest = await req.json();
+        const anio = await prisma.anio.findFirst({
+            where: {id: body.anioId},
+        });
+        if (!anio) return new NextResponse("Año no encontrado", {status: 404});
         const consumible = await prisma.consumible.update({
             where: {
                 id: id,
@@ -66,7 +64,14 @@ export async function PUT(
                 updated_at: new Date(),
             },
             include: {
-                tipoConsumible: true,
+                tipoConsumible: {
+                    include: {
+                        descripcion: true,
+                        categoria: true,
+                        grupo: true,
+                        proceso: true,
+                    }
+                },
                 mes: true,
                 anio: true,
                 sede: true,
@@ -74,8 +79,8 @@ export async function PUT(
         });
 
         return NextResponse.json({
-            message: "Combustible actualizado",
-            consumible: formatCombustible(consumible),
+            message: "Consumible actualizado",
+            consumible: formatConsumible(consumible),
         });
 
     } catch (error) {
@@ -98,7 +103,7 @@ export async function DELETE(
         });
 
         return NextResponse.json({
-            message: "Combustible eliminado",
+            message: "Consumible eliminado",
         });
     } catch (error) {
         console.error("Error deleting consumible", error);

@@ -127,7 +127,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 updated_at: new Date(),
             },
             include: {
-                tipoConsumible: true,
+                tipoConsumible: {
+                    include: {
+                        descripcion: true,
+                        categoria: true,
+                        grupo: true,
+                        proceso: true,
+                    }
+                },
                 sede: true,
                 anio: true,
                 mes: true,

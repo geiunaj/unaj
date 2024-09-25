@@ -116,7 +116,7 @@ export function UpdateFormConsumible({
     }
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center max-w-md">
             <div className="flex flex-col items-center justify-center w-full">
                 <Form {...form}>
                     <form
@@ -186,26 +186,6 @@ export function UpdateFormConsumible({
                         />
 
                         <div className="flex gap-4">
-                            {/* Peso total */}
-                            <FormField
-                                control={form.control}
-                                name="pesoTotal"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Peso Total de Consumible</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="Cantidad Kg/año"
-                                                type="number"
-                                                step="0.01"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
                             {/* Año */}
                             <FormField
                                 control={form.control}
@@ -268,6 +248,26 @@ export function UpdateFormConsumible({
                             />
                         </div>
 
+                        {/* Peso total */}
+                        <FormField
+                            control={form.control}
+                            name="pesoTotal"
+                            render={({field}) => (
+                                <FormItem className="pt-2 w-1/2">
+                                    <FormLabel>Peso Total de Consumible</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            placeholder="Cantidad Kg/año"
+                                            type="number"
+                                            step="0.01"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-blue-700">

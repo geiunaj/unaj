@@ -110,7 +110,7 @@ export function FormConsumibles({onClose}: CreateConsumibleProps) {
     }
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center max-w-md">
             <div className="flex flex-col items-center justify-center w-full">
                 <Form {...form}>
                     <form
@@ -175,27 +175,6 @@ export function FormConsumibles({onClose}: CreateConsumibleProps) {
                         />
 
                         <div className="flex gap-4">
-                            {/* Cantidad */}
-                            <FormField
-                                control={form.control}
-                                name="pesoTotal"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Cantidad de consumible</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="Cantidad Kg/año"
-                                                type="number"
-                                                step="0.01"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-
                             {/* Año */}
                             <FormField
                                 control={form.control}
@@ -239,7 +218,7 @@ export function FormConsumibles({onClose}: CreateConsumibleProps) {
                                         >
                                             <FormControl className="w-full">
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Selecciona el año"/>
+                                                    <SelectValue placeholder="Selecciona el mes"/>
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -256,6 +235,27 @@ export function FormConsumibles({onClose}: CreateConsumibleProps) {
                                 )}
                             />
                         </div>
+
+                        {/* Cantidad */}
+                        <FormField
+                            control={form.control}
+                            name="pesoTotal"
+                            render={({field}) => (
+                                <FormItem className="pt-2 w-full">
+                                    <FormLabel>Peso Total de Consumible</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            placeholder="Cantidad Kg/año"
+                                            type="number"
+                                            step="0.01"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
 
                         <div className="flex gap-3 w-full pt-4">
