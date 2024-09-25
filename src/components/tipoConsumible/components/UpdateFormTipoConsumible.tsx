@@ -126,7 +126,7 @@ export function UpdateFormTipoConsumible({
     }
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center max-w-md">
             <div className="flex flex-col items-center justify-center w-full">
                 <Form {...form}>
                     <form
@@ -179,7 +179,7 @@ export function UpdateFormTipoConsumible({
                                 name="categoriaId"
                                 control={form.control}
                                 render={({field}) => (
-                                    <FormItem className="pt-2">
+                                    <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Categoría</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
@@ -210,7 +210,7 @@ export function UpdateFormTipoConsumible({
                                 name="procesoId"
                                 control={form.control}
                                 render={({field}) => (
-                                    <FormItem className="pt-2">
+                                    <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Proceso</FormLabel>
                                         <Select
                                             value={field.value}
@@ -243,7 +243,7 @@ export function UpdateFormTipoConsumible({
                                 name="descripcionId"
                                 control={form.control}
                                 render={({field}) => (
-                                    <FormItem className="pt-2">
+                                    <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Descripción</FormLabel>
                                         <Select
                                             value={field.value}
@@ -274,7 +274,7 @@ export function UpdateFormTipoConsumible({
                                 name="grupoId"
                                 control={form.control}
                                 render={({field}) => (
-                                    <FormItem className="pt-2">
+                                    <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Grupo</FormLabel>
                                         <Select
                                             value={field.value}

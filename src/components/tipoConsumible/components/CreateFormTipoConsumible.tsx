@@ -93,16 +93,16 @@ export function CreateFormTipoConsumible({
         }
     };
 
-    if (descripciones.isLoading) {
+    if (descripciones.isLoading || categorias.isLoading || grupos.isLoading || procesos.isLoading) {
         return <SkeletonForm/>;
     }
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center max-w-md">
             <div className="flex flex-col items-center justify-center w-full">
                 <Form {...form}>
                     <form
-                        className="w-full flex flex-col gap-3 pt-2 "
+                        className="w-full flex flex-col gap-3 pt-2"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
                         {/*NOMBRE*/}
@@ -145,7 +145,7 @@ export function CreateFormTipoConsumible({
                             )}
                         />
 
-                        <div className="flex gap-5">
+                        <div className="flex w-full gap-5">
                             {/*CATEGORIA*/}
                             <FormField
                                 name="categoriaId"

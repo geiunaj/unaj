@@ -48,6 +48,12 @@ export async function PUT(req: NextRequest, {params}: { params: { id: string } }
                 procesoId: body.procesoId,
                 updated_at: new Date(),
             },
+            include: {
+                descripcion: true,
+                categoria: true,
+                grupo: true,
+                proceso: true,
+            }
         });
 
         return NextResponse.json({

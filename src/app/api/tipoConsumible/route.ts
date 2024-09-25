@@ -16,6 +16,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 grupo: true,
                 proceso: true,
             },
+            orderBy: {id: "desc"},
             ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
         });
         if (perPage > 0) {
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             const totalPages = Math.ceil(totalRecords / perPage);
             const tiposConsumibleFormatted: any[] = tiposConsumible.map(
                 (consumible, index) => {
-                    const newConsumible = formatConsumible(consumible);
+                    const newConsumible = formatTipoConsumible(consumible);
                     newConsumible.rn = index + 1;
                     return newConsumible;
                 }
