@@ -35,20 +35,20 @@ export default function ConsumiblesCalculate() {
     const [selectedSede, setSelectedSede] = useState<string>("1");
     const [page, setPage] = useState(1);
 
-    const [yearFrom, setYearFrom] = useState<string>(new Date().getFullYear().toString());
-    const [yearTo, setYearTo] = useState<string>(new Date().getFullYear().toString());
+    const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
+    const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     // HOOKS
     const consumibleCalculos = useConsumibleCalculos({
         sedeId: parseInt(selectedSede),
-        yearFrom: yearFrom,
-        yearTo: yearTo,
+        from: from,
+        to: to,
         page,
     });
     const consumibleCalculosReport = useConsumibleCalculosReport({
         sedeId: parseInt(selectedSede),
-        yearFrom: yearFrom,
-        yearTo: yearTo,
+        from: from,
+        to: to,
     });
 
     const sedes = useSedes();
@@ -64,16 +64,16 @@ export default function ConsumiblesCalculate() {
         await consumibleCalculosReport.refetch();
     }, [consumibleCalculos, consumibleCalculosReport]);
 
-    const handleYearFromChange = useCallback(async (value: string) => {
+    const handleFromChange = useCallback(async (value: string) => {
         await setPage(1);
-        await setYearFrom(value);
+        await setFrom(value);
         await consumibleCalculos.refetch();
         await consumibleCalculosReport.refetch();
     }, [consumibleCalculos, consumibleCalculosReport]);
 
-    const handleYearToChange = useCallback(async (value: string) => {
+    const handleToChange = useCallback(async (value: string) => {
         await setPage(1);
-        await setYearTo(value);
+        await setTo(value);
         await consumibleCalculos.refetch();
         await consumibleCalculosReport.refetch();
     }, [consumibleCalculos, consumibleCalculosReport]);
@@ -81,12 +81,12 @@ export default function ConsumiblesCalculate() {
     const handleCalculate = useCallback(async () => {
         await createConsumibleCalculate({
             sedeId: selectedSede ? Number(selectedSede) : undefined,
-            yearFrom,
-            yearTo,
+            from,
+            to,
         });
         consumibleCalculos.refetch();
         consumibleCalculosReport.refetch();
-    }, [selectedSede, yearFrom, yearTo, consumibleCalculos, consumibleCalculosReport]);
+    }, [selectedSede, from, to, consumibleCalculos, consumibleCalculosReport]);
 
 
     const handleClickExcelReport = useCallback(async (period: ReportRequest) => {
@@ -102,8 +102,8 @@ export default function ConsumiblesCalculate() {
             {header: "TOTAL GEI", key: "emisionGEI", width: 20},
 
         ];
-        await setYearFrom(period.yearFrom ?? "");
-        await setYearTo(period.yearTo ?? "");
+        await setFrom(period.from ?? "");
+        await setTo(period.to ?? "");
         const data = await consumibleCalculosReport.refetch();
         await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE FERTILIZANTES", "Consumibles");
     }, [consumibleCalculosReport]);
@@ -156,10 +156,11 @@ export default function ConsumiblesCalculate() {
                             <ReportComponent
                                 onSubmit={handleClickExcelReport}
                                 ref={submitFormRef}
-                                yearFrom={yearFrom}
-                                yearTo={yearTo}
-                                handleYearFromChange={handleYearFromChange}
-                                handleYearToChange={handleYearToChange}
+                                from={from}
+                                to={to}
+                                withMonth={true}
+                                handleFromChange={handleFromChange}
+                                handleToChange={handleToChange}
                             />
 
                         </div>
@@ -176,7 +177,7 @@ export default function ConsumiblesCalculate() {
 
                             <ExportPdfReport
                                 data={consumibleCalculosReport.data!.data}
-                                fileName={`REPORTE CALCULOS DE FERTILIZANTES_${formatPeriod({yearFrom, yearTo}, true)}`}
+                                fileName={`REPORTE CALCULOS DE FERTILIZANTES_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
                                     {header: "FERTILIZANTE", key: "tipoConsumible", width: 20},
@@ -189,7 +190,7 @@ export default function ConsumiblesCalculate() {
                                     {header: "TOTAL GEI", key: "emisionGEI", width: 10},
                                 ]}
                                 title="REPORTE DE CALCULOS DE FERTILIZANTES"
-                                period={formatPeriod({yearFrom, yearTo})}
+                                period={formatPeriod({from, to})}
                             />
 
                             <ButtonCalculate

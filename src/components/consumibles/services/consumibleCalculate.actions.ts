@@ -4,29 +4,29 @@ import {ConsumibleCalculosCollection} from "@/components/consumibles/services/co
 
 interface GetConsumibleProps {
     sedeId?: number,
-    yearFrom?: string,
-    yearTo?: string,
+    from?: string,
+    to?: string,
     page?: number
 }
 
 interface CreateCalculosConsumibleProps {
     sedeId?: number;
-    yearFrom?: string;
-    yearTo?: string;
+    from?: string;
+    to?: string;
 }
 
 export async function getConsumibleCalculate(
     {
         sedeId,
-        yearFrom,
-        yearTo,
+        from,
+        to,
         page,
     }: GetConsumibleProps): Promise<ConsumibleCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
-            yearFrom,
-            yearTo,
+            from,
+            to,
             page,
         }
     };
@@ -37,14 +37,14 @@ export async function getConsumibleCalculate(
 export async function getConsumibleCalculateReport(
     {
         sedeId,
-        yearFrom,
-        yearTo,
+        from,
+        to,
     }: GetConsumibleProps): Promise<ConsumibleCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
-            yearFrom,
-            yearTo,
+            from,
+            to,
             all: true
         }
     };
@@ -55,15 +55,15 @@ export async function getConsumibleCalculateReport(
 export async function createConsumibleCalculate(
     {
         sedeId,
-        yearFrom,
-        yearTo,
+        from,
+        to,
     }: CreateCalculosConsumibleProps):
     Promise<ConsumibleCalculosCollection> {
 
     const body = {
         sedeId,
-        from: yearFrom,
-        to: yearTo,
+        from: from,
+        to: to,
     };
 
     const {data} = await api.post("/api/consumible/calculate", body);

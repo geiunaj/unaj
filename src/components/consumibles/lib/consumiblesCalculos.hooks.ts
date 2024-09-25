@@ -9,24 +9,24 @@ import {
 
 interface getConsumibleCalculoInterface {
     sedeId: number;
-    yearFrom?: string;
-    yearTo?: string;
+    from?: string;
+    to?: string;
     page?: number;
 }
 
 export const useConsumibleCalculos =
-    ({sedeId, yearFrom, yearTo, page}: getConsumibleCalculoInterface) => {
+    ({sedeId, from, to, page}: getConsumibleCalculoInterface) => {
         return useQuery({
             queryKey: ['fertilizanteCalculos'],
-            queryFn: () => getConsumibleCalculate({sedeId, yearFrom, yearTo, page}),
+            queryFn: () => getConsumibleCalculate({sedeId, from, to, page}),
             refetchOnWindowFocus: false,
         });
     }
 export const useConsumibleCalculosReport =
-    ({sedeId, yearFrom, yearTo}: getConsumibleCalculoInterface) => {
+    ({sedeId, from, to}: getConsumibleCalculoInterface) => {
         return useQuery({
             queryKey: ['fertilizanteCalculosReport'],
-            queryFn: () => getConsumibleCalculateReport({sedeId, yearFrom, yearTo}),
+            queryFn: () => getConsumibleCalculateReport({sedeId, from, to}),
             refetchOnWindowFocus: false,
         });
     }
