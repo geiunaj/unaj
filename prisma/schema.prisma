@@ -9,6 +9,7 @@ datasource db {
 //   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 // }
 
+
 generator client {
   provider = "prisma-client-js"
 }
