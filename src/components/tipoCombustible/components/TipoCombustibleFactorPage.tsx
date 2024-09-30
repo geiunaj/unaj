@@ -40,10 +40,12 @@ import {
     useTipoCombustibleFactorPaginate
 } from "@/components/tipoCombustible/lib/tipoCombustibleFactor.hook";
 import {deleteTipoCombustibleFactor} from "@/components/tipoCombustible/services/tipoCombustibleFactor.actions";
-import {FromTipoCombustible} from "@/components/tipoCombustible/components/FormTipoCombustible";
 import {TipoCombustibleFactorCollection} from "@/components/tipoCombustible/services/tipoCombustibleFactor.interface";
-import {UpdateFormTipoCombustible} from "@/components/tipoCombustible/components/UpdateFormTipoCombustible";
+import {
+    UpdateFormTipoCombustibleFactor
+} from "@/components/tipoCombustible/components/UpdateFormTipoCombustible";
 import SelectFilter from "@/components/SelectFilter";
+import {FormTipoCombustibleFactor} from "@/components/tipoCombustible/components/FormTipoCombustibleFactor";
 
 export default function TipoCombustibleFactorPage() {
     //DIALOGS
@@ -71,7 +73,7 @@ export default function TipoCombustibleFactorPage() {
         await setSelectTipoCombustibleFactor(value);
         await tipoCombustibleQuery.refetch();
     }, [tipoCombustibleQuery]);
-    
+
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
         tipoCombustibleQuery.refetch();
@@ -147,7 +149,7 @@ export default function TipoCombustibleFactorPage() {
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                <FromTipoCombustible onClose={handleClose}/>
+                                <FormTipoCombustibleFactor onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -262,7 +264,7 @@ export default function TipoCombustibleFactorPage() {
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
 
-                    <UpdateFormTipoCombustible
+                    <UpdateFormTipoCombustibleFactor
                         onClose={handleCloseUpdate}
                         id={idForUpdate}
                     />

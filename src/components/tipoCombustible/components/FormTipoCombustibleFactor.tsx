@@ -19,15 +19,16 @@ import {
     CreateTipoCombustibleProps,
     TipoCombustibleRequest,
 } from "../services/tipoCombustible.interface";
-import {createTipoCombustible} from "../services/tipoCombustible.actions";
+import {createTipoCombustible, getTiposCombustible} from "../services/tipoCombustible.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {TipoCombustibleFactorRequest} from "@/components/tipoCombustible/services/tipoCombustibleFactor.interface";
 import {createTipoCombustibleFactor} from "@/components/tipoCombustible/services/tipoCombustibleFactor.actions";
+import {useQuery} from "@tanstack/react-query";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {getAnio} from "@/components/anio/services/anio.actions";
 
-const TipoCombustible = z.object({
-    nombre: z.string().min(1, "Ingrese un nombre"),
-    abreviatura: z.string().min(1, "Ingrese una abreviatura"),
-    unidad: z.string().min(1, "Ingrese una unidad"),
+const TipoCombustibleFactor = z.object({
+    tipoConsumibleId: z.string().min(1, "Selecciona un tipo de consumible"),
     valorCalorico: z.preprocess((val) => parseFloat(val as string,),
         z.number().min(0, "Ingresa un valor mayor a 0")),
     factorEmisionCO2: z.preprocess((val) => parseFloat(val as string,),
@@ -36,15 +37,13 @@ const TipoCombustible = z.object({
         z.number().min(0, "Ingresa un valor mayor a 0")),
     factorEmisionN2O: z.preprocess((val) => parseFloat(val as string,),
         z.number().min(0, "Ingresa un valor mayor a 0")),
+    anio_id: z.string().min(1, "Selecciona un año"),
 });
 
-export function FromTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps) {
-    const form = useForm<z.infer<typeof TipoCombustible>>({
-        resolver: zodResolver(TipoCombustible),
+export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps) {
+    const form = useForm<z.infer<typeof TipoCombustibleFactor>>({
+        resolver: zodResolver(TipoCombustibleFactor),
         defaultValues: {
-            nombre: "",
-            abreviatura: "",
-            unidad: "",
             valorCalorico: 0,
             factorEmisionCO2: 0,
             factorEmisionCH4: 0,
@@ -52,14 +51,26 @@ export function FromTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
         },
     });
 
-    const onSubmit = async (data: z.infer<typeof TipoCombustible>) => {
+    const tipoCombustibles = useQuery({
+        queryKey: ["tiposCombustibleCF"],
+        queryFn: () => getTiposCombustible(),
+        refetchOnWindowFocus: false,
+    })
+
+    const anios = useQuery({
+        queryKey: ["aniosCF"],
+        queryFn: () => getAnio(),
+        refetchOnWindowFocus: false
+    });
+
+    const onSubmit = async (data: z.infer<typeof TipoCombustibleFactor>) => {
         const tipoCombustibleFactorRequest: TipoCombustibleFactorRequest = {
+            tipoCombustible_id: parseInt(data.tipoConsumibleId),
             valorCalorico: data.valorCalorico,
             factorEmisionCO2: data.factorEmisionCO2,
             factorEmisionCH4: data.factorEmisionCH4,
             factorEmisionN2O: data.factorEmisionN2O,
-            tipoCombustible_id: 1,
-            anio_id: 1
+            anio_id: parseInt(data.anio_id),
         };
         try {
             const response = await createTipoCombustibleFactor(tipoCombustibleFactorRequest);
@@ -71,10 +82,9 @@ export function FromTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
         }
     };
 
-    // if (sedeQuery.isFetching || tipoPapelQuery.isFetching || anioQuery.isFetching
-    //     || sedeQuery.isError || tipoPapelQuery.isError || anioQuery.isError) {
-    //     return <SkeletonForm/>;
-    // }
+    if (tipoCombustibles.isLoading || anios.isLoading) {
+        return <SkeletonForm/>;
+    }
 
     return (
         <div className="flex items-center justify-center">
@@ -84,70 +94,35 @@ export function FromTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                         className="w-full flex flex-col gap-3 pt-2 "
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
-                        {/* Nombre */}
+                        {/* Tipo de Consumible */}
                         <FormField
+                            name="tipoConsumibleId"
                             control={form.control}
-                            name="nombre"
                             render={({field}) => (
-                                <FormItem className="pt-2 w-full">
-                                    <FormLabel>Nombre</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="text"
-                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Gasolina, Diesel, etc."
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
+                                <FormItem className="pt-2">
+                                    <FormLabel>Nombre de Consumible</FormLabel>
+                                    <Select onValueChange={field.onChange}>
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Nombre de Consumible"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {tipoCombustibles.data!.map((tipo) => (
+                                                    <SelectItem key={tipo.id} value={tipo.id.toString()}>
+                                                        {tipo.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
                                 </FormItem>
                             )}
                         />
 
                         <div className="flex gap-5">
-                            {/* abreviatura */}
-                            <FormField
-                                control={form.control}
-                                name="abreviatura"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Abreviatura</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="text"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="GAS, DIE, etc."
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* Unidad */}
-                            <FormField
-                                control={form.control}
-                                name="unidad"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Unidad</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="text"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="L,m3, etc."
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        <div className="flex gap-5">
-                            {/* valorCalorico */}
+                            {/* Valor Calorico */}
                             <FormField
                                 control={form.control}
                                 name="valorCalorico"
@@ -167,13 +142,13 @@ export function FromTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 )}
                             />
 
-                            {/* factorEmisionCO2 */}
+                            {/* CO2 */}
                             <FormField
                                 control={form.control}
                                 name="factorEmisionCO2"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor de Emisión CO2</FormLabel>
+                                        <FormLabel>Factor Emisión CO2</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -189,13 +164,13 @@ export function FromTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                         </div>
 
                         <div className="flex gap-5">
-                            {/* factorEmisionCH4 */}
+                            {/* CH4 */}
                             <FormField
                                 control={form.control}
                                 name="factorEmisionCH4"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Valor Calorico</FormLabel>
+                                        <FormLabel>Factor Emision CH4</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -209,13 +184,13 @@ export function FromTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 )}
                             />
 
-                            {/* factorEmisionN2O */}
+                            {/* N2O */}
                             <FormField
                                 control={form.control}
                                 name="factorEmisionN2O"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor de Emisión CO2</FormLabel>
+                                        <FormLabel>Factor Emisión N2O</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -229,6 +204,34 @@ export function FromTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 )}
                             />
                         </div>
+                        {/* Año */}
+                        <FormField
+                            control={form.control}
+                            name="anio_id"
+                            render={({field}) => (
+                                <FormItem className="pt-2 w-full">
+                                    <FormLabel>Año</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                    >
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona el año"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {anios.data!.map((anio) => (
+                                                    <SelectItem key={anio.id} value={anio.id.toString()}>
+                                                        {anio.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormItem>
+                            )}
+                        />
 
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-blue-700">

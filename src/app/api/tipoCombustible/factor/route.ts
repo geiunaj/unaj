@@ -28,8 +28,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         return NextResponse.json(tiposCombustibleFactor.map(formatTipoCombustibleFactor));
     } catch (error) {
-        console.error("Error buscando Factores de Tipos Combustible", error);
-        return new NextResponse("Error buscando Factores de Tipos Combustible", {status: 500});
+        console.error("Error buscando Factores Tipos Combustible", error);
+        return new NextResponse("Error buscando Factores Tipos Combustible", {status: 500});
     }
 }
 
@@ -50,12 +50,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         });
         return NextResponse.json({
-            message: "Factor del Tipo de Combustible creado",
+            message: "Factor Tipo de Combustible creado",
             tipoPapel: factorTipoCombustible,
         });
 
     } catch (error) {
-        console.error("Error creando el Factor del Tipo de Combustible", error);
-        return new NextResponse("Error creando el Factor del Tipo de Combustible", {status: 500});
+        console.error("Error creando el Factor Tipo de Combustible", error);
+        return new NextResponse("Error creando el Factor Tipo de Combustible", {status: 500});
     }
 }

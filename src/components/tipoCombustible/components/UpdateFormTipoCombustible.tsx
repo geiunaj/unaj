@@ -21,66 +21,97 @@ import {
     UpdateTipoCombustibleProps,
 } from "../services/tipoCombustible.interface";
 import {
+    getTiposCombustible,
     showTipoCombustible,
     updateTipoCombustible,
 } from "../services/tipoCombustible.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {getAnio} from "@/components/anio/services/anio.actions";
+import {TipoCombustibleFactorRequest} from "@/components/tipoCombustible/services/tipoCombustibleFactor.interface";
+import {
+    showTipoCombustibleFactor,
+    updateTipoCombustibleFactor
+} from "@/components/tipoCombustible/services/tipoCombustibleFactor.actions";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
-const TipoCombustible = z.object({
-    nombre: z.string().min(1, "Ingrese un nombre"),
-    abreviatura: z.string().min(1, "Ingrese una abreviatura"),
-    unidad: z.string().min(1, "Ingrese una unidad"),
-   
+const TipoCombustibleFactor = z.object({
+    tipoConsumibleId: z.string().min(1, "Selecciona un tipo de consumible"),
+    valorCalorico: z.preprocess((val) => parseFloat(val as string,),
+        z.number().min(0, "Ingresa un valor mayor a 0")),
+    factorEmisionCO2: z.preprocess((val) => parseFloat(val as string,),
+        z.number().min(0, "Ingresa un valor mayor a 0")),
+    factorEmisionCH4: z.preprocess((val) => parseFloat(val as string,),
+        z.number().min(0, "Ingresa un valor mayor a 0")),
+    factorEmisionN2O: z.preprocess((val) => parseFloat(val as string,),
+        z.number().min(0, "Ingresa un valor mayor a 0")),
+    anio_id: z.string().min(1, "Selecciona un año"),
 });
 
-export function UpdateFormTipoCombustible({
-                                              id,
-                                              onClose,
-                                          }: UpdateTipoCombustibleProps) {
-    const form = useForm<z.infer<typeof TipoCombustible>>({
-        resolver: zodResolver(TipoCombustible),
+export function UpdateFormTipoCombustibleFactor({
+                                                    id,
+                                                    onClose,
+                                                }: UpdateTipoCombustibleProps) {
+    const form = useForm<z.infer<typeof TipoCombustibleFactor>>({
+        resolver: zodResolver(TipoCombustibleFactor),
         defaultValues: {
-            nombre: "",
-            abreviatura: "",
-            unidad: "",
-            
+            valorCalorico: 0,
+            factorEmisionCO2: 0,
+            factorEmisionCH4: 0,
+            factorEmisionN2O: 0,
         },
     });
 
-    const tipoCombustible = useQuery({
+    const tipoCombustibleFactor = useQuery({
         queryKey: ["tipoCombustible"],
-        queryFn: () => showTipoCombustible(id),
+        queryFn: () => showTipoCombustibleFactor(id),
         refetchOnWindowFocus: false,
     });
 
+    const tipoCombustibles = useQuery({
+        queryKey: ["tiposCombustibleUF"],
+        queryFn: () => getTiposCombustible(),
+        refetchOnWindowFocus: false,
+    })
+
+    const anios = useQuery({
+        queryKey: ["aniosUF"],
+        queryFn: () => getAnio(),
+        refetchOnWindowFocus: false
+    });
+
     const loadForm = useCallback(async () => {
-        if (tipoCombustible.data) {
-            const tipoCombustibleData = tipoCombustible.data;
+        if (tipoCombustibleFactor.data) {
+            console.log(tipoCombustibleFactor.data);
+            const tipoCombustibleData = tipoCombustibleFactor.data;
             form.reset({
-                nombre: tipoCombustibleData.nombre,
-                abreviatura: tipoCombustibleData.abreviatura,
-                unidad: tipoCombustibleData.unidad,
-               
+                tipoConsumibleId: tipoCombustibleData.tipoConsumibleId,
+                valorCalorico: tipoCombustibleData.valorCalorico,
+                factorEmisionCO2: tipoCombustibleData.factorEmisionCO2,
+                factorEmisionCH4: tipoCombustibleData.factorEmisionCH4,
+                factorEmisionN2O: tipoCombustibleData.factorEmisionN2O,
+                anio_id: tipoCombustibleData.anio_id
             });
         }
-    }, [tipoCombustible.data, id]);
+    }, [tipoCombustibleFactor.data, id]);
 
     useEffect(() => {
         loadForm();
     }, [loadForm, id]);
 
-    const onSubmit = async (data: z.infer<typeof TipoCombustible>) => {
-        const tipoCombustibleRequest: TipoCombustibleRequest = {
-            nombre: data.nombre,
-            abreviatura: data.abreviatura,
-            unidad: data.unidad,
-            
+    const onSubmit = async (data: z.infer<typeof TipoCombustibleFactor>) => {
+        const tipoCombustibleFactorRequest: TipoCombustibleFactorRequest = {
+            tipoCombustible_id: parseInt(data.tipoConsumibleId),
+            valorCalorico: data.valorCalorico,
+            factorEmisionCO2: data.factorEmisionCO2,
+            factorEmisionCH4: data.factorEmisionCH4,
+            factorEmisionN2O: data.factorEmisionN2O,
+            anio_id: parseInt(data.anio_id),
         };
         try {
-            const response = await updateTipoCombustible(id, tipoCombustibleRequest);
+            const response = await updateTipoCombustibleFactor(id, tipoCombustibleFactorRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -88,7 +119,7 @@ export function UpdateFormTipoCombustible({
         }
     };
 
-    if (tipoCombustible.isLoading) {
+    if (tipoCombustibleFactor.isLoading || tipoCombustibles.isLoading || anios.isLoading) {
         return <SkeletonForm/>;
     }
 
@@ -100,39 +131,49 @@ export function UpdateFormTipoCombustible({
                         className="w-full flex flex-col gap-3 pt-2 "
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
-                        {/*NOMBRE*/}
+                        {/* Tipo de Consumible */}
                         <FormField
+                            name="tipoConsumibleId"
                             control={form.control}
-                            name="nombre"
                             render={({field}) => (
-                                <FormItem className="pt-2 w-full">
-                                    <FormLabel>Nombre</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="text"
-                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Nombre del tipo de papel"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
+                                <FormItem className="pt-2">
+                                    <FormLabel>Nombre de Consumible</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Nombre de Consumible"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {tipoCombustibles.data!.map((tipo) => (
+                                                    <SelectItem key={tipo.id} value={tipo.id.toString()}>
+                                                        {tipo.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
                                 </FormItem>
                             )}
                         />
 
                         <div className="flex gap-5">
-                            {/*ABREVIATURA*/}
+                            {/* Valor Calorico */}
                             <FormField
                                 control={form.control}
-                                name="abreviatura"
+                                name="valorCalorico"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Abreviatura</FormLabel>
+                                        <FormLabel>Valor Calorico</FormLabel>
                                         <FormControl>
                                             <Input
+                                                type="number"
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                type="text"
-                                                placeholder="GAS, DIE, etc."
+                                                // placeholder="GAS, DIE, etc."
                                                 {...field}
                                             />
                                         </FormControl>
@@ -141,18 +182,18 @@ export function UpdateFormTipoCombustible({
                                 )}
                             />
 
-                            {/*UNIDAD*/}
+                            {/* CO2 */}
                             <FormField
                                 control={form.control}
-                                name="unidad"
+                                name="factorEmisionCO2"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Unidad</FormLabel>
+                                        <FormLabel>Factor Emisión CO2</FormLabel>
                                         <FormControl>
                                             <Input
-                                                type="text"
+                                                type="number"
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="Unidad de medida"
+                                                // placeholder="Litros, Galones, etc."
                                                 {...field}
                                             />
                                         </FormControl>
@@ -162,6 +203,75 @@ export function UpdateFormTipoCombustible({
                             />
                         </div>
 
+                        <div className="flex gap-5">
+                            {/* CH4 */}
+                            <FormField
+                                control={form.control}
+                                name="factorEmisionCH4"
+                                render={({field}) => (
+                                    <FormItem className="pt-2 w-1/2">
+                                        <FormLabel>Factor Emision CH4</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                // placeholder="GAS, DIE, etc."
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* N2O */}
+                            <FormField
+                                control={form.control}
+                                name="factorEmisionN2O"
+                                render={({field}) => (
+                                    <FormItem className="pt-2 w-1/2">
+                                        <FormLabel>Factor Emisión N2O</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                // placeholder="Litros, Galones, etc."
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        {/* Año */}
+                        <FormField
+                            control={form.control}
+                            name="anio_id"
+                            render={({field}) => (
+                                <FormItem className="pt-2 w-full">
+                                    <FormLabel>Año</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                    >
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona el año"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {anios.data!.map((anio) => (
+                                                    <SelectItem key={anio.id} value={anio.id.toString()}>
+                                                        {anio.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormItem>
+                            )}
+                        />
 
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-blue-700">

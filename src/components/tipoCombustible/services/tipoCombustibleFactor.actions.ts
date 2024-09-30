@@ -35,19 +35,19 @@ export async function getTiposCombustibleFactorPaginate(
 }
 
 export async function createTipoCombustibleFactor(body: TipoCombustibleFactorRequest): Promise<AxiosResponse<Response>> {
-    return await api.post("/api/tipoCombustible", body);
+    return await api.post("/api/tipoCombustible/factor", body);
 }
 
 export async function showTipoCombustibleFactor(id: number): Promise<any> {
-    const {data} = await api.get(`/api/tipoCombustible/${id}`);
+    const {data} = await api.get(`/api/tipoCombustible/factor/${id}`);
     return data;
 }
 
 export async function updateTipoCombustibleFactor(id: number, body: TipoCombustibleFactorRequest): Promise<AxiosResponse<Response>> {
-    return await api.put(`/api/tipoCombustible/${id}`, body);
+    return await api.put(`/api/tipoCombustible/factor/${id}`, body);
 }
 
 export async function deleteTipoCombustibleFactor(id: number): Promise<AxiosResponse<Response>> {
-    return await api.delete(`/api/tipoCombustible/${id}`);
+    return await api.delete(`/api/tipoCombustible/factor/${id}`);
 }
 

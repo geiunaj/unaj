@@ -27,6 +27,7 @@ import {ReportRequest} from "@/lib/interfaces/globals";
 import {Button} from "@/components/ui/button";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ConsumibleCalcResponse} from "@/components/consumibles/services/consumibleCalculate.interface";
+import CustomPagination from "@/components/Pagination";
 
 export default function ConsumiblesCalculate() {
     const {push} = useRouter();
@@ -95,8 +96,8 @@ export default function ConsumiblesCalculate() {
             {header: "CONSUMIBLE", key: "tipoConsumible", width: 80},
             {header: "CATEGORIA", key: "categoria", width: 25},
             {header: "UNIDAD", key: "unidad", width: 10},
-            {header: "GRUPO", key: "grupo", width: 25},
-            {header: "PROCESO", key: "proceso", width: 90},
+            // {header: "GRUPO", key: "grupo", width: 25},
+            // {header: "PROCESO", key: "proceso", width: 90},
             {header: "PESO TOTAL", key: "pesoTotal", width: 20},
             {header: "TOTAL GEI", key: "totalGEI", width: 20},
         ];
@@ -112,6 +113,11 @@ export default function ConsumiblesCalculate() {
         if (submitFormRef.current) {
             submitFormRef.current.submitForm();
         }
+    };
+
+    const handlePageChage = async (page: number) => {
+        await setPage(page);
+        await consumibleCalculos.refetch();
     };
 
     if (consumibleCalculos.isLoading || consumibleCalculosReport.isLoading || sedes.isLoading) {
@@ -178,13 +184,13 @@ export default function ConsumiblesCalculate() {
                                 fileName={`REPORTE CALCULOS DE CONSUMIBLES_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 10},
-                                    {header: "CONSUMIBLE", key: "tipoConsumible", width: 30},
+                                    {header: "CONSUMIBLE", key: "tipoConsumible", width: 100},
                                     {header: "CATEGORIA", key: "categoria", width: 20},
-                                    {header: "UNIDAD", key: "unidad", width: 25},
-                                    {header: "GRUPO", key: "grupo", width: 15},
-                                    {header: "PROCESO", key: "proceso", width: 20},
-                                    {header: "PESO TOTAL", key: "pesoTotal", width: 25},
-                                    {header: "TOTAL GEI", key: "totalGEI", width: 25},
+                                    {header: "UNIDAD", key: "unidad", width: 15},
+                                    // {header: "GRUPO", key: "grupo", width: 15},
+                                    // {header: "PROCESO", key: "proceso", width: 20},
+                                    {header: "PESO TOTAL", key: "pesoTotal", width: 20},
+                                    {header: "TOTAL GEI", key: "totalGEI", width: 20},
                                 ]}
                                 title="REPORTE DE CALCULOS DE CONSUMIBLES"
                                 period={formatPeriod({from, to})}
@@ -205,25 +211,31 @@ export default function ConsumiblesCalculate() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                            <TableHead
+                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
                                 CONSUMIBLE
                             </TableHead>
-                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                            <TableHead
+                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
                                 TIPO
                             </TableHead>
-                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                            <TableHead
+                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
                                 UNIDAD
                             </TableHead>
-                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                            <TableHead
+                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
                                 GRUPO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 PROCESO
                             </TableHead>
-                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                            <TableHead
+                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
                                 PESO TOTAL
                             </TableHead>
-                            <TableHead className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                            <TableHead
+                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
                                 EMISIONES GEI
                             </TableHead>
                         </TableRow>
@@ -243,11 +255,12 @@ export default function ConsumiblesCalculate() {
                                     className="text-center"
                                     key={ConsumibleCalculate.id}
                                 >
-                                    <TableCell className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis text-start">
+                                    <TableCell
+                                        className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis text-start">
                                         {ConsumibleCalculate.tipoConsumible}
                                     </TableCell>
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                            {ConsumibleCalculate.categoria}
+                                        {ConsumibleCalculate.categoria}
                                     </TableCell>
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         {ConsumibleCalculate.unidad}
@@ -255,7 +268,8 @@ export default function ConsumiblesCalculate() {
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         {ConsumibleCalculate.grupo}
                                     </TableCell>
-                                    <TableCell className="text-xs max-w-36 whitespace-nowrap overflow-hidden text-ellipsis">
+                                    <TableCell
+                                        className="text-xs max-w-36 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {ConsumibleCalculate.proceso}
                                     </TableCell>
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
@@ -273,6 +287,12 @@ export default function ConsumiblesCalculate() {
                         )}
                     </TableBody>
                 </Table>
+                {consumibleCalculos.data!.meta.totalPages > 1 && (
+                    <CustomPagination
+                        meta={consumibleCalculos.data!.meta}
+                        onPageChange={handlePageChage}
+                    />
+                )}
             </div>
         </div>
     );
