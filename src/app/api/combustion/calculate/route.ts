@@ -260,14 +260,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         }
 
-        let consumoTipoCombustible = 0;
-        let consumoTotal = 0;
-        let totalEmisionCO2 = 0;
-        let totalEmisionCH4 = 0;
-        let totalEmisionN2O = 0;
-        let totalGEI = 0;
-
         for (const tipoCombustible of tiposCombustible) {
+            let consumoTipoCombustible = 0;
+            let consumoTotal = 0;
+            let totalEmisionCO2 = 0;
+            let totalEmisionCH4 = 0;
+            let totalEmisionN2O = 0;
+            let totalGEI = 0;
+
             const tipoCombustibleCalculos = await prisma.combustibleCalculos.create({
                 data: {
                     tipo: tipo,

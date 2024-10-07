@@ -172,13 +172,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             },
         });
 
-        let totalTipoFertilizante = 0;
-        let totalCantidadAporte = 0;
-        let totalEmisionesDirectas = 0;
-        let totalEmisionGEI = 0;
-
-
         for (const tipoFertilizante of tiposFertilizante) {
+            let totalTipoFertilizante = 0;
+            let totalCantidadAporte = 0;
+            let totalEmisionesDirectas = 0;
+            let totalEmisionGEI = 0;
+            
             const tipoFertilizanteCalculo = await prisma.fertilizanteCalculos.create({
                 data: {
                     tipofertilizanteId: tipoFertilizante.id,

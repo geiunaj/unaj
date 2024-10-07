@@ -18,9 +18,10 @@ export async function getTiposConsumible(): Promise<TipoConsumibleCollection[]> 
     return data;
 }
 
-export async function getTiposConsumiblePaginate(page: number = 1): Promise<TipoConsumibleCollectionPaginate> {
+export async function getTiposConsumiblePaginate(nombre: string = "", page: number = 1): Promise<TipoConsumibleCollectionPaginate> {
     const config: AxiosRequestConfig = {
         params: {
+            nombre,
             perPage: 10,
             page,
         },

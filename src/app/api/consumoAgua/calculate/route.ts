@@ -282,11 +282,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         }
 
-
-        let consumoArea = 0;
-        let totalGEI = 0;
-
         for (const area of areas) {
+            let consumoArea = 0;
+            let totalGEI = 0;
+
             const aguaCalculos = await prisma.consumoAguaCalculos.create({
                 data: {
                     consumoArea: 0,

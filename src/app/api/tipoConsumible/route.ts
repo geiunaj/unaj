@@ -9,7 +9,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const {searchParams} = new URL(req.url);
         const perPage = parseInt(searchParams.get("perPage") ?? "0");
         const page = parseInt(searchParams.get("page") ?? "1");
+        const nombre = searchParams.get("nombre") ?? "";
         const tiposConsumible = await prisma.tipoConsumible.findMany({
+            where: {
+                nombre: {
+                    contains: nombre,
+                }
+            },
             include: {
                 descripcion: true,
                 categoria: true,
@@ -20,7 +26,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
         });
         if (perPage > 0) {
-            const totalRecords = await prisma.tipoConsumible.count();
+            const totalRecords = await prisma.tipoConsumible.count({
+                where: {
+                    nombre: {
+                        contains: nombre,
+                    }
+                }
+            });
             const totalPages = Math.ceil(totalRecords / perPage);
             const tiposConsumibleFormatted: any[] = tiposConsumible.map(
                 (consumible, index) => {

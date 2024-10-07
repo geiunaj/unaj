@@ -6,7 +6,6 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-
 export async function getAnioId(nombre: string): Promise<number | undefined> {
     const anio = await prisma.anio.findFirst({
         where: {nombre: nombre},

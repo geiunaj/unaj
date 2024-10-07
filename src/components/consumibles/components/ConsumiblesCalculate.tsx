@@ -16,7 +16,7 @@ import ButtonBack from "@/components/ButtonBack";
 import {useRouter} from "next/navigation";
 import ReportComponent from "@/components/ReportComponent";
 import GenerateReport from "@/lib/utils/generateReport";
-import {formatPeriod} from "@/lib/utils/core.function";
+import {errorToast, formatPeriod} from "@/lib/utils/core.function";
 import {
     useConsumibleCalculos,
     useConsumibleCalculosReport, useSedes
@@ -84,6 +84,8 @@ export default function ConsumiblesCalculate() {
             sedeId: selectedSede ? Number(selectedSede) : undefined,
             from,
             to,
+        }).catch((error) => {
+            errorToast(error.response.data.message);
         });
         consumibleCalculos.refetch();
         consumibleCalculosReport.refetch();

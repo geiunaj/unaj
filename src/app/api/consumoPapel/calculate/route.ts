@@ -165,12 +165,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             },
         });
 
-        let totalTipoPapel = 0;
-        let totalConsumo = 0;
-        let totalEmisionGEI = 0;
-
         for (const tipoPapel of tiposPapel) {
-            if (!tipoPapel.area || !tipoPapel.gramaje || !tipoPapel.porcentaje_reciclado || !tipoPapel.porcentaje_virgen) return new NextResponse(`El tipo de papel ${tipoPapel.nombre} no tiene todos los datos necesarios`, {status: 400});
+            let totalTipoPapel = 0;
+            let totalConsumo = 0;
+            let totalEmisionGEI = 0;
+
+            if (!tipoPapel.area || !tipoPapel.gramaje || !tipoPapel.porcentaje_reciclado || !tipoPapel.porcentaje_virgen) {
+                return new NextResponse(`El tipo de papel ${tipoPapel.nombre} no tiene todos los datos necesarios`, {status: 400});
+            }
+
             const consumoPapelCalculo = await prisma.consumoPapelCalculos.create({
                 data: {
                     cantidad: 0,
@@ -184,7 +187,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
             for (const year of allYears) {
                 const anioId = await getAnioId(year);
-                if (!anioId) return new NextResponse(`El año ${year} no está registrado`, {status: 400});
+                if (!anioId) return new NextResponse(`El año ${year} no está registrado del ${tipoPapel.nombre}`, {status: 400});
                 const factorTipoPapel = await prisma.factorTipoPapel.findFirst({where: {anioId}});
                 if (!factorTipoPapel) return new NextResponse(`Agregue el factor de emisión para el año ${year}`, {status: 400});
 

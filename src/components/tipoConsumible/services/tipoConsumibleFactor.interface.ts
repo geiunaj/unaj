@@ -7,9 +7,11 @@ export interface ConsumibleFactor {
 }
 
 export interface ConsumibleFactorRequest {
-    nombre: string;
-    valor: number;
-    anio_id: number;
+    factor: number;
+    tipoConsumibleId: number;
+    anioId: number;
+    fuente?: string;
+    link?: string;
 }
 
 interface Meta {
@@ -26,13 +28,13 @@ export interface ConsumibleFactorCollectionPaginate {
 
 export interface ConsumibleFactorCollection {
     id: number;
-    nombre: string;
-    valor: number;
-    anio_id: number;
+    factor: number;
+    tipoConsumibleId: number;
+    anioId: number;
+    fuente: string;
+    link: string;
     anio: string;
-    unidad: string;
-    created_at: Date;
-    updated_at: Date;
+    tipoConsumible: string;
 }
 
 export interface ConsumibleFactorResource {

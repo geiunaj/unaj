@@ -106,12 +106,7 @@ export function UpdateFormConsumible({
         }
     };
 
-    const onClaseChange = useCallback(() => {
-        form.setValue("tipoConsumibleId", "");
-        tiposConsumible.refetch();
-    }, [form, tiposConsumible]);
-
-    if (consumible.isLoading || sedes.isLoading || anios.isLoading || tiposConsumible.isLoading) {
+    if (consumible.isLoading || sedes.isLoading || anios.isLoading || tiposConsumible.isLoading || meses.isLoading) {
         return <SkeletonForm/>;
     }
 

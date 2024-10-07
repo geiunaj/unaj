@@ -116,7 +116,7 @@ export function UpdateFormTipoConsumible({
         }
     };
 
-    if (tipoConsumible.isLoading) {
+    if (tipoConsumible.isLoading || descripciones.isLoading || grupos.isLoading || categorias.isLoading || procesos.isLoading) {
         return <SkeletonForm/>;
     }
 

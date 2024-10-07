@@ -1,8 +1,7 @@
 "use client";
 
 import React, {useCallback, useState} from "react";
-import SelectFilter from "@/components/SelectFilter";
-import {Pen, Plus, Trash2, Calendar, Link2, Bean, Milk} from "lucide-react";
+import {Pen, Plus, Trash2, Bean} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -34,89 +33,75 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {
-    useAnio,
-    useConsumibleFactor, useTipoConsumible,
-
-} from "../lib/tipoConsumibleFactor.hook";
-import {deleteTipoConsumibleFactor} from "../services/tipoConsumibleFactor.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import {ConsumibleFactorCollection} from "../services/tipoConsumibleFactor.interface";
-import Link from "next/link";
 import CustomPagination from "@/components/Pagination";
-import {CreateFormTipoConsumibleFactor} from "@/components/tipoConsumible/components/CreateFormTipoConsumibleFactor";
+import {useQuery} from "@tanstack/react-query";
 import {
-    UpdateFormTipoConsumibleFactor
-} from "@/components/tipoConsumible/components/UpdateFormTipoConsumibleFactor";
+    deleteDescripcionConsumible,
+    getDescripcionConsumiblePaginate
+} from "@/components/tipoConsumible/services/descripcionConsumible.actions";
+import {
+    CreateFormDescripcionConsumible
+} from "@/components/tipoConsumible/components/descripcion/CreateFormDescripcionConsumible";
+import {DescripcionConsumibleCollection} from "@/components/tipoConsumible/services/descripcionConsumible.interface";
+import {
+    UpdateFormDescripcionConsumible
+} from "@/components/tipoConsumible/components/descripcion/UpdateFormDescripcionConsumible";
+import {useRouter} from "next/navigation";
+import ButtonBack from "@/components/ButtonBack";
 
-export default function ConsumibleFactorPage() {
+export default function DescripcionConsumiblePage() {
+    const {push} = useRouter();
 
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-    const [selectAnio, setSelectAnio] = useState<string>(new Date().getFullYear().toString());
-    const [selectTipoConsumible, setSelectTipoConsumible] = useState<string>("");
-    const [page, setPage] = useState<number>(1);
-
-    const anioQuery = useAnio();
-    const tipoConsumibleQuery = useTipoConsumible();
-
     //IDS
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
+    const [page, setPage] = useState(1);
 
-    const factorEmisionQuery = useConsumibleFactor({
-        tipoConsumibleId: selectTipoConsumible,
-        anioId: selectAnio,
-        page,
-        perPage: 10
-    });
-
-    const columns = [
+    const COLUMS = [
         "N°",
-        "CONSUMIBLE",
-        "FACTOR",
-        "AÑO",
-        "ACCIONES"
+        "NOMBRE",
+        "ACCIONES",
     ];
 
-    const handleAnioChange = useCallback(async (value: string) => {
-        await setSelectAnio(value);
-        await factorEmisionQuery.refetch();
-    }, [factorEmisionQuery]);
 
-    const handleTipoConsumibleChange = useCallback(async (value: string) => {
-        await setSelectTipoConsumible(value);
-        await factorEmisionQuery.refetch();
-    }, [factorEmisionQuery]);
+    //USE QUERIES
+    const descripcionConsumibleQuery = useQuery({
+        queryKey: ["descripcionConsumible", page],
+        queryFn: () => getDescripcionConsumiblePaginate(page),
+        refetchOnWindowFocus: false,
+    })
 
     // HANDLES
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
-        factorEmisionQuery.refetch();
-    }, [factorEmisionQuery]);
+        descripcionConsumibleQuery.refetch();
+    }, [descripcionConsumibleQuery]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
-        factorEmisionQuery.refetch();
-    }, [factorEmisionQuery]);
+        descripcionConsumibleQuery.refetch();
+    }, [descripcionConsumibleQuery]);
 
     const handleDelete = useCallback(async () => {
         try {
-            const response = await deleteTipoConsumibleFactor(idForDelete);
+            const response = await deleteDescripcionConsumible(idForDelete);
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
             errorToast(
-                error.response?.data?.message || "Error al eliminar el factor de emisión de fertilizante"
+                error.response?.data?.message || "Error al eliminar el descripcion de consumible"
             );
         } finally {
-            await factorEmisionQuery.refetch();
+            await descripcionConsumibleQuery.refetch();
         }
-    }, [factorEmisionQuery]);
+    }, [descripcionConsumibleQuery]);
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
         setIsUpdateDialogOpen(true);
@@ -127,46 +112,30 @@ export default function ConsumibleFactorPage() {
         setIsDeleteDialogOpen(true);
     };
 
-    const handlePageChange = async (page: number) => {
+    const handlePageChage = async (page: number) => {
         await setPage(page);
-        await factorEmisionQuery.refetch();
-    }
+        await descripcionConsumibleQuery.refetch();
+    };
 
-    if (anioQuery.isLoading || factorEmisionQuery.isLoading || tipoConsumibleQuery.isLoading) {
+    const handleTipoConsumible = () => {
+        push("/tipo-consumible");
+    };
+
+    if (descripcionConsumibleQuery.isLoading) {
         return <SkeletonTable/>;
     }
 
     return (
         <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Factor de Emisión de Consumible</h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
+                <div className="flex gap-4 items-center">
+                    <ButtonBack onClick={handleTipoConsumible}/>
+                    <div className="font-Manrope">
+                        <h1 className="text-base text-foreground font-bold">Descripción de Consumible </h1>
+                        <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
+                    </div>
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
-                    <div
-                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
-                        <SelectFilter
-                            list={tipoConsumibleQuery.data!}
-                            itemSelected={selectTipoConsumible}
-                            handleItemSelect={handleTipoConsumibleChange}
-                            value={"id"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            all={true}
-                            icon={<Milk className="h-3 w-3"/>}
-                        />
-                        <SelectFilter
-                            list={anioQuery.data!}
-                            itemSelected={selectAnio}
-                            handleItemSelect={handleAnioChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"nombre"}
-                            all={true}
-                            icon={<Calendar className="h-3 w-3"/>}
-                        />
-                    </div>
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
@@ -177,13 +146,13 @@ export default function ConsumibleFactorPage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle> Factor de Tipo de Consumible</DialogTitle>
+                                    <DialogTitle>DESCRIPCION DE CONSUMIBLE</DialogTitle>
                                     <DialogDescription>
-                                        Agregar Factor de Tipo de Consumible
+                                        Agregar Descripción de Consumible
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                <CreateFormTipoConsumibleFactor onClose={handleClose}/>
+                                <CreateFormDescripcionConsumible onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -195,41 +164,27 @@ export default function ConsumibleFactorPage() {
                     <TableHeader>
                         <TableRow>
                             {
-                                columns.map((column, index) => (
-                                    <TableHead key={index} className="text-xs sm:text-sm font-bold text-center">
-                                        {column}
+                                COLUMS.map((item) => (
+                                    <TableHead key={item} className="text-xs sm:text-sm font-bold text-center">
+                                        {item}
                                     </TableHead>
                                 ))
                             }
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {factorEmisionQuery.data!.data.map(
-                            (item: ConsumibleFactorCollection, index: number) => (
+                        {descripcionConsumibleQuery.data!.data.map(
+                            (item: DescripcionConsumibleCollection) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary">{index + 1}</Badge>
+                                        <Badge variant="secondary">{item.rn}</Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {item.tipoConsumible}
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
+                                        {item.descripcion}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default" className="space-x-2">
-                                            {item.factor}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {item.anio}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm p-1">
-                                        <div className="flex items-center justify-center gap-4">
-                                            <Link href={item.link} target="_blank">
-                                                <Button className="h-7 flex items-center gap-2" size="sm"
-                                                        variant="secondary">
-                                                    <Link2 className="h-3 w-3"/>
-                                                    <span className="hidden xl:block">Fuente</span>
-                                                </Button>
-                                            </Link>
+
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis p-1">
+                                        <div className="flex justify-center gap-4">
                                             {/*UPDATE*/}
                                             <Button
                                                 className="h-7 w-7"
@@ -256,11 +211,12 @@ export default function ConsumibleFactorPage() {
                         )}
                     </TableBody>
                 </Table>
-                {
-                    factorEmisionQuery.data!.meta.totalPages > 1 && (
-                        <CustomPagination meta={factorEmisionQuery.data!.meta} onPageChange={handlePageChange}/>
-                    )
-                }
+                {descripcionConsumibleQuery.data!.meta.totalPages > 1 && (
+                    <CustomPagination
+                        meta={descripcionConsumibleQuery.data!.meta}
+                        onPageChange={handlePageChage}
+                    />
+                )}
             </div>
 
             {/*MODAL UPDATE*/}
@@ -271,7 +227,7 @@ export default function ConsumibleFactorPage() {
                         <DialogTitle>Actualizar Registro de Consumible</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <UpdateFormTipoConsumibleFactor onClose={handleCloseUpdate} id={idForUpdate}/>
+                    <UpdateFormDescripcionConsumible onClose={handleCloseUpdate} id={idForUpdate}/>
                 </DialogContent>
             </Dialog>
 

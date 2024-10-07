@@ -262,14 +262,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         }
 
-        let consumoArea = 0;
-        let consumoTotal = 0;
-        let totalEmisionCO2 = 0;
-        let totalEmisionCH4 = 0;
-        let totalEmisionN2O = 0;
-        let totalGEI = 0;
-
         for (const area of areas) {
+            let consumoArea = 0;
+            let consumoTotal = 0;
+            let totalEmisionCO2 = 0;
+            let totalEmisionCH4 = 0;
+            let totalEmisionN2O = 0;
+            let totalGEI = 0;
+
             const energiaCalculos = await prisma.energiaCalculos.create({
                 data: {
                     consumoArea: 0,

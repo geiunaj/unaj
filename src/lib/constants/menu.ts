@@ -19,6 +19,10 @@ import {
     PlugZap,
     Milk,
     StretchHorizontal,
+    FireExtinguisher,
+    Plane,
+    Bus,
+    Fuel,
 } from "lucide-react";
 
 export interface MenuItem {
@@ -49,6 +53,10 @@ export const iconComponents: Record<string, any> = {
     PlugZap,
     Milk,
     StretchHorizontal,
+    FireExtinguisher,
+    Plane,
+    Bus,
+    Fuel,
 };
 
 export const menu: MenuItem[] = [
@@ -59,12 +67,12 @@ export const menu: MenuItem[] = [
     },
     {
         title: "Categoria 1",
-        icon: "StretchHorizontal",
+        icon: "Flame",
         href: "/",
         items: [
             {
                 title: "Combustión Móvil",
-                icon: "Car",
+                icon: "Fuel",
                 href: "/combustion-movil",
             },
             {
@@ -77,15 +85,20 @@ export const menu: MenuItem[] = [
                 icon: "Bean",
                 href: "/fertilizante",
             },
+            {
+                title: "Extintores",
+                icon: "FireExtinguisher",
+                href: "/extintores",
+            },
         ],
     },
     {
         title: "Categoria 2",
-        icon: "StretchHorizontal",
+        icon: "Zap",
         href: "/",
         items: [
             {
-                title: "Consumo de Electricidad",
+                title: "Consumo de Energía",
                 icon: "Zap",
                 href: "/electricidad",
             },
@@ -93,19 +106,34 @@ export const menu: MenuItem[] = [
     },
     {
         title: "Categoria 3",
-        icon: "StretchHorizontal",
+        icon: "CarTaxiFront",
         href: "/",
         items: [
             {
+                title: "Viajes Aéreos",
+                icon: "Plane",
+                href: "/taxi",
+            },
+            {
+                title: "Transporte Terrestre",
+                icon: "Bus",
+                href: "/taxi",
+            },
+            {
                 title: "Taxis",
                 icon: "CarTaxiFront",
+                href: "/taxi",
+            },
+            {
+                title: "Transporte Casa-Trabajo",
+                icon: "Car",
                 href: "/taxi",
             },
         ],
     },
     {
         title: "Categoria 4",
-        icon: "StretchHorizontal",
+        icon: "FileText",
         href: "/",
         items: [
             {
@@ -136,7 +164,7 @@ export const menu: MenuItem[] = [
         href: "/",
         items: [
             {
-                title: "Factores de Combustible",
+                title: "Factores de Combustibles",
                 icon: "Flame",
                 href: "/tipo-combustible-factor",
             },
@@ -149,6 +177,11 @@ export const menu: MenuItem[] = [
                 title: "Factor de Emision SEIN",
                 icon: "PlugZap",
                 href: "/factor-emision-SEIN",
+            },
+            {
+                title: "Factores de Consumibles",
+                icon: "Milk",
+                href: "/tipo-consumible-factor",
             },
         ],
     },

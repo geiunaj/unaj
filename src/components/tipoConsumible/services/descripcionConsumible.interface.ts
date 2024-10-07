@@ -23,21 +23,13 @@ export interface DescripcionConsumibleCollectionPaginate {
 
 export interface DescripcionConsumibleCollection {
     id: number;
-    nombre: string;
-    valor: number;
-    anio_id: number;
-    anio: string;
-    unidad: string;
-    created_at: Date;
-    updated_at: Date;
+    descripcion: string;
+    rn: number;
 }
 
 export interface DescripcionConsumibleResource {
     id: number;
-    clase: string;
-    nombre: string;
-    porcentajeNitrogeno: number;
-    unidad: string;
+    descripcion: string;
 }
 
 

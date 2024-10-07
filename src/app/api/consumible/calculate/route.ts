@@ -259,10 +259,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         }
 
-        let consumoTipoConsumible = 0;
-        let totalGEI = 0;
-
         for (const tipoConsumible of tiposConsumible) {
+            let consumoTipoConsumible = 0;
+            let totalGEI = 0;
+
             const tipoConsumibleCalculos = await prisma.consumibleCalculos.create({
                 data: {
                     pesoTotal: 0,
@@ -278,10 +278,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             for (const period of allPeriodsBetweenYears) {
                 const anioId = await getAnioId(String(period.anio));
                 const factorTipoConsumible = await prisma.factorTipoConsumible.findFirst({
-                    where: {anioId},
+                    where: {anioId, tipoConsumibleId: tipoConsumible.id},
                 });
 
-                if (!factorTipoConsumible) return new NextResponse(`Agregue el factor de tipo de consumible para el año ${anioId}`, {status: 404});
+                if (!factorTipoConsumible) return new NextResponse(`Agregue el factor de tipo de consumible de ${tipoConsumible.nombre} para el año ${period.anio}`, {status: 404});
 
                 let whereOptionDetails = whereOptionsConsumible;
                 whereOptionDetails.tipoConsumibleId = tipoConsumible.id;
@@ -300,6 +300,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
                 const totalGEIConsumible: number = pesoTotalTipoConsumible * factorTipoConsumible.factor;
 
+
                 await prisma.consumibleCalculosDetail.create({
                     data: {
                         tipoConsumibleId: tipoConsumible.id,
@@ -316,6 +317,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
                 consumoTipoConsumible += pesoTotalTipoConsumible;
                 totalGEI += totalGEIConsumible;
+
+                if (tipoConsumible.unidad === "L") {
+                    console.log(factorTipoConsumible);
+                    console.log(tipoConsumible);
+                    console.log(pesoTotalTipoConsumible);
+                    console.log(totalGEIConsumible);
+                    console.log(consumoTipoConsumible);
+                    console.log(totalGEI);
+                }
             }
 
             await prisma.consumibleCalculos.update({

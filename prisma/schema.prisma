@@ -9,7 +9,6 @@ datasource db {
 //   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 // }
 
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -835,6 +834,7 @@ model FactorTipoConsumible {
   anio                     Anio?                      @relation(fields: [anioId], references: [id])
   ConsumibleCalculosDetail ConsumibleCalculosDetail[]
 
+  @@unique([tipoConsumibleId, anioId])
   @@map("factortipoconsumible")
 }
 

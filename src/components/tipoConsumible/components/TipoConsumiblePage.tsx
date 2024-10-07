@@ -2,7 +2,7 @@
 
 import React, {useCallback, useState} from "react";
 import SelectFilter from "@/components/SelectFilter";
-import {Pen, Plus, Trash2, Bean} from "lucide-react";
+import {Pen, Plus, Trash2, Bean, Bolt} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -44,6 +44,8 @@ import {
 } from "@/components/tipoConsumible/services/tipoConsumible.interface";
 import {useTipoConsumible} from "@/components/tipoConsumible/lib/tipoConsumible.hook";
 import CustomPagination from "@/components/Pagination";
+import Link from "next/link";
+import {Input} from "@/components/ui/input";
 
 export default function TipoConsumiblePage() {
     //DIALOGS
@@ -55,6 +57,7 @@ export default function TipoConsumiblePage() {
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
+    const [name, setName] = useState("");
     const [page, setPage] = useState(1);
 
     const COLUMS = [
@@ -68,11 +71,16 @@ export default function TipoConsumiblePage() {
         "ACCIONES",
     ];
 
-
     //USE QUERIES
-    const tipoConsumibleQuery = useTipoConsumible(page);
+    const tipoConsumibleQuery = useTipoConsumible(name, page);
 
     // HANDLES
+    const handleNameChange = useCallback((value: string) => {
+        setName(value);
+        setPage(1);
+        tipoConsumibleQuery.refetch()
+    }, [tipoConsumibleQuery]);
+
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
         tipoConsumibleQuery.refetch();
@@ -124,6 +132,34 @@ export default function TipoConsumiblePage() {
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                        <Input className="w-44 h-7 text-xs" type="text" placeholder="Buscar"
+                               onChange={(e) => handleNameChange(e.target.value)}/>
+
+                        <Link href="/tipo-consumible/descripcion">
+                            <Button variant="secondary" size="sm" className="h-7 gap-1">
+                                <Bolt className="h-3.5 w-3.5"/>
+                                Descripciones
+                            </Button>
+                        </Link>
+                        <Link href="/tipo-consumible/descripcion">
+                            <Button variant="secondary" size="sm" className="h-7 gap-1">
+                                <Bolt className="h-3.5 w-3.5"/>
+                                Categorías
+                            </Button>
+                        </Link>
+                        <Link href="/tipo-consumible/descripcion">
+                            <Button variant="secondary" size="sm" className="h-7 gap-1">
+                                <Bolt className="h-3.5 w-3.5"/>
+                                Grupos
+                            </Button>
+                        </Link>
+                        <Link href="/tipo-consumible/descripcion">
+                            <Button variant="secondary" size="sm" className="h-7 gap-1">
+                                <Bolt className="h-3.5 w-3.5"/>
+                                Procesos
+                            </Button>
+                        </Link>
+
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button size="sm" className="h-7 gap-1">

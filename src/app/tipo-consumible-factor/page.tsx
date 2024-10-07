@@ -1,13 +1,12 @@
 "use client";
 
 import LayoutWrapper from "@/components/Layout/layout";
-import TipoCombustibleFactorPage from "@/components/tipoCombustible/components/TipoCombustibleFactorPage";
-
+import ConsumibleFactorPage from "@/components/tipoConsumible/components/ConsumibleFactorPage";
 
 export default function Page() {
     return (
         <LayoutWrapper>
-            <TipoCombustibleFactorPage/>
+            <ConsumibleFactorPage/>
         </LayoutWrapper>
     );
 }
