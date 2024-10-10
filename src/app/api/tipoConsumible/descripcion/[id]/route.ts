@@ -43,7 +43,7 @@ export async function PUT(req: NextRequest, {params}: { params: { id: string } }
 
         return NextResponse.json({
             message: "Descripcion actualizada correctamente",
-            descripcion: formatDescripcionConsumible(descripcion),
+            descripcion: formatDescripcionConsumible(descripcionConsumible),
         });
     } catch (error) {
         console.error("Error actualizando descripcion", error);

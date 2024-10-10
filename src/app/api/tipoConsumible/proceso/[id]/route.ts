@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
-import {formatDescripcionConsumible} from "@/lib/resources/descripcionConsumibleResource";
-import {DescripcionConsumibleRequest} from "@/components/tipoConsumible/services/descripcionConsumible.interface";
+import {formatProcesoConsumible} from "@/lib/resources/procesoConsumibleResource";
+import {ProcesoConsumibleRequest} from "@/components/tipoConsumible/services/procesoConsumible.interface";
 
 export async function GET(
     req: NextRequest,
@@ -9,17 +9,17 @@ export async function GET(
     try {
         const id = parseInt(params.id, 10);
         if (isNaN(id)) return new NextResponse("Invalid ID", {status: 404});
-        const descripcion = await prisma.descripcionConsumible.findUnique({
+        const proceso = await prisma.procesoConsumible.findUnique({
             where: {
                 id: id,
             }
         });
 
-        if (!descripcion) return new NextResponse("Descripcion no encontrada", {status: 404});
-        return NextResponse.json(formatDescripcionConsumible(descripcion));
+        if (!proceso) return new NextResponse("Proceso no encontrada", {status: 404});
+        return NextResponse.json(formatProcesoConsumible(proceso));
     } catch (error) {
-        console.error("Error buscando descripcion", error);
-        return new NextResponse("Error buscando descripcion", {status: 500});
+        console.error("Error buscando proceso", error);
+        return new NextResponse("Error buscando proceso", {status: 500});
     }
 }
 
@@ -28,26 +28,26 @@ export async function PUT(req: NextRequest, {params}: { params: { id: string } }
         const id = parseInt(params.id, 10);
         if (isNaN(id)) return new NextResponse("Invalid ID", {status: 400});
 
-        const {descripcion}: DescripcionConsumibleRequest = await req.json();
-        if (!descripcion) return new NextResponse("Nombre es requerido", {status: 422});
+        const {nombre}: ProcesoConsumibleRequest = await req.json();
+        if (!nombre) return new NextResponse("Nombre es requerido", {status: 422});
 
-        const descripcionConsumible = await prisma.descripcionConsumible.update({
+        const procesoConsumible = await prisma.procesoConsumible.update({
             where: {
                 id: id,
             },
             data: {
-                descripcion,
+                nombre,
                 updated_at: new Date(),
             },
         });
 
         return NextResponse.json({
-            message: "Descripcion actualizada correctamente",
-            descripcion: formatDescripcionConsumible(descripcion),
+            message: "Proceso actualizada correctamente",
+            proceso: formatProcesoConsumible(procesoConsumible),
         });
     } catch (error) {
-        console.error("Error actualizando descripcion", error);
-        return new NextResponse("Error actualizando descripcion", {status: 500});
+        console.error("Error actualizando proceso", error);
+        return new NextResponse("Error actualizando proceso", {status: 500});
     }
 }
 
@@ -58,15 +58,15 @@ export async function DELETE(
         const id = parseInt(params.id, 10);
         if (isNaN(id)) return new NextResponse("ID inválido", {status: 400});
 
-        await prisma.descripcionConsumible.delete({
+        await prisma.procesoConsumible.delete({
             where: {id},
         });
 
         return NextResponse.json({
-            message: "Descripcion eliminada correctamente",
+            message: "Proceso eliminada correctamente",
         });
     } catch (error: any) {
-        console.error("Error eliminando descripcion", error);
-        return new NextResponse("Error eliminando descripcion", {status: 500});
+        console.error("Error eliminando proceso", error);
+        return new NextResponse("Error eliminando proceso", {status: 500});
     }
 }

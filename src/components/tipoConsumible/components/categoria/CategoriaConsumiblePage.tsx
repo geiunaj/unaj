@@ -1,8 +1,7 @@
 "use client";
 
 import React, {useCallback, useState} from "react";
-import SelectFilter from "@/components/SelectFilter";
-import {Pen, Plus, Trash2, Bean, Bolt} from "lucide-react";
+import {Pen, Plus, Trash2, Bean} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -34,20 +33,20 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {CreateFormTipoConsumible} from "./CreateFormTipoConsumible";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import {UpdateFormTipoConsumible} from "@/components/tipoConsumible/components/UpdateFormTipoConsumible";
-import {deleteTipoConsumible} from "@/components/tipoConsumible/services/tipoConsumible.actions";
-import {
-    TipoConsumibleCollection,
-    TipoConsumibleCollectionItem
-} from "@/components/tipoConsumible/services/tipoConsumible.interface";
-import {useTipoConsumible} from "@/components/tipoConsumible/lib/tipoConsumible.hook";
 import CustomPagination from "@/components/Pagination";
-import Link from "next/link";
-import {Input} from "@/components/ui/input";
+import {useQuery} from "@tanstack/react-query";
 
-export default function TipoConsumiblePage() {
+import {useRouter} from "next/navigation";
+import ButtonBack from "@/components/ButtonBack";
+import { deleteCategoriaConsumible, getCategoriaConsumiblePaginate } from "../../services/categoriaConsumible.actions";
+import { CreateFormCategoriaConsumible } from "./CreateFormCategoriaConsumible";
+import { CategoriaConsumibleCollection } from "../../services/categoriaConsumible.interface";
+import { UpdateFormCategoriaConsumible } from "./UpdateFormCategoriaConsumible";
+
+export default function CategoriaConsumiblePage() {
+    const {push} = useRouter();
+
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -57,53 +56,46 @@ export default function TipoConsumiblePage() {
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
-    const [name, setName] = useState("");
     const [page, setPage] = useState(1);
 
     const COLUMS = [
         "N°",
         "NOMBRE",
-        "UNIDAD",
-        "DESCRIPCION",
-        "CATEGORIA",
-        "GRUPO",
-        "PROCESO",
         "ACCIONES",
     ];
 
+
     //USE QUERIES
-    const tipoConsumibleQuery = useTipoConsumible(name, page);
+    const categoriaConsumibleQuery = useQuery({
+        queryKey: ["categoriaConsumible", page],
+        queryFn: () => getCategoriaConsumiblePaginate(page),
+        refetchOnWindowFocus: false,
+    })
 
     // HANDLES
-    const handleNameChange = useCallback((value: string) => {
-        setName(value);
-        setPage(1);
-        tipoConsumibleQuery.refetch()
-    }, [tipoConsumibleQuery]);
-
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
-        tipoConsumibleQuery.refetch();
-    }, [tipoConsumibleQuery]);
+        categoriaConsumibleQuery.refetch();
+    }, [categoriaConsumibleQuery]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
-        tipoConsumibleQuery.refetch();
-    }, [tipoConsumibleQuery]);
+        categoriaConsumibleQuery.refetch();
+    }, [categoriaConsumibleQuery]);
 
     const handleDelete = useCallback(async () => {
         try {
-            const response = await deleteTipoConsumible(idForDelete);
+            const response = await deleteCategoriaConsumible(idForDelete);
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
             errorToast(
-                error.response?.data?.message || "Error al eliminar el tipo de consumible"
+                error.response?.data?.message || "Error al eliminar el categoria de consumible"
             );
         } finally {
-            await tipoConsumibleQuery.refetch();
+            await categoriaConsumibleQuery.refetch();
         }
-    }, [tipoConsumibleQuery]);
+    }, [categoriaConsumibleQuery]);
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
         setIsUpdateDialogOpen(true);
@@ -116,50 +108,29 @@ export default function TipoConsumiblePage() {
 
     const handlePageChage = async (page: number) => {
         await setPage(page);
-        await tipoConsumibleQuery.refetch();
+        await categoriaConsumibleQuery.refetch();
     };
 
-    if (tipoConsumibleQuery.isLoading) {
+    const handleTipoConsumible = () => {
+        push("/tipo-consumible");
+    };
+
+    if (categoriaConsumibleQuery.isLoading) {
         return <SkeletonTable/>;
     }
 
     return (
         <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Tipos de Consumible</h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
+                <div className="flex gap-4 items-center">
+                    <ButtonBack onClick={handleTipoConsumible}/>
+                    <div className="font-Manrope">
+                        <h1 className="text-base text-foreground font-bold">Categoría de Consumible </h1>
+                        <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
+                    </div>
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
-                        <Input className="w-44 h-7 text-xs" type="text" placeholder="Buscar"
-                               onChange={(e) => handleNameChange(e.target.value)}/>
-
-                        <Link href="/tipo-consumible/descripcion">
-                            <Button variant="secondary" size="sm" className="h-7 gap-1">
-                                <Bolt className="h-3.5 w-3.5"/>
-                                Descripciones
-                            </Button>
-                        </Link>
-                        <Link href="/tipo-consumible/categoria">
-                            <Button variant="secondary" size="sm" className="h-7 gap-1">
-                                <Bolt className="h-3.5 w-3.5"/>
-                                Categorías
-                            </Button>
-                        </Link>
-                        <Link href="/tipo-consumible/grupo">
-                            <Button variant="secondary" size="sm" className="h-7 gap-1">
-                                <Bolt className="h-3.5 w-3.5"/>
-                                Grupos
-                            </Button>
-                        </Link>
-                        <Link href="/tipo-consumible/proceso">
-                            <Button variant="secondary" size="sm" className="h-7 gap-1">
-                                <Bolt className="h-3.5 w-3.5"/>
-                                Procesos
-                            </Button>
-                        </Link>
-
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button size="sm" className="h-7 gap-1">
@@ -169,13 +140,13 @@ export default function TipoConsumiblePage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle> TIPOS DE CONSUMIBLE</DialogTitle>
+                                    <DialogTitle>CATEGORÍA DE CONSUMIBLE</DialogTitle>
                                     <DialogDescription>
-                                        Agregar Tipo de Consumible
+                                        Agregar Categoría de Consumible
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                <CreateFormTipoConsumible onClose={handleClose}/>
+                                <CreateFormCategoriaConsumible onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -196,32 +167,14 @@ export default function TipoConsumiblePage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {tipoConsumibleQuery.data!.data.map(
-                            (item: TipoConsumibleCollectionItem) => (
+                        {categoriaConsumibleQuery.data!.data.map(
+                            (item: CategoriaConsumibleCollection) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{item.rn}</Badge>
                                     </TableCell>
-                                    <TableCell
-                                        className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.nombre}
-                                    </TableCell>
-                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.unidad}
-                                    </TableCell>
-                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.descripcion}
-                                    </TableCell>
-                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.categoria}
-                                    </TableCell>
-                                    <TableCell
-                                        className="text-xs max-w-24  whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.grupo}
-                                    </TableCell>
-                                    <TableCell
-                                        className="text-xs max-w-48 whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.proceso}
                                     </TableCell>
 
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis p-1">
@@ -252,9 +205,9 @@ export default function TipoConsumiblePage() {
                         )}
                     </TableBody>
                 </Table>
-                {tipoConsumibleQuery.data!.meta.totalPages > 1 && (
+                {categoriaConsumibleQuery.data!.meta.totalPages > 1 && (
                     <CustomPagination
-                        meta={tipoConsumibleQuery.data!.meta}
+                        meta={categoriaConsumibleQuery.data!.meta}
                         onPageChange={handlePageChage}
                     />
                 )}
@@ -265,10 +218,12 @@ export default function TipoConsumiblePage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Consumible</DialogTitle>
+                        <DialogTitle>
+                            ACTUALIZAR CATEGORÍA DE CONSUMIBLE
+                        </DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <UpdateFormTipoConsumible onClose={handleCloseUpdate} id={idForUpdate}/>
+                    <UpdateFormCategoriaConsumible onClose={handleCloseUpdate} id={idForUpdate}/>
                 </DialogContent>
             </Dialog>
 

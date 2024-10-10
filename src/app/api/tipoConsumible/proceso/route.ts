@@ -8,9 +8,30 @@ import {
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
-        const procesoConsumibles = await prisma.procesoConsumible.findMany();
-        const formattedProcesoConsumibles: ProcesoConsumible[] = procesoConsumibles.map(formatProcesoConsumible);
+        const {searchParams} = new URL(req.url);
+        const perPage = parseInt(searchParams.get("perPage") ?? "0");
+        const page = parseInt(searchParams.get("page") ?? "1");
 
+        const procesoConsumibles = await prisma.procesoConsumible.findMany({
+            orderBy: {nombre: "asc"},
+            ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
+        });
+        if (perPage > 0) {
+            const totalRecords = await prisma.procesoConsumible.count();
+            const totalPages = Math.ceil(totalRecords / perPage);
+            const procesoConsumibleFormatted: any[] = procesoConsumibles.map(
+                (consumible, index) => {
+                    const newProcesoConsumible = formatProcesoConsumible(consumible);
+                    newProcesoConsumible.rn = index + 1;
+                    return newProcesoConsumible;
+                }
+            );
+            return NextResponse.json({
+                data: procesoConsumibleFormatted,
+                meta: {page, perPage, totalRecords, totalPages},
+            });
+        }
+        const formattedProcesoConsumibles: ProcesoConsumible[] = procesoConsumibles.map(formatProcesoConsumible);
         return NextResponse.json(formattedProcesoConsumibles);
     } catch (error) {
         console.error("Error buscando Proceso de Consumibles", error);

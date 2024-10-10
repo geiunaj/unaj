@@ -1,51 +1,42 @@
 export interface GrupoConsumible {
-    id: number;
-    nombre: string;
-    created_at: Date;
-    updated_at: Date;
+  id: number;
+  nombre: string;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export interface GrupoConsumibleRequest {
-    nombre: string;
+  nombre: string;
 }
 
 interface Meta {
-    page: number;
-    perPage: number;
-    totalRecords: number;
-    totalPages: number;
+  page: number;
+  perPage: number;
+  totalRecords: number;
+  totalPages: number;
 }
 
 export interface GrupoConsumibleCollectionPaginate {
-    data: GrupoConsumibleCollection[];
-    meta: Meta
+  data: GrupoConsumibleCollection[];
+  meta: Meta;
 }
 
 export interface GrupoConsumibleCollection {
-    id: number;
-    nombre: string;
-    valor: number;
-    anio_id: number;
-    anio: string;
-    unidad: string;
-    created_at: Date;
-    updated_at: Date;
+  id: number;
+  nombre: string;
+  rn: number;
 }
 
 export interface GrupoConsumibleResource {
-    id: number;
-    clase: string;
-    nombre: string;
-    porcentajeNitrogeno: number;
-    unidad: string;
+  id: number;
+  nombre: string;
 }
 
-
 export interface CreateGrupoConsumibleProps {
-    onClose: () => void;
+  onClose: () => void;
 }
 
 export interface UpdateGrupoConsumibleProps {
-    onClose: () => void;
-    id: number;
+  onClose: () => void;
+  id: number;
 }

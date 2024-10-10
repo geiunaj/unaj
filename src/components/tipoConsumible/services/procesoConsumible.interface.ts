@@ -1,51 +1,42 @@
 export interface ProcesoConsumible {
-    id: number;
-    nombre: string;
-    created_at: Date;
-    updated_at: Date;
+  id: number;
+  nombre: string;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export interface ProcesoConsumibleRequest {
-    nombre: string;
+  nombre: string;
 }
 
 interface Meta {
-    page: number;
-    perPage: number;
-    totalRecords: number;
-    totalPages: number;
+  page: number;
+  perPage: number;
+  totalRecords: number;
+  totalPages: number;
 }
 
 export interface ProcesoConsumibleCollectionPaginate {
-    data: ProcesoConsumibleCollection[];
-    meta: Meta
+  data: ProcesoConsumibleCollection[];
+  meta: Meta;
 }
 
 export interface ProcesoConsumibleCollection {
-    id: number;
-    nombre: string;
-    valor: number;
-    anio_id: number;
-    anio: string;
-    unidad: string;
-    created_at: Date;
-    updated_at: Date;
+  id: number;
+  nombre: string;
+  rn: number;
 }
 
 export interface ProcesoConsumibleResource {
-    id: number;
-    clase: string;
-    nombre: string;
-    porcentajeNitrogeno: number;
-    unidad: string;
+  id: number;
+  nombre: string;
 }
 
-
 export interface CreateProcesoConsumibleProps {
-    onClose: () => void;
+  onClose: () => void;
 }
 
 export interface UpdateProcesoConsumibleProps {
-    onClose: () => void;
-    id: number;
+  onClose: () => void;
+  id: number;
 }

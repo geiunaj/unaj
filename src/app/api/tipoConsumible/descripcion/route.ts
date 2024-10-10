@@ -10,6 +10,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const {searchParams} = new URL(req.url);
         const perPage = parseInt(searchParams.get("perPage") ?? "0");
         const page = parseInt(searchParams.get("page") ?? "1");
+        
         const descripcionConsumibles = await prisma.descripcionConsumible.findMany({
             orderBy: {descripcion: "asc"},
             ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),

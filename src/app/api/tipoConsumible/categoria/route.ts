@@ -8,9 +8,30 @@ import {
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
-        const categoriaConsumibles = await prisma.categoriaConsumible.findMany();
-        const formattedCategoriaConsumibles: CategoriaConsumible[] = categoriaConsumibles.map(formatCategoriaConsumible);
+        const {searchParams} = new URL(req.url);
+        const perPage = parseInt(searchParams.get("perPage") ?? "0");
+        const page = parseInt(searchParams.get("page") ?? "1");
 
+        const categoriaConsumibles = await prisma.categoriaConsumible.findMany({
+            orderBy: {nombre: "asc"},
+            ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
+        });
+        if (perPage > 0) {
+            const totalRecords = await prisma.categoriaConsumible.count();
+            const totalPages = Math.ceil(totalRecords / perPage);
+            const categoriaConsumibleFormatted: any[] = categoriaConsumibles.map(
+                (consumible, index) => {
+                    const newCategoriaConsumible = formatCategoriaConsumible(consumible);
+                    newCategoriaConsumible.rn = index + 1;
+                    return newCategoriaConsumible;
+                }
+            );
+            return NextResponse.json({
+                data: categoriaConsumibleFormatted,
+                meta: {page, perPage, totalRecords, totalPages},
+            });
+        }
+        const formattedCategoriaConsumibles: CategoriaConsumible[] = categoriaConsumibles.map(formatCategoriaConsumible);
         return NextResponse.json(formattedCategoriaConsumibles);
     } catch (error) {
         console.error("Error buscando Categoria de Consumibles", error);
