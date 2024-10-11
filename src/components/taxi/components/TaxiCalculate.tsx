@@ -73,7 +73,7 @@ export default function TaxiCalculate() {
     }, [from, to, taxiCalculos, conusmoAguaCalculosReport]);
 
     const handleTaxi = () => {
-        push("/consumo-agua");
+        push("/taxi");
     };
 
     const handleFromChange = useCallback(

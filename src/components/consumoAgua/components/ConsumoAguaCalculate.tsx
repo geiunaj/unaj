@@ -84,7 +84,7 @@ export default function ConsumoAguaCalculate() {
     }, [selectedSede, from, to, consumoAguaCalculos, conusmoAguaCalculosReport]);
 
     const handleConsumoAgua = () => {
-        push("/consumo-agua");
+        push("/consumoAgua");
     };
 
     const handleFromChange = useCallback(
