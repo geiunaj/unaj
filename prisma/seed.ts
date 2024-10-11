@@ -65,11 +65,7 @@ async function main() {
     }
     console.log("Years created");
 
-    const sedesNames = [
-        "Sede Ayabacas",
-        "Sede CENTRAL",
-        "Sede La Capilla",
-    ]
+    const sedesNames = ["Sede Ayabacas", "Sede CENTRAL", "Sede La Capilla"];
 
     for (const sedeName of sedesNames) {
         await prisma.sede.create({
@@ -288,7 +284,8 @@ async function main() {
                             tipo: type,
                             tipoEquipo: faker.lorem.word(),
                             consumo: faker.number.float({min: 0, max: 100}),
-                            tipoCombustible_id: faker.helpers.arrayElement(allTiposCombustible).id,
+                            tipoCombustible_id:
+                            faker.helpers.arrayElement(allTiposCombustible).id,
                             mes_id: mes.id,
                             anio_id: anio.id,
                             sede_id: sede.id,
@@ -370,7 +367,6 @@ async function main() {
     for (const anio of allAnios) {
         await prisma.factorEmisionFertilizante.create({
             data: {
-
                 valor: 0.0125,
                 anio_id: anio.id,
 
@@ -483,8 +479,8 @@ async function main() {
         // A3
         {
             nombre: "A3",
-            ancho: 29.70,
-            largo: 42.10,
+            ancho: 29.7,
+            largo: 42.1,
             area: 0.125037,
             gramaje: 80.0,
             unidad_paquete: "500 hojas",
@@ -494,8 +490,8 @@ async function main() {
         },
         {
             nombre: "A3",
-            ancho: 29.70,
-            largo: 42.10,
+            ancho: 29.7,
+            largo: 42.1,
             area: 0.125037,
             gramaje: 90.0,
             unidad_paquete: "millar",
@@ -506,7 +502,7 @@ async function main() {
         {
             nombre: "A4",
             ancho: 21,
-            largo: 29.70,
+            largo: 29.7,
             area: 0.06237,
             gramaje: 70.0,
             unidad_paquete: "millar",
@@ -517,7 +513,7 @@ async function main() {
         {
             nombre: "A4",
             ancho: 21,
-            largo: 29.70,
+            largo: 29.7,
             area: 0.06237,
             gramaje: 80.0,
             unidad_paquete: "millar",
@@ -750,8 +746,8 @@ async function main() {
             data: {
                 factor: 0.344,
                 anio_id: anio.id,
-            }
-        })
+            },
+        });
     }
     console.log("Water emission factor created");
 
@@ -761,10 +757,22 @@ async function main() {
                 const anio_mes = anio.nombre * 100 + mes.id;
                 await prisma.taxi.create({
                     data: {
-                        unidadContratante: `Unidad ${faker.number.int({min: 1, max: 10})}`,
+                        unidadContratante: `Unidad ${faker.number.int({
+                            min: 1,
+                            max: 10,
+                        })}`,
                         lugarSalida: faker.location.city(),
                         lugarDestino: faker.location.city(),
-                        montoGastado: faker.number.float({min: 10, max: 50, multipleOf: 0.5}),
+                        montoGastado: faker.number.float({
+                            min: 10,
+                            max: 50,
+                            multipleOf: 0.5,
+                        }),
+                        kmRecorrido: faker.number.float({
+                            min: 1,
+                            max: 50,
+                            multipleOf: 0.5,
+                        }),
                         mes_id: mes.id,
                         anio_id: anio.id,
                         sede_id: sede.id,
@@ -777,6 +785,16 @@ async function main() {
         }
     }
     console.log("Taxi data created");
+
+    for (const anio of allAnios) {
+        await prisma.factorEmisionTaxi.create({
+            data: {
+                factor: 0.100889,
+                anio_id: anio.id,
+            },
+        });
+    }
+    console.log("Taxi emission factor created");
 
     const TipoEquipoRefrigerante = [
         {nombre: "Refrigeradora doméstica"},
@@ -997,13 +1015,18 @@ async function main() {
         {nombre: "Tinta líquida"},
         {nombre: "Toner"},
         {nombre: "Yogurt"},
-
     ];
     const procesoConsumibles = [
         {nombre: "Paper and board for (fat) food packaging"},
-        {nombre: "toner module production, laser printer, colour | toner module, laser printer, colour | APOS, U"},
+        {
+            nombre:
+                "toner module production, laser printer, colour | toner module, laser printer, colour | APOS, U",
+        },
         {nombre: "Life Cycle Comparison Report on a Ballpoint Pen"},
-        {nombre: "Water, bottled, processed in FR | Ambient (long) | Already packed - PET | at packaging"},
+        {
+            nombre:
+                "Water, bottled, processed in FR | Ambient (long) | Already packed - PET | at packaging",
+        },
         {nombre: "Soda, sugar and caffeine"},
         {nombre: "Biscuit"},
         {nombre: "Peanuts, unsalted"},
@@ -1023,12 +1046,18 @@ async function main() {
         {nombre: "Sodium Hypochlorite, NaOCl (Plasticseurope 2013)"},
         {nombre: "Rice, white"},
         {nombre: "Syrup, sweetened"},
-        {nombre: "Declaración Ambiental de producto Prodotti Tissue in pura cellulosa per uso igienico e domestico"},
+        {
+            nombre:
+                "Declaración Ambiental de producto Prodotti Tissue in pura cellulosa per uso igienico e domestico",
+        },
         {nombre: "Chicken egg"},
         {nombre: "Bread, whole wheat"},
         {nombre: "Almonds, without membrane"},
         {nombre: "Chocolate, milk"},
-        {nombre: "Board (solid) and recycled paper (test liner and fluting) in Europe"},
+        {
+            nombre:
+                "Board (solid) and recycled paper (test liner and fluting) in Europe",
+        },
         {nombre: "Oatmeal"},
         {nombre: "Banana"},
         {nombre: "Milk, whole"},
@@ -1077,123 +1106,358 @@ async function main() {
     ];
     const tipoConsumibles = [
         {nombre: "ACEITE VEGETAL COMESTIBLE", unidad: "kg", factor: 0.12089},
-        {nombre: "AGUA DE MESA SIN GAS X 20 L + ENVASE", unidad: "kg", factor: 0.12089},
-        {nombre: "AGUA DE MESA SIN GAS X 625 mL", unidad: "kg", factor: 0.726214729},
-        {nombre: "AGUA DE MESA SIN GAS X 625 mL X 15", unidad: "kg", factor: 0.404862053},
+        {
+            nombre: "AGUA DE MESA SIN GAS X 20 L + ENVASE",
+            unidad: "kg",
+            factor: 0.12089,
+        },
+        {
+            nombre: "AGUA DE MESA SIN GAS X 625 mL",
+            unidad: "kg",
+            factor: 0.726214729,
+        },
+        {
+            nombre: "AGUA DE MESA SIN GAS X 625 mL X 15",
+            unidad: "kg",
+            factor: 0.404862053,
+        },
         {nombre: "AGUA MINERAL SIN GAS X 20 L", unidad: "kg", factor: 0.026855},
-        {nombre: "AGUA MINERAL SIN GAS X 355 mL", unidad: "kg", factor: 0.351411564},
-        {nombre: "AGUA MINERAL SIN GAS X 625 mL APROX.", unidad: "kg", factor: 0.12089},
+        {
+            nombre: "AGUA MINERAL SIN GAS X 355 mL",
+            unidad: "kg",
+            factor: 0.351411564,
+        },
+        {
+            nombre: "AGUA MINERAL SIN GAS X 625 mL APROX.",
+            unidad: "kg",
+            factor: 0.12089,
+        },
         {nombre: "ALMENDRA (KG)", unidad: "kg", factor: 0.448021789},
         {
-            nombre: "ARCHIVADOR DE CARTON PLASTIFICADO CON PALANCA LOMO ANCHO TAMAÑO OFICIO",
+            nombre:
+                "ARCHIVADOR DE CARTON PLASTIFICADO CON PALANCA LOMO ANCHO TAMAÑO OFICIO",
             unidad: "kg",
-            factor: 0.448021789
+            factor: 0.448021789,
         },
-        {nombre: "ARCHIVADOR DE PLÁSTICO DE PALANCA LOMO ANCHO TAMAÑO A4", unidad: "kg", factor: 0.026855},
-        {nombre: "ARCHIVADOR DE PLÁSTICO DE PALANCA LOMO ANCHO TAMAÑO A5", unidad: "kg", factor: 0.438471383},
+        {
+            nombre: "ARCHIVADOR DE PLÁSTICO DE PALANCA LOMO ANCHO TAMAÑO A4",
+            unidad: "kg",
+            factor: 0.026855,
+        },
+        {
+            nombre: "ARCHIVADOR DE PLÁSTICO DE PALANCA LOMO ANCHO TAMAÑO A5",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
         {nombre: "ARROZ EXTRA", unidad: "kg", factor: 0.438471383},
-        {nombre: "ATUN EN FILETE EN ACEITE VEGETAL X 170 g", unidad: "kg", factor: 0.438471383},
+        {
+            nombre: "ATUN EN FILETE EN ACEITE VEGETAL X 170 g",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
         {nombre: "AZUCAR RUBIA DOMESTICA", unidad: "kg", factor: 0.438471383},
         {nombre: "BEBIDA GASEOSA X 285 mL", unidad: "kg", factor: 0.438471383},
-        {nombre: "BEBIDA GASEOSA X 300 mL AMARILLA", unidad: "kg", factor: 0.438471383},
+        {
+            nombre: "BEBIDA GASEOSA X 300 mL AMARILLA",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
         {nombre: "BEBIDA GASEOSA X 350 mL", unidad: "kg", factor: 0.438471383},
         {nombre: "BEBIDA GASEOSA X 600 mL", unidad: "kg", factor: 0.438471383},
-        {nombre: "BOLÍGRAFO (LAPICERO) DE TINTA LÍQUIDA PUNTA FINA COLOR AZUL", unidad: "kg", factor: 0.438471383},
-        {nombre: "BOLIGRAFO (LAPICERO) DE TINTA SECA PUNTA FINA COLOR NEGRO", unidad: "kg", factor: 0.438471383},
-        {nombre: "BOLIGRAFO (LAPICERO) DE TINTA SECA PUNTA MEDIA COLOR AZUL", unidad: "kg", factor: 0.438471383},
-        {nombre: "BOLIGRAFO (LAPICERO) DE TINTA SECA PUNTA MEDIA ECOLOGICO", unidad: "kg", factor: 0.438471383},
-        {nombre: "BOLIGRAFO (LAPICERO) TINTA GEL PUNTA FINA COLOR AZUL", unidad: "kg", factor: 0.438471383},
+        {
+            nombre: "BOLÍGRAFO (LAPICERO) DE TINTA LÍQUIDA PUNTA FINA COLOR AZUL",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "BOLIGRAFO (LAPICERO) DE TINTA SECA PUNTA FINA COLOR NEGRO",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "BOLIGRAFO (LAPICERO) DE TINTA SECA PUNTA MEDIA COLOR AZUL",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "BOLIGRAFO (LAPICERO) DE TINTA SECA PUNTA MEDIA ECOLOGICO",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "BOLIGRAFO (LAPICERO) TINTA GEL PUNTA FINA COLOR AZUL",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
         {nombre: "CAFÉ INSTANTÁNEO X 250 g", unidad: "kg", factor: 0.438471383},
         {nombre: "CAÑIHUA TOSTADA MOLIDA", unidad: "kg", factor: 0.438471383},
         {nombre: "CARAMELO DURO (CIENTO)", unidad: "kg", factor: 0.438471383},
         {nombre: "CHOCOLATE EN PASTA X 400 g", unidad: "kg", factor: 0.438471383},
-        {nombre: "CINTA DE PAPEL PARA ENMASCARAR - MASKING TAPE 2 in X 40 yd", unidad: "kg", factor: 0.438471383},
-        {nombre: "CLIP DE METAL 33 mm X 101", unidad: "kg", factor: 0.438471383},
-        {nombre: "CLIP MARIPOSA DE METAL 45 mm X 53", unidad: "kg", factor: 0.438471383},
         {
-            nombre: "CUADERNO DOBLE ESPIRAL DE PAPEL BOND 90 g 20 cm X 20 cm X 50 HOJAS",
+            nombre: "CINTA DE PAPEL PARA ENMASCARAR - MASKING TAPE 2 in X 40 yd",
             unidad: "kg",
-            factor: 0.438471383
+            factor: 0.438471383,
         },
-        {nombre: "DESINFECTANTE LIMPIADOR AROMATICO X 3.785 L APROX.", unidad: "kg", factor: 0.438471383},
-        {nombre: "DETERGENTE EN POLVO X 15 kg", unidad: "kg", factor: 0.438471383},
-        {nombre: "ENGRAPADOR GRANDE DE OFICINA (150 HOJAS)", unidad: "kg", factor: 0.438471383},
-        {nombre: "ENGRAPADOR GRANDE DE OFICINA (50 HOJAS)", unidad: "kg", factor: 0.438471383},
+        {nombre: "CLIP DE METAL 33 mm X 101", unidad: "kg", factor: 0.438471383},
+        {
+            nombre: "CLIP MARIPOSA DE METAL 45 mm X 53",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre:
+                "CUADERNO DOBLE ESPIRAL DE PAPEL BOND 90 g 20 cm X 20 cm X 50 HOJAS",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "DESINFECTANTE LIMPIADOR AROMATICO X 3.785 L APROX.",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "DETERGENTE EN POLVO X 15 kg",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "ENGRAPADOR GRANDE DE OFICINA (150 HOJAS)",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "ENGRAPADOR GRANDE DE OFICINA (50 HOJAS)",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
         {nombre: "ESENCIA DE PANETÓN X 1 L", unidad: "kg", factor: 0.438471383},
-        {nombre: "FOLDER MANILA TAMAÑO A4 COLOR AMARILLO", unidad: "kg", factor: 0.438471383},
-        {nombre: "FOLDER MANILA TAMAÑO OFICIO COLOR AMARILLO", unidad: "kg", factor: 0.438471383},
+        {
+            nombre: "FOLDER MANILA TAMAÑO A4 COLOR AMARILLO",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "FOLDER MANILA TAMAÑO OFICIO COLOR AMARILLO",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
         {nombre: "FRUTA CONFITADA (KG)", unidad: "kg", factor: 0.438471383},
-        {nombre: "GALLETA DULCE X 270 g APROX. X 6", unidad: "kg", factor: 0.438471383},
-        {nombre: "GALLETA SALADA X 24 g APROX. X 6", unidad: "kg", factor: 0.438471383},
-        {nombre: "GALLETA SALADA X 30 g APROX. X 6", unidad: "kg", factor: 0.438471383},
+        {
+            nombre: "GALLETA DULCE X 270 g APROX. X 6",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "GALLETA SALADA X 24 g APROX. X 6",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "GALLETA SALADA X 30 g APROX. X 6",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
         {nombre: "HOJUELAS DE AVENA (KG)", unidad: "kg", factor: 0.438471383},
-        {nombre: "JABÓN DE TOCADOR LÍQUIDO X 3.8 L", unidad: "kg", factor: 0.438471383},
-        {nombre: "JABON DE TOCADOR LIQUIDO X 4 L", unidad: "kg", factor: 0.438471383},
+        {
+            nombre: "JABÓN DE TOCADOR LÍQUIDO X 3.8 L",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "JABON DE TOCADOR LIQUIDO X 4 L",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
         {nombre: "JUGO DE FRUTAS X 350 mL", unidad: "kg", factor: 0.438471383},
-        {nombre: "LECHE EVAPORADA ENTERA X 400 g APROX. X 6", unidad: "kg", factor: 0.438471383},
-        {nombre: "LEJIA (HIPOCLORITO DE SODIO) AL 6%", unidad: "kg", factor: 0.438471383},
-        {nombre: "LENTEJA CALIDAD 2 - SUPERIOR (KG)", unidad: "kg", factor: 0.438471383},
+        {
+            nombre: "LECHE EVAPORADA ENTERA X 400 g APROX. X 6",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "LEJIA (HIPOCLORITO DE SODIO) AL 6%",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
+        {
+            nombre: "LENTEJA CALIDAD 2 - SUPERIOR (KG)",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
         {nombre: "MANTECA VEGETAL A GRANEL", unidad: "kg", factor: 0.438471383},
-        {nombre: "MANZANA CHILENA (AL PESO) (KG)", unidad: "kg", factor: 0.438471383},
+        {
+            nombre: "MANZANA CHILENA (AL PESO) (KG)",
+            unidad: "kg",
+            factor: 0.438471383,
+        },
         {nombre: "MARGARINA SIN SAL A GRANEL", unidad: "kg", factor: 0.404862053},
-        {nombre: "MICA PORTAPAPELES DE POLIPROPILENO TAMAÑO A4 (CIENTO)", unidad: "kg", factor: 2.305375489},
+        {
+            nombre: "MICA PORTAPAPELES DE POLIPROPILENO TAMAÑO A4 (CIENTO)",
+            unidad: "kg",
+            factor: 2.305375489,
+        },
         {nombre: "MOTA PARA PIZARRA ACRILICA", unidad: "kg", factor: 0.438471383},
-        {nombre: "NOTA AUTOADHESIVA 3 in X 3 in (7.6 cm X 7.6 cm) APROX. X 500 HOJAS", unidad: "kg", factor: 0.026855},
-        {nombre: "NUMERADOR AUTOMATICO DE METAL DE 8 DIGITOS", unidad: "kg", factor: 0.026855},
-        {nombre: "PAPEL HIGIENICO HOJA SIMPLE BLANCO X 500 m X 4", unidad: "kg", factor: 0.026855},
+        {
+            nombre:
+                "NOTA AUTOADHESIVA 3 in X 3 in (7.6 cm X 7.6 cm) APROX. X 500 HOJAS",
+            unidad: "kg",
+            factor: 0.026855,
+        },
+        {
+            nombre: "NUMERADOR AUTOMATICO DE METAL DE 8 DIGITOS",
+            unidad: "kg",
+            factor: 0.026855,
+        },
+        {
+            nombre: "PAPEL HIGIENICO HOJA SIMPLE BLANCO X 500 m X 4",
+            unidad: "kg",
+            factor: 0.026855,
+        },
         {nombre: "PECANA (KG)", unidad: "kg", factor: 0.026855},
-        {nombre: "PERFORADOR DE 2 ESPIGAS PARA 275 HOJAS APROX.", unidad: "kg", factor: 0.026855},
-        {nombre: "PERFORADOR DE 2 ESPIGAS PARA 45 HOJAS APROX.", unidad: "kg", factor: 0.026855},
+        {
+            nombre: "PERFORADOR DE 2 ESPIGAS PARA 275 HOJAS APROX.",
+            unidad: "kg",
+            factor: 0.026855,
+        },
+        {
+            nombre: "PERFORADOR DE 2 ESPIGAS PARA 45 HOJAS APROX.",
+            unidad: "kg",
+            factor: 0.026855,
+        },
         {nombre: "PLÁTANO DE SEDA ÓRGANICO", unidad: "kg", factor: 0.026855},
-        {nombre: "PLUMON MARCADOR DE TINTA AL AGUA DOBLE PUNTA (PUNTA FINA Y MEDIANA)", unidad: "kg", factor: 0.026855},
-        {nombre: "PLUMON PARA PIZARRA ACRILICA PUNTA GRUESA RECARGABLE COLOR AZUL", unidad: "kg", factor: 0.026855},
-        {nombre: "PLUMON PARA PIZARRA ACRILICA PUNTA GRUESA RECARGABLE COLOR NEGRO", unidad: "kg", factor: 0.026855},
-        {nombre: "PLUMON PARA PIZARRA ACRILICA PUNTA GRUESA RECARGABLE COLOR ROJO", unidad: "kg", factor: 0.026855},
-        {nombre: "PLUMON RESALTADOR PUNTA GRUESA BISELADA", unidad: "kg", factor: 1.63},
+        {
+            nombre:
+                "PLUMON MARCADOR DE TINTA AL AGUA DOBLE PUNTA (PUNTA FINA Y MEDIANA)",
+            unidad: "kg",
+            factor: 0.026855,
+        },
+        {
+            nombre: "PLUMON PARA PIZARRA ACRILICA PUNTA GRUESA RECARGABLE COLOR AZUL",
+            unidad: "kg",
+            factor: 0.026855,
+        },
+        {
+            nombre:
+                "PLUMON PARA PIZARRA ACRILICA PUNTA GRUESA RECARGABLE COLOR NEGRO",
+            unidad: "kg",
+            factor: 0.026855,
+        },
+        {
+            nombre: "PLUMON PARA PIZARRA ACRILICA PUNTA GRUESA RECARGABLE COLOR ROJO",
+            unidad: "kg",
+            factor: 0.026855,
+        },
+        {
+            nombre: "PLUMON RESALTADOR PUNTA GRUESA BISELADA",
+            unidad: "kg",
+            factor: 1.63,
+        },
         {nombre: "PRE MEZCLA DE PANETON", unidad: "kg", factor: 1.63},
         {nombre: "QUESO PARIA (KG)", unidad: "kg", factor: 0.12089},
         {nombre: "SOBRE MANILA TAMAÑO A4", unidad: "kg", factor: 0.404862053},
         {nombre: "SOBRE MANILA TAMAÑO A5.", unidad: "kg", factor: 0.026855},
-        {nombre: "SOBRE MANILA TAMAÑO EXTRAOFICIO", unidad: "kg", factor: 0.026855},
+        {
+            nombre: "SOBRE MANILA TAMAÑO EXTRAOFICIO",
+            unidad: "kg",
+            factor: 0.026855,
+        },
         {nombre: "SODA CAUSTICA (AL PESO) (KG)", unidad: "kg", factor: 0.026855},
-        {nombre: "SURTIDO DE MANI, PASAS Y HABAS X 250 g", unidad: "kg", factor: 0.026855},
-        {nombre: "TABLERO ACRILICO TAMAÑO A4 CON SUJETADOR DE METAL 176.00", unidad: "kg", factor: 0.026855},
-        {nombre: "TINTA DE IMPRESIÓN PARA EPSON COD. REF. T544120AL NEGRO", unidad: "kg", factor: 0.026855},
-        {nombre: "TINTA DE IMPRESIÓN PARA EPSON COD. REF. T544220AL CIAN", unidad: "kg", factor: 0.026855},
-        {nombre: "TINTA DE IMPRESIÓN PARA EPSON COD. REF. T544320AL MAGENTA", unidad: "kg", factor: 0.026855},
         {
-            nombre: "TINTA LIQUIDA SOLVENTE PARA CABEZAL DE IMPRESION DE PLOTTER X 1 gal CIAN",
+            nombre: "SURTIDO DE MANI, PASAS Y HABAS X 250 g",
             unidad: "kg",
-            factor: 0.026855
-        },
-        {nombre: "TINTA PARA ALMOHADILLA DE SELLO AUTOENTINTABLE X 30 mL COLOR AZUL", unidad: "kg", factor: 0.026855},
-        {nombre: "TÓNER DE IMPRESIÓN PARA HP COD. REF. 78A CE278A NEGRO", unidad: "kg", factor: 1.63},
-        {nombre: "TÓNER DE IMPRESIÓN PARA HP COD. REF. 85A CE285A NEGRO", unidad: "kg", factor: 3.7},
-        {nombre: "TÓNER DE IMPRESIÓN PARA HP COD. REF. 85A CE285AD NEGRO", unidad: "kg", factor: 2.305375489},
-        {
-            nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514C A9E8430 CIAN",
-            unidad: "kg",
-            factor: 2.305375489
+            factor: 0.026855,
         },
         {
-            nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514K A9E8130 NEGRO",
+            nombre: "TABLERO ACRILICO TAMAÑO A4 CON SUJETADOR DE METAL 176.00",
             unidad: "kg",
-            factor: 1.72068
+            factor: 0.026855,
         },
         {
-            nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514M A9E8330 MAGENTA",
+            nombre: "TINTA DE IMPRESIÓN PARA EPSON COD. REF. T544120AL NEGRO",
             unidad: "kg",
-            factor: 0.214301737
+            factor: 0.026855,
         },
         {
-            nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514Y A9E8230 AMARILLO",
+            nombre: "TINTA DE IMPRESIÓN PARA EPSON COD. REF. T544220AL CIAN",
             unidad: "kg",
-            factor: 0.214301737
+            factor: 0.026855,
         },
-        {nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 516 NEGRO", unidad: "kg", factor: 1.621671579},
-        {nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 618 NEGRO", unidad: "kg", factor: 6.776576767},
-        {nombre: "TÓNER DE IMPRESIÓN PARA KYOCERA COD. REF. TK 7227 NEGRO", unidad: "kg", factor: 1.621671579},
-        {nombre: "WAFER RELLENO DE VAINILLA X 29 g APROX. X 6", unidad: "kg", factor: 12.7511},
+        {
+            nombre: "TINTA DE IMPRESIÓN PARA EPSON COD. REF. T544320AL MAGENTA",
+            unidad: "kg",
+            factor: 0.026855,
+        },
+        {
+            nombre:
+                "TINTA LIQUIDA SOLVENTE PARA CABEZAL DE IMPRESION DE PLOTTER X 1 gal CIAN",
+            unidad: "kg",
+            factor: 0.026855,
+        },
+        {
+            nombre:
+                "TINTA PARA ALMOHADILLA DE SELLO AUTOENTINTABLE X 30 mL COLOR AZUL",
+            unidad: "kg",
+            factor: 0.026855,
+        },
+        {
+            nombre: "TÓNER DE IMPRESIÓN PARA HP COD. REF. 78A CE278A NEGRO",
+            unidad: "kg",
+            factor: 1.63,
+        },
+        {
+            nombre: "TÓNER DE IMPRESIÓN PARA HP COD. REF. 85A CE285A NEGRO",
+            unidad: "kg",
+            factor: 3.7,
+        },
+        {
+            nombre: "TÓNER DE IMPRESIÓN PARA HP COD. REF. 85A CE285AD NEGRO",
+            unidad: "kg",
+            factor: 2.305375489,
+        },
+        {
+            nombre:
+                "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514C A9E8430 CIAN",
+            unidad: "kg",
+            factor: 2.305375489,
+        },
+        {
+            nombre:
+                "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514K A9E8130 NEGRO",
+            unidad: "kg",
+            factor: 1.72068,
+        },
+        {
+            nombre:
+                "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514M A9E8330 MAGENTA",
+            unidad: "kg",
+            factor: 0.214301737,
+        },
+        {
+            nombre:
+                "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 514Y A9E8230 AMARILLO",
+            unidad: "kg",
+            factor: 0.214301737,
+        },
+        {
+            nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 516 NEGRO",
+            unidad: "kg",
+            factor: 1.621671579,
+        },
+        {
+            nombre: "TÓNER DE IMPRESIÓN PARA KONICA MINOLTA COD. REF. TN 618 NEGRO",
+            unidad: "kg",
+            factor: 6.776576767,
+        },
+        {
+            nombre: "TÓNER DE IMPRESIÓN PARA KYOCERA COD. REF. TK 7227 NEGRO",
+            unidad: "kg",
+            factor: 1.621671579,
+        },
+        {
+            nombre: "WAFER RELLENO DE VAINILLA X 29 g APROX. X 6",
+            unidad: "kg",
+            factor: 12.7511,
+        },
         {nombre: "YEMA DE HUEVO LIQUIDO (KG)", unidad: "kg", factor: 12.7511},
         {nombre: "YOGURT X 1 L", unidad: "kg", factor: 1.63},
         {nombre: "YOGURT X 1 L SABOR FRESA", unidad: "kg", factor: 1.63},
@@ -1240,7 +1504,8 @@ async function main() {
         });
     }
 
-    const allDescripcionConsumibles = await prisma.descripcionConsumible.findMany();
+    const allDescripcionConsumibles =
+        await prisma.descripcionConsumible.findMany();
     const allCategoriaConsumibles = await prisma.categoriaConsumible.findMany();
     const allGrupoConsumibles = await prisma.grupoConsumible.findMany();
     const allProcesoConsumibles = await prisma.procesoConsumible.findMany();
@@ -1298,7 +1563,6 @@ async function main() {
         }
     }
     console.log("Consumables data created");
-
 
     // console.log({adminType, user});
 }

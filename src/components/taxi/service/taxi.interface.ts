@@ -20,9 +20,11 @@ export interface TaxiCollectionItem {
     lugarSalida: string;
     lugarDestino: string;
     montoGastado: number;
+    kmRecorrido: number;
     sede: string;
     anio: number;
     mes: string;
+    rn: number;
 }
 
 export interface TaxiCollection {
@@ -45,6 +47,7 @@ export interface TaxiResource {
     lugarSalida: string;
     lugarDestino: string;
     monto: number;
+    kmRecorrido: number;
     mes_id: number;
     anio_id: number;
     sede_id: number;
@@ -62,6 +65,7 @@ export interface TaxiRequest {
     lugarSalida: string;
     lugarDestino: string;
     montoGastado: number;
+    kmRecorrido: number;
     sede_id: number;
     anio_id: number;
     mes_id: number;

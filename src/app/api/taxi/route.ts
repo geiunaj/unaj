@@ -1,12 +1,13 @@
 import prisma from "@/lib/prisma";
 import {NextRequest, NextResponse} from "next/server";
-import {formatTaxi} from "@/lib/resources/taxiResorce";
+import {formatTaxi} from "@/lib/resources/taxiResource";
 import {
     TaxiCollection,
     TaxiCollectionItem,
     TaxiRequest,
 } from "@/components/taxi/service/taxi.interface";
 import {getAnioId} from "@/lib/utils";
+import {formatConsumible} from "@/lib/resources/consumibleResource";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
@@ -88,8 +89,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         // // console.log(taxi);
 
-        const formattedTaxi: TaxiCollectionItem[] = taxi.map(
-            (taxi) => formatTaxi(taxi)
+        const formattedTaxi: any[] = taxi.map(
+            (taxi, index) => {
+                const consumo = formatTaxi(taxi);
+                consumo.rn = (page - 1) * perPage + index + 1;
+                return consumo;
+            }
         );
 
         // const formattedTaxi = taxi.map(formatTaxi);
@@ -122,6 +127,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 lugarSalida: body.lugarSalida,
                 lugarDestino: body.lugarDestino,
                 montoGastado: body.montoGastado,
+                kmRecorrido: body.kmRecorrido,
                 mes_id: body.mes_id,
                 anio_id: body.anio_id,
                 sede_id: body.sede_id,

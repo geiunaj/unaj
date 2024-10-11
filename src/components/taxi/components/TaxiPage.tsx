@@ -1,5 +1,5 @@
 "use client";
-import {useState, useCallback} from "react";
+import React, {useState, useCallback} from "react";
 import {Button, buttonVariants} from "@/components/ui/button";
 
 import {
@@ -62,6 +62,7 @@ import {
 import CustomPagination from "@/components/Pagination";
 import {useRouter} from "next/navigation";
 import {ReportRequest} from "@/lib/interfaces/globals";
+import ButtonCalculate from "@/components/ButtonCalculate";
 
 export default function TaxiPage() {
     //NAVIGATION
@@ -164,6 +165,10 @@ export default function TaxiPage() {
         await GenerateReport(taxiQuery.data!.data, columns, formatPeriod(period), "REPORTE DE TAXIS CONTRATADOS", "Taxis Contratados");
     };
 
+    const handleCalculate = () => {
+        push("/taxi/calculos");
+    };
+
     if (
         sedeQuery.isLoading ||
         anioQuery.isLoading ||
@@ -231,7 +236,7 @@ export default function TaxiPage() {
                     </div>
 
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
-                        {/* <ButtonCalculate onClick={handleCalculate} /> */}
+                        <ButtonCalculate onClick={handleCalculate}/>
 
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
@@ -263,16 +268,19 @@ export default function TaxiPage() {
                                 N°
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                UNIDAD CONTRATANTE
+                                UNIDAD <br/>CONTRATANTE
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                LUGAR DE SALIDA
+                                LUGAR DE<br/> SALIDA
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                LUGAR DE DESTINO
+                                LUGAR DE<br/> DESTINO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                MONTO GASTADO
+                                MONTO<br/>GASTADO
+                            </TableHead>
+                            <TableHead className="font-Manrope text-sm font-bold text-center">
+                                KM <br/>RECORRIDO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 MES
@@ -288,7 +296,7 @@ export default function TaxiPage() {
                             (item: TaxiCollectionItem, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary">{index + 1}</Badge>
+                                        <Badge variant="secondary">{item.rn}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.unidadContratante}
@@ -300,7 +308,10 @@ export default function TaxiPage() {
                                         {item.lugarDestino}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default">{item.montoGastado}</Badge>
+                                        <Badge variant="secondary">{item.montoGastado}</Badge>
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        <Badge variant="default">{item.kmRecorrido}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.mes}

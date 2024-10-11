@@ -110,14 +110,14 @@ export const menu: MenuItem[] = [
         href: "/",
         items: [
             {
-                title: "Viajes Aéreos",
+                title: "Transporte Aéreo",
                 icon: "Plane",
-                href: "/taxi",
+                href: "/transporte-aereo",
             },
             {
                 title: "Transporte Terrestre",
                 icon: "Bus",
-                href: "/taxi",
+                href: "/transporte-terrestre",
             },
             {
                 title: "Taxis",
@@ -127,7 +127,7 @@ export const menu: MenuItem[] = [
             {
                 title: "Transporte Casa-Trabajo",
                 icon: "Car",
-                href: "/taxi",
+                href: "/transporte-casa-trabajo",
             },
         ],
     },

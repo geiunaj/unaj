@@ -67,6 +67,8 @@ model Sede {
   Consumible                 Consumible[]
   ConsumibleCalculos         ConsumibleCalculos[]
   ConsumibleCalculosDetail   ConsumibleCalculosDetail[]
+  TaxiCalculos               TaxiCalculos[]
+  TaxiCalculosDetail         TaxiCalculosDetail[]
 
   @@map("sede")
 }
@@ -141,6 +143,7 @@ model Anio {
   FactorTipoConsumible       FactorTipoConsumible[]
   Consumible                 Consumible[]
   ConsumibleCalculosDetail   ConsumibleCalculosDetail[]
+  FactorEmisionTaxi          FactorEmisionTaxi[]
 
   @@map("anio")
 }
@@ -542,12 +545,24 @@ model factorConversionSEIN {
   @@map("factorconversionsein")
 }
 
+model FactorEmisionTaxi {
+  id      Int   @id @default(autoincrement())
+  factor  Float
+  anio_id Int
+
+  anio               Anio                 @relation(fields: [anio_id], references: [id])
+  TaxiCalculosDetail TaxiCalculosDetail[]
+
+  @@map("factoremisiontaxi")
+}
+
 model Taxi {
   id                Int    @id @default(autoincrement())
   unidadContratante String
   lugarSalida       String
   lugarDestino      String
   montoGastado      Float
+  kmRecorrido       Float
   sede_id           Int
   mes_id            Int
   anio_id           Int
@@ -561,6 +576,40 @@ model Taxi {
   sede Sede? @relation(fields: [sede_id], references: [id])
 
   @@map("taxi")
+}
+
+model TaxiCalculos {
+  id               Int   @id @default(autoincrement())
+  consumo          Float
+  totalGEI         Float
+  sedeId           Int
+  periodoCalculoId Int?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  sede               Sede?                @relation(fields: [sedeId], references: [id])
+  PeriodoCalculo     PeriodoCalculo?      @relation(fields: [periodoCalculoId], references: [id])
+  TaxiCalculosDetail TaxiCalculosDetail[]
+
+  @@map("taxicalculos")
+}
+
+model TaxiCalculosDetail {
+  id                  Int      @id @default(autoincrement())
+  consumo             Float
+  factorEmisionTaxiId Int
+  totalGEI            Float
+  sedeId              Int
+  taxiCalculosId      Int
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  sede          Sede?              @relation(fields: [sedeId], references: [id])
+  factorEmision FactorEmisionTaxi? @relation(fields: [factorEmisionTaxiId], references: [id])
+  taxiCalculos  TaxiCalculos       @relation(fields: [taxiCalculosId], references: [id])
+
+  @@map("taxicalculosdetail")
 }
 
 // AGUA A3_5
@@ -645,6 +694,7 @@ model PeriodoCalculo {
   ConsumoPapelCalculos        ConsumoPapelCalculos[]
   ConsumoRefrigeranteCalculos RefrigeranteCalculos[]
   ConsumibleCalculos          ConsumibleCalculos[]
+  TaxiCalculos                TaxiCalculos[]
 
   @@map("periodocalculo")
 }

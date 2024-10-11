@@ -1,10 +1,8 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {formatProcesoConsumible} from "@/lib/resources/procesoConsumibleResource";
-import {
-    ProcesoConsumible,
-    ProcesoConsumibleRequest
-} from "@/components/tipoConsumible/services/procesoConsumible.interface";
+import { ProcesoConsumible } from "@prisma/client";
+import { ProcesoConsumibleRequest } from "@/components/tipoConsumible/services/procesoConsumible.interface";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {

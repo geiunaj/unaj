@@ -87,7 +87,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const formattedConsumibles: any[] = consumibles.map(
             (consumible, index) => {
                 const consumo = formatConsumible(consumible);
-                consumo.rn = index + 1;
+                consumo.rn = (page - 1) * perPage + index + 1;
                 return consumo;
             }
         );

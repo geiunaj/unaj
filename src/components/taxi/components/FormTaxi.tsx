@@ -34,7 +34,11 @@ const Taxi = z.object({
     lugar_salida: z.string().min(1, "Seleccione un tipo de hoja"),
     lugar_destino: z.string().min(1, "Seleccione un tipo de hoja"),
     monto: z.preprocess(
-        (val) => parseInt(val as string),
+        (val) => parseFloat(val as string),
+        z.number().min(0, "Ingresa un valor mayor a 0")
+    ),
+    kmRecorrido: z.preprocess(
+        (val) => parseFloat(val as string),
         z.number().min(0, "Ingresa un valor mayor a 0")
     ),
     anio: z.string().min(1, "Seleccione un año"),
@@ -80,6 +84,7 @@ export function FormTaxi({onClose}: CreateTaxiProps) {
             lugarSalida: data.lugar_salida,
             lugarDestino: data.lugar_destino,
             montoGastado: data.monto,
+            kmRecorrido: data.kmRecorrido,
             anio_id: Number(data.anio),
             sede_id: Number(data.sede),
             mes_id: Number(data.mes),
@@ -272,25 +277,48 @@ export function FormTaxi({onClose}: CreateTaxiProps) {
                                 )}
                             />
                         </div>
-                        {/* monto */}
-                        <FormField
-                            control={form.control}
-                            name="monto"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Monto</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="number"
-                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="S/10.0"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
+                        <div className="flex gap-5">
+                            {/* monto */}
+                            <FormField
+                                control={form.control}
+                                name="monto"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Monto</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                placeholder="S/10.0"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            {/* km */}
+                            <FormField
+                                control={form.control}
+                                name="kmRecorrido"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Km Recorridos
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                placeholder="S/10.0"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-blue-700">
                                 Guardar
