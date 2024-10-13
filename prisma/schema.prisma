@@ -47,28 +47,31 @@ model User {
 }
 
 model Sede {
-  id                         Int                          @id @default(autoincrement())
-  name                       String                       @db.VarChar(45)
-  combustibles               Combustible[]
-  fertilizante               Fertilizante[]
-  ConsumoPapel               ConsumoPapel[]
-  combustibleCalculos        combustibleCalculos[]
-  taxi                       Taxi[]
-  fertilizanteCalculos       fertilizanteCalculos[]
-  area                       area[]
-  User                       User[]
-  combustibleCalculosDetail  combustibleCalculosDetail[]
-  ConsumoPapelCalculosDetail ConsumoPapelCalculosDetail[]
-  ConsumoPapelCalculos       ConsumoPapelCalculos[]
-  fertilizanteCalculosDetail fertilizanteCalculosDetail[]
-  Refrigerante               Refrigerante[]
-  RefrigeranteCalculos       RefrigeranteCalculos[]
-  RefrigeranteCalculosDetail RefrigeranteCalculosDetail[]
-  Consumible                 Consumible[]
-  ConsumibleCalculos         ConsumibleCalculos[]
-  ConsumibleCalculosDetail   ConsumibleCalculosDetail[]
-  TaxiCalculos               TaxiCalculos[]
-  TaxiCalculosDetail         TaxiCalculosDetail[]
+  id                            Int                             @id @default(autoincrement())
+  name                          String                          @db.VarChar(45)
+  combustibles                  Combustible[]
+  fertilizante                  Fertilizante[]
+  ConsumoPapel                  ConsumoPapel[]
+  combustibleCalculos           combustibleCalculos[]
+  taxi                          Taxi[]
+  fertilizanteCalculos          fertilizanteCalculos[]
+  area                          area[]
+  User                          User[]
+  combustibleCalculosDetail     combustibleCalculosDetail[]
+  ConsumoPapelCalculosDetail    ConsumoPapelCalculosDetail[]
+  ConsumoPapelCalculos          ConsumoPapelCalculos[]
+  fertilizanteCalculosDetail    fertilizanteCalculosDetail[]
+  Refrigerante                  Refrigerante[]
+  RefrigeranteCalculos          RefrigeranteCalculos[]
+  RefrigeranteCalculosDetail    RefrigeranteCalculosDetail[]
+  Consumible                    Consumible[]
+  ConsumibleCalculos            ConsumibleCalculos[]
+  ConsumibleCalculosDetail      ConsumibleCalculosDetail[]
+  TaxiCalculos                  TaxiCalculos[]
+  TaxiCalculosDetail            TaxiCalculosDetail[]
+  TransporteAereoCalculos       TransporteAereoCalculos[]
+  TransporteAereoCalculosDetail TransporteAereoCalculosDetail[]
+  TransporteAereo               TransporteAereo[]
 
   @@map("sede")
 }
@@ -106,15 +109,16 @@ model tipoCombustible {
 }
 
 model Mes {
-  id             Int              @id @default(autoincrement())
-  nombre         String           @db.VarChar(45)
-  created_at     DateTime
-  updated_at     DateTime
-  combustibles   Combustible[]
-  Taxi           Taxi[]
-  consumoEnergia consumoEnergia[]
-  ConsumoAgua    ConsumoAgua[]
-  Consumible     Consumible[]
+  id              Int               @id @default(autoincrement())
+  nombre          String            @db.VarChar(45)
+  created_at      DateTime
+  updated_at      DateTime
+  combustibles    Combustible[]
+  Taxi            Taxi[]
+  consumoEnergia  consumoEnergia[]
+  ConsumoAgua     ConsumoAgua[]
+  Consumible      Consumible[]
+  TransporteAereo TransporteAereo[]
 
   @@map("mes")
 }
@@ -144,6 +148,7 @@ model Anio {
   Consumible                 Consumible[]
   ConsumibleCalculosDetail   ConsumibleCalculosDetail[]
   FactorEmisionTaxi          FactorEmisionTaxi[]
+  TransporteAereo            TransporteAereo[]
 
   @@map("anio")
 }
@@ -680,13 +685,13 @@ model ConsumoAguaCalculosDetail {
 }
 
 model PeriodoCalculo {
-  id                          Int                    @id @default(autoincrement())
+  id                          Int                       @id @default(autoincrement())
   fechaInicio                 String?
   fechaFin                    String?
   yearInicio                  String?
   yearFin                     String?
-  created_at                  DateTime               @default(now())
-  updated_at                  DateTime               @updatedAt
+  created_at                  DateTime                  @default(now())
+  updated_at                  DateTime                  @updatedAt
   ConsumoAguaCalculos         ConsumoAguaCalculos[]
   EnergiaCalculos             EnergiaCalculos[]
   fertilizanteCalculos        fertilizanteCalculos[]
@@ -695,6 +700,7 @@ model PeriodoCalculo {
   ConsumoRefrigeranteCalculos RefrigeranteCalculos[]
   ConsumibleCalculos          ConsumibleCalculos[]
   TaxiCalculos                TaxiCalculos[]
+  TransporteAereoCalculos     TransporteAereoCalculos[]
 
   @@map("periodocalculo")
 }
@@ -944,4 +950,76 @@ model ConsumibleCalculosDetail {
   consumibleCalculos   ConsumibleCalculos?   @relation(fields: [consumibleCalculosId], references: [id])
 
   @@map("consumiblecalculosdetail")
+}
+
+model FactorEmisionTransporteAereo {
+  id                            Int                             @id @default(autoincrement())
+  factor                        Float
+  anio_id                       Int
+  TransporteAereoCalculosDetail TransporteAereoCalculosDetail[]
+
+  @@map("factoremisiontransporteaereo")
+}
+
+model TransporteAereo {
+  id              Int       @id @default(autoincrement())
+  numeroPasajeros Int?
+  origen          String?
+  destino         String?
+  isIdaVuelta     Boolean
+  fechaSalida     DateTime?
+  fechaRegreso    DateTime?
+  distanciaTramo  Float?
+  kmRecorrido     Float?
+
+  sede_id  Int
+  mes_id   Int
+  anio_id  Int
+  anio_mes Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  mes  Mes?  @relation(fields: [mes_id], references: [id])
+  anio Anio? @relation(fields: [anio_id], references: [id])
+  sede Sede? @relation(fields: [sede_id], references: [id])
+
+  @@map("transporteaereo")
+}
+
+model TransporteAereoCalculos {
+  id               Int   @id @default(autoincrement())
+  intervalo        Float // <1600, 1600-3700, >3700
+  consumo          Float
+  totalGEI         Float
+  sedeId           Int
+  periodoCalculoId Int?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  sede                          Sede?                           @relation(fields: [sedeId], references: [id])
+  PeriodoCalculo                PeriodoCalculo?                 @relation(fields: [periodoCalculoId], references: [id])
+  TransporteAereoCalculosDetail TransporteAereoCalculosDetail[]
+
+  @@map("transporteaereocalculos")
+}
+
+model TransporteAereoCalculosDetail {
+  id                        Int   @id @default(autoincrement())
+  intervalo                 Float // <1600, 1600-3700, >3700
+  consumo                   Float
+  factorEmisionAereoId      Int
+  totalGEI                  Float
+  sedeId                    Int
+  transporteAereoCalculosId Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  factorEmisionTransporteAereo FactorEmisionTransporteAereo? @relation(fields: [factorEmisionAereoId], references: [id])
+  sede                         Sede?                         @relation(fields: [sedeId], references: [id])
+  transporteAereoCalculos      TransporteAereoCalculos       @relation(fields: [transporteAereoCalculosId], references: [id])
+
+  @@map("transporteaereocalculosdetail")
 }
