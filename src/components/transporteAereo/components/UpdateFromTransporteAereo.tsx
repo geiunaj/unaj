@@ -23,11 +23,6 @@ import {Button} from "../../ui/button";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {useTransporteAereoId} from "../lib/transporteAereo.hook";
 import {successToast} from "@/lib/utils/core.function";
-import {
-    useAnio,
-    useMes,
-    useSede,
-} from "@/components/combustion/lib/combustion.hook";
 import {updateTransporteAereo} from "../service/transporteAereo.actions";
 import {TransporteAereoRequest, UpdateTransporteAereoProps} from "../service/transporteAereo.interface";
 import {useQuery} from "@tanstack/react-query";

@@ -1,9 +1,9 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {getAnioId} from "@/lib/utils";
-import {taxiCalcRequest} from "@/components/taxi/service/taxiCalculos.interface";
+import {transporteAereoCalcRequest} from "@/components/transporteAereo/service/transporteAereoCalculos.interface";
 import {formatConsumoAguaCalculo} from "@/lib/resources/consumoAguaCalculateResource";
-import {formatTaxiCalculo} from "@/lib/resources/taxiCalculateResource";
+import {formatTransporteAereoCalculo} from "@/lib/resources/transporteAereoCalculateResource";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
@@ -43,18 +43,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             periodoCalculoId: period?.id,
         };
 
-        const totalRecords = await prisma.taxiCalculos.count({
+        const totalRecords = await prisma.transporteAereoCalculos.count({
             where: whereOptions,
         });
         const totalPages = Math.ceil(totalRecords / perPage);
 
-        const taxiCalculos = await prisma.taxiCalculos.findMany({
+        const transporteAereoCalculos = await prisma.transporteAereoCalculos.findMany({
             where: whereOptions,
             include: {
                 sede: true,
-                TaxiCalculosDetail: {
+                TransporteAereoCalculosDetail: {
                     include: {
-                        factorEmision: {
+                        factorEmisionTransporteAereo: {
                             include: {
                                 anio: true,
                             },
@@ -66,18 +66,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
-        const formattedTaxiCalculos: any[] = taxiCalculos
-            .map((taxiCalculo: any, index: number) => {
-                if (taxiCalculo.consumo !== 0) {
-                    taxiCalculo.id = index + 1;
-                    return formatTaxiCalculo(taxiCalculo);
+        const formattedTransporteAereoCalculos: any[] = transporteAereoCalculos
+            .map((transporteAereoCalculo: any, index: number) => {
+                if (transporteAereoCalculo.consumo !== 0) {
+                    transporteAereoCalculo.rn = index + 1;
+                    return formatTransporteAereoCalculo(transporteAereoCalculo);
                 }
                 return null;
             })
-            .filter((taxiCalculo) => taxiCalculo !== null);
+            .filter((transporteAereoCalculo) => transporteAereoCalculo !== null);
 
         return NextResponse.json({
-            data: formattedTaxiCalculos,
+            data: formattedTransporteAereoCalculos,
             meta: {
                 page,
                 perPage,
@@ -99,7 +99,7 @@ interface WhereAnioMes {
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
-        const body: taxiCalcRequest = await req.json();
+        const body: transporteAereoCalcRequest = await req.json();
         const sedeId = body.sedeId;
         const dateFrom = body.from;
         const dateTo = body.to;
@@ -132,33 +132,31 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             });
         }
 
-        const sedes = await prisma.sede.findMany();
-
-        const whereOptionsTaxi = {
+        const whereOptionsTransporteAereo = {
             sede_id: sedeId ? Number(sedeId) : undefined,
         } as {
             sede_id?: number;
             anio_mes?: { gte?: number; lte?: number };
+            distanciaTramo?: { lte?: number; gte?: number };
         };
 
-        await prisma.taxiCalculosDetail.deleteMany({
+        await prisma.transporteAereoCalculosDetail.deleteMany({
             where: {
-                taxiCalculos: {
+                sedeId: sedeId ? Number(sedeId) : undefined,
+                transporteAereoCalculos: {
                     periodoCalculoId: period.id,
                 },
             },
         });
 
-        await prisma.taxiCalculos.deleteMany({
+        await prisma.transporteAereoCalculos.deleteMany({
             where: {
                 sedeId: sedeId ? Number(sedeId) : undefined,
                 periodoCalculoId: period.id,
             },
         });
 
-        const factorEmision: number = 0.344;
         const allPeriodsBetweenYears: WhereAnioMes[] = [];
-
         if (dateFrom && dateTo) {
             if (!yearFrom || !yearTo || !mesFromId || !mesToId)
                 return new NextResponse("Error en los parámetros de fecha", {
@@ -286,15 +284,26 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         }
 
-        for (const sede of sedes) {
+        const intervals = [
+            {value: "1600", lte: 1600},
+            {value: "1600_3700", gte: 1600, lte: 3700},
+            {value: "3700", gte: 3700},
+        ] as {
+            value: string;
+            gte?: number;
+            lte?: number;
+        }[];
+
+        for (const interval of intervals) {
             let consumo = 0;
             let totalGEI = 0;
 
-            const taxiCalculos = await prisma.taxiCalculos.create({
+            const transporteAereoCalculos = await prisma.transporteAereoCalculos.create({
                 data: {
+                    intervalo: interval.value,
                     consumo: 0,
                     totalGEI: 0,
-                    sedeId: sede.id,
+                    sedeId: sedeId,
                     periodoCalculoId: period.id,
                     created_at: new Date(),
                     updated_at: new Date(),
@@ -303,7 +312,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
             for (const period of allPeriodsBetweenYears) {
                 const anioId = await getAnioId(period.anio!.toString());
-                const factorEmision = await prisma.factorEmisionTaxi.findFirst({
+                const factorEmision = await prisma.factorEmisionTransporteAereo.findFirst({
                     where: {anio_id: anioId},
                 });
 
@@ -313,38 +322,50 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                         {status: 404}
                     );
 
-                let whereOptionDetails = whereOptionsTaxi;
-                whereOptionDetails.sede_id = sede.id;
+                let whereOptionDetails = whereOptionsTransporteAereo;
+                whereOptionDetails.sede_id = sedeId;
                 whereOptionDetails.anio_mes = {gte: period.from, lte: period.to};
+                whereOptionDetails.distanciaTramo = {gte: interval.gte, lte: interval.lte};
 
-                const taxi = await prisma.taxi.findMany({
+                const transporteAereo = await prisma.transporteAereo.findMany({
                     where: whereOptionDetails,
                 });
 
-                const totalConsumo = taxi.reduce(
-                    (acc, taxi) => acc + taxi.kmRecorrido,
+                const totalConsumo = transporteAereo.reduce(
+                    (acc, transporteAereo) => acc + transporteAereo.kmRecorrido,
                     0
                 );
-                const totalEmisiones = factorEmision.factor * totalConsumo;
+                let totalEmisiones = 0;
+                switch (interval.value) {
+                    case "1600":
+                        totalEmisiones = totalConsumo * factorEmision.factor1600;
+                        break;
+                    case "1600_3700":
+                        totalEmisiones = totalConsumo * factorEmision.factor1600_3700;
+                        break;
+                    case "3700":
+                        totalEmisiones = totalConsumo * factorEmision.factor3700;
+                        break;
+                }
 
-                await prisma.taxiCalculosDetail.create({
+                await prisma.transporteAereoCalculosDetail.create({
                     data: {
+                        intervalo: interval.value,
                         consumo: totalConsumo,
-                        factorEmisionTaxiId: factorEmision.id,
+                        factorEmisionAereoId: factorEmision.id,
                         totalGEI: totalEmisiones,
-                        sedeId: sede.id,
-                        taxiCalculosId: taxiCalculos.id,
+                        sedeId: sedeId,
+                        transporteAereoCalculosId: transporteAereoCalculos.id,
                         created_at: new Date(),
                         updated_at: new Date(),
                     },
                 });
-
                 consumo += totalConsumo;
                 totalGEI += totalEmisiones;
             }
 
-            await prisma.taxiCalculos.update({
-                where: {id: taxiCalculos.id},
+            await prisma.transporteAereoCalculos.update({
+                where: {id: transporteAereoCalculos.id},
                 data: {
                     consumo: consumo,
                     totalGEI: totalGEI,
@@ -355,8 +376,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         return NextResponse.json({message: "Cálculo realizado exitosamente"});
     } catch (error) {
-        console.error("Error calculando taxis", error);
-        return new NextResponse("Error calculando taxis", {
+        console.error("Error calculando Transporte Aereos", error);
+        return new NextResponse("Error calculando Transporte Aereos", {
             status: 500,
         });
     }

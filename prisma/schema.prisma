@@ -129,26 +129,27 @@ model Anio {
   created_at DateTime
   updated_at DateTime
 
-  combustibles               Combustible[]
-  fertilizante               Fertilizante[]
-  consumoPapel               ConsumoPapel[]
-  Taxi                       Taxi[]
-  consumoEnergia             consumoEnergia[]
-  factorConversionSEIN       factorConversionSEIN[]
-  ConsumoAgua                ConsumoAgua[]
-  tipoCombustibleFactor      tipoCombustibleFactor[]
-  FactorEmisionAgua          FactorEmisionAgua[]
-  FactorTipoPapel            FactorTipoPapel[]
-  ConsumoPapelCalculosDetail ConsumoPapelCalculosDetail[]
-  FactorEmisionFertilizante  FactorEmisionFertilizante[]
-  Refrigerante               Refrigerante[]
-  FactorTipoRefrigerante     FactorTipoRefrigerante[]
-  RefrigeranteCalculosDetail RefrigeranteCalculosDetail[]
-  FactorTipoConsumible       FactorTipoConsumible[]
-  Consumible                 Consumible[]
-  ConsumibleCalculosDetail   ConsumibleCalculosDetail[]
-  FactorEmisionTaxi          FactorEmisionTaxi[]
-  TransporteAereo            TransporteAereo[]
+  combustibles                 Combustible[]
+  fertilizante                 Fertilizante[]
+  consumoPapel                 ConsumoPapel[]
+  Taxi                         Taxi[]
+  consumoEnergia               consumoEnergia[]
+  factorConversionSEIN         factorConversionSEIN[]
+  ConsumoAgua                  ConsumoAgua[]
+  tipoCombustibleFactor        tipoCombustibleFactor[]
+  FactorEmisionAgua            FactorEmisionAgua[]
+  FactorTipoPapel              FactorTipoPapel[]
+  ConsumoPapelCalculosDetail   ConsumoPapelCalculosDetail[]
+  FactorEmisionFertilizante    FactorEmisionFertilizante[]
+  Refrigerante                 Refrigerante[]
+  FactorTipoRefrigerante       FactorTipoRefrigerante[]
+  RefrigeranteCalculosDetail   RefrigeranteCalculosDetail[]
+  FactorTipoConsumible         FactorTipoConsumible[]
+  Consumible                   Consumible[]
+  ConsumibleCalculosDetail     ConsumibleCalculosDetail[]
+  FactorEmisionTaxi            FactorEmisionTaxi[]
+  TransporteAereo              TransporteAereo[]
+  FactorEmisionTransporteAereo FactorEmisionTransporteAereo[]
 
   @@map("anio")
 }
@@ -953,10 +954,18 @@ model ConsumibleCalculosDetail {
 }
 
 model FactorEmisionTransporteAereo {
-  id                            Int                             @id @default(autoincrement())
-  factor                        Float
-  anio_id                       Int
+  id              Int   @id @default(autoincrement())
+  factor1600      Float
+  factor1600_3700 Float
+  factor3700      Float
+  anio_id         Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
   TransporteAereoCalculosDetail TransporteAereoCalculosDetail[]
+
+  anio Anio @relation(fields: [anio_id], references: [id])
 
   @@map("factoremisiontransporteaereo")
 }
@@ -970,7 +979,7 @@ model TransporteAereo {
   fechaSalida     DateTime?
   fechaRegreso    DateTime?
   distanciaTramo  Float?
-  kmRecorrido     Float?
+  kmRecorrido     Float
 
   sede_id  Int
   mes_id   Int
@@ -988,12 +997,12 @@ model TransporteAereo {
 }
 
 model TransporteAereoCalculos {
-  id               Int   @id @default(autoincrement())
-  intervalo        Float // <1600, 1600-3700, >3700
+  id               Int    @id @default(autoincrement())
+  intervalo        String // 1600, 1600-3700, >3700
   consumo          Float
   totalGEI         Float
   sedeId           Int
-  periodoCalculoId Int?
+  periodoCalculoId Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -1006,8 +1015,8 @@ model TransporteAereoCalculos {
 }
 
 model TransporteAereoCalculosDetail {
-  id                        Int   @id @default(autoincrement())
-  intervalo                 Float // <1600, 1600-3700, >3700
+  id                        Int    @id @default(autoincrement())
+  intervalo                 String // <1600, 1600-3700, >3700
   consumo                   Float
   factorEmisionAereoId      Int
   totalGEI                  Float

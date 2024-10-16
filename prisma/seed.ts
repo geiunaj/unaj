@@ -1543,6 +1543,19 @@ async function main() {
     }
     console.log("Transporte aereo data created");
 
+    for (const anio of allAnios) {
+        await prisma.factorEmisionTransporteAereo.create({
+            data: {
+                factor1600: 0.29832,
+                factor1600_3700: 0.29832,
+                factor3700: 0.29832,
+                anio_id: anio.id,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+
 
     const categoriaConsumibles = [
         {nombre: "INSUMOS ALIMENTARIOS"},

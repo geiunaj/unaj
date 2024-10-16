@@ -16,14 +16,14 @@ import {Building, FileSpreadsheet} from "lucide-react";
 import CustomPagination from "@/components/Pagination";
 import {Button} from "@/components/ui/button";
 import {
-    useTaxiCalculos,
-    useTaxiCalculosReport,
-} from "@/components/taxi/lib/taxiCalculos.hooks";
-import {createCalculosTaxi} from "@/components/taxi/service/taxiCalculos.actions";
+    useTransporteAereoCalculos,
+    useTransporteAereoCalculosReport,
+} from "@/components/transporteAereo/lib/transporteAereoCalculos.hooks";
+import {createCalculosTransporteAereo} from "@/components/transporteAereo/service/transporteAereoCalculos.actions";
 import {
-    taxiCalculosCollectionItem,
+    transporteAereoCalculosCollectionItem,
     FactoresEmision
-} from "@/components/taxi/service/taxiCalculos.interface";
+} from "@/components/transporteAereo/service/transporteAereoCalculos.interface";
 import GenerateReport from "@/lib/utils/generateReport";
 import SelectFilter from "@/components/SelectFilter";
 import ReportComponent from "@/components/ReportComponent";
@@ -33,6 +33,7 @@ import {formatPeriod} from "@/lib/utils/core.function";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {useQuery} from "@tanstack/react-query";
 import {getAnio} from "@/components/anio/services/anio.actions";
+import {getSedes} from "@/components/sede/services/sede.actions";
 
 export default function TransporteAereoCalculate() {
     const {push} = useRouter();
@@ -41,22 +42,37 @@ export default function TransporteAereoCalculate() {
     const [page, setPage] = useState<number>(1);
     const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
     const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
+    const [selectedSede, setSelectedSede] = useState<string>("1");
 
     // HOOKS
-    const taxiCalculos = useTaxiCalculos({
+    const transporteAereoCalculos = useTransporteAereoCalculos({
         from: from ? from : undefined,
         to: to ? to : undefined,
+        sedeId: selectedSede ? parseInt(selectedSede) : undefined,
         page: page,
     });
 
-    const conusmoAguaCalculosReport = useTaxiCalculosReport({
+    const transporteAereoCalculosReport = useTransporteAereoCalculosReport({
         from,
         to,
+        sedeId: selectedSede ? parseInt(selectedSede) : undefined,
+    });
+
+    const conusmoAguaCalculosReport = useTransporteAereoCalculosReport({
+        from,
+        to,
+        sedeId: selectedSede ? parseInt(selectedSede) : undefined,
         page,
     });
     const anios = useQuery({
-        queryKey: ["aniosTC"],
+        queryKey: ["aniosTAC"],
         queryFn: () => getAnio(),
+        refetchOnWindowFocus: false,
+    })
+
+    const sedes = useQuery({
+        queryKey: ["sedesTAC"],
+        queryFn: () => getSedes(),
         refetchOnWindowFocus: false,
     })
 
@@ -64,50 +80,53 @@ export default function TransporteAereoCalculate() {
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
 
     const handleCalculate = useCallback(async () => {
-        await createCalculosTaxi({
+        await createCalculosTransporteAereo({
             from,
             to,
+            sedeId: selectedSede ? Number(selectedSede) : undefined,
         });
-        taxiCalculos.refetch();
-        taxiCalculosReport.refetch();
-    }, [from, to, taxiCalculos, conusmoAguaCalculosReport]);
+        transporteAereoCalculos.refetch();
+        transporteAereoCalculosReport.refetch();
+    }, [selectedSede, from, to, transporteAereoCalculos, conusmoAguaCalculosReport]);
 
-    const handleTaxi = () => {
-        push("/taxi");
+    const handleTransporteAereo = () => {
+        push("/transporteAereo");
     };
+
+    const handleSedeChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setSelectedSede(value);
+        await transporteAereoCalculos.refetch();
+        await transporteAereoCalculosReport.refetch();
+    }, [transporteAereoCalculos, transporteAereoCalculosReport]);
 
     const handleFromChange = useCallback(
         async (value: string) => {
             await setPage(1);
             await setFrom(value);
-            await taxiCalculos.refetch();
-            await taxiCalculosReport.refetch();
+            await transporteAereoCalculos.refetch();
+            await transporteAereoCalculosReport.refetch();
         },
-        [taxiCalculos, conusmoAguaCalculosReport]
+        [transporteAereoCalculos, conusmoAguaCalculosReport]
     );
 
     const handleToChange = useCallback(
         async (value: string) => {
             await setPage(1);
             await setFrom(value);
-            await taxiCalculos.refetch();
-            await taxiCalculosReport.refetch();
+            await transporteAereoCalculos.refetch();
+            await transporteAereoCalculosReport.refetch();
         },
-        [taxiCalculos, conusmoAguaCalculosReport]
+        [transporteAereoCalculos, conusmoAguaCalculosReport]
     );
 
     const handlePageChange = useCallback(
         async (page: number) => {
             await setPage(page);
-            await taxiCalculos.refetch();
+            await transporteAereoCalculos.refetch();
         },
-        [taxiCalculos]
+        [transporteAereoCalculos]
     );
-
-    const taxiCalculosReport = useTaxiCalculosReport({
-        from,
-        to,
-    });
 
     const handleClickExcelReport = async (period: ReportRequest) => {
         const columns = [
@@ -119,7 +138,7 @@ export default function TransporteAereoCalculate() {
         ];
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
-        const data = await taxiCalculosReport.refetch();
+        const data = await transporteAereoCalculosReport.refetch();
         await GenerateReport(
             data.data!.data,
             columns,
@@ -136,19 +155,23 @@ export default function TransporteAereoCalculate() {
     };
 
     if (
-        taxiCalculos.isLoading ||
+        transporteAereoCalculos.isLoading ||
         anios.isLoading ||
-        taxiCalculos.isLoading ||
-        conusmoAguaCalculosReport.isLoading
+        transporteAereoCalculos.isLoading ||
+        conusmoAguaCalculosReport.isLoading ||
+        sedes.isLoading ||
+        transporteAereoCalculosReport.isLoading
     ) {
         return <SkeletonTable/>;
     }
 
     if (
-        taxiCalculos.isError ||
+        transporteAereoCalculos.isError ||
         anios.isError ||
-        taxiCalculos.isError ||
-        conusmoAguaCalculosReport.isError
+        transporteAereoCalculos.isError ||
+        conusmoAguaCalculosReport.isError ||
+        sedes.isError ||
+        transporteAereoCalculosReport.isError
     ) {
         return <div>Error</div>;
     }
@@ -157,10 +180,10 @@ export default function TransporteAereoCalculate() {
         <div className="w-full max-w-[1150px] h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="flex items-center gap-4">
-                    <ButtonBack onClick={handleTaxi}/>
+                    <ButtonBack onClick={handleTransporteAereo}/>
                     <div className="font-Manrope">
                         <h1 className="text-base text-foreground font-bold">
-                            Cálculo de Taxis
+                            Cálculo de TransporteAereos
                         </h1>
                         <h2 className="text-xs sm:text-sm text-muted-foreground">
                             Huella de carbono
@@ -170,10 +193,17 @@ export default function TransporteAereoCalculate() {
                 <div className="flex flex-col items-end gap-2">
                     <div
                         className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
-
                         <div
                             className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
-
+                            <SelectFilter
+                                list={sedes.data!}
+                                itemSelected={selectedSede}
+                                handleItemSelect={handleSedeChange}
+                                value={"id"}
+                                nombre={"name"}
+                                id={"id"}
+                                icon={<Building className="h-3 w-3"/>}
+                            />
                             <ReportComponent
                                 onSubmit={handleClickExcelReport}
                                 ref={submitFormRef}
@@ -196,7 +226,7 @@ export default function TransporteAereoCalculate() {
                             </Button>
 
                             <ExportPdfReport
-                                data={taxiCalculosReport.data!.data}
+                                data={transporteAereoCalculosReport.data!.data}
                                 fileName={`REPORTE CALCULOS DE CONSUMO DE ENERGÍA_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
@@ -239,7 +269,7 @@ export default function TransporteAereoCalculate() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {taxiCalculos.data!.data.length === 0 && (
+                        {transporteAereoCalculos.data!.data.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={6} className="text-center">
                                     Click en el botón <strong className="text-primary">Calcular</strong> para obtener
@@ -247,22 +277,22 @@ export default function TransporteAereoCalculate() {
                                 </TableCell>
                             </TableRow>
                         )}
-                        {taxiCalculos.data!.data.map(
-                            (taxiCalculosItem: taxiCalculosCollectionItem) => (
+                        {transporteAereoCalculos.data!.data.map(
+                            (transporteAereoCalculosItem: transporteAereoCalculosCollectionItem) => (
                                 <TableRow
                                     className="text-center"
-                                    key={taxiCalculosItem.id}
+                                    key={transporteAereoCalculosItem.id}
                                 >
                                     <TableCell className="text-xs sm:text-sm">
-                                        {taxiCalculosItem.sede}
+                                        {transporteAereoCalculosItem.sede}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default">
-                                            {taxiCalculosItem.consumo}
+                                        <Badge variant="outline">
+                                            {transporteAereoCalculosItem.consumo}
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-xs flex gap-2 justify-center sm:text-sm">
-                                        {taxiCalculosItem.factoresEmision.map((factorEmision: FactoresEmision) => (
+                                        {transporteAereoCalculosItem.factoresEmision.map((factorEmision: FactoresEmision) => (
                                             <Badge key={factorEmision.anio + factorEmision.factor} variant="secondary">
                                                 {factorEmision.factor}<span
                                                 className="text-[8px] ps-[2px] text-muted-foreground">{factorEmision.anio}</span>
@@ -270,16 +300,18 @@ export default function TransporteAereoCalculate() {
                                         ))}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {taxiCalculosItem.totalGEI}
+                                        <Badge variant="default">
+                                            {transporteAereoCalculosItem.totalGEI}
+                                        </Badge>
                                     </TableCell>
                                 </TableRow>
                             )
                         )}
                     </TableBody>
                 </Table>
-                {taxiCalculos.data!.meta.totalPages > 1 && (
+                {transporteAereoCalculos.data!.meta.totalPages > 1 && (
                     <CustomPagination
-                        meta={taxiCalculos.data!.meta}
+                        meta={transporteAereoCalculos.data!.meta}
                         onPageChange={handlePageChange}
                     />
                 )

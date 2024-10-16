@@ -23,6 +23,7 @@ import {
     Plane,
     Bus,
     Fuel,
+    Calendar,
 } from "lucide-react";
 
 export interface MenuItem {
@@ -57,6 +58,7 @@ export const iconComponents: Record<string, any> = {
     Plane,
     Bus,
     Fuel,
+    Calendar,
 };
 
 export const menu: MenuItem[] = [
@@ -183,6 +185,11 @@ export const menu: MenuItem[] = [
                 icon: "Milk",
                 href: "/tipo-consumible-factor",
             },
+            {
+                title: "Factor de Transporte Aereo",
+                icon: "Plane",
+                href: "/transporte-aereo-factor",
+            },
         ],
     },
     {
@@ -224,6 +231,11 @@ export const menu: MenuItem[] = [
                 title: "Usuarios",
                 icon: "UserRound",
                 href: "/user",
+            },
+            {
+                title: "Años",
+                icon: "Calendar",
+                href: "/anio",
             },
         ],
     },
