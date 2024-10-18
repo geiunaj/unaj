@@ -1513,33 +1513,32 @@ async function main() {
         },
     ];
 
-    for (const transporte of transporteAereo) {
-        const [anio, mes, dia] = transporte.fechaSalida.split("-");
-        const mes_id = Number(mes);
-        const anio_id = prisma.anio.findFirst({
-            where: {nombre: anio},
-        }).id ?? 1;
-        const anio_mes = Number(anio) * 100 + mes_id;
-        await prisma.transporteAereo.create({
-            data: {
-                numeroPasajeros: transporte.numeroPasajeros,
-                origen: transporte.origen,
-                destino: transporte.destino,
-                isIdaVuelta: transporte.isIdaVuelta,
-                fechaSalida: transporte.fechaSalida ? new Date(transporte.fechaSalida) : null,
-                fechaRegreso: transporte.fechaRegreso ? new Date(transporte.fechaRegreso) : null,
-                distanciaTramo: transporte.distanciaTramo,
-                kmRecorrido: transporte.kmRecorrido,
+    for (const anio of allAnios) {
+        for (const transporte of transporteAereo) {
+            const [anio1, mes, dia] = transporte.fechaSalida.split("-");
+            const mes_id = Number(mes);
+            const anio_mes = Number(anio.nombre) * 100 + mes_id;
+            await prisma.transporteAereo.create({
+                data: {
+                    numeroPasajeros: transporte.numeroPasajeros,
+                    origen: transporte.origen,
+                    destino: transporte.destino,
+                    isIdaVuelta: transporte.isIdaVuelta,
+                    fechaSalida: transporte.fechaSalida ? new Date(transporte.fechaSalida) : null,
+                    fechaRegreso: transporte.fechaRegreso ? new Date(transporte.fechaRegreso) : null,
+                    distanciaTramo: transporte.distanciaTramo,
+                    kmRecorrido: transporte.kmRecorrido,
 
-                sede_id: 1,
-                mes_id: mes_id,
-                anio_id: anio_id,
-                anio_mes: anio_mes,
+                    sede_id: 1,
+                    mes_id: mes_id,
+                    anio_id: anio.id,
+                    anio_mes: anio_mes,
 
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+        }
     }
     console.log("Transporte aereo data created");
 
@@ -1555,6 +1554,46 @@ async function main() {
             },
         });
     }
+    console.log("Transporte aereo factors created");
+
+    for (const anio of allAnios) {
+        await prisma.factorEmisionTransporteTerrestre.create({
+            data: {
+                factor: 0.12007,
+                anio_id: anio.id,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+    console.log("Transporte terrestre factors created");
+
+    for (const sede of allSedes) {
+        for (const anio of allAnios) {
+            for (const mes of allMeses) {
+                await prisma.transporteTerrestre.create({
+                    data: {
+                        numeroPasajeros: faker.number.int({min: 1, max: 1000}),
+                        origen: faker.location.city(),
+                        destino: faker.location.city(),
+                        isIdaVuelta: faker.datatype.boolean(),
+                        fechaSalida: faker.date.future(),
+                        fechaRegreso: faker.date.future(),
+                        motivo: faker.lorem.sentence(),
+                        numeroComprobante: faker.number.float({min: 1, max: 1000}).toString(),
+                        distancia: faker.number.float({min: 1, max: 1000}),
+                        sede_id: sede.id,
+                        anio_id: anio.id,
+                        mes_id: mes.id,
+                        anio_mes: anio.nombre * 100 + mes.id,
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                    }
+                })
+            }
+        }
+    }
+    console.log("Transporte terrestre created");
 
 
     const categoriaConsumibles = [

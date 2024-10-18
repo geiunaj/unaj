@@ -1,13 +1,13 @@
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-}
-
 // datasource db {
-//   provider  = "postgresql"
-//   url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-//   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+//   provider = "mysql"
+//   url      = env("DATABASE_URL")
 // }
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
 
 generator client {
   provider = "prisma-client-js"
@@ -47,31 +47,34 @@ model User {
 }
 
 model Sede {
-  id                            Int                             @id @default(autoincrement())
-  name                          String                          @db.VarChar(45)
-  combustibles                  Combustible[]
-  fertilizante                  Fertilizante[]
-  ConsumoPapel                  ConsumoPapel[]
-  combustibleCalculos           combustibleCalculos[]
-  taxi                          Taxi[]
-  fertilizanteCalculos          fertilizanteCalculos[]
-  area                          area[]
-  User                          User[]
-  combustibleCalculosDetail     combustibleCalculosDetail[]
-  ConsumoPapelCalculosDetail    ConsumoPapelCalculosDetail[]
-  ConsumoPapelCalculos          ConsumoPapelCalculos[]
-  fertilizanteCalculosDetail    fertilizanteCalculosDetail[]
-  Refrigerante                  Refrigerante[]
-  RefrigeranteCalculos          RefrigeranteCalculos[]
-  RefrigeranteCalculosDetail    RefrigeranteCalculosDetail[]
-  Consumible                    Consumible[]
-  ConsumibleCalculos            ConsumibleCalculos[]
-  ConsumibleCalculosDetail      ConsumibleCalculosDetail[]
-  TaxiCalculos                  TaxiCalculos[]
-  TaxiCalculosDetail            TaxiCalculosDetail[]
-  TransporteAereoCalculos       TransporteAereoCalculos[]
-  TransporteAereoCalculosDetail TransporteAereoCalculosDetail[]
-  TransporteAereo               TransporteAereo[]
+  id                                Int                                 @id @default(autoincrement())
+  name                              String                              @db.VarChar(45)
+  combustibles                      Combustible[]
+  fertilizante                      Fertilizante[]
+  ConsumoPapel                      ConsumoPapel[]
+  combustibleCalculos               combustibleCalculos[]
+  taxi                              Taxi[]
+  fertilizanteCalculos              fertilizanteCalculos[]
+  area                              area[]
+  User                              User[]
+  combustibleCalculosDetail         combustibleCalculosDetail[]
+  ConsumoPapelCalculosDetail        ConsumoPapelCalculosDetail[]
+  ConsumoPapelCalculos              ConsumoPapelCalculos[]
+  fertilizanteCalculosDetail        fertilizanteCalculosDetail[]
+  Refrigerante                      Refrigerante[]
+  RefrigeranteCalculos              RefrigeranteCalculos[]
+  RefrigeranteCalculosDetail        RefrigeranteCalculosDetail[]
+  Consumible                        Consumible[]
+  ConsumibleCalculos                ConsumibleCalculos[]
+  ConsumibleCalculosDetail          ConsumibleCalculosDetail[]
+  TaxiCalculos                      TaxiCalculos[]
+  TaxiCalculosDetail                TaxiCalculosDetail[]
+  TransporteAereoCalculos           TransporteAereoCalculos[]
+  TransporteAereoCalculosDetail     TransporteAereoCalculosDetail[]
+  TransporteAereo                   TransporteAereo[]
+  TransporteTerrestre               TransporteTerrestre[]
+  TransporteTerrestreCalculos       TransporteTerrestreCalculos[]
+  TransporteTerrestreCalculosDetail TransporteTerrestreCalculosDetail[]
 
   @@map("sede")
 }
@@ -109,16 +112,17 @@ model tipoCombustible {
 }
 
 model Mes {
-  id              Int               @id @default(autoincrement())
-  nombre          String            @db.VarChar(45)
-  created_at      DateTime
-  updated_at      DateTime
-  combustibles    Combustible[]
-  Taxi            Taxi[]
-  consumoEnergia  consumoEnergia[]
-  ConsumoAgua     ConsumoAgua[]
-  Consumible      Consumible[]
-  TransporteAereo TransporteAereo[]
+  id                  Int                   @id @default(autoincrement())
+  nombre              String                @db.VarChar(45)
+  created_at          DateTime
+  updated_at          DateTime
+  combustibles        Combustible[]
+  Taxi                Taxi[]
+  consumoEnergia      consumoEnergia[]
+  ConsumoAgua         ConsumoAgua[]
+  Consumible          Consumible[]
+  TransporteAereo     TransporteAereo[]
+  TransporteTerrestre TransporteTerrestre[]
 
   @@map("mes")
 }
@@ -129,27 +133,29 @@ model Anio {
   created_at DateTime
   updated_at DateTime
 
-  combustibles                 Combustible[]
-  fertilizante                 Fertilizante[]
-  consumoPapel                 ConsumoPapel[]
-  Taxi                         Taxi[]
-  consumoEnergia               consumoEnergia[]
-  factorConversionSEIN         factorConversionSEIN[]
-  ConsumoAgua                  ConsumoAgua[]
-  tipoCombustibleFactor        tipoCombustibleFactor[]
-  FactorEmisionAgua            FactorEmisionAgua[]
-  FactorTipoPapel              FactorTipoPapel[]
-  ConsumoPapelCalculosDetail   ConsumoPapelCalculosDetail[]
-  FactorEmisionFertilizante    FactorEmisionFertilizante[]
-  Refrigerante                 Refrigerante[]
-  FactorTipoRefrigerante       FactorTipoRefrigerante[]
-  RefrigeranteCalculosDetail   RefrigeranteCalculosDetail[]
-  FactorTipoConsumible         FactorTipoConsumible[]
-  Consumible                   Consumible[]
-  ConsumibleCalculosDetail     ConsumibleCalculosDetail[]
-  FactorEmisionTaxi            FactorEmisionTaxi[]
-  TransporteAereo              TransporteAereo[]
-  FactorEmisionTransporteAereo FactorEmisionTransporteAereo[]
+  combustibles                     Combustible[]
+  fertilizante                     Fertilizante[]
+  consumoPapel                     ConsumoPapel[]
+  Taxi                             Taxi[]
+  consumoEnergia                   consumoEnergia[]
+  factorConversionSEIN             factorConversionSEIN[]
+  ConsumoAgua                      ConsumoAgua[]
+  tipoCombustibleFactor            tipoCombustibleFactor[]
+  FactorEmisionAgua                FactorEmisionAgua[]
+  FactorTipoPapel                  FactorTipoPapel[]
+  ConsumoPapelCalculosDetail       ConsumoPapelCalculosDetail[]
+  FactorEmisionFertilizante        FactorEmisionFertilizante[]
+  Refrigerante                     Refrigerante[]
+  FactorTipoRefrigerante           FactorTipoRefrigerante[]
+  RefrigeranteCalculosDetail       RefrigeranteCalculosDetail[]
+  FactorTipoConsumible             FactorTipoConsumible[]
+  Consumible                       Consumible[]
+  ConsumibleCalculosDetail         ConsumibleCalculosDetail[]
+  FactorEmisionTaxi                FactorEmisionTaxi[]
+  TransporteAereo                  TransporteAereo[]
+  FactorEmisionTransporteAereo     FactorEmisionTransporteAereo[]
+  FactorEmisionTransporteTerrestre FactorEmisionTransporteTerrestre[]
+  TransporteTerrestre              TransporteTerrestre[]
 
   @@map("anio")
 }
@@ -686,13 +692,13 @@ model ConsumoAguaCalculosDetail {
 }
 
 model PeriodoCalculo {
-  id                          Int                       @id @default(autoincrement())
+  id                          Int                           @id @default(autoincrement())
   fechaInicio                 String?
   fechaFin                    String?
   yearInicio                  String?
   yearFin                     String?
-  created_at                  DateTime                  @default(now())
-  updated_at                  DateTime                  @updatedAt
+  created_at                  DateTime                      @default(now())
+  updated_at                  DateTime                      @updatedAt
   ConsumoAguaCalculos         ConsumoAguaCalculos[]
   EnergiaCalculos             EnergiaCalculos[]
   fertilizanteCalculos        fertilizanteCalculos[]
@@ -702,6 +708,7 @@ model PeriodoCalculo {
   ConsumibleCalculos          ConsumibleCalculos[]
   TaxiCalculos                TaxiCalculos[]
   TransporteAereoCalculos     TransporteAereoCalculos[]
+  TransporteTerrestreCalculos TransporteTerrestreCalculos[]
 
   @@map("periodocalculo")
 }
@@ -1031,4 +1038,81 @@ model TransporteAereoCalculosDetail {
   transporteAereoCalculos      TransporteAereoCalculos       @relation(fields: [transporteAereoCalculosId], references: [id])
 
   @@map("transporteaereocalculosdetail")
+}
+
+// TRANSPORTE TERRESTRE
+model FactorEmisionTransporteTerrestre {
+  id      Int   @id @default(autoincrement())
+  factor  Float
+  anio_id Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  TransporteTerrestreCalculosDetail TransporteTerrestreCalculosDetail[]
+
+  anio Anio @relation(fields: [anio_id], references: [id])
+
+  @@map("factoremisiontransporteterrestre")
+}
+
+model TransporteTerrestre {
+  id                Int       @id @default(autoincrement())
+  numeroPasajeros   Int?
+  origen            String?
+  destino           String?
+  isIdaVuelta       Boolean
+  fechaSalida       DateTime?
+  fechaRegreso      DateTime?
+  motivo            String?
+  numeroComprobante String?
+  distancia         Float
+  sede_id           Int
+  mes_id            Int
+  anio_id           Int
+  anio_mes          Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  mes  Mes?  @relation(fields: [mes_id], references: [id])
+  anio Anio? @relation(fields: [anio_id], references: [id])
+  sede Sede? @relation(fields: [sede_id], references: [id])
+
+  @@map("transporteterrestre")
+}
+
+model TransporteTerrestreCalculos {
+  id               Int   @id @default(autoincrement())
+  consumo          Float
+  totalGEI         Float
+  sedeId           Int
+  periodoCalculoId Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  sede                              Sede?                               @relation(fields: [sedeId], references: [id])
+  PeriodoCalculo                    PeriodoCalculo?                     @relation(fields: [periodoCalculoId], references: [id])
+  TransporteTerrestreCalculosDetail TransporteTerrestreCalculosDetail[]
+
+  @@map("transporteterrestrecalculos")
+}
+
+model TransporteTerrestreCalculosDetail {
+  id                            Int   @id @default(autoincrement())
+  consumo                       Float
+  factorEmisionTerrestreId      Int
+  totalGEI                      Float
+  sedeId                        Int
+  transporteTerrestreCalculosId Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  factorEmisionTransporteTerrestre FactorEmisionTransporteTerrestre? @relation(fields: [factorEmisionTerrestreId], references: [id])
+  sede                             Sede?                             @relation(fields: [sedeId], references: [id])
+  transporteTerrestreCalculos      TransporteTerrestreCalculos       @relation(fields: [transporteTerrestreCalculosId], references: [id])
+
+  @@map("transporteterrestrecalculosdetail")
 }
