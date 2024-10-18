@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {TaxiRequest} from "@/components/taxi/service/taxi.interface";
-import {formatTaxi} from "@/lib/resources/taxiResorce";
+import {formatTaxi} from "@/lib/resources/taxiResource";
 
 // SHOW ROUTE -> PARAM [ID]
 export async function GET(
@@ -47,22 +47,17 @@ export async function PUT(
             return new NextResponse("Invalid ID", {status: 400});
         }
 
-        const body = await req.json();
-
-        // Validate required fields
-        const {unidadContratante, lugarSalida, lugarDestino, montoGastado, mes_id, sede_id, anio_id} = body;
-        if (!unidadContratante || !lugarSalida || !lugarDestino || !montoGastado || !mes_id || !sede_id || !anio_id) {
-            return new NextResponse("Missing required fields", {status: 400});
-        }
+        const body: TaxiRequest = await req.json();
 
         const taxiRequest: TaxiRequest = {
-            unidadContratante,
-            lugarSalida,
-            lugarDestino,
-            montoGastado,
-            mes_id,
-            sede_id,
-            anio_id,
+            unidadContratante: body.unidadContratante,
+            lugarSalida: body.lugarSalida,
+            lugarDestino: body.lugarDestino,
+            montoGastado: body.montoGastado,
+            kmRecorrido: body.kmRecorrido,
+            mes_id: body.mes_id,
+            sede_id: body.sede_id,
+            anio_id: body.anio_id,
             updated_at: new Date(),
         };
 

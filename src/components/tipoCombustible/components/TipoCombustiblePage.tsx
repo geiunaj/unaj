@@ -37,10 +37,10 @@ import {useTipoCombustible, useTipoCombustiblePaginate} from "../lib/tipoCombust
 import {TipoCombustibleCollection} from "../services/tipoCombustible.interface";
 import {FromTipoCombustible} from "./FormTipoCombustible";
 import {deleteTipoCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";
-import {UpdateFormTipoCombustible} from "./UpdateFormTipoCombustible";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import SelectFilter from "@/components/SelectFilter";
 import CustomPagination from "@/components/Pagination";
+import {UpdateFormTipoCombustibleFactor} from "@/components/tipoCombustible/components/UpdateFormTipoCombustible";
 
 export default function TipoCombustiblePage() {
     //DIALOGS
@@ -241,7 +241,7 @@ export default function TipoCombustiblePage() {
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
 
-                    <UpdateFormTipoCombustible
+                    <UpdateFormTipoCombustibleFactor
                         onClose={handleCloseUpdate}
                         id={idForUpdate}
                     />
