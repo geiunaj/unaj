@@ -25,27 +25,26 @@ import {useQuery} from "@tanstack/react-query";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {
-    UpdateTransporteAereoFactorProps,
-    TransporteAereoFactorRequest
-} from "../services/transporteAereoFactor.interface";
+    UpdateTransporteTerrestreFactorProps,
+    TransporteTerrestreFactorRequest
+} from "../services/transporteTerrestreFactor.interface";
 import {getAnio} from "@/components/anio/services/anio.actions";
-import {showTransporteAereoFactor, updateTransporteAereoFactor} from "../services/transporteAereoFactor.actions";
+import {
+    showTransporteTerrestreFactor,
+    updateTransporteTerrestreFactor
+} from "../services/transporteTerrestreFactor.actions";
 
-const UpdateTransporteAereoFactor = z.object({
+const UpdateTransporteTerrestreFactor = z.object({
     anio: z.string().min(1, "Selecciona un año"),
-    factor1600: z.preprocess((val) => parseFloat(val as string), z.number().min(0, "Ingresa un valor mayor a 0")),
-    factor1600_3700: z.preprocess((val) => parseFloat(val as string), z.number().min(0, "Ingresa un valor mayor a 0")),
-    factor3700: z.preprocess((val) => parseFloat(val as string), z.number().min(0, "Ingresa un valor mayor a 0")),
+    factor: z.preprocess((val) => parseFloat(val as string), z.number().min(0, "Ingresa un valor mayor a 0")),
 });
 
-export function UpdateFormTransporteAereoFactor({id, onClose}: UpdateTransporteAereoFactorProps) {
-    const form = useForm<z.infer<typeof UpdateTransporteAereoFactor>>({
-        resolver: zodResolver(UpdateTransporteAereoFactor),
+export function UpdateFormTransporteTerrestreFactor({id, onClose}: UpdateTransporteTerrestreFactorProps) {
+    const form = useForm<z.infer<typeof UpdateTransporteTerrestreFactor>>({
+        resolver: zodResolver(UpdateTransporteTerrestreFactor),
         defaultValues: {
             anio: "",
-            factor1600: 0,
-            factor1600_3700: 0,
-            factor3700: 0,
+            factor: 0,
         },
     });
 
@@ -55,38 +54,34 @@ export function UpdateFormTransporteAereoFactor({id, onClose}: UpdateTransporteA
         refetchOnWindowFocus: false,
     });
 
-    const transporteAereoFactor = useQuery({
-        queryKey: ["transporteAereoFactor"],
-        queryFn: () => showTransporteAereoFactor(id),
+    const transporteTerrestreFactor = useQuery({
+        queryKey: ["transporteTerrestreFactor"],
+        queryFn: () => showTransporteTerrestreFactor(id),
         refetchOnWindowFocus: false,
     });
 
     const loadForm = useCallback(async () => {
-        if (transporteAereoFactor.data) {
-            const factorData = transporteAereoFactor.data;
+        if (transporteTerrestreFactor.data) {
+            const factorData = transporteTerrestreFactor.data;
             form.reset({
                 anio: factorData.anio_id.toString(),
-                factor1600: factorData.factor1600,
-                factor1600_3700: factorData.factor1600_3700,
-                factor3700: factorData.factor3700,
+                factor: factorData.factor,
             });
         }
-    }, [transporteAereoFactor.data, form]);
+    }, [transporteTerrestreFactor.data, form]);
 
     useEffect(() => {
         loadForm();
     }, [loadForm]);
 
-    const onSubmit = async (data: z.infer<typeof UpdateTransporteAereoFactor>) => {
-        const transporteAereoFactorRequest: TransporteAereoFactorRequest = {
+    const onSubmit = async (data: z.infer<typeof UpdateTransporteTerrestreFactor>) => {
+        const transporteTerrestreFactorRequest: TransporteTerrestreFactorRequest = {
             anioId: parseInt(data.anio),
-            factor1600: data.factor1600,
-            factor1600_3700: data.factor1600_3700,
-            factor3700: data.factor3700,
+            factor: data.factor,
         };
 
         try {
-            const response = await updateTransporteAereoFactor(id, transporteAereoFactorRequest);
+            const response = await updateTransporteTerrestreFactor(id, transporteTerrestreFactorRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -94,7 +89,7 @@ export function UpdateFormTransporteAereoFactor({id, onClose}: UpdateTransporteA
         }
     };
 
-    if (transporteAereoFactor.isLoading || anios.isLoading) {
+    if (transporteTerrestreFactor.isLoading || anios.isLoading) {
         return <SkeletonForm/>;
     }
 
@@ -133,52 +128,14 @@ export function UpdateFormTransporteAereoFactor({id, onClose}: UpdateTransporteA
 
                         <FormField
                             control={form.control}
-                            name="factor1600"
+                            name="factor"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor Menor 1600</FormLabel>
+                                    <FormLabel>Factor</FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                             placeholder="Factor de emisión CO2"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
-
-
-                        <FormField
-                            control={form.control}
-                            name="factor1600_3700"
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <FormLabel>Factor entre 1600 y 3700</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Factor de emisión CH4"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Factor N2O */}
-                        <FormField
-                            control={form.control}
-                            name="factor3700"
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <FormLabel>Factor Mayor 3700</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Factor de emisión N2O"
                                             {...field}
                                         />
                                     </FormControl>

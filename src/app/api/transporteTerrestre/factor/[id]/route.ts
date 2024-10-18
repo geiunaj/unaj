@@ -1,9 +1,9 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
-import {formatTransporteAereoFactor} from "@/lib/resources/transporteAereoFactor.resource";
+import {formatTransporteTerrestreFactor} from "@/lib/resources/transporteTerrestreFactor.resource";
 import {
-    TransporteAereoFactorRequest
-} from "@/components/transporte-aereo-factor/services/transporteAereoFactor.interface";
+    TransporteTerrestreFactorRequest
+} from "@/components/transporte-terrestre-factor/services/transporteTerrestreFactor.interface";
 
 export async function GET(
     req: NextRequest,
@@ -11,7 +11,7 @@ export async function GET(
 ): Promise<NextResponse> {
     try {
         const id = parseInt(params.id);
-        const TransporteAereoFactor = await prisma.factorEmisionTransporteAereo.findUnique({
+        const TransporteTerrestreFactor = await prisma.factorEmisionTransporteTerrestre.findUnique({
             where: {
                 id: id,
             },
@@ -20,14 +20,14 @@ export async function GET(
             },
         });
 
-        if (!TransporteAereoFactor) {
-            return new NextResponse("Factor de Transporte Aereo no encontrado", {status: 404});
+        if (!TransporteTerrestreFactor) {
+            return new NextResponse("Factor de Transporte Terrestre no encontrado", {status: 404});
         }
 
-        return NextResponse.json(formatTransporteAereoFactor(TransporteAereoFactor));
+        return NextResponse.json(formatTransporteTerrestreFactor(TransporteTerrestreFactor));
     } catch (error) {
-        console.error("Error buscando Factor de Transporte Aereo", error);
-        return new NextResponse("Error buscando Factor de Transporte Aereo", {status: 500});
+        console.error("Error buscando Factor de Transporte Terrestre", error);
+        return new NextResponse("Error buscando Factor de Transporte Terrestre", {status: 500});
     }
 }
 
@@ -41,31 +41,29 @@ export async function PUT(
             return new NextResponse("ID inválido", {status: 400});
         }
 
-        const body: TransporteAereoFactorRequest = await req.json();
-        const TransporteAereoFactorRequest = {
-            factor1600: body.factor1600,
-            factor1600_3700: body.factor1600_3700,
-            factor3700: body.factor3700,
+        const body: TransporteTerrestreFactorRequest = await req.json();
+        const TransporteTerrestreFactorRequest = {
+            factor: body.factor,
             anio_id: body.anioId,
         };
 
-        const TransporteAereoFactor = await prisma.factorEmisionTransporteAereo.update({
+        const TransporteTerrestreFactor = await prisma.factorEmisionTransporteTerrestre.update({
             where: {
                 id: id,
             },
-            data: TransporteAereoFactorRequest,
+            data: TransporteTerrestreFactorRequest,
             include: {
                 anio: true,
             },
         });
 
         return NextResponse.json({
-            message: "Factor de Transporte Aereo actualizado correctamente",
-            TransporteAereoFactor: formatTransporteAereoFactor(TransporteAereoFactor),
+            message: "Factor de Transporte Terrestre actualizado correctamente",
+            TransporteTerrestreFactor: formatTransporteTerrestreFactor(TransporteTerrestreFactor),
         });
     } catch (error) {
-        console.error("Error actualizando Factor de Transporte Aereo", error);
-        return new NextResponse("Error actualizando Factor de Transporte Aereo", {status: 500});
+        console.error("Error actualizando Factor de Transporte Terrestre", error);
+        return new NextResponse("Error actualizando Factor de Transporte Terrestre", {status: 500});
     }
 }
 
@@ -79,15 +77,15 @@ export async function DELETE(
             return new NextResponse("ID inválido", {status: 400});
         }
 
-        await prisma.factorEmisionTransporteAereo.delete({
+        await prisma.factorEmisionTransporteTerrestre.delete({
             where: {id},
         });
 
         return NextResponse.json({
-            message: "Factor de Transporte Aereo eliminado correctamente",
+            message: "Factor de Transporte Terrestre eliminado correctamente",
         });
     } catch (error: any) {
-        console.error("Error eliminando Factor de Transporte Aereo", error);
-        return new NextResponse("Error eliminando Factor de Transporte Aereo", {status: 500});
+        console.error("Error eliminando Factor de Transporte Terrestre", error);
+        return new NextResponse("Error eliminando Factor de Transporte Terrestre", {status: 500});
     }
 }

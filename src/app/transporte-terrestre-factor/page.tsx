@@ -1,12 +1,13 @@
 "use client";
 
 import LayoutWrapper from "@/components/Layout/layout";
-import TransporteAereoFactorPage from "@/components/transporte-aereo-factor/components/TransporteAereoFactorPage";
+import TransporteTerrestreFactorPage
+    from "@/components/transporte-terrestre-factor/components/TransporteTerrestreFactorPage";
 
 export default function Page() {
     return (
         <LayoutWrapper>
-            <TransporteAereoFactorPage/>
+            <TransporteTerrestreFactorPage/>
         </LayoutWrapper>
     );
 }

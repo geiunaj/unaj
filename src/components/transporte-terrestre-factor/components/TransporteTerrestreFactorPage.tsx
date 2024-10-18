@@ -35,17 +35,21 @@ import SkeletonTable from "@/components/Layout/skeletonTable";
 import CustomPagination from "@/components/Pagination";
 
 import SelectFilter from "@/components/SelectFilter";
-import {useTransporteAereoFactorPaginate} from "../lib/transporteAereoFactor.hook";
+import {useTransporteTerrestreFactorPaginate} from "../lib/transporteTerrestreFactor.hook";
 import {useAnio} from "@/components/combustion/lib/combustion.hook";
-import {TransporteAereoFactorCollection} from "../services/transporteAereoFactor.interface";
-import {FormTransporteAereoFactor} from "@/components/transporte-aereo-factor/components/CreateTransporteAereoFactor";
+import {TransporteTerrestreFactorCollection} from "../services/transporteTerrestreFactor.interface";
 import {
-    UpdateFormTransporteAereoFactor
-} from "@/components/transporte-aereo-factor/components/UpdateTransporteAereoFactor";
+    FormTransporteTerrestreFactor
+} from "@/components/transporte-terrestre-factor/components/CreateTransporteTerrestreFactor";
+import {
+    UpdateFormTransporteTerrestreFactor
+} from "@/components/transporte-terrestre-factor/components/UpdateTransporteTerrestreFactor";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import {deleteTransporteAereoFactor} from "@/components/transporte-aereo-factor/services/transporteAereoFactor.actions";
+import {
+    deleteTransporteTerrestreFactor
+} from "@/components/transporte-terrestre-factor/services/transporteTerrestreFactor.actions";
 
-export default function TransporteAereoFactorPage() {
+export default function TransporteTerrestreFactorPage() {
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -57,7 +61,7 @@ export default function TransporteAereoFactorPage() {
     const [page, setPage] = useState<number>(1);
 
     //USE QUERIES
-    const transporteAereoFactorQuery = useTransporteAereoFactorPaginate({
+    const transporteTerrestreFactorQuery = useTransporteTerrestreFactorPaginate({
         anioId: selectAnio,
         page,
         perPage: 10,
@@ -70,32 +74,32 @@ export default function TransporteAereoFactorPage() {
         async (value: string) => {
             await setPage(1);
             await setSelectAnio(value);
-            await transporteAereoFactorQuery.refetch();
+            await transporteTerrestreFactorQuery.refetch();
         },
-        [transporteAereoFactorQuery]
+        [transporteTerrestreFactorQuery]
     );
 
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
-        transporteAereoFactorQuery.refetch();
-    }, [transporteAereoFactorQuery]);
+        transporteTerrestreFactorQuery.refetch();
+    }, [transporteTerrestreFactorQuery]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
-        transporteAereoFactorQuery.refetch();
-    }, [transporteAereoFactorQuery]);
+        transporteTerrestreFactorQuery.refetch();
+    }, [transporteTerrestreFactorQuery]);
 
     const handleDelete = useCallback(async () => {
         try {
-            const response = await deleteTransporteAereoFactor(idForDelete);
+            const response = await deleteTransporteTerrestreFactor(idForDelete);
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
             errorToast(error.response.data || error.response.data.message);
         } finally {
-            await transporteAereoFactorQuery.refetch();
+            await transporteTerrestreFactorQuery.refetch();
         }
-    }, [transporteAereoFactorQuery]);
+    }, [transporteTerrestreFactorQuery]);
 
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
@@ -109,10 +113,10 @@ export default function TransporteAereoFactorPage() {
 
     const handlePageChange = async (page: number) => {
         await setPage(page);
-        await transporteAereoFactorQuery.refetch();
+        await transporteTerrestreFactorQuery.refetch();
     };
 
-    if (transporteAereoFactorQuery.isLoading || aniosQuery.isLoading) {
+    if (transporteTerrestreFactorQuery.isLoading || aniosQuery.isLoading) {
         return <SkeletonTable/>;
     }
 
@@ -122,7 +126,7 @@ export default function TransporteAereoFactorPage() {
                 <div className="font-Manrope">
                     <h1 className="text-base text-foreground font-bold">
                         {" "}
-                        Factor de Transporte Aereo{" "}
+                        Factor de Transporte Terrestre{" "}
                     </h1>
                     <h2 className="text-xs sm:text-sm text-muted-foreground">
                         {" "}
@@ -150,13 +154,13 @@ export default function TransporteAereoFactorPage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle>Factor de Transporte Aereo</DialogTitle>
+                                    <DialogTitle>Factor de Transporte Terrestre</DialogTitle>
                                     <DialogDescription>
-                                        Agregar un nuevo Factor de Emisión para el Transporte Aereo
+                                        Agregar un nuevo Factor de Emisión para el Transporte Terrestre
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                <FormTransporteAereoFactor onClose={handleClose}/>
+                                <FormTransporteTerrestreFactor onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -171,13 +175,7 @@ export default function TransporteAereoFactorPage() {
                                 N°
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                {"FACTOR"} <br/> {"<1600"}
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                {"FACTOR"} <br/> {"1600-3700"}
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                {"FACTOR"} <br/> {">3700"}
+                                FACTOR
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO
@@ -188,20 +186,14 @@ export default function TransporteAereoFactorPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {transporteAereoFactorQuery.data!.data.map(
-                            (item: TransporteAereoFactorCollection, index: number) => (
+                        {transporteTerrestreFactorQuery.data!.data.map(
+                            (item: TransporteTerrestreFactorCollection, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{index + 1}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default"> {item.factor1600}</Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default"> {item.factor1600_3700}</Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default"> {item.factor3700}</Badge>
+                                        <Badge variant="default"> {item.factor}</Badge>
                                     </TableCell>
 
                                     <TableCell className="text-xs sm:text-sm">
@@ -235,9 +227,9 @@ export default function TransporteAereoFactorPage() {
                         )}
                     </TableBody>
                 </Table>
-                {transporteAereoFactorQuery.data!.meta.totalPages > 1 && (
+                {transporteTerrestreFactorQuery.data!.meta.totalPages > 1 && (
                     <CustomPagination
-                        meta={transporteAereoFactorQuery.data!.meta}
+                        meta={transporteTerrestreFactorQuery.data!.meta}
                         onPageChange={handlePageChange}
                     />
                 )}
@@ -252,7 +244,7 @@ export default function TransporteAereoFactorPage() {
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
 
-                    <UpdateFormTransporteAereoFactor
+                    <UpdateFormTransporteTerrestreFactor
                         onClose={handleCloseUpdate}
                         id={idForUpdate}
                     />

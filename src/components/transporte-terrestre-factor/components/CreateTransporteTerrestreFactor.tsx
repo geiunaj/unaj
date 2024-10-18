@@ -25,36 +25,25 @@ import {useQuery} from "@tanstack/react-query";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonForm from "@/components/Layout/skeletonForm";
-import {createTransporteAereoFactor} from "@/components/transporte-aereo-factor/services/transporteAereoFactor.actions";
 import {
-    CreateTransporteAereoFactorProps,
-    TransporteAereoFactorRequest
-} from "@/components/transporte-aereo-factor/services/transporteAereoFactor.interface";
+    createTransporteTerrestreFactor
+} from "@/components/transporte-terrestre-factor/services/transporteTerrestreFactor.actions";
+import {
+    CreateTransporteTerrestreFactorProps,
+    TransporteTerrestreFactorRequest
+} from "@/components/transporte-terrestre-factor/services/transporteTerrestreFactor.interface";
 
-const TransporteAereoFactor = z.object({
+const TransporteTerrestreFactor = z.object({
     anio: z.string().min(1, "Seleciona el anio"),
-    factor1600: z.preprocess(
-        (val) => parseFloat(val as string),
-        z.number().min(0, "Ingresa un valor mayor a 0")
-    ),
-    factor1600_3700: z.preprocess(
-        (val) => parseFloat(val as string),
-        z.number().min(0, "Ingresa un valor mayor a 0")
-    ),
-    factor3700: z.preprocess(
-        (val) => parseFloat(val as string),
-        z.number().min(0, "Ingresa un valor mayor a 0")
-    ),
+    factor: z.preprocess((val) => parseFloat(val as string), z.number().min(0, "Ingresa un valor mayor a 0")),
 });
 
-export function FormTransporteAereoFactor({onClose}: CreateTransporteAereoFactorProps) {
-    const form = useForm<z.infer<typeof TransporteAereoFactor>>({
-        resolver: zodResolver(TransporteAereoFactor),
+export function FormTransporteTerrestreFactor({onClose}: CreateTransporteTerrestreFactorProps) {
+    const form = useForm<z.infer<typeof TransporteTerrestreFactor>>({
+        resolver: zodResolver(TransporteTerrestreFactor),
         defaultValues: {
             anio: "",
-            factor1600: 0,
-            factor1600_3700: 0,
-            factor3700: 0,
+            factor: 0,
         },
     });
 
@@ -64,16 +53,14 @@ export function FormTransporteAereoFactor({onClose}: CreateTransporteAereoFactor
         refetchOnWindowFocus: false,
     });
 
-    const onSubmit = async (data: z.infer<typeof TransporteAereoFactor>) => {
-        const TransporteAereoFactorRequest: TransporteAereoFactorRequest = {
+    const onSubmit = async (data: z.infer<typeof TransporteTerrestreFactor>) => {
+        const TransporteTerrestreFactorRequest: TransporteTerrestreFactorRequest = {
             anioId: parseInt(data.anio),
-            factor1600: data.factor1600,
-            factor1600_3700: data.factor1600_3700,
-            factor3700: data.factor3700,
+            factor: data.factor,
         };
 
         try {
-            const response = await createTransporteAereoFactor(TransporteAereoFactorRequest);
+            const response = await createTransporteTerrestreFactor(TransporteTerrestreFactorRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -129,10 +116,10 @@ export function FormTransporteAereoFactor({onClose}: CreateTransporteAereoFactor
 
                         <FormField
                             control={form.control}
-                            name="factor1600"
+                            name="factor"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor Mayor a 1600</FormLabel>
+                                    <FormLabel>Factor</FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
@@ -144,42 +131,7 @@ export function FormTransporteAereoFactor({onClose}: CreateTransporteAereoFactor
                                 </FormItem>
                             )}
                         />
-                        <FormField
-                            control={form.control}
-                            name="factor1600_3700"
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <FormLabel>Factor entre 1600 y 3700</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Factor de emisión CO2"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="factor3700"
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <FormLabel>Factor Mayor a 3700</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            type="number"
-                                            step="0.01"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
+                        
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-blue-700">
                                 Guardar
