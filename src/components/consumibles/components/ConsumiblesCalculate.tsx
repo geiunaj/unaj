@@ -131,7 +131,7 @@ export default function ConsumiblesCalculate() {
     }
 
     return (
-        <div className="w-full max-w-[1150px] h-full">
+        <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="flex gap-4 items-center">
                     <ButtonBack onClick={handleConsumible}/>

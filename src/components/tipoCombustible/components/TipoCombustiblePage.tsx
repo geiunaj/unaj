@@ -40,7 +40,9 @@ import {deleteTipoCombustible} from "@/components/tipoCombustible/services/tipoC
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import SelectFilter from "@/components/SelectFilter";
 import CustomPagination from "@/components/Pagination";
-import {UpdateFormTipoCombustibleFactor} from "@/components/tipoCombustible/components/UpdateFormTipoCombustible";
+import {
+    UpdateFormTipoCombustible,
+} from "@/components/tipoCombustible/components/UpdateFormTipoCombustible";
 
 export default function TipoCombustiblePage() {
     //DIALOGS
@@ -103,7 +105,7 @@ export default function TipoCombustiblePage() {
     }
 
     return (
-        <div className="w-full max-w-[1150px] h-full">
+        <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="font-Manrope">
                     <h1 className="text-base text-foreground font-bold"> Tipos de Combustible </h1>
@@ -206,7 +208,7 @@ export default function TipoCombustiblePage() {
                                                 variant="outline"
                                                 onClick={() => handleClickUpdate(item.id)}
                                             >
-                                                <Pen className="h-3.5 text-blue-700"/>
+                                                <Pen className="h-3.5 text-primary"/>
                                             </Button>
 
                                             {/*DELETE*/}
@@ -241,7 +243,7 @@ export default function TipoCombustiblePage() {
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
 
-                    <UpdateFormTipoCombustibleFactor
+                    <UpdateFormTipoCombustible
                         onClose={handleCloseUpdate}
                         id={idForUpdate}
                     />

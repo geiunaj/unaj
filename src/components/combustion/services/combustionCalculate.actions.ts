@@ -59,13 +59,17 @@ export async function getCombustionCalculateReport({
     return data;
 }
 
+interface ResponseMessage {
+    message: string;
+}
+
 export async function createCombustionCalculate({
                                                     tipo,
                                                     sedeId,
                                                     from,
                                                     to
                                                 }: CreateCalculosCombustionProps):
-    Promise<CombustionCalcResponse[]> {
+    Promise<ResponseMessage> {
 
     const body = {
         tipo,

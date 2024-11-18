@@ -1,5 +1,5 @@
 "use client";
-import React, {useState, useCallback, useRef} from "react";
+import React, {useState, useCallback, useRef, useEffect} from "react";
 import {Button} from "@/components/ui/button";
 import {
     Table,
@@ -30,8 +30,10 @@ import {
 } from "@/components/combustion/lib/combustionCalculos.hooks";
 import {createCombustionCalculate} from "@/components/combustion/services/combustionCalculate.actions";
 import CustomPagination from "@/components/Pagination";
-import {formatPeriod} from "@/lib/utils/core.function";
+import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import {ReportRequest} from "@/lib/interfaces/globals";
+import {updateTipoCombustibleFactor} from "@/components/tipoCombustible/services/tipoCombustibleFactor.actions";
+import usePageTitle from "@/lib/stores/titleStore.store";
 
 interface CombustionCalculateProps {
     tipo: Tipo;
@@ -42,6 +44,14 @@ type Tipo = "estacionaria" | "movil";
 export default function CombustibleCalculate({
                                                  tipo = "estacionaria",
                                              }: CombustionCalculateProps) {
+    const setTitle = usePageTitle((state) => state.setTitle);
+    useEffect(() => {
+        setTitle(tipo === "estacionaria" ? "Combustión Estacionaria" : "Combustión Móvil");
+    }, [setTitle, tipo]);
+    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
+    useEffect(() => {
+        setTitleHeader(tipo === "estacionaria" ? "Combustión Estacionaria" : "Combustión Móvil");
+    }, [setTitleHeader, tipo]);
     const {push} = useRouter();
 
     // SELECTS - FILTERS
@@ -80,12 +90,18 @@ export default function CombustibleCalculate({
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
 
     const handleCalculate = useCallback(async () => {
-        await createCombustionCalculate({
-            tipo,
-            sedeId: selectedSede ? Number(selectedSede) : undefined,
-            from,
-            to,
-        });
+        try {
+            const response = await createCombustionCalculate({
+                tipo,
+                sedeId: selectedSede ? Number(selectedSede) : undefined,
+                from,
+                to,
+            });
+            successToast(response.message);
+        } catch (error: any) {
+            console.error(error);
+            errorToast(error.response?.data);
+        }
         combustionCalculos.refetch();
         combustionCalculosReport.refetch();
     }, [tipo, selectedSede, from, to, combustionCalculos, combustionCalculosReport]);
@@ -146,7 +162,7 @@ export default function CombustibleCalculate({
     }
 
     return (
-        <div className="w-full max-w-[1150px] h-full">
+        <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="flex items-center gap-4">
                     <ButtonBack onClick={handleCombustion}/>

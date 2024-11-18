@@ -1,5 +1,5 @@
 "use client";
-import React, {useState, useCallback, useRef} from "react";
+import React, {useState, useCallback, useRef, useEffect} from "react";
 import {Button, buttonVariants} from "@/components/ui/button";
 
 import {
@@ -60,8 +60,18 @@ import {ReportRequest} from "@/lib/interfaces/globals";
 import ButtonCalculate from "@/components/ButtonCalculate";
 import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
+import usePageTitle from "@/lib/stores/titleStore.store";
 
 export default function TransporteTerrestrePage() {
+    const setTitle = usePageTitle((state) => state.setTitle);
+    useEffect(() => {
+        setTitle("Transporte Terrestre");
+    }, [setTitle]);
+    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
+    useEffect(() => {
+        setTitleHeader("TRANSPORTE TERRESTRE");
+    }, [setTitleHeader]);
+
     //NAVIGATION
     const {push} = useRouter();
     const [page, setPage] = useState<number>(1);
@@ -208,17 +218,13 @@ export default function TransporteTerrestrePage() {
     };
 
     return (
-        <div className="w-full max-w-[1150px] h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Transporte Terrestre Contratados</h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
-                </div>
-                <div className="flex flex-col items-end gap-2">
+        <div className="w-full max-w-screen-xl h-full">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-start mb-6">
+                <div className="flex flex-col items-end w-full gap-2">
                     <div
-                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
+                        className="grid grid-cols-2 grid-rows-1 w-full gap-2 sm:flex sm:justify-between justify-center">
                         <div
-                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
                             <SelectFilter
                                 list={sedeQuery.data!}
                                 itemSelected={selectedSede}
@@ -371,7 +377,7 @@ export default function TransporteTerrestrePage() {
                                                 variant="outline"
                                                 onClick={() => handleClickUpdate(item.id)}
                                             >
-                                                <Pen className="h-3.5 text-blue-700"/>
+                                                <Pen className="h-3.5 text-primary"/>
                                             </Button>
 
                                             {/*DELETE*/}

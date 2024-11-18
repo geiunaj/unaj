@@ -1,5 +1,5 @@
 "use client";
-import React, {useState, useCallback, useRef} from "react";
+import React, {useState, useCallback, useRef, useEffect} from "react";
 import {
     Table,
     TableBody,
@@ -27,8 +27,17 @@ import {createFertilizanteCalculate} from "@/components/fertilizantes/services/f
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {Button} from "@/components/ui/button";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
+import usePageTitle from "@/lib/stores/titleStore.store";
 
 export default function FertilizanteCalculate() {
+    const setTitle = usePageTitle((state) => state.setTitle);
+    useEffect(() => {
+        setTitle("Fertilizantes");
+    }, [setTitle]);
+    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
+    useEffect(() => {
+        setTitleHeader("FERTILIZANTES");
+    }, [setTitleHeader]);
     const {push} = useRouter();
 
     // SELECTS - FILTERS
@@ -100,7 +109,7 @@ export default function FertilizanteCalculate() {
             {header: "APORTE NITRÓGENO", key: "cantidadAporte", width: 25},
             {header: "EMISIONES DE N20", key: "totalEmisionesDirectas", width: 25},
             {header: "TOTAL GEI", key: "emisionGEI", width: 20},
-            
+
         ];
         await setYearFrom(period.yearFrom ?? "");
         await setYearTo(period.yearTo ?? "");
@@ -125,7 +134,7 @@ export default function FertilizanteCalculate() {
     }
 
     return (
-        <div className="w-full max-w-[1150px] h-full">
+        <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="flex gap-4 items-center">
                     <ButtonBack onClick={handleFertilizante}/>

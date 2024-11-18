@@ -126,7 +126,7 @@ export default function DescripcionConsumiblePage() {
     }
 
     return (
-        <div className="w-full max-w-[1150px] h-full">
+        <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="flex gap-4 items-center">
                     <ButtonBack onClick={handleTipoConsumible}/>
@@ -192,7 +192,7 @@ export default function DescripcionConsumiblePage() {
                                                 variant="outline"
                                                 onClick={() => handleClickUpdate(item.id)}
                                             >
-                                                <Pen className="h-3.5 text-blue-700"/>
+                                                <Pen className="h-3.5 text-primary"/>
                                             </Button>
 
                                             {/*DELETE*/}

@@ -148,7 +148,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 name="factorEmisionCO2"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor Emisión CO2</FormLabel>
+                                        <FormLabel>Factor CO2 [Kg CO2/TJ]</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -170,7 +170,8 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 name="factorEmisionCH4"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor Emision CH4</FormLabel>
+                                        <FormLabel>Factor CH4 [Kg CH4/TJ]
+                                        </FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -190,7 +191,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 name="factorEmisionN2O"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor Emisión N2O</FormLabel>
+                                        <FormLabel>Factor N2O[Kg N2O/TJ]</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -234,7 +235,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                         />
 
                         <div className="flex gap-3 w-full pt-4">
-                            <Button type="submit" className="w-full bg-blue-700">
+                            <Button type="submit" className="w-full bg-primary">
                                 Guardar
                             </Button>
                         </div>

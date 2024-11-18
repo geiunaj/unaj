@@ -64,7 +64,7 @@ export default function Sidebar() {
                     className="w-full flex justify-evenly items-center gap-2"
                 >
                     <div className="flex items-center justify-around gap-3">
-                        <p className="text-blue-700 text-3xl font-black">UNAJ</p>
+                        <p className="text-primary text-3xl font-black">UNAJ</p>
                         <Separator orientation="vertical" className="h-8"/>
                         <div
                             className="flex flex-col text-muted-foreground text-center text-[10px] xl:text-xs font-medium">
@@ -75,7 +75,7 @@ export default function Sidebar() {
                 </Link>
             </div>
             <div className="flex-1">
-                <nav className="grid items-start px-2 text-sm font-medium overflow-hidden">
+                <nav className="grid items-start px-2 text-xs font-medium overflow-hidden">
                     {menu.map((item) => {
                         const Icon = iconComponents[item.icon];
                         const isAccordionOpen = openAccordion === item.title;
@@ -94,8 +94,8 @@ export default function Sidebar() {
                                         className="w-full px-4 py-2 justify-between items-center text-muted-foreground hover:text-primary hover:no-underline"
                                     >
                                         <div className="flex items-center">
-                                            <Icon className="mr-2 h-4 w-4"/>
-                                            <p className="ml-3 text-xs lg:text-sm">
+                                            <Icon className="mr-2 h-3.5 w-3.5"/>
+                                            <p className="ml-3 text-xs">
                                                 {item.title}
                                             </p>
                                         </div>
@@ -109,17 +109,17 @@ export default function Sidebar() {
                                                     variant={itemActive === subItem.href ? "default" : "ghost"}
                                                     className={
                                                         itemActive !== subItem.href ? classNameAccordion(
-                                                            "w-full justify-start hover:text-primary",
+                                                            "w-full justify-start hover:text-primary h-8",
                                                             subItem.href
                                                         ) : classNameAccordion(
-                                                            "w-full justify-start hover:text-white",
+                                                            "w-full justify-start hover:text-white h-8",
                                                             subItem.href
                                                         )
                                                     }
                                                     onClick={() => handleItemClick(subItem)}
                                                 >
-                                                    <Icon className="mr-2 h-4 w-4"/>
-                                                    <p className="ml-3 text-xs lg:text-sm">{subItem.title}</p>
+                                                    <Icon className="mr-2 h-3.5 w-3.5"/>
+                                                    <p className="ml-3 text-xs">{subItem.title}</p>
                                                 </Button>
                                             );
                                         })}
@@ -131,13 +131,13 @@ export default function Sidebar() {
                                 key={item.title}
                                 variant={itemActive === item.href ? "secondary" : "ghost"}
                                 className={className(
-                                    "w-full justify-start hover:text-primary",
+                                    "w-full justify-start hover:text-primary h-8",
                                     item.href
                                 )}
                                 onClick={() => handleItemClick(item)}
                             >
-                                <Icon className="mr-2 h-4 w-4"/>
-                                <p className="ml-3 text-xs lg:text-sm">{item.title}</p>
+                                <Icon className="mr-2 h-3.5 w-3.5"/>
+                                <p className="ml-3 text-xs">{item.title}</p>
                             </Button>
                         );
                     })}

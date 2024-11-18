@@ -30,6 +30,8 @@ import {Separator} from "./ui/separator";
 import {useTheme} from "next-themes";
 import * as React from "react";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
+import usePageTitle from "@/lib/stores/titleStore.store";
+import TitleUpdater from "@/components/TitleUpdater";
 
 export default function Header() {
     const logo = "/img/logoUNAJ.png";
@@ -74,6 +76,7 @@ export default function Header() {
     };
 
     const {setTheme} = useTheme();
+    const {titleHeader} = usePageTitle();
 
     return (
         // <div className="flex justify-between items-center p-3">
@@ -93,7 +96,7 @@ export default function Header() {
         // </div>
 
         <header
-            className="flex h-14 justify-between md:justify-end items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+            className="flex h-14 justify-between md:justify-center items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
             <Sheet>
                 <SheetTrigger asChild>
                     <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -110,7 +113,7 @@ export default function Header() {
                             >
                                 {/* <Calculator className="h-5" /> */}
                                 <div className="flex items-center justify-around gap-3">
-                                    <p className="text-blue-700 text-3xl font-black">UNAJ</p>
+                                    <p className="text-primary text-3xl font-black">UNAJ</p>
                                     <Separator orientation="vertical" className="h-8"/>
                                     <div
                                         className="flex flex-col text-muted-foreground text-center text-xs font-medium">
@@ -193,69 +196,64 @@ export default function Header() {
                 </SheetContent>
             </Sheet>
 
-            <Link
-                href="/"
-                className="w-full flex md:hidden justify-evenly items-center gap-2"
-            >
-                <div className="flex items-center justify-around gap-3">
-                    <p className="text-blue-700 text-3xl font-black">UNAJ</p>
-                    <Separator orientation="vertical" className="h-8"/>
-                    <div className="flex flex-col text-muted-foreground text-center text-[10px] xl:text-xs font-medium">
-                        <p>Calculadora de</p>
-                        <p>Huella Ecológica</p>
-                    </div>
+            <div className="max-w-screen-xl flex items-center justify-between w-full">
+                <div>
+                    <h1 className="text-lg text-muted-foreground font-medium">
+                        {titleHeader}
+                        <TitleUpdater/>
+                    </h1>
                 </div>
-            </Link>
 
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="secondary"
-                        size="icon"
-                        className="aspect-square w-15 rounded-full"
-                    >
-                        <CircleUser className="h-5 w-5"/>
-                        <span className="sr-only">Menu</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem className="text-xs">Cuenta</DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">Ajutes</DropdownMenuItem>
-                    <DropdownMenuSeparator/>
-                    <DropdownMenuGroup>
-                        <DropdownMenuSub>
-                            <DropdownMenuSubTrigger className="text-xs">
-                                Tema
-                            </DropdownMenuSubTrigger>
-                            <DropdownMenuPortal>
-                                <DropdownMenuSubContent>
-                                    <DropdownMenuItem
-                                        className="text-xs"
-                                        onClick={() => setTheme("light")}
-                                    >
-                                        Claro
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                        className="text-xs"
-                                        onClick={() => setTheme("dark")}
-                                    >
-                                        Oscuro
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                        className="text-xs"
-                                        onClick={() => setTheme("system")}
-                                    >
-                                        Sistema
-                                    </DropdownMenuItem>
-                                </DropdownMenuSubContent>
-                            </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                    </DropdownMenuGroup>
-                    <DropdownMenuItem className="text-xs" onClick={handleSignOut}>
-                        Cerrar Sesión
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            variant="secondary"
+                            size="icon"
+                            className="aspect-square w-15 rounded-full"
+                        >
+                            <CircleUser className="h-5 w-5"/>
+                            <span className="sr-only">Menu</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem className="text-xs">Cuenta</DropdownMenuItem>
+                        <DropdownMenuItem className="text-xs">Ajutes</DropdownMenuItem>
+                        <DropdownMenuSeparator/>
+                        <DropdownMenuGroup>
+                            <DropdownMenuSub>
+                                <DropdownMenuSubTrigger className="text-xs">
+                                    Tema
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuSubContent>
+                                        <DropdownMenuItem
+                                            className="text-xs"
+                                            onClick={() => setTheme("light")}
+                                        >
+                                            Claro
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            className="text-xs"
+                                            onClick={() => setTheme("dark")}
+                                        >
+                                            Oscuro
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            className="text-xs"
+                                            onClick={() => setTheme("system")}
+                                        >
+                                            Sistema
+                                        </DropdownMenuItem>
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                        </DropdownMenuGroup>
+                        <DropdownMenuItem className="text-xs" onClick={handleSignOut}>
+                            Cerrar Sesión
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
         </header>
     );
 }

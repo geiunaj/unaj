@@ -1,5 +1,5 @@
 "use client";
-import React, {useState, useCallback, useRef} from "react";
+import React, {useState, useCallback, useRef, useEffect} from "react";
 import {
     Table,
     TableBody,
@@ -36,8 +36,19 @@ import {ReportRequest} from "@/lib/interfaces/globals";
 import {useQuery} from "@tanstack/react-query";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {getSedes} from "@/components/sede/services/sede.actions";
+import usePageTitle from "@/lib/stores/titleStore.store";
 
 export default function TransporteTerrestreCalculate() {
+    const setTitle = usePageTitle((state) => state.setTitle);
+    useEffect(() => {
+        setTitle("Transporte Terrestre");
+    }, [setTitle]);
+    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
+    useEffect(() => {
+        setTitleHeader("TRANSPORTE TERRESTRE");
+    }, [setTitleHeader]);
+
+    // NAVIGATION
     const {push} = useRouter();
 
     // SELECTS - FILTERS
@@ -159,7 +170,7 @@ export default function TransporteTerrestreCalculate() {
     }
 
     return (
-        <div className="w-full max-w-[1150px] h-full">
+        <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="flex items-center gap-4">
                     <ButtonBack onClick={handleTransporteTerrestre}/>

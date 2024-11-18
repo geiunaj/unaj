@@ -53,6 +53,10 @@ export async function PUT(
                 anio_id: body.anio_id,
                 updated_at: new Date(),
             },
+            include: {
+                anio: true,
+                tipoCombustible: true
+            },
         });
 
         return NextResponse.json({

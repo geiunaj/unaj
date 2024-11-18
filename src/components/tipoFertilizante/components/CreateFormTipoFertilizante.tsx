@@ -178,7 +178,7 @@ export function CreateFormTipoFertilizante({
                         </div>
 
                         <div className="flex gap-3 w-full pt-4">
-                            <Button type="submit" className="w-full bg-blue-700">
+                            <Button type="submit" className="w-full bg-primary">
                                 Guardar
                             </Button>
                         </div>

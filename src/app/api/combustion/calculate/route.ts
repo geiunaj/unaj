@@ -21,10 +21,25 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const dateTo = searchParams.get("to") ?? undefined;
         const all = searchParams.get("all") === "true";
 
+        let yearFrom, yearTo, monthFrom, monthTo;
+        let yearFromId, yearToId, mesFromId, mesToId;
+
+        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
+        if (yearFrom) yearFromId = await getAnioId(yearFrom);
+        if (yearTo) yearToId = await getAnioId(yearTo);
+        if (monthFrom) mesFromId = parseInt(monthFrom);
+        if (monthTo) mesToId = parseInt(monthTo);
+
+        const fromValue = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
+        const toValue = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
+
         let period = await prisma.periodoCalculo.findFirst({
             where: {
                 fechaInicio: dateFrom ? dateFrom : undefined,
                 fechaFin: dateTo ? dateTo : undefined,
+                fechaInicioValue: fromValue,
+                fechaFinValue: toValue,
             },
         });
 
@@ -33,6 +48,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 data: {
                     fechaInicio: dateFrom ? dateFrom : undefined,
                     fechaFin: dateTo ? dateTo : undefined,
+                    fechaInicioValue: fromValue,
+                    fechaFinValue: toValue,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
@@ -287,11 +304,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
             for (const period of allPeriodsBetweenYears) {
                 const anio_id = await getAnioId(String(period.anio));
+                const anio = await prisma.anio.findFirst({
+                    where: {id: anio_id},
+                });
                 const factorTipoCombustible = await prisma.tipoCombustibleFactor.findFirst({
                     where: {anio_id},
                 });
 
-                if (!factorTipoCombustible) return new NextResponse(`Agregue el factor de tipo de combustible para el año ${anio_id}`, {status: 404});
+                if (!factorTipoCombustible) return new NextResponse(`Agregue el factor de tipo de combustible para el año ${anio?.nombre ?? anio_id}`, {status: 404});
 
                 let whereOptionDetails = whereOptionsCombustion;
                 whereOptionDetails.tipoCombustible_id = tipoCombustible.id;
@@ -314,6 +334,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 const emisionN2O = factorTipoCombustible.factorEmisionN2O * consumo;
                 const totalEmisionesAnuales = emisionCO2 + emisionCH4 + emisionN2O;
 
+                console.log(tipoCombustibleCalculos.id);
                 await prisma.combustibleCalculosDetail.create({
                     data: {
                         tipo: tipo,

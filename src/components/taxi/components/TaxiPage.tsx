@@ -1,5 +1,5 @@
 "use client";
-import React, {useState, useCallback} from "react";
+import React, {useState, useCallback, useEffect, useRef} from "react";
 import {Button, buttonVariants} from "@/components/ui/button";
 
 import {
@@ -47,7 +47,7 @@ import {
     useSedes,
 } from "@/components/consumoPapel/lib/consumoPapel.hook";
 import {useMeses} from "@/components/consumoElectricidad/lib/electricidadCalculos.hooks";
-import {useTaxi} from "../lib/taxi.hook";
+import {useTaxi, useTaxiReport} from "../lib/taxi.hook";
 import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {Badge} from "@/components/ui/badge";
@@ -63,8 +63,21 @@ import CustomPagination from "@/components/Pagination";
 import {useRouter} from "next/navigation";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import ButtonCalculate from "@/components/ButtonCalculate";
+import usePageTitle from "@/lib/stores/titleStore.store";
+import ExportPdfReport from "@/lib/utils/ExportPdfReport";
+import {useFertilizanteReport} from "@/components/fertilizantes/lib/fertilizante.hook";
+import ReportComponent from "@/components/ReportComponent";
 
 export default function TaxiPage() {
+    const setTitle = usePageTitle((state) => state.setTitle);
+    useEffect(() => {
+        setTitle("Taxis");
+    }, [setTitle]);
+    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
+    useEffect(() => {
+        setTitleHeader("TAXIS");
+    }, [setTitleHeader]);
+
     //NAVIGATION
     const {push} = useRouter();
     const [page, setPage] = useState<number>(1);
@@ -79,19 +92,26 @@ export default function TaxiPage() {
 
     // SELECTS - FILTERS
     const [selectedSede, setSelectedSede] = useState<string>("1");
-    const [selectedAnio, setSelectedAnio] = useState<string>(
-        new Date().getFullYear().toString()
-    );
     const [selectedMes, setSelectedMes] = useState<string>("");
+    const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
+    const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
+    // HOOKS
     const sedeQuery = useSedes();
     const mesQuery = useMeses();
-    const anioQuery = useAnios();
     const taxiQuery = useTaxi({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
-        anioId: selectedAnio ? Number(selectedAnio) : undefined,
+        from,
+        to,
         mesId: selectedMes ? Number(selectedMes) : undefined,
         page: page,
+    });
+
+    const taxiReport = useTaxiReport({
+        sedeId: selectedSede ? Number(selectedSede) : undefined,
+        from,
+        to,
+        mesId: selectedMes ? Number(selectedMes) : undefined,
     });
 
     // HANDLES
@@ -99,35 +119,51 @@ export default function TaxiPage() {
         async (value: string) => {
             await setSelectedSede(value);
             await taxiQuery.refetch();
+            await taxiReport.refetch();
         },
-        [taxiQuery]
-    );
-
-    const handleAnioChange = useCallback(
-        async (value: string) => {
-            await setSelectedAnio(value);
-            await taxiQuery.refetch();
-        },
-        [taxiQuery]
+        [taxiQuery, taxiReport]
     );
 
     const handleMesChange = useCallback(
         async (value: string) => {
             await setSelectedMes(value);
             await taxiQuery.refetch();
+            await taxiReport.refetch();
         },
-        [taxiQuery]
+        [taxiQuery, taxiReport]
+    );
+
+    const handleFromChange = useCallback(
+        async (value: string) => {
+            await setPage(1);
+            await setFrom(value);
+            await taxiQuery.refetch();
+            await taxiReport.refetch();
+        },
+        [taxiQuery, taxiReport]
+    );
+
+    const handleToChange = useCallback(
+        async (value: string) => {
+            await setPage(1);
+            await setTo(value);
+            await taxiQuery.refetch();
+            await taxiReport.refetch();
+        },
+        [taxiQuery, taxiReport]
     );
 
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
         taxiQuery.refetch();
-    }, [taxiQuery]);
+        taxiReport.refetch();
+    }, [taxiQuery, taxiReport]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
         taxiQuery.refetch();
-    }, [taxiQuery]);
+        taxiReport.refetch();
+    }, [taxiQuery, taxiReport]);
 
     const handleDelete = useCallback(async () => {
         try {
@@ -138,8 +174,9 @@ export default function TaxiPage() {
             errorToast(error.response.data);
         } finally {
             await taxiQuery.refetch();
+            await taxiReport.refetch();
         }
-    }, [taxiQuery]);
+    }, [taxiQuery, taxiReport]);
 
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
@@ -154,24 +191,37 @@ export default function TaxiPage() {
     const handleClickReport = async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10},
-            {header: "UNIDAD CONTRATANTE", key: "unidadContratante", width: 15},
-            {header: "LUGAR SALIDA", key: "lugarSalida", width: 40},
-            {header: "LUGAR DESTINO", key: "lugarDestino", width: 15},
+            {header: "UNIDAD CONTRATANTE", key: "unidadContratante", width: 25},
+            {header: "LUGAR SALIDA", key: "lugarSalida", width: 20},
+            {header: "LUGAR DESTINO", key: "lugarDestino", width: 20},
             {header: "MONTO GASTADO", key: "montoGastado", width: 20},
-            {header: "SEDE", key: "sede", width: 15},
+            {header: "SEDE", key: "sede", width: 20},
             {header: "AÑO", key: "anio", width: 15},
-            {header: "MESS", key: "mes", width: 20},
+            {header: "MES", key: "mes", width: 20},
         ];
-        await GenerateReport(taxiQuery.data!.data, columns, formatPeriod(period), "REPORTE DE TAXIS CONTRATADOS", "Taxis Contratados");
+        await GenerateReport(taxiQuery.data!.data, columns, formatPeriod(period, true), "REPORTE DE TAXIS CONTRATADOS", "Taxis Contratados");
     };
 
     const handleCalculate = () => {
         push("/taxi/calculos");
     };
 
+    const handlePageChage = async (page: number) => {
+        await setPage(page);
+        await taxiQuery.refetch();
+        await taxiReport.refetch();
+    };
+
+    const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
+
+    const handleClick = () => {
+        if (submitFormRef.current) {
+            submitFormRef.current.submitForm();
+        }
+    };
+
     if (
         sedeQuery.isLoading ||
-        anioQuery.isLoading ||
         mesQuery.isLoading ||
         taxiQuery.isLoading
     ) {
@@ -180,82 +230,103 @@ export default function TaxiPage() {
 
     if (
         sedeQuery.isError ||
-        anioQuery.isError ||
         mesQuery.isError ||
         taxiQuery.isError
     ) {
         return <div>Error</div>;
     }
 
-    const handlePageChage = async (page: number) => {
-        await setPage(page);
-        await taxiQuery.refetch();
-    };
-
     return (
-        <div className="w-full max-w-[1150px] h-full">
-            <div className="flex flex-row justify-between items-start mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Taxi Contratados</h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
-                </div>
-                <div className="flex flex-row sm:justify-end sm:items-center gap-5 justify-center">
+        <div className="w-full max-w-screen-xl h-full">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-start mb-6">
+                <div className="flex flex-col items-end w-full gap-2">
                     <div
-                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
-                        <SelectFilter
-                            list={sedeQuery.data!}
-                            itemSelected={selectedSede}
-                            handleItemSelect={handleSedeChange}
-                            value={"id"}
-                            nombre={"name"}
-                            id={"id"}
-                            icon={<Building className="h-3 w-3"/>}
-                            all={true}
-                        />
+                        className="grid grid-cols-2 grid-rows-1 w-full gap-2 sm:flex sm:justify-between justify-center">
+                        <div
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
+                            <SelectFilter
+                                list={sedeQuery.data!}
+                                itemSelected={selectedSede}
+                                handleItemSelect={handleSedeChange}
+                                value={"id"}
+                                nombre={"name"}
+                                id={"id"}
+                                icon={<Building className="h-3 w-3"/>}
+                                all={true}
+                            />
 
-                        <SelectFilter
-                            list={anioQuery.data!}
-                            itemSelected={selectedAnio}
-                            handleItemSelect={handleAnioChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            icon={<Calendar className="h-3 w-3"/>}
-                            all={true}
-                        />
-                        <SelectFilter
-                            list={mesQuery.data!}
-                            itemSelected={selectedMes}
-                            handleItemSelect={handleMesChange}
-                            value={"id"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            icon={<Calendar className="h-3 w-3"/>}
-                            all={true}
-                        />
-                    </div>
+                            <SelectFilter
+                                list={mesQuery.data!}
+                                itemSelected={selectedMes}
+                                handleItemSelect={handleMesChange}
+                                value={"id"}
+                                nombre={"nombre"}
+                                id={"id"}
+                                icon={<Calendar className="h-3 w-3"/>}
+                                all={true}
+                            />
+                            <ReportComponent
+                                onSubmit={handleClickReport}
+                                ref={submitFormRef}
+                                withMonth={true}
+                                from={from}
+                                to={to}
+                                handleFromChange={handleFromChange}
+                                handleToChange={handleToChange}
+                            />
+                        </div>
 
-                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
-                        <ButtonCalculate onClick={handleCalculate}/>
+                        <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-2">
+                            <Button
+                                onClick={handleClick}
+                                size="sm"
+                                variant="outline"
+                                className="flex items-center gap-2 h-7"
+                            >
+                                <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                Excel
+                            </Button>
 
-                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                            <DialogTrigger asChild>
-                                <Button size="sm" className="h-7 gap-1">
-                                    <Plus className="h-3.5 w-3.5"/>
-                                    Registrar
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-lg border-2">
-                                <DialogHeader>
-                                    <DialogTitle>Taxis Contratados</DialogTitle>
-                                    <DialogDescription>
-                                        Registrar el taxi contratado.
-                                    </DialogDescription>
-                                    <DialogClose/>
-                                </DialogHeader>
-                                <FormTaxi onClose={handleClose}/>
-                            </DialogContent>
-                        </Dialog>
+                            <ExportPdfReport
+                                data={taxiReport.data!.data}
+                                fileName={`REPORTE DE TAXIS_${formatPeriod({
+                                    from,
+                                    to,
+                                })}`}
+                                columns={[
+                                    {header: "N°", key: "id", width: 10},
+                                    {header: "UNIDAD CONTRATANTE", key: "unidadContratante", width: 20},
+                                    {header: "LUGAR SALIDA", key: "lugarSalida", width: 20},
+                                    {header: "LUGAR DESTINO", key: "lugarDestino", width: 20},
+                                    {header: "MONTO GASTADO", key: "montoGastado", width: 20},
+                                    {header: "SEDE", key: "sede", width: 20},
+                                    {header: "AÑO", key: "anio", width: 15},
+                                    {header: "MES", key: "mes", width: 20},
+                                ]}
+                                title="REPORTE DE TAXIS CONTRATADOS"
+                                period={formatPeriod({from, to}, true)}
+                            />
+                            <ButtonCalculate onClick={handleCalculate}/>
+
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button size="sm" className="h-7 gap-1">
+                                        <Plus className="h-3.5 w-3.5"/>
+                                        Registrar
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-lg border-2">
+                                    <DialogHeader>
+                                        <DialogTitle>Taxis Contratados</DialogTitle>
+                                        <DialogDescription>
+                                            Registrar el taxi contratado.
+                                        </DialogDescription>
+                                        <DialogClose/>
+                                    </DialogHeader>
+                                    <FormTaxi onClose={handleClose}/>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -326,7 +397,7 @@ export default function TaxiPage() {
                                                 variant="outline"
                                                 onClick={() => handleClickUpdate(item.id)}
                                             >
-                                                <Pen className="h-3.5 text-blue-700"/>
+                                                <Pen className="h-3.5 text-primary"/>
                                             </Button>
 
                                             {/*DELETE*/}

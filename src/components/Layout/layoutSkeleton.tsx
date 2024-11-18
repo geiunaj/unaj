@@ -41,7 +41,7 @@ export default function LayoutSkeleton() {
                 </div>
                 <div
                     className="flex-auto m-2 flex justify-center items-center p-2 bg-primary-foreground rounded-xl shadow">
-                    <div className="w-full max-w-[1150px] h-full">
+                    <div className="w-full max-w-screen-xl h-full">
                         <div className="flex w-full flex-col gap-4 sm:flex-row">
                             <div className="flex flex-col gap-2 sm:w-1/2">
                                 <Skeleton className="h-5 w-64 rounded-lg"/>

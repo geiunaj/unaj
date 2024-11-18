@@ -10,8 +10,8 @@
     "postinstall": "npx prisma generate",
     "lint": "next lint",
     "export": "next export",
-    "reset:seed": "npx prisma migrate reset && npx prisma db push && ts-node prisma/seed.ts",
-    "seed": "ts-node prisma/seed.ts"
+    "reset:seed": "npx prisma migrate reset && npx prisma db push && ts-node prisma/seedEmpty.ts",
+    "seed": "ts-node prisma/seedEmpty.ts"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
@@ -63,7 +63,7 @@
     "ts-node": "^10.9.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "zod": "^3.23.8",
-    "zustand": "^4.5.4"
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.51.15",

@@ -15,6 +15,7 @@ import {getAnio} from "@/components/anio/services/anio.actions";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import React, {forwardRef, useImperativeHandle} from "react";
 import {ReportRequest} from "@/lib/interfaces/globals";
+import {Skeleton} from "@/components/ui/skeleton";
 
 interface ReportPopoverProps {
     onSubmit: (data: ReportRequest) => void;
@@ -86,7 +87,10 @@ const ReportComponent = forwardRef(function ReportComponent(
     }));
 
     if (anios.isLoading) {
-        return <div>Loading...</div>;
+        return <div className="flex flex-col sm:flex-row items-center justify-center gap-1">
+            <Skeleton className="h-7 w-full sm:w-36 rounded-lg"/>
+            <Skeleton className="h-7 w-full sm:w-36 rounded-lg"/>
+        </div>;
     }
 
     const handleChangeFrom = (value: string) => {
@@ -225,10 +229,10 @@ const ReportComponent = forwardRef(function ReportComponent(
                                                             <SelectItem className="text-xs" value="all">
                                                                 Todos
                                                             </SelectItem>
-                                                            {anios.data!.map((clase) => (
-                                                                <SelectItem key={clase.nombre}
-                                                                            value={clase.nombre.toString()}>
-                                                                    {clase.nombre}
+                                                            {anios.data!.map((anio) => (
+                                                                <SelectItem key={anio.nombre}
+                                                                            value={anio.nombre.toString()}>
+                                                                    {anio.nombre}
                                                                 </SelectItem>
                                                             ))}
                                                         </SelectGroup>
