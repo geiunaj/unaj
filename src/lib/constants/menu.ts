@@ -63,7 +63,7 @@ export const iconComponents: Record<string, any> = {
 
 export const menu: MenuItem[] = [
     {
-        title: "Inicio",
+        title: "Resumen",
         icon: "Home",
         href: "/home",
     },

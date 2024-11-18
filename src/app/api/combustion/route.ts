@@ -135,7 +135,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         });
 
         return NextResponse.json({
-            message: "Combustible regsistrado",
+            message: "Combustible registrado",
             combustible: formatCombustible(combustible),
         });
     } catch (error) {

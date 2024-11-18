@@ -142,7 +142,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         });
 
         return NextResponse.json({
-            message: "Consumible regsistrado",
+            message: "Consumible registrado",
             consumible: formatConsumible(consumible),
         });
     } catch (error) {
