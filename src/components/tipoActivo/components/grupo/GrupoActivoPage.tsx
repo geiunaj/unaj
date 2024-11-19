@@ -40,14 +40,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import ButtonBack from "@/components/ButtonBack";
 import {
-  deleteGrupoConsumible,
-  getGrupoConsumiblePaginate,
+  deleteGrupoActivo,
+  getGrupoActivoPaginate,
 } from "../../services/grupoActivo.actions";
-import { CreateFormGrupoConsumible } from "./CreateFormGrupoActivo";
-import { GrupoConsumibleCollection } from "../../services/grupoActivo.interface";
-import { UpdateFormGrupoConsumible } from "./UpdateFormGrupoActivo";
+import { CreateFormGrupoActivo } from "./CreateFormGrupoActivo";
+import { GrupoActivoCollection } from "../../services/grupoActivo.interface";
+import { UpdateFormGrupoActivo } from "./UpdateFormGrupoActivo";
 
-export default function GrupoConsumiblePage() {
+export default function GrupoActivoPage() {
   const { push } = useRouter();
 
   //DIALOGS
@@ -64,26 +64,26 @@ export default function GrupoConsumiblePage() {
   const COLUMS = ["N°", "NOMBRE", "ACCIONES"];
 
   //USE QUERIES
-  const grupoConsumibleQuery = useQuery({
-    queryKey: ["grupoConsumible", page],
-    queryFn: () => getGrupoConsumiblePaginate(page),
+  const grupoActivoQuery = useQuery({
+    queryKey: ["grupoActivo", page],
+    queryFn: () => getGrupoActivoPaginate(page),
     refetchOnWindowFocus: false,
   });
 
   // HANDLES
   const handleClose = useCallback(() => {
     setIsDialogOpen(false);
-    grupoConsumibleQuery.refetch();
-  }, [grupoConsumibleQuery]);
+    grupoActivoQuery.refetch();
+  }, [grupoActivoQuery]);
 
   const handleCloseUpdate = useCallback(() => {
     setIsUpdateDialogOpen(false);
-    grupoConsumibleQuery.refetch();
-  }, [grupoConsumibleQuery]);
+    grupoActivoQuery.refetch();
+  }, [grupoActivoQuery]);
 
   const handleDelete = useCallback(async () => {
     try {
-      const response = await deleteGrupoConsumible(idForDelete);
+      const response = await deleteGrupoActivo(idForDelete);
       setIsDeleteDialogOpen(false);
       successToast(response.data.message);
     } catch (error: any) {
@@ -92,9 +92,9 @@ export default function GrupoConsumiblePage() {
           "Error al eliminar el grupo de consumible"
       );
     } finally {
-      await grupoConsumibleQuery.refetch();
+      await grupoActivoQuery.refetch();
     }
-  }, [grupoConsumibleQuery]);
+  }, [grupoActivoQuery]);
   const handleClickUpdate = (id: number) => {
     setIdForUpdate(id);
     setIsUpdateDialogOpen(true);
@@ -107,14 +107,14 @@ export default function GrupoConsumiblePage() {
 
   const handlePageChage = async (page: number) => {
     await setPage(page);
-    await grupoConsumibleQuery.refetch();
+    await grupoActivoQuery.refetch();
   };
 
-  const handleTipoConsumible = () => {
+  const handleTipoActivo = () => {
     push("/tipo-consumible");
   };
 
-  if (grupoConsumibleQuery.isLoading) {
+  if (grupoActivoQuery.isLoading) {
     return <SkeletonTable />;
   }
 
@@ -122,10 +122,10 @@ export default function GrupoConsumiblePage() {
     <div className="w-full max-w-screen-xl h-full">
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
         <div className="flex gap-4 items-center">
-          <ButtonBack onClick={handleTipoConsumible} />
+          <ButtonBack onClick={handleTipoActivo} />
           <div className="font-Manrope">
             <h1 className="text-base text-foreground font-bold">
-              Grupo de Consumible{" "}
+              Grupo de Activo{" "}
             </h1>
             <h2 className="text-xs sm:text-sm text-muted-foreground">
               Huella de carbono
@@ -145,11 +145,11 @@ export default function GrupoConsumiblePage() {
                 <DialogHeader>
                   <DialogTitle>GRUPO DE CONSUMIBLE</DialogTitle>
                   <DialogDescription>
-                    Agregar Grupo de Consumible
+                    Agregar Grupo de Activo
                   </DialogDescription>
                   <DialogClose />
                 </DialogHeader>
-                <CreateFormGrupoConsumible onClose={handleClose} />
+                <CreateFormGrupoActivo onClose={handleClose} />
               </DialogContent>
             </Dialog>
           </div>
@@ -171,8 +171,8 @@ export default function GrupoConsumiblePage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {grupoConsumibleQuery.data!.data.map(
-              (item: GrupoConsumibleCollection) => (
+            {grupoActivoQuery.data!.data.map(
+              (item: GrupoActivoCollection) => (
                 <TableRow key={item.id} className="text-center">
                   <TableCell className="text-xs sm:text-sm">
                     <Badge variant="secondary">{item.rn}</Badge>
@@ -209,9 +209,9 @@ export default function GrupoConsumiblePage() {
             )}
           </TableBody>
         </Table>
-        {grupoConsumibleQuery.data!.meta.totalPages > 1 && (
+        {grupoActivoQuery.data!.meta.totalPages > 1 && (
           <CustomPagination
-            meta={grupoConsumibleQuery.data!.meta}
+            meta={grupoActivoQuery.data!.meta}
             onPageChange={handlePageChage}
           />
         )}
@@ -224,10 +224,10 @@ export default function GrupoConsumiblePage() {
           <DialogHeader>
             <DialogTitle>ACTUALIZAR GRUPO DE CONSUMIBLE</DialogTitle>
             <DialogDescription>
-              Actualizar Grupo de Consumible
+              Actualizar Grupo de Activo
             </DialogDescription>
           </DialogHeader>
-          <UpdateFormGrupoConsumible
+          <UpdateFormGrupoActivo
             onClose={handleCloseUpdate}
             id={idForUpdate}
           />

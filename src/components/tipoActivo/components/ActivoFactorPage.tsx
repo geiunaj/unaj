@@ -36,18 +36,18 @@ import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {
     useAnio,
-    useConsumibleFactor, useTipoConsumible,
+    useActivoFactor, useTipoActivo,
 
-} from "../lib/tipoConsumibleFactor.hook";
-import {deleteTipoConsumibleFactor} from "../services/tipoConsumibleFactor.actions";
+} from "../lib/tipoActivoFactor.hook";
+import {deleteTipoActivoFactor} from "../services/tipoActivoFactor.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import {ConsumibleFactorCollection} from "../services/tipoConsumibleFactor.interface";
+import {ActivoFactorCollection} from "../services/tipoActivoFactor.interface";
 import Link from "next/link";
 import CustomPagination from "@/components/Pagination";
-import {CreateFormTipoConsumibleFactor} from "@/components/tipoConsumible/components/CreateFormTipoConsumibleFactor";
+import {CreateFormTipoActivoFactor} from "@/components/tipoActivo/components/CreateFormTipoActivoFactor";
 import {
-    UpdateFormTipoConsumibleFactor
-} from "@/components/tipoConsumible/components/UpdateFormTipoConsumibleFactor";
+    UpdateFormTipoActivoFactor
+} from "@/components/tipoActivo/components/UpdateFormTipoActivoFactor";
 
 export default function ActivoFactorPage() {
 
@@ -57,19 +57,19 @@ export default function ActivoFactorPage() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     const [selectAnio, setSelectAnio] = useState<string>(new Date().getFullYear().toString());
-    const [selectTipoConsumible, setSelectTipoConsumible] = useState<string>("");
+    const [selectTipoActivo, setSelectTipoActivo] = useState<string>("");
     const [page, setPage] = useState<number>(1);
 
     const anioQuery = useAnio();
-    const tipoConsumibleQuery = useTipoConsumible();
+    const tipoActivoQuery = useTipoActivo();
 
     //IDS
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
 
-    const factorEmisionQuery = useConsumibleFactor({
-        tipoConsumibleId: selectTipoConsumible,
+    const factorEmisionQuery = useActivoFactor({
+        tipoActivoId: selectTipoActivo,
         anioId: selectAnio,
         page,
         perPage: 10
@@ -88,8 +88,8 @@ export default function ActivoFactorPage() {
         await factorEmisionQuery.refetch();
     }, [factorEmisionQuery]);
 
-    const handleTipoConsumibleChange = useCallback(async (value: string) => {
-        await setSelectTipoConsumible(value);
+    const handleTipoActivoChange = useCallback(async (value: string) => {
+        await setSelectTipoActivo(value);
         await factorEmisionQuery.refetch();
     }, [factorEmisionQuery]);
 
@@ -106,7 +106,7 @@ export default function ActivoFactorPage() {
 
     const handleDelete = useCallback(async () => {
         try {
-            const response = await deleteTipoConsumibleFactor(idForDelete);
+            const response = await deleteTipoActivoFactor(idForDelete);
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
@@ -132,7 +132,7 @@ export default function ActivoFactorPage() {
         await factorEmisionQuery.refetch();
     }
 
-    if (anioQuery.isLoading || factorEmisionQuery.isLoading || tipoConsumibleQuery.isLoading) {
+    if (anioQuery.isLoading || factorEmisionQuery.isLoading || tipoActivoQuery.isLoading) {
         return <SkeletonTable/>;
     }
 
@@ -140,16 +140,16 @@ export default function ActivoFactorPage() {
         <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Factor de Emisión de Consumible</h1>
+                    <h1 className="text-base text-foreground font-bold">Factor de Emisión de Activo</h1>
                     <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
                 </div>
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div
                         className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
                         <SelectFilter
-                            list={tipoConsumibleQuery.data!}
-                            itemSelected={selectTipoConsumible}
-                            handleItemSelect={handleTipoConsumibleChange}
+                            list={tipoActivoQuery.data!}
+                            itemSelected={selectTipoActivo}
+                            handleItemSelect={handleTipoActivoChange}
                             value={"id"}
                             nombre={"nombre"}
                             id={"id"}
@@ -177,13 +177,13 @@ export default function ActivoFactorPage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle> Factor de Tipo de Consumible</DialogTitle>
+                                    <DialogTitle> Factor de Tipo de Activo</DialogTitle>
                                     <DialogDescription>
-                                        Agregar Factor de Tipo de Consumible
+                                        Agregar Factor de Tipo de Activo
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                <CreateFormTipoConsumibleFactor onClose={handleClose}/>
+                                <CreateFormTipoActivoFactor onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -205,13 +205,13 @@ export default function ActivoFactorPage() {
                     </TableHeader>
                     <TableBody>
                         {factorEmisionQuery.data!.data.map(
-                            (item: ConsumibleFactorCollection, index: number) => (
+                            (item: ActivoFactorCollection, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{index + 1}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {item.tipoConsumible}
+                                        {item.tipoActivo}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="default" className="space-x-2">
@@ -268,10 +268,10 @@ export default function ActivoFactorPage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Consumible</DialogTitle>
+                        <DialogTitle>Actualizar Registro de Activo</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <UpdateFormTipoConsumibleFactor onClose={handleCloseUpdate} id={idForUpdate}/>
+                    <UpdateFormTipoActivoFactor onClose={handleCloseUpdate} id={idForUpdate}/>
                 </DialogContent>
             </Dialog>
 

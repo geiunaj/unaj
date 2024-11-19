@@ -198,6 +198,11 @@ export const menu: MenuItem[] = [
         href: "/settings",
         items: [
             {
+                title: "Tipos de Activos",
+                icon: "Milk",
+                href: "/tipo-activo",
+            },
+            {
                 title: "Tipo de Papel",
                 icon: "Scroll",
                 href: "/tipoPapel",

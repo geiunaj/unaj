@@ -15,29 +15,30 @@ import {Input} from "@/components/ui/input";
 import {Button} from "../../../ui/button";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {
-    CreateCategoriaConsumibleProps,
-    CategoriaConsumibleRequest
-} from "@/components/tipoConsumible/services/categoriaConsumible.interface";
-import {createCategoriaConsumible} from "@/components/tipoConsumible/services/categoriaConsumible.actions";
+    CreateCategoriaActivoProps,
+    CategoriaActivoRequest
+} from "@/components/tipoActivo/services/categoriaActivo.interface";
+import {createCategoriaActivo} from "@/components/tipoActivo/services/categoriaActivo.actions";
 
-const CategoriaConsumible = z.object({
+const CategoriaActivo = z.object({
     nombre: z.string().min(0, "Ingrese un nombre"),
 });
 
 export function CreateFormCategoriaActivo({
                                               onClose,
-                                          }: CreateCategoriaConsumibleProps) {
-    const form = useForm<z.infer<typeof CategoriaConsumible>>({
-        resolver: zodResolver(CategoriaConsumible),
+                                          }: CreateCategoriaActivoProps) {
+    const form = useForm<z.infer<typeof CategoriaActivo>>({
+        resolver: zodResolver(CategoriaActivo),
         defaultValues: {},
     });
 
-    const onSubmit = async (data: z.infer<typeof CategoriaConsumible>) => {
-        const CategoriaConsumibleRequest: CategoriaConsumibleRequest = {
+    const onSubmit = async (data: z.infer<typeof CategoriaActivo>) => {
+        const CategoriaActivoRequest: CategoriaActivoRequest = {
             nombre: data.nombre,
+            grupoActivoId: 1,
         };
         try {
-            const response = await createCategoriaConsumible(CategoriaConsumibleRequest);
+            const response = await createCategoriaActivo(CategoriaActivoRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {

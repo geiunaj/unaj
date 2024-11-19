@@ -1,13 +1,12 @@
 "use client";
 
 import LayoutWrapper from "@/components/Layout/layout";
-import CategoriaConsumiblePage from "@/components/tipoConsumible/components/categoria/CategoriaConsumiblePage";
-
+import CategoriaActivoPage from "@/components/tipoActivo/components/categoria/CategoriaActivoPage";
 
 export default function Page() {
-    return (
-        <LayoutWrapper>
-            <CategoriaConsumiblePage/>
-        </LayoutWrapper>
-    );
+  return (
+    <LayoutWrapper>
+      <CategoriaActivoPage />
+    </LayoutWrapper>
+  );
 }

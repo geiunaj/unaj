@@ -72,13 +72,10 @@ export interface TipoActivoResource {
 export interface TipoActivoRequest {
   nombre: string;
   unidad: string;
-  descripcionId: number;
   categoriaId: number;
   peso: number;
   fuente?: string;
   costoUnitario?: number;
-  grupoId: number;
-  procesoId: number;
 }
 
 export interface CreateTipoActivoProps {

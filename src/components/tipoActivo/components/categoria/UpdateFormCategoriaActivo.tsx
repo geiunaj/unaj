@@ -15,61 +15,62 @@ import {Input} from "@/components/ui/input";
 import {Button} from "../../../ui/button";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {
-    CategoriaConsumibleRequest, UpdateCategoriaConsumibleProps,
-} from "../../services/categoriaConsumible.interface";
+    CategoriaActivoRequest, UpdateCategoriaActivoProps,
+} from "../../services/categoriaActivo.interface";
 import {useQuery} from "@tanstack/react-query";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {
-    getCategoriaConsumible,
-    getCategoriaConsumibleById, updateCategoriaConsumible
-} from "@/components/tipoConsumible/services/categoriaConsumible.actions";
+    getCategoriaActivo,
+    getCategoriaActivoById, updateCategoriaActivo
+} from "@/components/tipoActivo/services/categoriaActivo.actions";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
-const CategoriaConsumible = z.object({
+const CategoriaActivo = z.object({
     nombre: z.string().min(0, "Ingrese un nombre"),
 });
 
 export function UpdateFormCategoriaActivo({
                                               id, onClose,
-                                          }: UpdateCategoriaConsumibleProps) {
-    const form = useForm<z.infer<typeof CategoriaConsumible>>({
-        resolver: zodResolver(CategoriaConsumible),
+                                          }: UpdateCategoriaActivoProps) {
+    const form = useForm<z.infer<typeof CategoriaActivo>>({
+        resolver: zodResolver(CategoriaActivo),
         defaultValues: {},
     });
 
-    const categoriaConsumible = useQuery({
-        queryKey: ["categoriaConsumibleUF", id],
-        queryFn: () => getCategoriaConsumibleById(id),
+    const categoriaActivo = useQuery({
+        queryKey: ["categoriaActivoUF", id],
+        queryFn: () => getCategoriaActivoById(id),
         refetchOnWindowFocus: false,
     });
     const categoriaes = useQuery({
         queryKey: ['categoriaesUF'],
-        queryFn: () => getCategoriaConsumible(),
+        queryFn: () => getCategoriaActivo(),
         refetchOnWindowFocus: false,
     });
 
     const loadForm = useCallback(async () => {
-        if (categoriaConsumible.data) {
-            const categoriaConsumibleData = await categoriaConsumible.data;
+        if (categoriaActivo.data) {
+            const categoriaActivoData = await categoriaActivo.data;
             form.reset({
-                nombre: categoriaConsumibleData.nombre,
+                nombre: categoriaActivoData.nombre,
             });
         }
-    }, [categoriaConsumible.data, id]);
+    }, [categoriaActivo.data, id]);
 
     useEffect(() => {
         loadForm();
     }, [loadForm, id]);
 
-    const onSubmit = async (data: z.infer<typeof CategoriaConsumible>) => {
-        const categoriaConsumibleRequest: CategoriaConsumibleRequest = {
+    const onSubmit = async (data: z.infer<typeof CategoriaActivo>) => {
+        const categoriaActivoRequest: CategoriaActivoRequest = {
             nombre: data.nombre,
+            grupoActivoId: 1,
         };
         try {
-            const response = await updateCategoriaConsumible(id, categoriaConsumibleRequest);
+            const response = await updateCategoriaActivo(id, categoriaActivoRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -77,13 +78,13 @@ export function UpdateFormCategoriaActivo({
         }
     };
 
-    if (categoriaConsumible.isLoading || categoriaes.isLoading) {
+    if (categoriaActivo.isLoading || categoriaes.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (categoriaConsumible.isError || categoriaes.isError) {
+    if (categoriaActivo.isError || categoriaes.isError) {
         onClose();
-        errorToast("Error al cargar el Categoria de Consumible");
+        errorToast("Error al cargar el Categoria de Activo");
     }
 
     return (

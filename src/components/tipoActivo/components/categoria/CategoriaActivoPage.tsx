@@ -39,9 +39,9 @@ import {useQuery} from "@tanstack/react-query";
 
 import {useRouter} from "next/navigation";
 import ButtonBack from "@/components/ButtonBack";
-import {deleteCategoriaConsumible, getCategoriaConsumiblePaginate} from "../../services/categoriaConsumible.actions";
+import {deleteCategoriaActivo, getCategoriaActivoPaginate} from "../../services/categoriaActivo.actions";
 import {CreateFormCategoriaActivo} from "./CreateFormCategoriaActivo";
-import {CategoriaConsumibleCollection} from "../../services/categoriaConsumible.interface";
+import {CategoriaActivoCollection} from "../../services/categoriaActivo.interface";
 import {UpdateFormCategoriaActivo} from "./UpdateFormCategoriaActivo";
 
 export default function CategoriaActivoPage() {
@@ -66,26 +66,26 @@ export default function CategoriaActivoPage() {
 
 
     //USE QUERIES
-    const categoriaConsumibleQuery = useQuery({
-        queryKey: ["categoriaConsumible", page],
-        queryFn: () => getCategoriaConsumiblePaginate(page),
+    const categoriaActivoQuery = useQuery({
+        queryKey: ["categoriaActivo", page],
+        queryFn: () => getCategoriaActivoPaginate(page),
         refetchOnWindowFocus: false,
     })
 
     // HANDLES
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
-        categoriaConsumibleQuery.refetch();
-    }, [categoriaConsumibleQuery]);
+        categoriaActivoQuery.refetch();
+    }, [categoriaActivoQuery]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
-        categoriaConsumibleQuery.refetch();
-    }, [categoriaConsumibleQuery]);
+        categoriaActivoQuery.refetch();
+    }, [categoriaActivoQuery]);
 
     const handleDelete = useCallback(async () => {
         try {
-            const response = await deleteCategoriaConsumible(idForDelete);
+            const response = await deleteCategoriaActivo(idForDelete);
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
@@ -93,9 +93,9 @@ export default function CategoriaActivoPage() {
                 error.response?.data?.message || "Error al eliminar el categoria de consumible"
             );
         } finally {
-            await categoriaConsumibleQuery.refetch();
+            await categoriaActivoQuery.refetch();
         }
-    }, [categoriaConsumibleQuery]);
+    }, [categoriaActivoQuery]);
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
         setIsUpdateDialogOpen(true);
@@ -108,14 +108,14 @@ export default function CategoriaActivoPage() {
 
     const handlePageChage = async (page: number) => {
         await setPage(page);
-        await categoriaConsumibleQuery.refetch();
+        await categoriaActivoQuery.refetch();
     };
 
-    const handleTipoConsumible = () => {
+    const handleTipoActivo = () => {
         push("/tipo-consumible");
     };
 
-    if (categoriaConsumibleQuery.isLoading) {
+    if (categoriaActivoQuery.isLoading) {
         return <SkeletonTable/>;
     }
 
@@ -123,9 +123,9 @@ export default function CategoriaActivoPage() {
         <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <div className="flex gap-4 items-center">
-                    <ButtonBack onClick={handleTipoConsumible}/>
+                    <ButtonBack onClick={handleTipoActivo}/>
                     <div className="font-Manrope">
-                        <h1 className="text-base text-foreground font-bold">Categoría de Consumible </h1>
+                        <h1 className="text-base text-foreground font-bold">Categoría de Activo </h1>
                         <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
                     </div>
                 </div>
@@ -140,9 +140,9 @@ export default function CategoriaActivoPage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle>CATEGORÍA DE CONSUMIBLE</DialogTitle>
+                                    <DialogTitle>CATEGORÍA DE ACTIVOS</DialogTitle>
                                     <DialogDescription>
-                                        Agregar Categoría de Consumible
+                                        Agregar Categoría de Activo
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
@@ -167,8 +167,8 @@ export default function CategoriaActivoPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {categoriaConsumibleQuery.data!.data.map(
-                            (item: CategoriaConsumibleCollection) => (
+                        {categoriaActivoQuery.data!.data.map(
+                            (item: CategoriaActivoCollection) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{item.rn}</Badge>
@@ -205,9 +205,9 @@ export default function CategoriaActivoPage() {
                         )}
                     </TableBody>
                 </Table>
-                {categoriaConsumibleQuery.data!.meta.totalPages > 1 && (
+                {categoriaActivoQuery.data!.meta.totalPages > 1 && (
                     <CustomPagination
-                        meta={categoriaConsumibleQuery.data!.meta}
+                        meta={categoriaActivoQuery.data!.meta}
                         onPageChange={handlePageChage}
                     />
                 )}
@@ -219,7 +219,7 @@ export default function CategoriaActivoPage() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>
-                            ACTUALIZAR CATEGORÍA DE CONSUMIBLE
+                            ACTUALIZAR CATEGORÍA DE ACTIVOS
                         </DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>

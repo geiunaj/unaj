@@ -15,29 +15,29 @@ import {Input} from "@/components/ui/input";
 import {Button} from "../../../ui/button";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {
-    CreateGrupoConsumibleProps,
-    GrupoConsumibleRequest
-} from "@/components/tipoConsumible/services/grupoConsumible.interface";
-import {createGrupoConsumible} from "@/components/tipoConsumible/services/grupoConsumible.actions";
+    CreateGrupoActivoProps,
+    GrupoActivoRequest
+} from "@/components/tipoActivo/services/grupoActivo.interface";
+import {createGrupoActivo} from "@/components/tipoActivo/services/grupoActivo.actions";
 
-const GrupoConsumible = z.object({
+const GrupoActivo = z.object({
     nombre: z.string().min(0, "Ingrese un nombre"),
 });
 
-export function CreateFormGrupoConsumible({
+export function CreateFormGrupoActivo({
                                                     onClose,
-                                                }: CreateGrupoConsumibleProps) {
-    const form = useForm<z.infer<typeof GrupoConsumible>>({
-        resolver: zodResolver(GrupoConsumible),
+                                                }: CreateGrupoActivoProps) {
+    const form = useForm<z.infer<typeof GrupoActivo>>({
+        resolver: zodResolver(GrupoActivo),
         defaultValues: {},
     });
 
-    const onSubmit = async (data: z.infer<typeof GrupoConsumible>) => {
-        const GrupoConsumibleRequest: GrupoConsumibleRequest = {
+    const onSubmit = async (data: z.infer<typeof GrupoActivo>) => {
+        const GrupoActivoRequest: GrupoActivoRequest = {
             nombre: data.nombre,
         };
         try {
-            const response = await createGrupoConsumible(GrupoConsumibleRequest);
+            const response = await createGrupoActivo(GrupoActivoRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {

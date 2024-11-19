@@ -18,20 +18,20 @@ import {useQuery} from "@tanstack/react-query";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {
-    ConsumibleFactorRequest,
-    CreateConsumibleFactorProps
-} from "@/components/tipoConsumible/services/tipoConsumibleFactor.interface";
-import {createFactorEmisionConsumible} from "@/components/tipoConsumible/services/tipoConsumibleFactor.actions";
+    ActivoFactorRequest,
+    CreateActivoFactorProps
+} from "@/components/tipoActivo/services/tipoActivoFactor.interface";
+import {createFactorEmisionActivo} from "@/components/tipoActivo/services/tipoActivoFactor.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
-import {getTiposConsumible} from "@/components/tipoConsumible/services/tipoConsumible.actions";
+import {getTiposActivo} from "@/components/tipoActivo/services/tipoActivo.actions";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
-const TipoConsumibleFactor = z.object({
+const TipoActivoFactor = z.object({
     factor: z.preprocess((val) => parseFloat(val as string,),
         z.number().min(0, "Ingresa un valor mayor a 0")),
-    tipoConsumibleId: z.string().min(1, "Seleccione un tipo de consumible"),
+    grupoActivoId: z.string().min(1, "Seleccione un tipo de consumible"),
     anioId: z.string().min(1, "Seleccione un año"),
     fuente: z.string().min(1, "Ingrese una fuente"),
     link: z.string().optional(),
@@ -39,21 +39,21 @@ const TipoConsumibleFactor = z.object({
 
 export function CreateFormTipoActivoFactor({
                                                onClose,
-                                           }: CreateConsumibleFactorProps) {
-    const form = useForm<z.infer<typeof TipoConsumibleFactor>>({
-        resolver: zodResolver(TipoConsumibleFactor),
+                                           }: CreateActivoFactorProps) {
+    const form = useForm<z.infer<typeof TipoActivoFactor>>({
+        resolver: zodResolver(TipoActivoFactor),
         defaultValues: {
             factor: 0,
-            tipoConsumibleId: "",
+            grupoActivoId: "",
             anioId: "",
             fuente: "",
             link: "",
         },
     });
 
-    const tiposConsumible = useQuery({
-        queryKey: ["tipoConsumibleFactorC"],
-        queryFn: () => getTiposConsumible(),
+    const tiposActivo = useQuery({
+        queryKey: ["tipoActivoFactorC"],
+        queryFn: () => getTiposActivo(),
         refetchOnWindowFocus: false,
     });
 
@@ -63,16 +63,16 @@ export function CreateFormTipoActivoFactor({
         refetchOnWindowFocus: false,
     });
 
-    const onSubmit = async (data: z.infer<typeof TipoConsumibleFactor>) => {
-        const TipoConsumibleFactorRequest: ConsumibleFactorRequest = {
+    const onSubmit = async (data: z.infer<typeof TipoActivoFactor>) => {
+        const TipoActivoFactorRequest: ActivoFactorRequest = {
             factor: data.factor,
-            tipoConsumibleId: parseNumber(data.tipoConsumibleId),
+            grupoActivoId: parseNumber(data.grupoActivoId),
             anioId: parseNumber(data.anioId),
             fuente: data.fuente,
             link: data.link,
         };
         try {
-            const response = await createFactorEmisionConsumible(TipoConsumibleFactorRequest);
+            const response = await createFactorEmisionActivo(TipoActivoFactorRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -80,7 +80,7 @@ export function CreateFormTipoActivoFactor({
         }
     };
 
-    if (tiposConsumible.isLoading || anios.isLoading) {
+    if (tiposActivo.isLoading || anios.isLoading) {
         return <SkeletonForm/>;
     }
 
@@ -94,23 +94,23 @@ export function CreateFormTipoActivoFactor({
                     >
                         {/*TIPO DE CONSUMIBLE*/}
                         <FormField
-                            name="tipoConsumibleId"
+                            name="grupoActivoId"
                             control={form.control}
                             render={({field}) => (
                                 <FormItem className="pt-2 w-full">
-                                    <FormLabel>Tipo Consumible</FormLabel>
+                                    <FormLabel>Tipo Activo</FormLabel>
                                     <Select onValueChange={field.onChange}>
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Tipo Consumible"/>
+                                                <SelectValue placeholder="Tipo Activo"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {tiposConsumible.data!.map((tipoConsumible) => (
-                                                    <SelectItem key={tipoConsumible.id}
-                                                                value={tipoConsumible.id.toString()}>
-                                                        {tipoConsumible.nombre}
+                                                {tiposActivo.data!.map((tipoActivo) => (
+                                                    <SelectItem key={tipoActivo.id}
+                                                                value={tipoActivo.id.toString()}>
+                                                        {tipoActivo.nombre}
                                                     </SelectItem>
                                                 ))}
                                             </SelectGroup>

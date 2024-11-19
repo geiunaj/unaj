@@ -15,61 +15,61 @@ import {Input} from "@/components/ui/input";
 import {Button} from "../../../ui/button";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {
-    GrupoConsumibleRequest, UpdateGrupoConsumibleProps,
+    GrupoActivoRequest, UpdateGrupoActivoProps,
 } from "../../services/grupoActivo.interface";
 import {useQuery} from "@tanstack/react-query";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {
-    getGrupoConsumible,
-    getGrupoConsumibleById, updateGrupoConsumible
-} from "@/components/tipoConsumible/services/grupoConsumible.actions";
+    getGrupoActivo,
+    getGrupoActivoById, updateGrupoActivo
+} from "@/components/tipoActivo/services/grupoActivo.actions";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
-const GrupoConsumible = z.object({
+const GrupoActivo = z.object({
     nombre: z.string().min(0, "Ingrese un nombre"),
 });
 
-export function UpdateFormGrupoConsumible({
+export function UpdateFormGrupoActivo({
                                                     id, onClose,
-                                                }: UpdateGrupoConsumibleProps) {
-    const form = useForm<z.infer<typeof GrupoConsumible>>({
-        resolver: zodResolver(GrupoConsumible),
+                                                }: UpdateGrupoActivoProps) {
+    const form = useForm<z.infer<typeof GrupoActivo>>({
+        resolver: zodResolver(GrupoActivo),
         defaultValues: {},
     });
 
-    const grupoConsumible = useQuery({
-        queryKey: ["grupoConsumibleUF", id],
-        queryFn: () => getGrupoConsumibleById(id),
+    const grupoActivo = useQuery({
+        queryKey: ["grupoActivoUF", id],
+        queryFn: () => getGrupoActivoById(id),
         refetchOnWindowFocus: false,
     });
     const grupoes = useQuery({
         queryKey: ['grupoesUF'],
-        queryFn: () => getGrupoConsumible(),
+        queryFn: () => getGrupoActivo(),
         refetchOnWindowFocus: false,
     });
 
     const loadForm = useCallback(async () => {
-        if (grupoConsumible.data) {
-            const grupoConsumibleData = await grupoConsumible.data;
+        if (grupoActivo.data) {
+            const grupoActivoData = await grupoActivo.data;
             form.reset({
-                nombre: grupoConsumibleData.nombre,
+                nombre: grupoActivoData.nombre,
             });
         }
-    }, [grupoConsumible.data, id]);
+    }, [grupoActivo.data, id]);
 
     useEffect(() => {
         loadForm();
     }, [loadForm, id]);
 
-    const onSubmit = async (data: z.infer<typeof GrupoConsumible>) => {
-        const grupoConsumibleRequest: GrupoConsumibleRequest = {
+    const onSubmit = async (data: z.infer<typeof GrupoActivo>) => {
+        const grupoActivoRequest: GrupoActivoRequest = {
             nombre: data.nombre,
         };
         try {
-            const response = await updateGrupoConsumible(id, grupoConsumibleRequest);
+            const response = await updateGrupoActivo(id, grupoActivoRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -77,13 +77,13 @@ export function UpdateFormGrupoConsumible({
         }
     };
 
-    if (grupoConsumible.isLoading || grupoes.isLoading) {
+    if (grupoActivo.isLoading || grupoes.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (grupoConsumible.isError || grupoes.isError) {
+    if (grupoActivo.isError || grupoes.isError) {
         onClose();
-        errorToast("Error al cargar el Grupo de Consumible");
+        errorToast("Error al cargar el Grupo de Activo");
     }
 
     return (
