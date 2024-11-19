@@ -21,7 +21,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             const descripcionConsumibleFormatted: any[] = descripcionConsumibles.map(
                 (consumible, index) => {
                     const newDescripcionConsumible = formatDescripcionConsumible(consumible);
-                    newDescripcionConsumible.rn = index + 1;
+                    newDescripcionConsumible.rn = (page - 1) * perPage + index + 1;
                     return newDescripcionConsumible;
                 }
             );

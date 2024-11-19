@@ -22,7 +22,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             const grupoConsumibleFormatted: any[] = grupoConsumibles.map(
                 (consumible, index) => {
                     const newGrupoConsumible = formatGrupoConsumible(consumible);
-                    newGrupoConsumible.rn = index + 1;
+                    newGrupoConsumible.rn = (page - 1) * perPage + index + 1;
                     return newGrupoConsumible;
                 }
             );

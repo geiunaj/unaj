@@ -87,7 +87,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const formattedConsumoAgua: consumoAguaCollection[] = consumoAgua.map(
             (consumoAgua, index) => {
                 const consumo = formatConsumoAgua(consumoAgua);
-                consumo.rn = index + 1;
+                consumo.rn = (page - 1) * perPage + index + 1;
                 return consumo;
             }
         );

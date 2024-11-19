@@ -1,50 +1,50 @@
 import api from "../../../../config/api";
 import {AxiosRequestConfig, AxiosResponse} from "axios";
-import {FactorEmisionConsumibleIndex} from "@/components/tipoConsumible/lib/tipoConsumibleFactor.hook";
+import {FactorEmisionActivoIndex} from "@/components/tipoActivo/lib/tipoActivoFactor.hook";
 import {
-    ConsumibleFactorCollectionPaginate, ConsumibleFactorRequest
-} from "@/components/tipoConsumible/services/tipoConsumibleFactor.interface";
+    ActivoFactorCollectionPaginate, ActivoFactorRequest
+} from "@/components/tipoActivo/services/tipoActivoFactor.interface";
 
 interface Response {
     message: string;
 }
 
 
-export async function getFactorEmisionConsumiblePage(
+export async function getFactorEmisionActivoPage(
     {
-        tipoConsumibleId,
+        tipoActivoId,
         anioId,
         page = 1,
         perPage = 10,
-    }: FactorEmisionConsumibleIndex): Promise<ConsumibleFactorCollectionPaginate> {
+    }: FactorEmisionActivoIndex): Promise<ActivoFactorCollectionPaginate> {
     const config: AxiosRequestConfig = {
         params: {
-            tipoConsumibleId,
+            tipoActivoId,
             anioId,
             page,
             perPage,
         },
     };
-    const {data} = await api.get<ConsumibleFactorCollectionPaginate>(
-        "/api/tipoConsumible/factor",
+    const {data} = await api.get<ActivoFactorCollectionPaginate>(
+        "/api/tipoActivo/factor",
         config
     );
     return data;
 }
 
-export async function getFactorEmisionConsumibleById(id: number): Promise<any> {
-    const {data} = await api.get(`/api/tipoConsumible/factor/${id}`);
+export async function getFactorEmisionActivoById(id: number): Promise<any> {
+    const {data} = await api.get(`/api/tipoActivo/factor/${id}`);
     return data;
 }
 
-export async function createFactorEmisionConsumible(data: ConsumibleFactorRequest): Promise<AxiosResponse<Response>> {
-    return await api.post("/api/tipoConsumible/factor", data);
+export async function createFactorEmisionActivo(data: ActivoFactorRequest): Promise<AxiosResponse<Response>> {
+    return await api.post("/api/tipoActivo/factor", data);
 }
 
-export async function updateFactorEmisionConsumible(id: number, data: ConsumibleFactorRequest): Promise<AxiosResponse<Response>> {
-    return await api.put(`/api/tipoConsumible/factor/${id}`, data);
+export async function updateFactorEmisionActivo(id: number, data: ActivoFactorRequest): Promise<AxiosResponse<Response>> {
+    return await api.put(`/api/tipoActivo/factor/${id}`, data);
 }
 
-export async function deleteTipoConsumibleFactor(id: number): Promise<AxiosResponse<Response>> {
-    return await api.delete(`/api/tipoConsumible/factor/${id}`);
+export async function deleteTipoActivoFactor(id: number): Promise<AxiosResponse<Response>> {
+    return await api.delete(`/api/tipoActivo/factor/${id}`);
 }

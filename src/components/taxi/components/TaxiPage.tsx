@@ -171,7 +171,7 @@ export default function TaxiPage() {
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
-            errorToast(error.response.data);
+            errorToast(error.response.data || error.response.data.message);
         } finally {
             await taxiQuery.refetch();
             await taxiReport.refetch();

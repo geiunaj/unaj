@@ -1,79 +1,75 @@
 import api from "../../../../config/api";
 import {
-    TipoConsumibleCollection, TipoConsumibleCollectionPaginate,
-    TipoConsumibleRequest,
-    TipoConsumibleResource,
-} from "./tipoConsumible.interface";
-import {AxiosRequestConfig, AxiosResponse} from "axios";
-import {DescripcionConsumible} from "@/components/tipoConsumible/services/descripcionConsumible.interface";
-import {GrupoConsumible} from "@/components/tipoConsumible/services/grupoConsumible.interface";
-import {CategoriaConsumible} from "@/components/tipoConsumible/services/categoriaConsumible.interface";
+  TipoActivoCollection,
+  TipoActivoCollectionPaginate,
+  TipoActivoRequest,
+  TipoActivoResource,
+} from "./tipoActivo.interface";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
+import { GrupoActivo } from "@/components/tipoActivo/services/grupoActivo.interface";
+import { CategoriaActivo } from "@/components/tipoActivo/services/categoriaActivo.interface";
 
 interface Response {
-    message: string;
+  message: string;
 }
 
-export async function getTiposConsumible(): Promise<TipoConsumibleCollection[]> {
-    const {data} = await api.get<TipoConsumibleCollection[]>("/api/tipoConsumible");
-    return data;
+export async function getTiposActivo(): Promise<TipoActivoCollection[]> {
+  const { data } = await api.get<TipoActivoCollection[]>("/api/tipoActivo");
+  return data;
 }
 
-export async function getTiposConsumiblePaginate(nombre: string = "", page: number = 1): Promise<TipoConsumibleCollectionPaginate> {
-    const config: AxiosRequestConfig = {
-        params: {
-            nombre,
-            perPage: 10,
-            page,
-        },
-    }
-    const {data} = await api.get<TipoConsumibleCollectionPaginate>("/api/tipoConsumible", config);
-    return data;
+export async function getTiposActivoPaginate(
+  nombre: string = "",
+  page: number = 1
+): Promise<TipoActivoCollectionPaginate> {
+  const config: AxiosRequestConfig = {
+    params: {
+      nombre,
+      perPage: 10,
+      page,
+    },
+  };
+  const { data } = await api.get<TipoActivoCollectionPaginate>(
+    "/api/tipoActivo",
+    config
+  );
+  return data;
 }
 
-export async function getTipoConsumibleById(
-    id: number
-): Promise<TipoConsumibleResource> {
-    const {data} = await api.get<TipoConsumibleResource>(
-        `/api/tipoConsumible/${id}`
-    );
-    return data;
+export async function getTipoActivoById(
+  id: number
+): Promise<TipoActivoResource> {
+  const { data } = await api.get<TipoActivoResource>(`/api/tipoActivo/${id}`);
+  return data;
 }
 
-export async function createTipoConsumible(
-    tipoConsumible: TipoConsumibleRequest
+export async function createTipoActivo(
+  tipoActivo: TipoActivoRequest
 ): Promise<AxiosResponse<Response>> {
-    return await api.post("/api/tipoConsumible", tipoConsumible);
+  return await api.post("/api/tipoActivo", tipoActivo);
 }
 
-export async function updateTipoConsumible(
-    id: number,
-    tipoConsumible: TipoConsumibleRequest
+export async function updateTipoActivo(
+  id: number,
+  tipoActivo: TipoActivoRequest
 ): Promise<AxiosResponse<Response>> {
-    return await api.put(`/api/tipoConsumible/${id}`, tipoConsumible);
+  return await api.put(`/api/tipoActivo/${id}`, tipoActivo);
 }
 
-export async function deleteTipoConsumible(
-    id: number
+export async function deleteTipoActivo(
+  id: number
 ): Promise<AxiosResponse<Response>> {
-    return await api.delete(`/api/tipoConsumible/${id}`);
+  return await api.delete(`/api/tipoActivo/${id}`);
 }
 
-export async function getTipoConsumibleDescripcion(): Promise<DescripcionConsumible[]> {
-    const {data} = await api.get<DescripcionConsumible[]>(`/api/tipoConsumible/descripcion`);
-    return data;
+export async function getTipoActivoGrupo(): Promise<GrupoActivo[]> {
+  const { data } = await api.get<GrupoActivo[]>(`/api/tipoActivo/grupo`);
+  return data;
 }
 
-export async function getTipoConsumibleGrupo(): Promise<GrupoConsumible[]> {
-    const {data} = await api.get<GrupoConsumible[]>(`/api/tipoConsumible/grupo`);
-    return data;
-}
-
-export async function getTipoConsumibleCategoria(): Promise<CategoriaConsumible[]> {
-    const {data} = await api.get<CategoriaConsumible[]>(`/api/tipoConsumible/categoria`);
-    return data;
-}
-
-export async function getTipoConsumibleProceso(): Promise<CategoriaConsumible[]> {
-    const {data} = await api.get<CategoriaConsumible[]>(`/api/tipoConsumible/proceso`);
-    return data;
+export async function getTipoActivoCategoria(): Promise<CategoriaActivo[]> {
+  const { data } = await api.get<CategoriaActivo[]>(
+    `/api/tipoActivo/categoria`
+  );
+  return data;
 }

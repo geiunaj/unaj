@@ -20,7 +20,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             const procesoConsumibleFormatted: any[] = procesoConsumibles.map(
                 (consumible, index) => {
                     const newProcesoConsumible = formatProcesoConsumible(consumible);
-                    newProcesoConsumible.rn = index + 1;
+                    newProcesoConsumible.rn = (page - 1) * perPage + index + 1;
                     return newProcesoConsumible;
                 }
             );

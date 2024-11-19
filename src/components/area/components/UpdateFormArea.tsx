@@ -62,7 +62,7 @@ export function UpdateFormArea({id, onClose}: UpdateAreaProps) {
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
-            errorToast(error.response.data);
+            errorToast(error.response.data || error.response.data.message);
         }
     };
 

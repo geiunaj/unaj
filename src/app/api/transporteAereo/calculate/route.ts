@@ -69,7 +69,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const formattedTransporteAereoCalculos: any[] = transporteAereoCalculos
             .map((transporteAereoCalculo: any, index: number) => {
                 if (transporteAereoCalculo.consumo !== 0) {
-                    transporteAereoCalculo.rn = index + 1;
+                    transporteAereoCalculo.rn = (page - 1) * perPage + index + 1;
                     return formatTransporteAereoCalculo(transporteAereoCalculo);
                 }
                 return null;

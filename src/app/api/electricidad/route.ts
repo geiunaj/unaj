@@ -96,7 +96,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const formattedElectricidad: any[] = electricidad.map(
             (electricidad, index) => {
                 const consumo = formatElectricidad(electricidad);
-                consumo.rn = index + 1;
+                consumo.rn = (page - 1) * perPage + index + 1;
                 return consumo;
             }
         );

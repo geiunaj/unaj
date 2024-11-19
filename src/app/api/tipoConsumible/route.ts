@@ -37,7 +37,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             const tiposConsumibleFormatted: any[] = tiposConsumible.map(
                 (consumible, index) => {
                     const newConsumible = formatTipoConsumible(consumible);
-                    newConsumible.rn = index + 1;
+                    newConsumible.rn = (page - 1) * perPage + index + 1;
                     return newConsumible;
                 }
             );

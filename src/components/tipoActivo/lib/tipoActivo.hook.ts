@@ -1,10 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
-import {getTiposConsumiblePaginate} from "../services/tipoConsumible.actions";
+import { getTiposActivoPaginate } from "../services/tipoActivo.actions";
 
-export const useTipoConsumible = (name: string, page: number) => {
+export const useTipoActivo = (name: string, page: number) => {
     return useQuery({
-        queryKey: ['tiposConsumiblePage'],
-        queryFn: () => getTiposConsumiblePaginate(name, page),
+        queryKey: ['tiposActivoPage'],
+        queryFn: () => getTiposActivoPaginate(name, page),
         refetchOnWindowFocus: false,
     });
 }

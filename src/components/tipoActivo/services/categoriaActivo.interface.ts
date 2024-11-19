@@ -1,12 +1,13 @@
-export interface CategoriaConsumible {
+export interface CategoriaActivo {
   id: number;
   nombre: string;
   created_at: Date;
   updated_at: Date;
 }
 
-export interface CategoriaConsumibleRequest {
+export interface CategoriaActivoRequest {
   nombre: string;
+  grupoActivoId: number;
 }
 
 interface Meta {
@@ -16,27 +17,27 @@ interface Meta {
   totalPages: number;
 }
 
-export interface CategoriaConsumibleCollectionPaginate {
-  data: CategoriaConsumibleCollection[];
+export interface CategoriaActivoCollectionPaginate {
+  data: CategoriaActivoCollection[];
   meta: Meta;
 }
 
-export interface CategoriaConsumibleCollection {
+export interface CategoriaActivoCollection {
   id: number;
   nombre: string;
   rn: number;
 }
 
-export interface CategoriaConsumibleResource {
+export interface CategoriaActivoResource {
   id: number;
   nombre: string;
 }
 
-export interface CreateCategoriaConsumibleProps {
+export interface CreateCategoriaActivoProps {
   onClose: () => void;
 }
 
-export interface UpdateCategoriaConsumibleProps {
+export interface UpdateCategoriaActivoProps {
   onClose: () => void;
   id: number;
 }

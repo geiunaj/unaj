@@ -69,7 +69,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const formattedConsumoPapel: ConsumoPapelCollectionItem[] =
             consumopapel.map((consumopapel, index) => {
                 const consumo = formatConsumoPapel(consumopapel)
-                consumo.rn = index + 1;
+                consumo.rn = (page - 1) * perPage + index + 1;
                 return consumo;
             });
 

@@ -28,7 +28,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {Badge} from "@/components/ui/badge";
-import {ActivoCollectionItem} from "@/components/activos/services/activo.interface";
+import {ActivoCollectionItem} from "@/components/activos/services/activos.interface";
 import SelectFilter from "@/components/SelectFilter";
 import {
     AlertDialog,

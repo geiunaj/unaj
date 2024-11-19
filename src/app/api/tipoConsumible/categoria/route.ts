@@ -22,7 +22,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             const categoriaConsumibleFormatted: any[] = categoriaConsumibles.map(
                 (consumible, index) => {
                     const newCategoriaConsumible = formatCategoriaConsumible(consumible);
-                    newCategoriaConsumible.rn = index + 1;
+                    newCategoriaConsumible.rn =(page - 1) * perPage + index + 1;
                     return newCategoriaConsumible;
                 }
             );

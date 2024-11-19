@@ -65,7 +65,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const formattedFertilizantes: Fertilizante[] = fertilizantes.map(
             (fertilizante, index) => {
                 const newFertilizante = formaFertilizante(fertilizante);
-                newFertilizante.rn = index + 1;
+                newFertilizante.rn = (page - 1) * perPage + index + 1;
                 return newFertilizante
             }
         );

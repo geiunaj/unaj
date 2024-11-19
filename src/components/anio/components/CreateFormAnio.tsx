@@ -41,7 +41,7 @@ export function CreateFormAnio({onClose}: CreateAnioProps) {
             onClose();
             successToast(response.data.message || "Año creado correctamente");
         } catch (error: any) {
-            errorToast(error.response.data);
+            errorToast(error.response.data || error.response.data.message);
         }
     };
 

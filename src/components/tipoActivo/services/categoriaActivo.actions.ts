@@ -2,43 +2,43 @@ import api from "../../../../config/api";
 
 import {AxiosRequestConfig, AxiosResponse} from "axios";
 import {
-    CategoriaConsumibleCollection,
-    CategoriaConsumibleCollectionPaginate, CategoriaConsumibleRequest, CategoriaConsumibleResource
-} from "@/components/tipoConsumible/services/categoriaConsumible.interface";
+    CategoriaActivoCollection,
+    CategoriaActivoCollectionPaginate, CategoriaActivoRequest, CategoriaActivoResource
+} from "@/components/tipoActivo/services/categoriaActivo.interface";
 
 interface Response {
     message: string;
 }
 
-export async function getCategoriaConsumible(): Promise<CategoriaConsumibleCollection[]> {
-    const {data} = await api.get<CategoriaConsumibleCollection[]>("/api/tipoConsumible/categoria");
+export async function getCategoriaActivo(): Promise<CategoriaActivoCollection[]> {
+    const {data} = await api.get<CategoriaActivoCollection[]>("/api/tipoActivo/categoria");
     return data;
 }
 
-export async function getCategoriaConsumiblePaginate(page: number = 1): Promise<CategoriaConsumibleCollectionPaginate> {
+export async function getCategoriaActivoPaginate(page: number = 1): Promise<CategoriaActivoCollectionPaginate> {
     const config: AxiosRequestConfig = {
         params: {
             perPage: 10,
             page,
         },
     }
-    const {data} = await api.get<CategoriaConsumibleCollectionPaginate>("/api/tipoConsumible/categoria", config);
+    const {data} = await api.get<CategoriaActivoCollectionPaginate>("/api/tipoActivo/categoria", config);
     return data;
 }
 
-export async function getCategoriaConsumibleById(id: number): Promise<CategoriaConsumibleResource> {
-    const {data} = await api.get<CategoriaConsumibleResource>(`/api/tipoConsumible/categoria/${id}`);
+export async function getCategoriaActivoById(id: number): Promise<CategoriaActivoResource> {
+    const {data} = await api.get<CategoriaActivoResource>(`/api/tipoActivo/categoria/${id}`);
     return data;
 }
 
-export async function createCategoriaConsumible(tipoConsumible: CategoriaConsumibleRequest): Promise<AxiosResponse<Response>> {
-    return await api.post("/api/tipoConsumible/categoria", tipoConsumible);
+export async function createCategoriaActivo(tipoActivo: CategoriaActivoRequest): Promise<AxiosResponse<Response>> {
+    return await api.post("/api/tipoActivo/categoria", tipoActivo);
 }
 
-export async function updateCategoriaConsumible(id: number, tipoConsumible: CategoriaConsumibleRequest): Promise<AxiosResponse<Response>> {
-    return await api.put(`/api/tipoConsumible/categoria/${id}`, tipoConsumible);
+export async function updateCategoriaActivo(id: number, tipoActivo: CategoriaActivoRequest): Promise<AxiosResponse<Response>> {
+    return await api.put(`/api/tipoActivo/categoria/${id}`, tipoActivo);
 }
 
-export async function deleteCategoriaConsumible(id: number): Promise<AxiosResponse<Response>> {
-    return await api.delete(`/api/tipoConsumible/categoria/${id}`);
+export async function deleteCategoriaActivo(id: number): Promise<AxiosResponse<Response>> {
+    return await api.delete(`/api/tipoActivo/categoria/${id}`);
 }

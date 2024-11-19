@@ -83,7 +83,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const formattedCombustibles: any[] = combustibles.map(
             (combustible, index) => {
                 const consumo = formatCombustible(combustible);
-                consumo.rn = index + 1;
+                consumo.rn = (page - 1) * perPage + index + 1;
                 return consumo;
             }
         );

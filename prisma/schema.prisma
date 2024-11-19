@@ -78,6 +78,8 @@ model Sede {
   CasaTrabajo                       CasaTrabajo[]
   CasaTrabajoCalculos               CasaTrabajoCalculos[]
   CasaTrabajoCalculosDetail         CasaTrabajoCalculosDetail[]
+  Activo                            Activo[]
+  ActivoCalculos                    ActivoCalculos[]
 
   @@map("sede")
 }
@@ -126,6 +128,7 @@ model Mes {
   Consumible          Consumible[]
   TransporteAereo     TransporteAereo[]
   TransporteTerrestre TransporteTerrestre[]
+  Activo              Activo[]
 
   @@map("mes")
 }
@@ -162,6 +165,8 @@ model Anio {
   CasaTrabajo                      CasaTrabajo[]
   FactorTrasnporteCasaTrabajo      FactorTrasnporteCasaTrabajo[]
   CasaTrabajoCalculosDetail        CasaTrabajoCalculosDetail[]
+  Activo                           Activo[]
+  FactorTipoActivo                 FactorTipoActivo[]
 
   @@map("anio")
 }
@@ -718,6 +723,7 @@ model PeriodoCalculo {
   TransporteAereoCalculos     TransporteAereoCalculos[]
   TransporteTerrestreCalculos TransporteTerrestreCalculos[]
   CasaTrabajoCalculos         CasaTrabajoCalculos[]
+  ActivoCalculos              ActivoCalculos[]
 
   @@map("periodocalculo")
 }
@@ -1218,4 +1224,123 @@ model CasaTrabajoCalculosDetail {
   consumibleCalculos ConsumibleCalculos          @relation(fields: [consumibleCalculosId], references: [id])
 
   @@map("casatrabajocalculosdetail")
+}
+
+model GrupoActivo {
+  id               Int                @id @default(autoincrement())
+  nombre           String
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+  CategoriaActivo  CategoriaActivo[]
+  FactorTipoActivo FactorTipoActivo[]
+
+  @@map("grupoactivo")
+}
+
+model CategoriaActivo {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  grupoActivoId Int
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  grupoActivo GrupoActivo? @relation(fields: [grupoActivoId], references: [id])
+
+  TipoActivo           TipoActivo[]
+  ActivoCalculosDetail ActivoCalculosDetail[]
+
+  @@map("categoriaactivo")
+}
+
+model TipoActivo {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  unidad        String
+  peso          Float
+  fuente        String?
+  costoUnitario Float?
+  categoriaId   Int
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  categoria      CategoriaActivo? @relation(fields: [categoriaId], references: [id])
+  Activo         Activo[]
+  ActivoCalculos ActivoCalculos[]
+
+  @@map("tipoactivo")
+}
+
+model FactorTipoActivo {
+  id            Int      @id @default(autoincrement())
+  factor        Float
+  grupoActivoId Int
+  anioId        Int
+  fuente        String?
+  link          String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  anio                 Anio?                  @relation(fields: [anioId], references: [id])
+  grupoActivo          GrupoActivo?           @relation(fields: [grupoActivoId], references: [id])
+  ActivoCalculosDetail ActivoCalculosDetail[]
+
+  @@unique([grupoActivoId, anioId])
+  @@map("factortipoactivo")
+}
+
+model Activo {
+  id                Int      @id @default(autoincrement())
+  tipoActivoId      Int
+  sedeId            Int
+  anioId            Int
+  mesId             Int
+  anio_mes          Int
+  cantidadComprada  Float
+  cantidadConsumida Float
+  costoTotal        Float?
+  consumoTotal      Float
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  tipoActivo TipoActivo? @relation(fields: [tipoActivoId], references: [id])
+  sede       Sede?       @relation(fields: [sedeId], references: [id])
+  mes        Mes?        @relation(fields: [mesId], references: [id])
+  anio       Anio?       @relation(fields: [anioId], references: [id])
+
+  @@map("activo")
+}
+
+model ActivoCalculos {
+  id               Int      @id @default(autoincrement())
+  tipoActivoId     Int
+  periodoCalculoId Int
+  sedeId           Int
+  cantidadTotal    Float
+  totalGEI         Float
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  tipoActivo     TipoActivo?     @relation(fields: [tipoActivoId], references: [id])
+  sede           Sede?           @relation(fields: [sedeId], references: [id])
+  PeriodoCalculo PeriodoCalculo? @relation(fields: [periodoCalculoId], references: [id])
+
+  @@map("activocalculos")
+}
+
+model ActivoCalculosDetail {
+  id                 Int      @id @default(autoincrement())
+  categoriaActivoId  Int
+  factorTipoActivoId Int
+  anioId             Int
+  sedeId             Int
+  cantidadTotal      Float
+  totalGEI           Float
+  activoCalculosId   Int
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+
+  categoriaActivo  CategoriaActivo?  @relation(fields: [categoriaActivoId], references: [id])
+  factorTipoActivo FactorTipoActivo? @relation(fields: [factorTipoActivoId], references: [id])
+
+  @@map("activocalculosdetail")
 }

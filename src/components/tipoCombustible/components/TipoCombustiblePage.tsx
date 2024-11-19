@@ -79,7 +79,7 @@ export default function TipoCombustiblePage() {
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
-            errorToast(error.response.data);
+            errorToast(error.response.data || error.response.data.message);
         } finally {
             await tipoCombustibleQuery.refetch();
         }

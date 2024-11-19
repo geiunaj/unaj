@@ -23,7 +23,7 @@ import {
     getTipoConsumibleCategoria,
     getTipoConsumibleDescripcion,
     getTipoConsumibleGrupo, getTipoConsumibleProceso,
-} from "../services/tipoConsumible.actions";
+} from "../services/tipoActivo.actions";
 import {useQuery} from "@tanstack/react-query";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {errorToast, successToast} from "@/lib/utils/core.function";
