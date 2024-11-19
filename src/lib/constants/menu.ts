@@ -151,7 +151,7 @@ export const menu: MenuItem[] = [
             {
                 title: "Activos Fijos",
                 icon: "FileText",
-                href: "/activos",
+                href: "/activos-fijos",
             },
             {
                 title: "Consumibles Generales",

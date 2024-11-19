@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback, useEffect} from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -14,16 +14,28 @@ import {
 import {Input} from "@/components/ui/input";
 import {Button} from "../../ui/button";
 import SkeletonForm from "@/components/Layout/skeletonForm";
+import {
+    TipoConsumibleRequest, UpdateTipoConsumibleProps,
+} from "../services/tipoConsumible.interface";
+import {
+    getTipoConsumibleById, getTipoConsumibleCategoria,
+    getTipoConsumibleDescripcion,
+    getTipoConsumibleGrupo, getTipoConsumibleProceso, getTiposConsumible,
+    updateTipoConsumible,
+} from "../services/tipoConsumible.actions";
 import {useQuery} from "@tanstack/react-query";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {
     ConsumibleFactorRequest,
-    CreateConsumibleFactorProps
+    CreateConsumibleFactorProps,
+    UpdateConsumibleFactorProps
 } from "@/components/tipoConsumible/services/tipoConsumibleFactor.interface";
-import {createFactorEmisionConsumible} from "@/components/tipoConsumible/services/tipoConsumibleFactor.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
-import {getTiposConsumible} from "@/components/tipoConsumible/services/tipoConsumible.actions";
+import {
+    createFactorEmisionConsumible,
+    getFactorEmisionConsumibleById, updateFactorEmisionConsumible
+} from "@/components/tipoConsumible/services/tipoConsumibleFactor.actions";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -37,9 +49,9 @@ const TipoConsumibleFactor = z.object({
     link: z.string().optional(),
 });
 
-export function CreateFormTipoConsumibleFactor({
-                                                   onClose,
-                                               }: CreateConsumibleFactorProps) {
+export function UpdateFormTipoActivoFactor({
+                                               id, onClose,
+                                           }: UpdateConsumibleFactorProps) {
     const form = useForm<z.infer<typeof TipoConsumibleFactor>>({
         resolver: zodResolver(TipoConsumibleFactor),
         defaultValues: {
@@ -51,6 +63,11 @@ export function CreateFormTipoConsumibleFactor({
         },
     });
 
+    const tipoConsumibleFactor = useQuery({
+        queryKey: ["tipoConsumibleFactorId", id],
+        queryFn: () => getFactorEmisionConsumibleById(id),
+        refetchOnWindowFocus: false,
+    });
     const tiposConsumible = useQuery({
         queryKey: ["tipoConsumibleFactorC"],
         queryFn: () => getTiposConsumible(),
@@ -63,16 +80,33 @@ export function CreateFormTipoConsumibleFactor({
         refetchOnWindowFocus: false,
     });
 
+    const loadForm = useCallback(async () => {
+        if (tipoConsumibleFactor.data) {
+            const tipoConsumibleData = await tipoConsumibleFactor.data;
+            form.reset({
+                factor: tipoConsumibleData.factor,
+                tipoConsumibleId: tipoConsumibleData.tipoConsumibleId.toString(),
+                anioId: tipoConsumibleData.anioId.toString(),
+                fuente: tipoConsumibleData.fuente,
+                link: tipoConsumibleData.link,
+            });
+        }
+    }, [tipoConsumibleFactor.data, id]);
+
+    useEffect(() => {
+        loadForm();
+    }, [loadForm, id]);
+
     const onSubmit = async (data: z.infer<typeof TipoConsumibleFactor>) => {
         const TipoConsumibleFactorRequest: ConsumibleFactorRequest = {
             factor: data.factor,
-            tipoConsumibleId: parseNumber(data.tipoConsumibleId),
-            anioId: parseNumber(data.anioId),
+            tipoConsumibleId: parseInt(data.tipoConsumibleId),
+            anioId: parseInt(data.anioId),
             fuente: data.fuente,
             link: data.link,
         };
         try {
-            const response = await createFactorEmisionConsumible(TipoConsumibleFactorRequest);
+            const response = await updateFactorEmisionConsumible(id, TipoConsumibleFactorRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -80,8 +114,13 @@ export function CreateFormTipoConsumibleFactor({
         }
     };
 
-    if (tiposConsumible.isLoading || anios.isLoading) {
+    if (tipoConsumibleFactor.isLoading || tiposConsumible.isLoading || anios.isLoading) {
         return <SkeletonForm/>;
+    }
+
+    if (tipoConsumibleFactor.isError || tiposConsumible.isError || anios.isError) {
+        onClose();
+        errorToast("Error al cargar el Tipo de Consumible");
     }
 
     return (
@@ -99,7 +138,10 @@ export function CreateFormTipoConsumibleFactor({
                             render={({field}) => (
                                 <FormItem className="pt-2 w-full">
                                     <FormLabel>Tipo Consumible</FormLabel>
-                                    <Select onValueChange={field.onChange}>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
                                         <FormControl className="w-full">
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Tipo Consumible"/>

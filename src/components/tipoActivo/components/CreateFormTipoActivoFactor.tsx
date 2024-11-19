@@ -37,9 +37,9 @@ const TipoConsumibleFactor = z.object({
     link: z.string().optional(),
 });
 
-export function CreateFormTipoConsumibleFactor({
-                                                   onClose,
-                                               }: CreateConsumibleFactorProps) {
+export function CreateFormTipoActivoFactor({
+                                               onClose,
+                                           }: CreateConsumibleFactorProps) {
     const form = useForm<z.infer<typeof TipoConsumibleFactor>>({
         resolver: zodResolver(TipoConsumibleFactor),
         defaultValues: {
