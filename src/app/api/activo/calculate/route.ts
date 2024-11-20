@@ -2,8 +2,9 @@ import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {getAnioId} from "@/lib/utils";
 import {WhereAnioMes} from "@/lib/interfaces/globals";
-import {formatConsumibleCalculo} from "@/lib/resources/consumibleCalculateResource";
-import {ConsumibleCalcRequest} from "@/components/consumibles/services/consumibleCalculate.interface";
+import {formatActivoCalculo} from "@/lib/resources/activoCalculateResource";
+import {ActivoCalcRequest} from "@/components/activos/services/activosCalculate.interface";
+import {formatCombustible} from "@/lib/resources/combustionResource";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
@@ -18,10 +19,25 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const dateTo = searchParams.get("to") ?? undefined;
         const all = searchParams.get("all") === "true";
 
+        let yearFrom, yearTo, monthFrom, monthTo;
+        let yearFromId, yearToId, mesFromId, mesToId;
+
+        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
+        if (yearFrom) yearFromId = await getAnioId(yearFrom);
+        if (yearTo) yearToId = await getAnioId(yearTo);
+        if (monthFrom) mesFromId = parseInt(monthFrom);
+        if (monthTo) mesToId = parseInt(monthTo);
+
+        const fromValue = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
+        const toValue = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
+
         let period = await prisma.periodoCalculo.findFirst({
             where: {
                 fechaInicio: dateFrom ? dateFrom : undefined,
                 fechaFin: dateTo ? dateTo : undefined,
+                fechaInicioValue: fromValue,
+                fechaFinValue: toValue,
             },
         });
 
@@ -30,6 +46,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 data: {
                     fechaInicio: dateFrom ? dateFrom : undefined,
                     fechaFin: dateTo ? dateTo : undefined,
+                    fechaInicioValue: fromValue,
+                    fechaFinValue: toValue,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
@@ -41,41 +59,44 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const whereOptions = {
             sedeId: parseInt(sedeId),
             periodoCalculoId: period?.id,
-            pesoTotal: {
+            cantidadTotal: {
                 not: 0
             },
         };
 
-        const totalRecords = await prisma.consumibleCalculos.count({
+        const totalRecords = await prisma.activoCalculos.count({
             where: whereOptions
         });
         const totalPages = Math.ceil(totalRecords / perPage);
 
-        const consumibleCalculos = await prisma.consumibleCalculos.findMany({
+        const activoCalculos = await prisma.activoCalculos.findMany({
             where: whereOptions,
             include: {
-                tipoConsumible: {
-                    include: {
-                        descripcion: true,
-                        categoria: true,
-                        grupo: true,
-                        proceso: true,
-                    }
-                },
+                grupoActivo: true,
                 sede: true,
+                ActivoCalculosDetail: {
+                    include: {
+                        factorTipoActivo: {
+                            include: {
+                                anio: true
+                            }
+                        }
+                    }
+                }
             },
-            orderBy: [{tipoConsumible: {nombre: "asc"}}],
+            orderBy: [{grupoActivo: {nombre: "asc"}}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
-        const formattedConsumibleCalculos: any[] = consumibleCalculos
-            .map((consumibleCalculo, index: number) => {
-                consumibleCalculo.id = index + 1;
-                return formatConsumibleCalculo(consumibleCalculo);
+        const formattedActivoCalculos: any[] = activoCalculos
+            .map((activoCalculo, index: number) => {
+                const consumo = formatActivoCalculo(activoCalculo);
+                consumo.rn = (page - 1) * perPage + index + 1;
+                return consumo;
             });
 
         return NextResponse.json({
-            data: formattedConsumibleCalculos,
+            data: formattedActivoCalculos,
             meta: {
                 page,
                 perPage,
@@ -91,7 +112,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
-        const body: ConsumibleCalcRequest = await req.json();
+        const body: ActivoCalcRequest = await req.json();
         const sedeId = body.sedeId;
         const dateFrom = body.from;
         const dateTo = body.to;
@@ -106,10 +127,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         if (monthFrom) mesFromId = parseInt(monthFrom);
         if (monthTo) mesToId = parseInt(monthTo);
 
+        const fromValue = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
+        const toValue = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
+
         let period = await prisma.periodoCalculo.findFirst({
             where: {
                 fechaInicio: dateFrom ? dateFrom : undefined,
                 fechaFin: dateTo ? dateTo : undefined,
+                fechaInicioValue: fromValue,
+                fechaFinValue: toValue,
             },
         });
 
@@ -118,34 +144,36 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 data: {
                     fechaInicio: dateFrom ? dateFrom : undefined,
                     fechaFin: dateTo ? dateTo : undefined,
+                    fechaInicioValue: fromValue,
+                    fechaFinValue: toValue,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
             });
         }
 
-        const tiposConsumible = await prisma.tipoConsumible.findMany();
+        const gruposActivo = await prisma.grupoActivo.findMany();
 
-        const whereOptionsConsumible = {
+        const whereOptionsActivo = {
             sedeId: sedeId,
         } as {
             sedeId?: number;
-            tipoConsumibleId?: number;
+            grupoActivoId?: number;
             anio_mes?: {
                 gte?: number;
                 lte?: number;
             };
         };
 
-        await prisma.consumibleCalculosDetail.deleteMany({
+        await prisma.activoCalculosDetail.deleteMany({
             where: {
-                consumibleCalculos: {
+                activoCalculos: {
                     periodoCalculoId: period.id,
                 },
             },
         });
 
-        await prisma.consumibleCalculos.deleteMany({
+        await prisma.activoCalculos.deleteMany({
             where: {
                 sedeId: sedeId,
                 periodoCalculoId: period.id,
@@ -259,17 +287,17 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         }
 
-        for (const tipoConsumible of tiposConsumible) {
-            let consumoTipoConsumible = 0;
+        for (const grupoActivo of gruposActivo) {
+            let consumoTipoActivo = 0;
             let totalGEI = 0;
 
-            const tipoConsumibleCalculos = await prisma.consumibleCalculos.create({
+            const tipoActivoCalculos = await prisma.activoCalculos.create({
                 data: {
-                    pesoTotal: 0,
+                    cantidadTotal: 0,
                     totalGEI: 0,
                     periodoCalculoId: period.id,
                     sedeId: sedeId,
-                    tipoConsumibleId: tipoConsumible.id,
+                    grupoActivoId: grupoActivo.id,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
@@ -277,63 +305,60 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
             for (const period of allPeriodsBetweenYears) {
                 const anioId = await getAnioId(String(period.anio));
-                const factorTipoConsumible = await prisma.factorTipoConsumible.findFirst({
-                    where: {anioId, tipoConsumibleId: tipoConsumible.id},
+                const factorTipoActivo = await prisma.factorTipoActivo.findFirst({
+                    where: {anioId, grupoActivoId: grupoActivo.id},
                 });
 
-                if (!factorTipoConsumible) return new NextResponse(`Agregue el factor de tipo de consumible de ${tipoConsumible.nombre} para el año ${period.anio}`, {status: 404});
+                if (!factorTipoActivo) return NextResponse.json({message: `Agregue el factor de tipo de activo de ${grupoActivo.nombre} para el año ${period.anio}`}, {status: 404});
 
-                let whereOptionDetails = whereOptionsConsumible;
-                whereOptionDetails.tipoConsumibleId = tipoConsumible.id;
+                let whereOptionDetails = whereOptionsActivo;
+                whereOptionDetails.sedeId = sedeId;
                 whereOptionDetails.anio_mes = {gte: period.from, lte: period.to,};
 
-                const consumibles = await prisma.consumible.findMany({
-                    where: whereOptionDetails,
+                const activos = await prisma.activo.findMany({
+                    where: {
+                        sedeId: whereOptionDetails.sedeId,
+                        anio_mes: whereOptionDetails.anio_mes,
+                        tipoActivo: {
+                            categoria: {
+                                grupoActivoId: grupoActivo.id
+                            }
+                        }
+                    },
                 });
 
-                const pesoTotalTipoConsumible: number = consumibles.reduce((acc, consumible) => {
-                    if (consumible.anioId === anioId) {
-                        return acc + consumible.pesoTotal;
+                const consumoTotalTipoActivo: number = activos.reduce((acc, activo) => {
+                    if (activo.anioId === anioId) {
+                        return acc + activo.consumoTotal;
                     }
                     return acc;
                 }, 0);
 
-                const totalGEIConsumible: number = pesoTotalTipoConsumible * factorTipoConsumible.factor;
+                const totalGEIActivo: number = consumoTotalTipoActivo * factorTipoActivo.factor;
 
-
-                await prisma.consumibleCalculosDetail.create({
+                await prisma.activoCalculosDetail.create({
                     data: {
-                        tipoConsumibleId: tipoConsumible.id,
-                        factorTipoConsumibleId: factorTipoConsumible.id,
-                        pesoTotal: pesoTotalTipoConsumible,
-                        totalGEI: totalGEIConsumible,
+                        grupoActivoId: grupoActivo.id,
+                        factorTipoActivoId: factorTipoActivo.id,
+                        cantidadTotal: consumoTotalTipoActivo,
+                        totalGEI: totalGEIActivo,
                         anioId: anioId!,
                         sedeId: sedeId,
-                        consumibleCalculosId: tipoConsumibleCalculos.id,
+                        activoCalculosId: tipoActivoCalculos.id,
                         created_at: new Date(),
                         updated_at: new Date(),
                     },
                 });
 
-                consumoTipoConsumible += pesoTotalTipoConsumible;
-                totalGEI += totalGEIConsumible;
-
-                if (tipoConsumible.unidad === "L") {
-                    console.log(factorTipoConsumible);
-                    console.log(tipoConsumible);
-                    console.log(pesoTotalTipoConsumible);
-                    console.log(totalGEIConsumible);
-                    console.log(consumoTipoConsumible);
-                    console.log(totalGEI);
-                }
+                consumoTipoActivo += consumoTotalTipoActivo;
+                totalGEI += totalGEIActivo;
             }
 
-            await prisma.consumibleCalculos.update({
-                where: {id: tipoConsumibleCalculos.id},
+            await prisma.activoCalculos.update({
+                where: {id: tipoActivoCalculos.id},
                 data: {
-                    pesoTotal: consumoTipoConsumible,
-                    totalGEI: totalGEI,
-
+                    cantidadTotal: consumoTipoActivo,
+                    totalGEI: totalGEI / 1000,
                     updated_at: new Date(),
                 }
             })
@@ -341,7 +366,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         return NextResponse.json({message: "Cálculo realizado exitosamente"});
     } catch (error) {
-        console.error("Error calculating consumible", error);
-        return new NextResponse("Error calculating consumible", {status: 500});
+        console.error("Error calculating activo", error);
+        return new NextResponse("Error calculating activo", {status: 500});
     }
 }

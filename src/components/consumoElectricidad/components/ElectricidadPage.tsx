@@ -70,7 +70,7 @@ export default function ElectricidadPage() {
     }, [setTitle]);
     const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
     useEffect(() => {
-        setTitleHeader("CONSUMO DE ENERGÍA");
+        setTitleHeader("Consumo de Energía");
     }, [setTitleHeader]);
     //NAVIGATION
     const {push} = useRouter();

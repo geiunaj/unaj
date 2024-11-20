@@ -7,7 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import React, {useCallback, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {
     Bean,
     Building,
@@ -64,8 +64,17 @@ import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {useMes} from "@/components/combustion/lib/combustion.hook";
+import usePageTitle from "@/lib/stores/titleStore.store";
 
 export default function ActivosPage() {
+    const setTitle = usePageTitle((state) => state.setTitle);
+    useEffect(() => {
+        setTitle("Activos Fijos");
+    }, [setTitle]);
+    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
+    useEffect(() => {
+        setTitleHeader("Activos Fijos");
+    }, [setTitleHeader]);
     // NAVIGATION
     const {push} = useRouter();
     const [page, setPage] = useState(1);
@@ -211,18 +220,14 @@ export default function ActivosPage() {
     const handleClickReport = useCallback(
         async (period: ReportRequest) => {
             const columns = [
-                {header: "N°", key: "rn", width: 5},
-                {header: "TIPO", key: "categoria", width: 25},
-                {
-                    header: "ACTIVO",
-                    key: "tipoActivo",
-                    width: 80,
-                },
-                {header: "GRUPO", key: "grupo", width: 20},
-                {header: "PROCESO", key: "proceso", width: 90},
-                {header: "PESO TOTAL", key: "pesoTotal", width: 20},
-                {header: "UNIDAD", key: "unidad", width: 10},
-                {header: "AÑO", key: "anio", width: 10},
+                {header: "N°", key: "rn", width: 15},
+                {header: "NOMBRE", key: "tipoActivo", width: 60},
+                {header: "CATEGORIA", key: "categoria", width: 20},
+                {header: "CANTIDAD COMPRADA [S/.]", key: "cantidadComprada", width: 20},
+                {header: "COSTO TOTAL [S/.]", key: "costoTotal", width: 20},
+                {header: "CANTIDAD CONSUMIDA [Kg]", key: "cantidadConsumida", width: 20},
+                {header: "CONSUMO TOTAL [Kg]", key: "consumoTotal", width: 20},
+                {header: "AÑO", key: "anio", width: 20},
                 {header: "MES", key: "mes", width: 20},
                 {header: "SEDE", key: "sede", width: 20},
             ];
@@ -267,19 +272,13 @@ export default function ActivosPage() {
     }
 
     return (
-        <div className="w-full max-w-screen-xl h-full ">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Activos</h1>
-                    <h2 className="text-xs text-muted-foreground">
-                        Huella de carbono
-                    </h2>
-                </div>
-                <div className="flex flex-col items-end gap-2">
+        <div className="w-full max-w-screen-xl h-full">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-start mb-6">
+                <div className="flex flex-col items-end w-full gap-2">
                     <div
-                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
+                        className="grid grid-cols-2 grid-rows-1 w-full gap-2 sm:flex sm:justify-between justify-center">
                         <div
-                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
 
                             <SelectFilter
                                 list={tipoActivo.data!}
@@ -331,18 +330,14 @@ export default function ActivosPage() {
                                 }, true)}`}
                                 columns={[
                                     {header: "N°", key: "rn", width: 5},
-                                    {header: "TIPO", key: "categoria", width: 20},
-                                    {
-                                        header: "ACTIVO",
-                                        key: "tipoActivo",
-                                        width: 25,
-                                    },
-                                    {header: "GRUPO", key: "grupo", width: 20},
-                                    {header: "PROCESO", key: "proceso", width: 10},
-                                    {header: "PESO TOTAL", key: "pesoTotal", width: 10},
-                                    {header: "UNIDAD", key: "unidad", width: 10},
-                                    {header: "AÑO", key: "anio", width: 10},
-                                    {header: "MES", key: "mes", width: 10},
+                                    {header: "NOMBRE", key: "tipoActivo", width: 35},
+                                    {header: "CATEGORIA", key: "categoria", width: 8},
+                                    {header: "CANTIDAD COMPRADA [S/.]", key: "cantidadComprada", width: 8},
+                                    {header: "COSTO TOTAL [S/.]", key: "costoTotal", width: 8},
+                                    {header: "CANTIDAD CONSUMIDA [Kg]", key: "cantidadConsumida", width: 8},
+                                    {header: "CONSUMO TOTAL [Kg]", key: "consumoTotal", width: 8},
+                                    {header: "AÑO", key: "anio", width: 5},
+                                    {header: "MES", key: "mes", width: 5},
                                     {header: "SEDE", key: "sede", width: 10},
                                 ]}
                                 title="REPORTE DE ACTIVOS"
@@ -413,7 +408,7 @@ export default function ActivosPage() {
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs">
                                         <Badge variant="secondary">
-                                            {10 * (page - 1) + index + 1}
+                                            {item.rn}
                                         </Badge>
                                     </TableCell>
                                     <TableCell

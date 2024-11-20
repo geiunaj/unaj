@@ -16,18 +16,19 @@ import ButtonBack from "@/components/ButtonBack";
 import {useRouter} from "next/navigation";
 import ReportComponent from "@/components/ReportComponent";
 import GenerateReport from "@/lib/utils/generateReport";
-import {errorToast, formatPeriod} from "@/lib/utils/core.function";
+import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import {
-    useConsumibleCalculos,
-    useConsumibleCalculosReport, useSedes
-} from "@/components/consumibles/lib/consumiblesCalculos.hooks";
+    useActivoCalculos,
+    useActivoCalculosReport, useSedes
+} from "@/components/activos/lib/activoCalculos.hooks";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {createConsumibleCalculate} from "@/components/consumibles/services/consumibleCalculate.actions";
+import {createActivoCalculate} from "@/components/activos/services/activosCalculate.actions";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {Button} from "@/components/ui/button";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
-import {ConsumibleCalcResponse} from "@/components/consumibles/services/consumibleCalculate.interface";
+import {ActivoCalcResponse} from "@/components/activos/services/activosCalculate.interface";
 import CustomPagination from "@/components/Pagination";
+import {FactoresEmision} from "@/components/consumoAgua/services/consumoAguaCalculos.interface";
 
 export default function ActivosCalculate() {
     const {push} = useRouter();
@@ -40,13 +41,13 @@ export default function ActivosCalculate() {
     const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     // HOOKS
-    const consumibleCalculos = useConsumibleCalculos({
+    const activoCalculos = useActivoCalculos({
         sedeId: parseInt(selectedSede),
         from: from,
         to: to,
         page,
     });
-    const consumibleCalculosReport = useConsumibleCalculosReport({
+    const activoCalculosReport = useActivoCalculosReport({
         sedeId: parseInt(selectedSede),
         from: from,
         to: to,
@@ -54,48 +55,51 @@ export default function ActivosCalculate() {
 
     const sedes = useSedes();
 
-    const handleConsumible = () => {
-        push("/consumible");
+    const handleActivo = () => {
+        push("/activos-fijos");
     };
 
     const handleSedeChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedSede(value);
-        await consumibleCalculos.refetch();
-        await consumibleCalculosReport.refetch();
-    }, [consumibleCalculos, consumibleCalculosReport]);
+        await activoCalculos.refetch();
+        await activoCalculosReport.refetch();
+    }, [activoCalculos, activoCalculosReport]);
 
     const handleFromChange = useCallback(async (value: string) => {
         await setPage(1);
         await setFrom(value);
-        await consumibleCalculos.refetch();
-        await consumibleCalculosReport.refetch();
-    }, [consumibleCalculos, consumibleCalculosReport]);
+        await activoCalculos.refetch();
+        await activoCalculosReport.refetch();
+    }, [activoCalculos, activoCalculosReport]);
 
     const handleToChange = useCallback(async (value: string) => {
         await setPage(1);
         await setTo(value);
-        await consumibleCalculos.refetch();
-        await consumibleCalculosReport.refetch();
-    }, [consumibleCalculos, consumibleCalculosReport]);
+        await activoCalculos.refetch();
+        await activoCalculosReport.refetch();
+    }, [activoCalculos, activoCalculosReport]);
 
     const handleCalculate = useCallback(async () => {
-        await createConsumibleCalculate({
+        await createActivoCalculate({
             sedeId: selectedSede ? Number(selectedSede) : undefined,
             from,
             to,
-        }).catch((error) => {
-            errorToast(error.response.data.message);
-        });
-        consumibleCalculos.refetch();
-        consumibleCalculosReport.refetch();
-    }, [selectedSede, from, to, consumibleCalculos, consumibleCalculosReport]);
+        }).then(() => {
+            successToast("Calculo realizado con éxito");
+        })
+            .catch((error: any) => {
+                errorToast(error.response.data.message);
+            });
+        activoCalculos.refetch();
+        activoCalculosReport.refetch();
+    }, [selectedSede, from, to, activoCalculos, activoCalculosReport]);
 
 
     const handleClickExcelReport = useCallback(async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10},
-            {header: "CONSUMIBLE", key: "tipoConsumible", width: 80},
+            {header: "ACTIVO", key: "tipoActivo", width: 80},
             {header: "CATEGORIA", key: "categoria", width: 25},
             {header: "UNIDAD", key: "unidad", width: 10},
             // {header: "GRUPO", key: "grupo", width: 25},
@@ -105,9 +109,9 @@ export default function ActivosCalculate() {
         ];
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
-        const data = await consumibleCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE CONSUMIBLES", "Consumibles");
-    }, [consumibleCalculosReport]);
+        const data = await activoCalculosReport.refetch();
+        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE ACTIVOS", "Activos");
+    }, [activoCalculosReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
 
@@ -119,14 +123,14 @@ export default function ActivosCalculate() {
 
     const handlePageChage = async (page: number) => {
         await setPage(page);
-        await consumibleCalculos.refetch();
+        await activoCalculos.refetch();
     };
 
-    if (consumibleCalculos.isLoading || consumibleCalculosReport.isLoading || sedes.isLoading) {
+    if (activoCalculos.isLoading || activoCalculosReport.isLoading || sedes.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (consumibleCalculos.isError || consumibleCalculosReport.isError || sedes.isError) {
+    if (activoCalculos.isError || activoCalculosReport.isError || sedes.isError) {
         return <div>Error al cargar los datos</div>;
     }
 
@@ -134,10 +138,10 @@ export default function ActivosCalculate() {
         <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="flex gap-4 items-center">
-                    <ButtonBack onClick={handleConsumible}/>
+                    <ButtonBack onClick={handleActivo}/>
                     <div className="font-Manrope">
                         <h1 className="text-base text-foreground font-bold">
-                            Emisiones de Consumibles
+                            Emisiones de Activos
                         </h1>
                         <h2 className="text-xs sm:text-sm text-muted-foreground">
                             Huella de carbono
@@ -182,11 +186,11 @@ export default function ActivosCalculate() {
                             </Button>
 
                             <ExportPdfReport
-                                data={consumibleCalculosReport.data!.data}
-                                fileName={`REPORTE CALCULOS DE CONSUMIBLES_${formatPeriod({from, to}, true)}`}
+                                data={activoCalculosReport.data!.data}
+                                fileName={`REPORTE CALCULOS DE ACTIVOS_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 10},
-                                    {header: "CONSUMIBLE", key: "tipoConsumible", width: 100},
+                                    {header: "ACTIVO", key: "tipoActivo", width: 100},
                                     {header: "CATEGORIA", key: "categoria", width: 20},
                                     {header: "UNIDAD", key: "unidad", width: 15},
                                     // {header: "GRUPO", key: "grupo", width: 15},
@@ -194,7 +198,7 @@ export default function ActivosCalculate() {
                                     {header: "PESO TOTAL", key: "pesoTotal", width: 20},
                                     {header: "TOTAL GEI", key: "totalGEI", width: 20},
                                 ]}
-                                title="REPORTE DE CALCULOS DE CONSUMIBLES"
+                                title="REPORTE DE CALCULOS DE ACTIVOS"
                                 period={formatPeriod({from, to})}
                             />
 
@@ -213,37 +217,23 @@ export default function ActivosCalculate() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead
-                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
-                                CONSUMIBLE
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                SEDE
                             </TableHead>
                             <TableHead
                                 className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
-                                TIPO
+                                GRUPO DE ACTIVO
                             </TableHead>
-                            <TableHead
-                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
-                                UNIDAD
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                FACTOR DE EMISIÓN
                             </TableHead>
-                            <TableHead
-                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
-                                GRUPO
-                            </TableHead>
-                            <TableHead className="font-Manrope text-sm font-bold text-center">
-                                PROCESO
-                            </TableHead>
-                            <TableHead
-                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
-                                PESO TOTAL
-                            </TableHead>
-                            <TableHead
-                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
-                                EMISIONES GEI
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                TOTAL EMISIONES GEI
                             </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {consumibleCalculos.data!.data.length === 0 && (
+                        {activoCalculos.data!.data.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={7} className="text-center">
                                     Click en el botón <strong className="text-primary">Calcular</strong> para obtener
@@ -251,37 +241,30 @@ export default function ActivosCalculate() {
                                 </TableCell>
                             </TableRow>
                         )}
-                        {consumibleCalculos.data!.data.map(
-                            (ConsumibleCalculate: ConsumibleCalcResponse) => (
+                        {activoCalculos.data!.data.map(
+                            (ActivoCalculate: ActivoCalcResponse) => (
                                 <TableRow
                                     className="text-center"
-                                    key={ConsumibleCalculate.id}
+                                    key={ActivoCalculate.id}
                                 >
-                                    <TableCell
-                                        className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis text-start">
-                                        {ConsumibleCalculate.tipoConsumible}
-                                    </TableCell>
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {ConsumibleCalculate.categoria}
-                                    </TableCell>
-                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {ConsumibleCalculate.unidad}
-                                    </TableCell>
-                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {ConsumibleCalculate.grupo}
+                                        {ActivoCalculate.sede}
                                     </TableCell>
                                     <TableCell
-                                        className="text-xs max-w-36 whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {ConsumibleCalculate.proceso}
+                                        className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
+                                        {ActivoCalculate.grupoActivo}
+                                    </TableCell>
+                                    <TableCell className="text-xs flex gap-2 justify-center sm:text-sm">
+                                        {ActivoCalculate.factoresEmision.map((factorEmision: FactoresEmision) => (
+                                            <Badge key={factorEmision.anio + factorEmision.factor} variant="secondary">
+                                                {factorEmision.factor}<span
+                                                className="text-[8px] ps-[2px] text-muted-foreground">{factorEmision.anio}</span>
+                                            </Badge>
+                                        ))}
                                     </TableCell>
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         <Badge variant="default">
-                                            {ConsumibleCalculate.pesoTotal}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        <Badge variant="default">
-                                            {ConsumibleCalculate.totalGEI}
+                                            {ActivoCalculate.totalGEI}
                                         </Badge>
                                     </TableCell>
                                 </TableRow>
@@ -289,9 +272,9 @@ export default function ActivosCalculate() {
                         )}
                     </TableBody>
                 </Table>
-                {consumibleCalculos.data!.meta.totalPages > 1 && (
+                {activoCalculos.data!.meta.totalPages > 1 && (
                     <CustomPagination
-                        meta={consumibleCalculos.data!.meta}
+                        meta={activoCalculos.data!.meta}
                         onPageChange={handlePageChage}
                     />
                 )}

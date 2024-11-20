@@ -13,3 +13,15 @@ const TitleUpdater: React.FC = () => {
 };
 
 export default TitleUpdater;
+
+
+export const ChangeTitle = (title: string) => {
+    const setTitle = usePageTitle((state) => state.setTitle);
+    useEffect(() => {
+        setTitle(title);
+    }, [setTitle, title]);
+    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
+    useEffect(() => {
+        setTitleHeader(title);
+    }, [setTitleHeader, title]);
+}

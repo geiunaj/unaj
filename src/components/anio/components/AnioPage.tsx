@@ -27,8 +27,10 @@ import {Anio} from "@/components/anio/services/anio.interface";
 import {CreateFormAnio} from "@/components/anio/components/CreateFormAnio";
 import {useAnio} from "@/components/anio/lib/anio.hook";
 import {deleteAnio} from "@/components/anio/services/anio.actions";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function AnioPage() {
+    ChangeTitle("Años");
     // DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -78,13 +80,7 @@ export default function AnioPage() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Año</h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">
-                        Años Registrados
-                    </h2>
-                </div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-center mb-6">
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

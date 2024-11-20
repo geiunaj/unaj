@@ -35,12 +35,14 @@ import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {deleteTipoCombustible} from "@/components/tipoCombustible/services/tipoCombustible.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import { useGPW } from "../lib/gwp.hook";
-import { GPWCollection } from "../services/gwp.interface";
-import { UpdateFormGWP } from "./UpdateGWP";
-import { CreateFormGWP } from "./AddGWP";
+import {useGPW} from "../lib/gwp.hook";
+import {GPWCollection} from "../services/gwp.interface";
+import {UpdateFormGWP} from "./UpdateGWP";
+import {CreateFormGWP} from "./AddGWP";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function GPWPage() {
+    ChangeTitle("Potencial de Calentamiento Global");
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -91,11 +93,7 @@ export default function GPWPage() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Potencial de Calentamiento Global</h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground"> Huella de carbono </h2>
-                </div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-center mb-6">
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -157,7 +155,7 @@ export default function GPWPage() {
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="default"> {item.valor}</Badge>
                                     </TableCell>
-                                
+
                                     <TableCell className="text-xs sm:text-sm p-1">
                                         <div className="flex justify-center gap-4">
                                             {/*UPDATE*/}

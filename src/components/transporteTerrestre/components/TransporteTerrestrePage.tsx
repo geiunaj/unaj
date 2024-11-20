@@ -69,7 +69,7 @@ export default function TransporteTerrestrePage() {
     }, [setTitle]);
     const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
     useEffect(() => {
-        setTitleHeader("TRANSPORTE TERRESTRE");
+        setTitleHeader("Transporte Terrestre");
     }, [setTitleHeader]);
 
     //NAVIGATION

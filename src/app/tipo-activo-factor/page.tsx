@@ -1,11 +1,12 @@
 "use client";
+
 import LayoutWrapper from "@/components/Layout/layout";
-import ActivosCalculate from "@/components/activos/components/ActivosCalculate";
+import ActivoFactorPage from "@/components/tipoActivo/components/ActivoFactorPage";
 
 export default function Page() {
     return (
         <LayoutWrapper>
-            <ActivosCalculate/>
+            <ActivoFactorPage/>
         </LayoutWrapper>
     );
 }

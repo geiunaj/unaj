@@ -41,8 +41,10 @@ import {useAnio} from "@/components/combustion/lib/combustion.hook";
 import {FactorEmisionSEINCollection} from "../services/factorEmisionSEIN.interface";
 import {FormFactorSEIN} from "./createFactorEmisionSEIN";
 import {UpdateFormFactorSEIN} from "./updateFactorEmisionSEIN";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function FactorEmisionSEINPage() {
+    ChangeTitle("Factor de Emisión SEIN");
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -115,19 +117,10 @@ export default function FactorEmisionSEINPage() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">
-                        {" "}
-                        Factor Emision SEIN{" "}
-                    </h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">
-                        {" "}
-                        Huella de carbono{" "}
-                    </h2>
-                </div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-center mb-6">
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
-                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
+                    <div
+                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
                         <SelectFilter
                             list={aniosQuery.data!}
                             itemSelected={selectAnio}

@@ -48,8 +48,10 @@ import {CreateFormTipoConsumibleFactor} from "@/components/tipoConsumible/compon
 import {
     UpdateFormTipoConsumibleFactor
 } from "@/components/tipoConsumible/components/UpdateFormTipoConsumibleFactor";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function ConsumibleFactorPage() {
+    ChangeTitle("Factor de Emisión de Consumible");
 
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -138,11 +140,7 @@ export default function ConsumibleFactorPage() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Factor de Emisión de Consumible</h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
-                </div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-center mb-6">
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div
                         className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">

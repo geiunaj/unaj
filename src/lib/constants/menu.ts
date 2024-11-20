@@ -188,9 +188,19 @@ export const menu: MenuItem[] = [
                 href: "/tipo-consumible-factor",
             },
             {
+                title: "Factores de Activos",
+                icon: "LampDesk",
+                href: "/tipo-activo-factor",
+            },
+            {
                 title: "Factor de Transporte Aereo",
                 icon: "Plane",
                 href: "/transporte-aereo-factor",
+            },
+            {
+                title: "Factor de Transporte Terrestre",
+                icon: "Bus",
+                href: "/transporte-terrestre-factor",
             },
         ],
     },

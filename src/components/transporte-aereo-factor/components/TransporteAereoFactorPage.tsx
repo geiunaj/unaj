@@ -44,8 +44,10 @@ import {
 } from "@/components/transporte-aereo-factor/components/UpdateTransporteAereoFactor";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {deleteTransporteAereoFactor} from "@/components/transporte-aereo-factor/services/transporteAereoFactor.actions";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function TransporteAereoFactorPage() {
+    ChangeTitle("Factor de Emisión de Transporte Aéreo");
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -118,17 +120,7 @@ export default function TransporteAereoFactorPage() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">
-                        {" "}
-                        Factor de Transporte Aereo{" "}
-                    </h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">
-                        {" "}
-                        Huella de carbono{" "}
-                    </h2>
-                </div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-center mb-6">
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
                         <SelectFilter
@@ -171,13 +163,13 @@ export default function TransporteAereoFactorPage() {
                                 N°
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                {"FACTOR"} <br/> {"<1600"}
+                                {"FACTOR"} {"[<1600]"}
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                {"FACTOR"} <br/> {"1600-3700"}
+                                {"FACTOR"} {"[1600-3700]"}
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                {"FACTOR"} <br/> {">3700"}
+                                {"FACTOR"} {"[>3700]"}
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO

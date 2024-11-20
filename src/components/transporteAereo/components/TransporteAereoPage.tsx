@@ -75,7 +75,7 @@ export default function TransporteAereoPage() {
     }, [setTitle]);
     const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
     useEffect(() => {
-        setTitleHeader("TRANSPORTE AÉREO");
+        setTitleHeader("Transporte Aéreo");
     }, [setTitleHeader]);
 
     //NAVIGATION

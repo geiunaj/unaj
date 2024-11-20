@@ -17,13 +17,13 @@ import SkeletonForm from "@/components/Layout/skeletonForm";
 import {useQuery} from "@tanstack/react-query";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import {getAnio} from "@/components/anio/services/anio.actions";
+import {getGrupoActivo} from "@/components/tipoActivo/services/grupoActivo.actions";
 import {
     ActivoFactorRequest,
     CreateActivoFactorProps
 } from "@/components/tipoActivo/services/tipoActivoFactor.interface";
 import {createFactorEmisionActivo} from "@/components/tipoActivo/services/tipoActivoFactor.actions";
-import {getAnio} from "@/components/anio/services/anio.actions";
-import {getTiposActivo} from "@/components/tipoActivo/services/tipoActivo.actions";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -31,7 +31,7 @@ const requiredMessage = (field: string) => `Ingrese un ${field}`;
 const TipoActivoFactor = z.object({
     factor: z.preprocess((val) => parseFloat(val as string,),
         z.number().min(0, "Ingresa un valor mayor a 0")),
-    grupoActivoId: z.string().min(1, "Seleccione un tipo de activo"),
+    grupoActivoId: z.string().min(1, "Seleccione un grupo de activo"),
     anioId: z.string().min(1, "Seleccione un año"),
     fuente: z.string().min(1, "Ingrese una fuente"),
     link: z.string().optional(),
@@ -51,14 +51,14 @@ export function CreateFormTipoActivoFactor({
         },
     });
 
-    const tiposActivo = useQuery({
-        queryKey: ["tipoActivoFactorC"],
-        queryFn: () => getTiposActivo(),
+    const gruposActivo = useQuery({
+        queryKey: ["grupoActivoFactorC"],
+        queryFn: () => getGrupoActivo(),
         refetchOnWindowFocus: false,
     });
 
     const anios = useQuery({
-        queryKey: ["aniosFC"],
+        queryKey: ["aniosFactorTipoActivoFactor"],
         queryFn: () => getAnio(),
         refetchOnWindowFocus: false,
     });
@@ -80,7 +80,7 @@ export function CreateFormTipoActivoFactor({
         }
     };
 
-    if (tiposActivo.isLoading || anios.isLoading) {
+    if (gruposActivo.isLoading || anios.isLoading) {
         return <SkeletonForm/>;
     }
 
@@ -92,25 +92,25 @@ export function CreateFormTipoActivoFactor({
                         className="w-full flex flex-col gap-2"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
-                        {/*TIPO DE ACTIVO*/}
+                        {/*GRUPO DE ACTIVO*/}
                         <FormField
                             name="grupoActivoId"
                             control={form.control}
                             render={({field}) => (
                                 <FormItem className="pt-2 w-full">
-                                    <FormLabel>Tipo Activo</FormLabel>
+                                    <FormLabel>Grupo Activo</FormLabel>
                                     <Select onValueChange={field.onChange}>
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Tipo Activo"/>
+                                                <SelectValue placeholder="Grupo Activo"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {tiposActivo.data!.map((tipoActivo) => (
-                                                    <SelectItem key={tipoActivo.id}
-                                                                value={tipoActivo.id.toString()}>
-                                                        {tipoActivo.nombre}
+                                                {gruposActivo.data!.map((grupoActivo) => (
+                                                    <SelectItem key={grupoActivo.id}
+                                                                value={grupoActivo.id.toString()}>
+                                                        {grupoActivo.nombre}
                                                     </SelectItem>
                                                 ))}
                                             </SelectGroup>

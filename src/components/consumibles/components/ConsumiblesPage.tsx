@@ -7,7 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import React, {useCallback, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {
     Bean,
     Building,
@@ -64,8 +64,18 @@ import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {useMes} from "@/components/combustion/lib/combustion.hook";
+import usePageTitle from "@/lib/stores/titleStore.store";
 
 export default function ConsumiblePage() {
+    const setTitle = usePageTitle((state) => state.setTitle);
+    useEffect(() => {
+        setTitle("Consumibles Generales");
+    }, [setTitle]);
+    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
+    useEffect(() => {
+        setTitleHeader("Consumibles Generales");
+    }, [setTitleHeader]);
+
     // NAVIGATION
     const {push} = useRouter();
     const [page, setPage] = useState(1);
@@ -254,20 +264,13 @@ export default function ConsumiblePage() {
     }
 
     return (
-        <div className="w-full max-w-screen-xl h-full ">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Consumibles</h1>
-                    <h2 className="text-xs text-muted-foreground">
-                        Huella de carbono
-                    </h2>
-                </div>
-                <div className="flex flex-col items-end gap-2">
+        <div className="w-full max-w-screen-xl h-full">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-start mb-6">
+                <div className="flex flex-col items-end w-full gap-2">
                     <div
-                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
+                        className="grid grid-cols-2 grid-rows-1 w-full gap-2 sm:flex sm:justify-between justify-center">
                         <div
-                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
-
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
                             <SelectFilter
                                 list={tipoConsumible.data!}
                                 itemSelected={selectedTipoConsumibleId}

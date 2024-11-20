@@ -184,13 +184,27 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             totalEmissions: 0,
             generalContributions: 0
         };
+
+        const ActivosFijosData = await prisma.activoCalculos.findMany({
+            where: {
+                PeriodoCalculo: {
+                    fechaInicioValue: {
+                        gte: fromValue,
+                        lte: toValue,
+                    },
+                },
+                sedeId: sedeId ? parseInt(sedeId) : undefined,
+            }
+        });
+        const co2emmissionsActivosFijos = parseFloat((ActivosFijosData.reduce((acc, curr) => acc + curr.totalGEI, 0)).toFixed(2).toString());
+
         const ActivosFijos: SummaryItem = {
             emissionSource: "Activos Fijos",
-            co2Emissions: 0,
+            co2Emissions: co2emmissionsActivosFijos,
             ch4Emissions: 0,
             n20Emissions: 0,
             hfcEmissions: 0,
-            totalEmissions: 0,
+            totalEmissions: co2emmissionsActivosFijos,
             generalContributions: 0
         };
         const ConsumiblesGenerales: SummaryItem = {

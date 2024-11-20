@@ -27,8 +27,10 @@ import {deleteArea} from "@/components/area/services/area.actions";
 import {Area} from "@/components/area/services/area.interface";
 import {CreateFormArea} from "@/components/area/components/CreateFormArea";
 import {useArea} from "@/components/area/lib/area.hook";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function AreaPage() {
+    ChangeTitle("Áreas");
     // DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -78,13 +80,7 @@ export default function AreaPage() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Area</h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">
-                        Areas de las Sedes
-                    </h2>
-                </div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-center mb-6">
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

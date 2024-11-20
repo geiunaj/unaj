@@ -14,13 +14,6 @@ import {
 import {Input} from "@/components/ui/input";
 import {Button} from "../../ui/button";
 import SkeletonForm from "@/components/Layout/skeletonForm";
-import {
-    getTipoActivoById,
-    getTipoActivoCategoria,
-    getTipoActivoGrupo,
-    getTiposActivo,
-    updateTipoActivo,
-} from "../services/tipoActivo.actions";
 import {useQuery} from "@tanstack/react-query";
 import {
     Select,
@@ -31,17 +24,16 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import {
-    ActivoFactorRequest,
-    CreateActivoFactorProps,
-    UpdateActivoFactorProps,
-} from "@/components/tipoActivo/services/tipoActivoFactor.interface";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {
-    createFactorEmisionActivo,
     getFactorEmisionActivoById,
-    updateFactorEmisionActivo,
+    updateFactorEmisionActivo
 } from "@/components/tipoActivo/services/tipoActivoFactor.actions";
+import {getGrupoActivo} from "@/components/tipoActivo/services/grupoActivo.actions";
+import {
+    ActivoFactorRequest,
+    UpdateActivoFactorProps
+} from "@/components/tipoActivo/services/tipoActivoFactor.interface";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -72,14 +64,14 @@ export function UpdateFormTipoActivoFactor({
         },
     });
 
-    const tipoActivoFactor = useQuery({
-        queryKey: ["tipoActivoFactorId", id],
+    const grupoActivoFactor = useQuery({
+        queryKey: ["grupoActivoFactorId", id],
         queryFn: () => getFactorEmisionActivoById(id),
         refetchOnWindowFocus: false,
     });
-    const tiposActivo = useQuery({
-        queryKey: ["tipoActivoFactorC"],
-        queryFn: () => getTiposActivo(),
+    const gruposActivo = useQuery({
+        queryKey: ["grupoActivoFactorC"],
+        queryFn: () => getGrupoActivo(),
         refetchOnWindowFocus: false,
     });
 
@@ -90,17 +82,17 @@ export function UpdateFormTipoActivoFactor({
     });
 
     const loadForm = useCallback(async () => {
-        if (tipoActivoFactor.data) {
-            const tipoActivoData = await tipoActivoFactor.data;
+        if (grupoActivoFactor.data) {
+            const grupoActivoData = await grupoActivoFactor.data;
             form.reset({
-                factor: tipoActivoData.factor,
-                grupoActivoId: tipoActivoData.grupoActivoId.toString(),
-                anioId: tipoActivoData.anioId.toString(),
-                fuente: tipoActivoData.fuente,
-                link: tipoActivoData.link,
+                factor: grupoActivoData.factor,
+                grupoActivoId: grupoActivoData.grupoActivoId.toString(),
+                anioId: grupoActivoData.anioId.toString(),
+                fuente: grupoActivoData.fuente,
+                link: grupoActivoData.link,
             });
         }
-    }, [tipoActivoFactor.data, id]);
+    }, [grupoActivoFactor.data, id]);
 
     useEffect(() => {
         loadForm();
@@ -126,11 +118,11 @@ export function UpdateFormTipoActivoFactor({
         }
     };
 
-    if (tipoActivoFactor.isLoading || tiposActivo.isLoading || anios.isLoading) {
+    if (grupoActivoFactor.isLoading || gruposActivo.isLoading || anios.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (tipoActivoFactor.isError || tiposActivo.isError || anios.isError) {
+    if (grupoActivoFactor.isError || gruposActivo.isError || anios.isError) {
         onClose();
         errorToast("Error al cargar el Tipo de Activo");
     }
@@ -143,27 +135,25 @@ export function UpdateFormTipoActivoFactor({
                         className="w-full flex flex-col gap-2"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
-                        {/*TIPO DE ACTIVO*/}
+                        {/*GRUPO DE ACTIVO*/}
                         <FormField
                             name="grupoActivoId"
                             control={form.control}
                             render={({field}) => (
                                 <FormItem className="pt-2 w-full">
-                                    <FormLabel>Tipo Activo</FormLabel>
+                                    <FormLabel>Grupo Activo</FormLabel>
                                     <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Tipo Activo"/>
+                                                <SelectValue placeholder="Grupo Activo"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {tiposActivo.data!.map((tipoActivo) => (
-                                                    <SelectItem
-                                                        key={tipoActivo.id}
-                                                        value={tipoActivo.id.toString()}
-                                                    >
-                                                        {tipoActivo.nombre}
+                                                {gruposActivo.data!.map((grupoActivo) => (
+                                                    <SelectItem key={grupoActivo.id}
+                                                                value={grupoActivo.id.toString()}>
+                                                        {grupoActivo.nombre}
                                                     </SelectItem>
                                                 ))}
                                             </SelectGroup>
@@ -201,7 +191,7 @@ export function UpdateFormTipoActivoFactor({
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Año</FormLabel>
-                                        <Select onValueChange={field.onChange}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl className="w-full">
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Año"/>

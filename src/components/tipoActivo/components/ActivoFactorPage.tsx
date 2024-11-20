@@ -48,8 +48,10 @@ import {CreateFormTipoActivoFactor} from "@/components/tipoActivo/components/Cre
 import {
     UpdateFormTipoActivoFactor
 } from "@/components/tipoActivo/components/UpdateFormTipoActivoFactor";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function ActivoFactorPage() {
+    ChangeTitle("Factor de Emisión de Activo");
 
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -138,11 +140,7 @@ export default function ActivoFactorPage() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">Factor de Emisión de Activo</h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">Huella de carbono</h2>
-                </div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-center mb-6">
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div
                         className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
@@ -223,13 +221,12 @@ export default function ActivoFactorPage() {
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm p-1">
                                         <div className="flex items-center justify-center gap-4">
-                                            <Link href={item.link} target="_blank">
+                                            {item.link && <Link href={item.link} target="_blank">
                                                 <Button className="h-7 flex items-center gap-2" size="sm"
                                                         variant="secondary">
                                                     <Link2 className="h-3 w-3"/>
-                                                    <span className="hidden xl:block">Fuente</span>
                                                 </Button>
-                                            </Link>
+                                            </Link>}
                                             {/*UPDATE*/}
                                             <Button
                                                 className="h-7 w-7"

@@ -62,7 +62,7 @@ export function UpdateFormTransporteTerrestreFactor({id, onClose}: UpdateTranspo
 
     const loadForm = useCallback(async () => {
         if (transporteTerrestreFactor.data) {
-            const factorData = transporteTerrestreFactor.data;
+            const factorData = await transporteTerrestreFactor.data;
             form.reset({
                 anio: factorData.anio_id.toString(),
                 factor: factorData.factor,

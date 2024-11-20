@@ -47,11 +47,13 @@ const styles = StyleSheet.create({
     },
     tableHeader: {
         alignItems: "center",
+        textAlign: "center",
         flexDirection: "row",
         backgroundColor: "#0844C9",
         color: "#FFFFFF",
         fontFamily: "Inter-SemiBold",
-        height: "24px",
+        paddingTop: 4,
+        paddingBottom: 4,
         fontSize: 10,
         borderTopLeftRadius: 2,
         borderTopRightRadius: 2
@@ -131,13 +133,25 @@ const ReportDocument: React.FC<ReportDocumentProps> = ({data, columns, title, pe
 
         return (
             <View style={styles.table}>
+                {/*HEADER*/}
                 <View style={styles.tableHeader}>
                     {columns.map((column, index) => (
                         <View style={{...styles.tableCol, width: `${column.width}%`}} key={index}>
-                            <Text style={styles.tableCell}>{column.header}</Text>
+                            <Text style={styles.tableCell}>
+                                {
+                                    column.header.split(" ").map((word, index) => (
+                                        <Text key={index}>
+                                            {word}
+                                            <Text>{"\n"}</Text>
+                                        </Text>
+                                    ))
+                                }
+                            </Text>
                         </View>
                     ))}
                 </View>
+
+                {/*ROWS*/}
                 {pageData.map((row, rowIndex) => (
                     <View style={styles.tableRow} key={rowIndex}>
                         {columns.map((column, colIndex) => (
@@ -154,10 +168,10 @@ const ReportDocument: React.FC<ReportDocumentProps> = ({data, columns, title, pe
     return (
         <Document>
             {pageNumbers.map((pageNumber) => (
-                <Page size="A4" orientation="landscape" key={pageNumber}>
+                <Page size="A3" orientation="landscape" key={pageNumber}>
                     <View style={styles.pageHeader}>
                         <Svg
-                            width="842"
+                            width="4200"
                             height="100%"
                             style={{position: "absolute", top: 0, left: 0}}
                         >

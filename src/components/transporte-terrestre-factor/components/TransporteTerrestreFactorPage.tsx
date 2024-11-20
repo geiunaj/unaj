@@ -48,8 +48,10 @@ import {errorToast, successToast} from "@/lib/utils/core.function";
 import {
     deleteTransporteTerrestreFactor
 } from "@/components/transporte-terrestre-factor/services/transporteTerrestreFactor.actions";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function TransporteTerrestreFactorPage() {
+    ChangeTitle("Factor de Emisión de Transporte Terrestre");
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -122,17 +124,7 @@ export default function TransporteTerrestreFactorPage() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="font-Manrope">
-                    <h1 className="text-base text-foreground font-bold">
-                        {" "}
-                        Factor de Transporte Terrestre{" "}
-                    </h1>
-                    <h2 className="text-xs sm:text-sm text-muted-foreground">
-                        {" "}
-                        Huella de carbono{" "}
-                    </h2>
-                </div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-center mb-6">
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
                         <SelectFilter

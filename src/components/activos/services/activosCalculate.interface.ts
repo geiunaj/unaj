@@ -29,15 +29,20 @@ export interface ActivoCalcRequest {
 }
 
 export interface ActivoCalcResponse {
+    rn: number;
     id: number;
-    tipoActivoId: number;
+    grupoActivoId: number;
     periodoCalculoId: number;
     sedeId: number;
-    pesoTotal: number;
-    totalGEI: number;
-    tipoActivo: string;
-    categoria: string;
-    grupo: string;
-    proceso: string;
-    unidad: string;
+    cantidadTotal: string;
+    totalGEI: string;
+    grupoActivo: string;
+    sede: string;
+    factoresEmision: FactoresEmision[];
+    factoresEmisionString: string;
+}
+
+export interface FactoresEmision {
+    anio: string;
+    factor: number;
 }

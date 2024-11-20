@@ -75,7 +75,7 @@ export default function TaxiPage() {
     }, [setTitle]);
     const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
     useEffect(() => {
-        setTitleHeader("TAXIS");
+        setTitleHeader("Taxis");
     }, [setTitleHeader]);
 
     //NAVIGATION
