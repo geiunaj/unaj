@@ -114,9 +114,12 @@ export default function ActivosPage() {
         "N°",
         "NOMBRE",
         "CATEGORIA",
-        "PESO [Kg]",
-        "COSTO | UNITARIO",
-        "LINK",
+        "CANTIDAD | CONSUMIDA $ [Kg]",
+        "CONSUMO | TOTAL $ [Kg]",
+        "CANTIDAD | COMPRADA $ [Kg]",
+        "COSTO | TOTAL $ [S/.]",
+        "AÑO",
+        "MES",
         "ACCIONES",
     ];
 
@@ -173,7 +176,7 @@ export default function ActivosPage() {
     );
 
     const handleCalculate = () => {
-        push("/activo/calculos");
+        push("/activos-fijos/calculos");
     };
 
     const handleClose = useCallback(async () => {
@@ -372,18 +375,36 @@ export default function ActivosPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            {COLUMS.map((item) => (
-                                <TableHead
-                                    key={item}
-                                    className="text-xs sm:text-sm font-bold text-center"
-                                >
-                                    {item.split("|").map((part, index) => (
-                                        <span key={index}>
-                                            {part} {index < item.split("|").length - 1 && <br/>}
-                                        </span>
-                                    ))}
-                                </TableHead>
-                            ))}
+                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
+                                N°
+                            </TableHead>
+                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
+                                NOMBRE
+                            </TableHead>
+                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
+                                CATEGORIA
+                            </TableHead>
+                            <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
+                                CANTIDAD<br/> COMPRADA <span className="text-[9px]">[S/.]</span>
+                            </TableHead>
+                            <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
+                                COSTO<br/> TOTAL <span className="text-[9px]">[S/.]</span>
+                            </TableHead>
+                            <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
+                                CANTIDAD <br/> CONSUMIDA <span className="text-[9px]">[Kg]</span>
+                            </TableHead>
+                            <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
+                                CONSUMO<br/> TOTAL <span className="text-[9px]">[Kg]</span>
+                            </TableHead>
+                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
+                                AÑO
+                            </TableHead>
+                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
+                                MES
+                            </TableHead>
+                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
+                                ACCIONES
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -396,19 +417,28 @@ export default function ActivosPage() {
                                         </Badge>
                                     </TableCell>
                                     <TableCell
-                                        className="text-xs w-[20%]  whitespace-nowrap overflow-hidden text-ellipsis">
+                                        className="text-xs w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                        {item.tipoActivo}
+                                    </TableCell>
+                                    <TableCell
+                                        className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.categoria}
                                     </TableCell>
                                     <TableCell
-                                        className="text-xs text-start max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.tipoActivo}
+                                        className="text-xs max-w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                        <Badge variant="outline"> {item.cantidadComprada}</Badge>
+                                    </TableCell>
+                                    <TableCell
+                                        className="text-xs max-w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                        <Badge variant="secondary">{item.costoTotal}</Badge>
+                                    </TableCell>
+                                    <TableCell
+                                        className="text-xs max-w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                        <Badge variant="outline">{item.cantidadConsumida}</Badge>
                                     </TableCell>
                                     <TableCell
                                         className="text-xs max-w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
                                         <Badge variant="default">{item.consumoTotal}</Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs">
-                                        {item.unidad}
                                     </TableCell>
                                     <TableCell className="text-xs">
                                         {item.anio}

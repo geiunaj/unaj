@@ -21,35 +21,36 @@ import {
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {
-    CreateConsumibleProps,
-    ConsumibleRequest,
-} from "@/components/consumibles/services/consumible.interface";
-import {errorToast, successToast} from "@/lib/utils/core.function";
+    CreateActivoProps,
+    ActivoRequest,
+} from "@/components/activos/services/activos.interface";
+import {errorToast, parseNumber, successToast} from "@/lib/utils/core.function";
 import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {
-    getTiposConsumible
-} from "@/components/tipoConsumible/services/tipoConsumible.actions";
-import {createConsumible} from "@/components/consumibles/services/consumible.actions";
+    getTiposActivo
+} from "@/components/tipoActivo/services/tipoActivo.actions";
+import {createActivo} from "@/components/activos/services/activos.actions";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {getMes} from "@/components/mes/services/mes.actions";
 
-const Consumible = z.object({
-    tipoConsumibleId: z.string().min(1, "Seleccione un tipo de consumible"),
-    pesoTotal: z.preprocess((val) => parseFloat(val as string,),
-        z.number().min(0, "Ingresa un valor mayor a 0")),
+const Activo = z.object({
+    tipoActivoId: z.string().min(1, "Seleccione un tipo de activo"),
+    cantidadComprada: z.preprocess(parseNumber, z.number({message: "Ingrese un número"}).min(0, "Ingresa un valor mayor a 0")),
+    cantidadConsumida: z.preprocess(parseNumber, z.number({message: "Ingrese un número"}).min(0, "Ingresa un valor mayor a 0")),
     sede: z.string().min(1, "Seleccione una sede"),
     anio: z.string().min(1, "Seleccione un año"),
     mes: z.string().min(1, "Seleccione un mes"),
 });
 
-export function FormActivo({onClose}: CreateConsumibleProps) {
-    const form = useForm<z.infer<typeof Consumible>>({
-        resolver: zodResolver(Consumible),
+export function FormActivo({onClose}: CreateActivoProps) {
+    const form = useForm<z.infer<typeof Activo>>({
+        resolver: zodResolver(Activo),
         defaultValues: {
-            tipoConsumibleId: "",
-            pesoTotal: 0,
+            tipoActivoId: "",
+            cantidadComprada: 0,
+            cantidadConsumida: 0,
             sede: "",
             anio: "",
             mes: "1",
@@ -72,22 +73,23 @@ export function FormActivo({onClose}: CreateConsumibleProps) {
         queryFn: () => getMes(),
         refetchOnWindowFocus: false,
     });
-    const tiposConsumible = useQuery({
-        queryKey: ['tipoConsumible'],
-        queryFn: () => getTiposConsumible(),
+    const tiposActivo = useQuery({
+        queryKey: ['tipoActivo'],
+        queryFn: () => getTiposActivo(),
         refetchOnWindowFocus: false,
     });
 
-    const onSubmit = async (data: z.infer<typeof Consumible>) => {
-        const consumibleRequest: ConsumibleRequest = {
-            tipoConsumibleId: parseInt(data.tipoConsumibleId),
-            pesoTotal: data.pesoTotal,
+    const onSubmit = async (data: z.infer<typeof Activo>) => {
+        const activoRequest: ActivoRequest = {
+            tipoActivoId: parseInt(data.tipoActivoId),
             sedeId: parseInt(data.sede),
             anioId: parseInt(data.anio),
             mesId: parseInt(data.mes),
+            cantidadConsumida: data.cantidadConsumida,
+            cantidadComprada: data.cantidadComprada,
         };
         try {
-            const response = await createConsumible(consumibleRequest);
+            const response = await createActivo(activoRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -96,15 +98,15 @@ export function FormActivo({onClose}: CreateConsumibleProps) {
     };
 
     const onClaseChange = useCallback(() => {
-        form.setValue("tipoConsumibleId", "");
-        tiposConsumible.refetch();
-    }, [form, tiposConsumible]);
+        form.setValue("tipoActivoId", "");
+        tiposActivo.refetch();
+    }, [form, tiposActivo]);
 
-    if (sedes.isLoading || anios.isLoading || tiposConsumible.isLoading) {
+    if (sedes.isLoading || anios.isLoading || tiposActivo.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (sedes.isError || anios.isError || tiposConsumible.isError) {
+    if (sedes.isError || anios.isError || tiposActivo.isError) {
         onClose();
         errorToast("Error al cargar los datos");
     }
@@ -147,22 +149,22 @@ export function FormActivo({onClose}: CreateConsumibleProps) {
                             )}
                         />
 
-                        {/* Tipo de Consumible */}
+                        {/* Tipo de Activo */}
                         <FormField
-                            name="tipoConsumibleId"
+                            name="tipoActivoId"
                             control={form.control}
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Nombre de Consumible</FormLabel>
+                                    <FormLabel>Nombre de Activo</FormLabel>
                                     <Select onValueChange={field.onChange}>
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Nombre de Consumible"/>
+                                                <SelectValue placeholder="Nombre de Activo"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {tiposConsumible.data!.map((tipo) => (
+                                                {tiposActivo.data!.map((tipo) => (
                                                     <SelectItem key={tipo.id} value={tipo.id.toString()}>
                                                         {tipo.nombre}
                                                     </SelectItem>
@@ -235,28 +237,49 @@ export function FormActivo({onClose}: CreateConsumibleProps) {
                                 )}
                             />
                         </div>
+                        <div className="flex gap-4">
+                            {/* Cantidad Comprada */}
+                            <FormField
+                                control={form.control}
+                                name="cantidadComprada"
+                                render={({field}) => (
+                                    <FormItem className="pt-2 w-full">
+                                        <FormLabel>Cantidad Comprada [UND]</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                placeholder="Cantidad Comprada [UND]"
+                                                type="number"
+                                                step="0.01"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
 
-                        {/* Cantidad */}
-                        <FormField
-                            control={form.control}
-                            name="pesoTotal"
-                            render={({field}) => (
-                                <FormItem className="pt-2 w-full">
-                                    <FormLabel>Peso Total de Consumible</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Cantidad Kg/año"
-                                            type="number"
-                                            step="0.01"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
-
+                            {/* Cantidad Consumida */}
+                            <FormField
+                                control={form.control}
+                                name="cantidadConsumida"
+                                render={({field}) => (
+                                    <FormItem className="pt-2 w-full">
+                                        <FormLabel>Cantidad Consumida [UND]</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                placeholder="Cantidad Consumida [UND]"
+                                                type="number"
+                                                step="0.01"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-primary">

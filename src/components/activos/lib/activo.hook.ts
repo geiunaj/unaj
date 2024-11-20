@@ -26,7 +26,7 @@ export const useActivo =
          page
      }: getActivoInterface) => {
         return useQuery({
-            queryKey: ['consumibleH'],
+            queryKey: ['activoH'],
             queryFn: () => getActivo(tipoActivoId, sedeId, from, to, sort, direction, page),
             refetchOnWindowFocus: false,
         });
@@ -43,7 +43,7 @@ export const useActivoReport =
          direction,
      }: getActivoInterface) => {
         return useQuery({
-            queryKey: ['consumibleReportH'],
+            queryKey: ['activoReportH'],
             queryFn: () => getActivoReport(tipoActivoId, claseActivo, sedeId, from, to, sort, direction),
             refetchOnWindowFocus: false,
         });
@@ -75,7 +75,7 @@ export const useAnio = () => {
 
 export const useActivoId = (id: number) => {
     return useQuery({
-        queryKey: ["consumibleH", id],
+        queryKey: ["activoH", id],
         queryFn: () => getActivoById(id),
         refetchOnWindowFocus: false,
     });

@@ -3,30 +3,30 @@ import {getSedes} from "@/components/sede/services/sede.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {getMes} from "@/components/mes/services/mes.actions";
 import {
-    getConsumibleCalculate,
-    getConsumibleCalculateReport
-} from "@/components/consumibles/services/consumibleCalculate.actions";
+    getActivoCalculate,
+    getActivoCalculateReport
+} from "@/components/activos/services/activosCalculate.actions";
 
-interface getConsumibleCalculoInterface {
+interface getActivoCalculoInterface {
     sedeId: number;
     from?: string;
     to?: string;
     page?: number;
 }
 
-export const useConsumibleCalculos =
-    ({sedeId, from, to, page}: getConsumibleCalculoInterface) => {
+export const useActivoCalculos =
+    ({sedeId, from, to, page}: getActivoCalculoInterface) => {
         return useQuery({
             queryKey: ['fertilizanteCalculos'],
-            queryFn: () => getConsumibleCalculate({sedeId, from, to, page}),
+            queryFn: () => getActivoCalculate({sedeId, from, to, page}),
             refetchOnWindowFocus: false,
         });
     }
-export const useConsumibleCalculosReport =
-    ({sedeId, from, to}: getConsumibleCalculoInterface) => {
+export const useActivoCalculosReport =
+    ({sedeId, from, to}: getActivoCalculoInterface) => {
         return useQuery({
             queryKey: ['fertilizanteCalculosReport'],
-            queryFn: () => getConsumibleCalculateReport({sedeId, from, to}),
+            queryFn: () => getActivoCalculateReport({sedeId, from, to}),
             refetchOnWindowFocus: false,
         });
     }

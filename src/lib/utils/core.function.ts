@@ -49,3 +49,6 @@ export const formatPeriod = (period: ReportRequest, withMonth = false) => {
     }
     return "-";
 }
+
+export const parseNumber = (val: unknown) => parseFloat(val as string);
+export const requiredMessage = (field: string) => `Ingrese un ${field}`;
