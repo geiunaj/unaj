@@ -24,6 +24,7 @@ import {
     Bus,
     Fuel,
     Calendar,
+    LampDesk,
 } from "lucide-react";
 
 export interface MenuItem {
@@ -59,6 +60,7 @@ export const iconComponents: Record<string, any> = {
     Bus,
     Fuel,
     Calendar,
+    LampDesk,
 };
 
 export const menu: MenuItem[] = [
@@ -150,7 +152,7 @@ export const menu: MenuItem[] = [
             },
             {
                 title: "Activos Fijos",
-                icon: "FileText",
+                icon: "LampDesk",
                 href: "/activos-fijos",
             },
             {
@@ -199,7 +201,7 @@ export const menu: MenuItem[] = [
         items: [
             {
                 title: "Tipos de Activos",
-                icon: "Milk",
+                icon: "LampDesk",
                 href: "/tipo-activo",
             },
             {

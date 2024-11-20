@@ -31,7 +31,7 @@ const requiredMessage = (field: string) => `Ingrese un ${field}`;
 const TipoActivoFactor = z.object({
     factor: z.preprocess((val) => parseFloat(val as string,),
         z.number().min(0, "Ingresa un valor mayor a 0")),
-    grupoActivoId: z.string().min(1, "Seleccione un tipo de consumible"),
+    grupoActivoId: z.string().min(1, "Seleccione un tipo de activo"),
     anioId: z.string().min(1, "Seleccione un año"),
     fuente: z.string().min(1, "Ingrese una fuente"),
     link: z.string().optional(),
@@ -92,7 +92,7 @@ export function CreateFormTipoActivoFactor({
                         className="w-full flex flex-col gap-2"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
-                        {/*TIPO DE CONSUMIBLE*/}
+                        {/*TIPO DE ACTIVO*/}
                         <FormField
                             name="grupoActivoId"
                             control={form.control}

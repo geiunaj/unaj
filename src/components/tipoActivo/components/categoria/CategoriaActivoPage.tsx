@@ -90,7 +90,7 @@ export default function CategoriaActivoPage() {
             successToast(response.data.message);
         } catch (error: any) {
             errorToast(
-                error.response?.data?.message || "Error al eliminar el categoria de consumible"
+                error.response?.data?.message || "Error al eliminar el categoria de activo"
             );
         } finally {
             await categoriaActivoQuery.refetch();
@@ -112,7 +112,7 @@ export default function CategoriaActivoPage() {
     };
 
     const handleTipoActivo = () => {
-        push("/tipo-consumible");
+        push("/tipo-activo");
     };
 
     if (categoriaActivoQuery.isLoading) {

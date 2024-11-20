@@ -29,7 +29,7 @@ const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
 const TipoConsumibleFactor = z.object({
-    factor: z.preprocess((val) => parseFloat(val as string,),
+    factor: z.preprocess((val: unknown) => parseFloat(val as string,),
         z.number().min(0, "Ingresa un valor mayor a 0")),
     tipoConsumibleId: z.string().min(1, "Seleccione un tipo de consumible"),
     anioId: z.string().min(1, "Seleccione un año"),

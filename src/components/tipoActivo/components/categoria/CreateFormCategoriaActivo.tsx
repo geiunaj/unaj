@@ -19,9 +19,15 @@ import {
     CategoriaActivoRequest
 } from "@/components/tipoActivo/services/categoriaActivo.interface";
 import {createCategoriaActivo} from "@/components/tipoActivo/services/categoriaActivo.actions";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {useQuery} from "@tanstack/react-query";
+import {getTipoActivoGrupo} from "@/components/tipoActivo/services/tipoActivo.actions";
+import SkeletonForm from "@/components/Layout/skeletonForm";
 
+const requiredMessage = (field: string) => `Ingrese un ${field}`;
 const CategoriaActivo = z.object({
     nombre: z.string().min(0, "Ingrese un nombre"),
+    grupoActivoId: z.string().min(1, requiredMessage("grupoActivoId")),
 });
 
 export function CreateFormCategoriaActivo({
@@ -32,10 +38,16 @@ export function CreateFormCategoriaActivo({
         defaultValues: {},
     });
 
+    const grupos = useQuery({
+        queryKey: ["gruposCategoriaActivoCreate"],
+        queryFn: () => getTipoActivoGrupo(),
+        refetchOnWindowFocus: false,
+    });
+
     const onSubmit = async (data: z.infer<typeof CategoriaActivo>) => {
         const CategoriaActivoRequest: CategoriaActivoRequest = {
             nombre: data.nombre,
-            grupoActivoId: 1,
+            grupoActivoId: parseInt(data.grupoActivoId),
         };
         try {
             const response = await createCategoriaActivo(CategoriaActivoRequest);
@@ -45,6 +57,14 @@ export function CreateFormCategoriaActivo({
             errorToast(error.response.data.message);
         }
     };
+
+    if (grupos.isLoading) {
+        return <SkeletonForm/>;
+    }
+
+    if (grupos.isError) {
+        return <div>Error</div>;
+    }
 
     return (
         <div className="flex items-center justify-center max-w-md">
@@ -70,6 +90,36 @@ export function CreateFormCategoriaActivo({
                                         />
                                     </FormControl>
                                     <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+
+                        {/*GRUPO*/}
+                        <FormField
+                            name="grupoActivoId"
+                            control={form.control}
+                            render={({field}) => (
+                                <FormItem className="pt-2">
+                                    <FormLabel>Grupo</FormLabel>
+                                    <Select onValueChange={field.onChange}>
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Grupo"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {grupos.data!.map((grupo) => (
+                                                    <SelectItem
+                                                        key={grupo.id}
+                                                        value={grupo.id.toString()}
+                                                    >
+                                                        {grupo.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
                                 </FormItem>
                             )}
                         />

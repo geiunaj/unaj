@@ -77,7 +77,7 @@ export default function ActivoFactorPage() {
 
     const columns = [
         "N°",
-        "CONSUMIBLE",
+        "ACTIVO",
         "FACTOR",
         "AÑO",
         "ACCIONES"

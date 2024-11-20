@@ -24,12 +24,14 @@ import {
     getCategoriaActivo,
     getCategoriaActivoById, updateCategoriaActivo
 } from "@/components/tipoActivo/services/categoriaActivo.actions";
+import {getTipoActivoGrupo} from "@/components/tipoActivo/services/tipoActivo.actions";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
 const CategoriaActivo = z.object({
     nombre: z.string().min(0, "Ingrese un nombre"),
+    grupoActivoId: z.string().min(1, requiredMessage("grupoActivoId")),
 });
 
 export function UpdateFormCategoriaActivo({
@@ -37,7 +39,10 @@ export function UpdateFormCategoriaActivo({
                                           }: UpdateCategoriaActivoProps) {
     const form = useForm<z.infer<typeof CategoriaActivo>>({
         resolver: zodResolver(CategoriaActivo),
-        defaultValues: {},
+        defaultValues: {
+            nombre: "",
+            grupoActivoId: "",
+        },
     });
 
     const categoriaActivo = useQuery({
@@ -56,6 +61,7 @@ export function UpdateFormCategoriaActivo({
             const categoriaActivoData = await categoriaActivo.data;
             form.reset({
                 nombre: categoriaActivoData.nombre,
+                grupoActivoId: categoriaActivoData.grupoActivoId.toString(),
             });
         }
     }, [categoriaActivo.data, id]);
@@ -64,10 +70,16 @@ export function UpdateFormCategoriaActivo({
         loadForm();
     }, [loadForm, id]);
 
+    const grupos = useQuery({
+        queryKey: ["gruposCategoriaActivoUpdate"],
+        queryFn: () => getTipoActivoGrupo(),
+        refetchOnWindowFocus: false,
+    });
+
     const onSubmit = async (data: z.infer<typeof CategoriaActivo>) => {
         const categoriaActivoRequest: CategoriaActivoRequest = {
             nombre: data.nombre,
-            grupoActivoId: 1,
+            grupoActivoId: parseInt(data.grupoActivoId),
         };
         try {
             const response = await updateCategoriaActivo(id, categoriaActivoRequest);
@@ -78,11 +90,11 @@ export function UpdateFormCategoriaActivo({
         }
     };
 
-    if (categoriaActivo.isLoading || categoriaes.isLoading) {
+    if (categoriaActivo.isLoading || categoriaes.isLoading || grupos.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (categoriaActivo.isError || categoriaes.isError) {
+    if (categoriaActivo.isError || categoriaes.isError || grupos.isError) {
         onClose();
         errorToast("Error al cargar el Categoria de Activo");
     }
@@ -111,6 +123,36 @@ export function UpdateFormCategoriaActivo({
                                         />
                                     </FormControl>
                                     <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+
+                        {/*GRUPO*/}
+                        <FormField
+                            name="grupoActivoId"
+                            control={form.control}
+                            render={({field}) => (
+                                <FormItem className="pt-2">
+                                    <FormLabel>Grupo</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Grupo"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {grupos.data!.map((grupo) => (
+                                                    <SelectItem
+                                                        key={grupo.id}
+                                                        value={grupo.id.toString()}
+                                                    >
+                                                        {grupo.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
                                 </FormItem>
                             )}
                         />
