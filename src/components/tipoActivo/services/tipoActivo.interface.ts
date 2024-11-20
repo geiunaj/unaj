@@ -65,7 +65,6 @@ export interface TipoActivoResource {
 
 export interface TipoActivoRequest {
     nombre: string;
-    unidad: string;
     categoriaId: number;
     peso: number;
     fuente?: string;

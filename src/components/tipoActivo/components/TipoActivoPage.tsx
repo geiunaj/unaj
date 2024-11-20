@@ -61,9 +61,8 @@ export default function TipoActivoPage() {
     const COLUMS = [
         "N°",
         "NOMBRE",
-        "UNIDAD",
         "CATEGORIA",
-        "PESO",
+        "PESO [Kg]",
         "COSTO | UNITARIO",
         "LINK",
         "ACCIONES",
@@ -205,9 +204,6 @@ export default function TipoActivoPage() {
                                     <TableCell
                                         className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.nombre}
-                                    </TableCell>
-                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.unidad}
                                     </TableCell>
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.categoria}

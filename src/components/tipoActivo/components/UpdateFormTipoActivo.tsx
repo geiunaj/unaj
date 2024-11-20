@@ -40,7 +40,6 @@ const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
 const TipoActivo = z.object({
     nombre: z.string().min(1, requiredMessage("nombre")),
-    unidad: z.string().min(1, requiredMessage("unidad")),
     categoriaId: z.string().min(1, requiredMessage("categoriaId")),
     peso: z.preprocess(parseNumber, z.number({message: "Ingrese un número"}).min(0, "Ingresa un valor mayor a 0")),
     fuente: z.string().optional(),
@@ -52,7 +51,6 @@ export function UpdateFormTipoActivo({id, onClose}: UpdateTipoActivoProps) {
         resolver: zodResolver(TipoActivo),
         defaultValues: {
             nombre: "",
-            unidad: "",
             categoriaId: "",
             peso: 0,
             costoUnitario: 0,
@@ -81,7 +79,6 @@ export function UpdateFormTipoActivo({id, onClose}: UpdateTipoActivoProps) {
             const tipoActivoData = await tipoActivo.data;
             form.reset({
                 nombre: tipoActivoData.nombre,
-                unidad: tipoActivoData.unidad,
                 categoriaId: tipoActivoData.categoriaId.toString(),
                 peso: tipoActivoData.peso,
                 costoUnitario: tipoActivoData.costoUnitario,
@@ -97,7 +94,6 @@ export function UpdateFormTipoActivo({id, onClose}: UpdateTipoActivoProps) {
     const onSubmit = async (data: z.infer<typeof TipoActivo>) => {
         const tipoActivoRequest: TipoActivoRequest = {
             nombre: data.nombre,
-            unidad: data.unidad,
             categoriaId: Number(data.categoriaId),
             peso: data.peso,
             fuente: data.fuente,
@@ -149,26 +145,6 @@ export function UpdateFormTipoActivo({id, onClose}: UpdateTipoActivoProps) {
                             )}
                         />
 
-                        {/*UNIDAD*/}
-                        <FormField
-                            control={form.control}
-                            name="unidad"
-                            render={({field}) => (
-                                <FormItem className="pt-2 w-full">
-                                    <FormLabel>Unidad</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="text"
-                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Nombre del tipo de papel"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
-
                         {/*CATEGORIA*/}
                         <FormField
                             name="categoriaId"
@@ -206,7 +182,7 @@ export function UpdateFormTipoActivo({id, onClose}: UpdateTipoActivoProps) {
                                 name="peso"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-full">
-                                        <FormLabel>Peso</FormLabel>
+                                        <FormLabel>Peso [Kg]</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="text"
@@ -226,7 +202,7 @@ export function UpdateFormTipoActivo({id, onClose}: UpdateTipoActivoProps) {
                                 name="costoUnitario"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-full">
-                                        <FormLabel>Costo Unitario</FormLabel>
+                                        <FormLabel>Costo Unitario [S/.]</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="text"
