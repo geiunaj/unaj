@@ -30,7 +30,7 @@ export async function getActivoCalculate(
             page,
         }
     };
-    const {data} = await api.get<ActivoCalculosCollection>("/api/consumible/calculate", config);
+    const {data} = await api.get<ActivoCalculosCollection>("/api/activo/calculate", config);
     return data;
 }
 
@@ -48,7 +48,7 @@ export async function getActivoCalculateReport(
             all: true
         }
     };
-    const {data} = await api.get("/api/consumible/calculate", config);
+    const {data} = await api.get("/api/activo/calculate", config);
     return data;
 }
 
@@ -66,6 +66,6 @@ export async function createActivoCalculate(
         to: to,
     };
 
-    const {data} = await api.post("/api/consumible/calculate", body);
+    const {data} = await api.post("/api/activo/calculate", body);
     return data;
 }

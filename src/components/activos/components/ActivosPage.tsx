@@ -110,6 +110,16 @@ export default function ActivosPage() {
         to,
     });
 
+    const COLUMS = [
+        "N°",
+        "NOMBRE",
+        "CATEGORIA",
+        "PESO [Kg]",
+        "COSTO | UNITARIO",
+        "LINK",
+        "ACCIONES",
+    ];
+
     const tipoActivo = useTipoActivo();
     const sedes = useSede();
     const anios = useAnio();
@@ -362,36 +372,18 @@ export default function ActivosPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="text-xs font-bold text-center">
-                                N°
-                            </TableHead>
-                            <TableHead className="text-xs font-bold text-center">
-                                TIPO
-                            </TableHead>
-                            <TableHead className="text-xs font-bold text-center">
-                                ACTIVO
-                            </TableHead>
-                            <TableHead className="text-xs font-bold text-center">
-                                GRUPO
-                            </TableHead>
-                            <TableHead className="text-xs font-bold text-center">
-                                PROCESO
-                            </TableHead>
-                            <TableHead className="text-xs font-bold text-center">
-                                PESO TOTAL
-                            </TableHead>
-                            <TableHead className="text-xs font-bold text-center">
-                                UNIDAD
-                            </TableHead>
-                            <TableHead className="text-xs font-bold text-center">
-                                AÑO
-                            </TableHead>
-                            <TableHead className="text-xs font-bold text-center">
-                                MES
-                            </TableHead>
-                            <TableHead className="text-xs font-bold text-center">
-                                ACCIONES
-                            </TableHead>
+                            {COLUMS.map((item) => (
+                                <TableHead
+                                    key={item}
+                                    className="text-xs sm:text-sm font-bold text-center"
+                                >
+                                    {item.split("|").map((part, index) => (
+                                        <span key={index}>
+                                            {part} {index < item.split("|").length - 1 && <br/>}
+                                        </span>
+                                    ))}
+                                </TableHead>
+                            ))}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -412,16 +404,8 @@ export default function ActivosPage() {
                                         {item.tipoActivo}
                                     </TableCell>
                                     <TableCell
-                                        className="text-xs max-w-24 whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.grupo}
-                                    </TableCell>
-                                    <TableCell
-                                        className="text-xs max-w-48 whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.proceso}
-                                    </TableCell>
-                                    <TableCell
                                         className="text-xs max-w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                        <Badge variant="default">{item.pesoTotal}</Badge>
+                                        <Badge variant="default">{item.consumoTotal}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs">
                                         {item.unidad}

@@ -6,20 +6,21 @@ export function formatActivo(consumible: any) {
         mes,
         anio,
         sede,
-        pesoTotal,
+        costoTotal,
+        consumoTotal,
+        rn,
         ...rest
     } = consumible;
 
     return {
+        rn,
         ...rest,
         created_at: undefined,
         updated_at: undefined,
-        pesoTotal: pesoTotal.toFixed(3),
+        costoTotal: costoTotal.toFixed(3),
+        consumoTotal: consumoTotal.toFixed(3),
         tipoActivo: tipoActivo.nombre,
-        descripcion: tipoActivo.descripcion.nombre,
         categoria: tipoActivo.categoria.nombre,
-        grupo: tipoActivo.grupo.nombre,
-        proceso: tipoActivo.proceso.nombre,
         unidad: tipoActivo.unidad,
         mes: mes.nombre,
         anio: anio.nombre,

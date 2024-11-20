@@ -1,7 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
-import {getActivo, getActivoReport} from "@/components/activos/services/activos.actions";
+import {getActivo, getActivoById, getActivoReport} from "@/components/activos/services/activos.actions";
+import {getTiposActivo} from "@/components/tipoActivo/services/tipoActivo.actions";
 
 interface getActivoInterface {
     tipoActivoId?: number;

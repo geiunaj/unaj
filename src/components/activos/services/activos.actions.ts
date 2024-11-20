@@ -27,7 +27,7 @@ export async function getActivo(
         },
     };
     const {data} = await api.get<ActivoCollection>(
-        "/api/consumible",
+        "/api/activo",
         config
     );
     return data;
@@ -55,25 +55,25 @@ export async function getActivoReport(
         },
     };
     const {data} = await api.get<ActivoCollection>(
-        "/api/consumible",
+        "/api/activo",
         config
     );
     return data;
 }
 
 export async function getActivoById(id: number): Promise<ActivoResource> {
-    const {data} = await api.get(`/api/consumible/${id}`);
+    const {data} = await api.get(`/api/activo/${id}`);
     return data;
 }
 
 export async function createActivo(body: ActivoRequest): Promise<AxiosResponse<Response>> {
-    return await api.post("/api/consumible", body);
+    return await api.post("/api/activo", body);
 }
 
 export async function updateActivo(id: number, body: ActivoRequest): Promise<AxiosResponse<Response>> {
-    return await api.put(`/api/consumible/${id}`, body);
+    return await api.put(`/api/activo/${id}`, body);
 }
 
 export async function deleteActivo(id: number): Promise<AxiosResponse<Response>> {
-    return await api.delete(`/api/consumible/${id}`);
+    return await api.delete(`/api/activo/${id}`);
 }

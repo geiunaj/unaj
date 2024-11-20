@@ -21,22 +21,23 @@ export interface Meta {
 }
 
 export interface ActivoCollectionItem {
+    rn: number;
     id: number;
     tipoActivoId: number;
     sedeId: number;
     anioId: number;
     mesId: number;
     anio_mes: number;
-    pesoTotal: number;
+    cantidadComprada: number;
+    cantidadConsumida: number;
+    costoTotal: string;
+    consumoTotal: string;
     tipoActivo: string;
     categoria: string;
-    grupo: string;
-    proceso: string;
     unidad: string;
     mes: string;
     anio: string;
     sede: string;
-    rn: number;
 }
 
 //PARA EL SHOW
@@ -85,5 +86,6 @@ export interface ActivoRequest {
     sedeId: number;
     anioId: number;
     mesId: number;
-    pesoTotal: number;
+    cantidadComprada: number;
+    cantidadConsumida: number;
 }
