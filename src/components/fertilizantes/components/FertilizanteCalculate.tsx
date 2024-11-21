@@ -107,7 +107,7 @@ export default function FertilizanteCalculate() {
             {header: "UNIDAD", key: "unidad", width: 15},
             {header: "NITRÓGENO[%]", key: "porcentajeNitrogeno", width: 20},
             {header: "APORTE NITRÓGENO", key: "cantidadAporte", width: 25},
-            {header: "EMISIONES DE N20", key: "totalEmisionesDirectas", width: 25},
+            {header: "EMISIONES DE N2O", key: "totalEmisionesDirectas", width: 25},
             {header: "TOTAL GEI", key: "emisionGEI", width: 20},
 
         ];
@@ -194,7 +194,7 @@ export default function FertilizanteCalculate() {
                                     {header: "UNIDAD", key: "unidad", width: 10},
                                     {header: "NITRÓGENO[%]", key: "porcentajeNitrogeno", width: 10},
                                     {header: "APORTE NITRÓGENO", key: "cantidadAporte", width: 15},
-                                    {header: "EMISIONES DE N20", key: "totalEmisionesDirectas", width: 15},
+                                    {header: "EMISIONES DE N2O", key: "totalEmisionesDirectas", width: 15},
                                     {header: "TOTAL GEI", key: "emisionGEI", width: 10},
                                 ]}
                                 title="REPORTE DE CALCULOS DE FERTILIZANTES"

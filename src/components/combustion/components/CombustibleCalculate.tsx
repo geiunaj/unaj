@@ -137,7 +137,7 @@ export default function CombustibleCalculate({
             {header: "CONSUMO", key: "consumo", width: 20},
             {header: "EMISIONES DE CO2", key: "emisionCO2", width: 25},
             {header: "EMISIONES DE CH4", key: "emisionCH4", width: 25},
-            {header: "EMISIONES DE N20", key: "emisionN2O", width: 25},
+            {header: "EMISIONES DE N2O", key: "emisionN2O", width: 25},
             {header: "TOTAL GEI", key: "totalGEI", width: 20},
             {header: "SEDE", key: "sede", width: 20},
         ];
@@ -220,7 +220,7 @@ export default function CombustibleCalculate({
                                     {header: "CONSUMO", key: "consumo", width: 10},
                                     {header: "EMISIONES CO2", key: "emisionCO2", width: 15},
                                     {header: "EMISIONES CH4", key: "emisionCH4", width: 15},
-                                    {header: "EMISIONES N20", key: "emisionN2O", width: 15},
+                                    {header: "EMISIONES N2O", key: "emisionN2O", width: 15},
                                     {header: "TOTAL GEI", key: "totalGEI", width: 10},
                                     {header: "SEDE", key: "sede", width: 10},
                                 ]}

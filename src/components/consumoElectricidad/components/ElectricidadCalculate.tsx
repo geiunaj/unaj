@@ -116,7 +116,7 @@ export default function ElectricidadCalculate() {
             {header: "CONSUMO TOTAL", key: "consumoTotal", width: 20},
             {header: "EMISIONES DE CO2", key: "emisionCO2", width: 25},
             {header: "EMISIONES DE CH4", key: "emisionCH4", width: 25},
-            {header: "EMISIONES DE N20", key: "emisionN2O", width: 25},
+            {header: "EMISIONES DE N2O", key: "emisionN2O", width: 25},
             {header: "TOTAL GEI", key: "totalGEI", width: 20},
         ];
         await setFrom(period.from ?? "");
@@ -196,7 +196,7 @@ export default function ElectricidadCalculate() {
                                     {header: "CONSUMO TOTAL", key: "consumoTotal", width: 15},
                                     {header: "EMISIONES DE CO2", key: "emisionCO2", width: 15},
                                     {header: "EMISIONES DE CH4", key: "emisionCH4", width: 15},
-                                    {header: "EMISIONES DE N20", key: "emisionN2O", width: 15},
+                                    {header: "EMISIONES DE N2O", key: "emisionN2O", width: 15},
                                     {header: "TOTAL GEI", key: "totalGEI", width: 15},
                                 ]}
                                 title="REPORTE DE CALCULOS DE CONSUMO DE ENERGÍA"

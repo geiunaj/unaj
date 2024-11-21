@@ -112,7 +112,7 @@ export default function SummaryPage() {
                                 CH4 <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-xs font-bold text-center py-1">
-                                N20 <span className="text-[8px]">[tCO2eq]</span>
+                                N2O <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-xs font-bold text-center py-1">
                                 HFC <span className="text-[8px]">[tCO2eq]</span>
@@ -142,7 +142,7 @@ export default function SummaryPage() {
                                         {item.ch4Emissions}
                                     </TableCell>
                                     <TableCell className="text-xs p-1">
-                                        {item.n20Emissions}
+                                        {item.N2OEmissions}
                                     </TableCell>
                                     <TableCell className="text-xs p-1">
                                         {item.hfcEmissions}

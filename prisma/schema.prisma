@@ -130,6 +130,7 @@ model Mes {
   TransporteAereo     TransporteAereo[]
   TransporteTerrestre TransporteTerrestre[]
   Activo              Activo[]
+  CasaTrabajo         CasaTrabajo[]
 
   @@map("mes")
 }
@@ -164,7 +165,7 @@ model Anio {
   FactorEmisionTransporteTerrestre FactorEmisionTransporteTerrestre[]
   TransporteTerrestre              TransporteTerrestre[]
   CasaTrabajo                      CasaTrabajo[]
-  FactorTrasnporteCasaTrabajo      FactorTrasnporteCasaTrabajo[]
+  FactorTransporteCasaTrabajo      FactorTransporteCasaTrabajo[]
   CasaTrabajoCalculosDetail        CasaTrabajoCalculosDetail[]
   Activo                           Activo[]
   FactorTipoActivo                 FactorTipoActivo[]
@@ -948,11 +949,10 @@ model ConsumibleCalculos {
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt
 
-  tipoConsumible            TipoConsumible?             @relation(fields: [tipoConsumibleId], references: [id])
-  sede                      Sede?                       @relation(fields: [sedeId], references: [id])
-  PeriodoCalculo            PeriodoCalculo?             @relation(fields: [periodoCalculoId], references: [id])
-  ConsumibleCalculosDetail  ConsumibleCalculosDetail[]
-  CasaTrabajoCalculosDetail CasaTrabajoCalculosDetail[]
+  tipoConsumible           TipoConsumible?            @relation(fields: [tipoConsumibleId], references: [id])
+  sede                     Sede?                      @relation(fields: [sedeId], references: [id])
+  PeriodoCalculo           PeriodoCalculo?            @relation(fields: [periodoCalculoId], references: [id])
+  ConsumibleCalculosDetail ConsumibleCalculosDetail[]
 
   @@map("consumiblecalculos")
 }
@@ -1137,32 +1137,36 @@ model TransporteTerrestreCalculosDetail {
 }
 
 // TRANSPORTE CASA TRABAJO
-model Vehicle {
-  id                          Int                           @id @default(autoincrement())
-  name                        String
-  created_at                  DateTime                      @default(now())
-  updated_at                  DateTime                      @updatedAt
-  CasaTrabajo                 CasaTrabajo[]
-  FactorTrasnporteCasaTrabajo FactorTrasnporteCasaTrabajo[]
-  CasaTrabajoCalculos         CasaTrabajoCalculos[]
-  CasaTrabajoCalculosDetail   CasaTrabajoCalculosDetail[]
-}
-
-model FactorTrasnporteCasaTrabajo {
+model TipoVehiculo {
   id         Int      @id @default(autoincrement())
-  factorCO2  Float?
-  factorCH4  Float?
-  factorN2O  Float?
-  factor     Float
-  vehicleId  Int
-  anioId     Int
-  fuente     String?
-  link       String?
+  nombre     String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  vehicle                   Vehicle                     @relation(fields: [vehicleId], references: [id])
-  anio                      Anio                        @relation(fields: [anioId], references: [id])
+  FactorTransporteCasaTrabajo FactorTransporteCasaTrabajo[]
+  CasaTrabajo                 CasaTrabajo[]
+  CasaTrabajoCalculos         CasaTrabajoCalculos[]
+  CasaTrabajoCalculosDetail   CasaTrabajoCalculosDetail[]
+
+  @@map("tipovehiculo")
+}
+
+model FactorTransporteCasaTrabajo {
+  id             Int      @id @default(autoincrement())
+  factorCO2      Float?
+  factorCH4      Float?
+  factorN2O      Float?
+  factor         Float
+  tipoVehiculoId Int
+  anioId         Int
+  fuente         String?
+  link           String?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  tipoVehiculo TipoVehiculo? @relation(fields: [tipoVehiculoId], references: [id])
+  anio         Anio?         @relation(fields: [anioId], references: [id])
+
   CasaTrabajoCalculosDetail CasaTrabajoCalculosDetail[]
 
   @@map("factortransportecasatrabajo")
@@ -1171,28 +1175,26 @@ model FactorTrasnporteCasaTrabajo {
 model CasaTrabajo {
   id             Int      @id @default(autoincrement())
   tipo           String // ALUMNO, DOCENTE, ADMINISTRATIVO
-  vechicleId     Int
-  kmMuestra      Float
-  kmCicloRegular Float
-  kmCicloVerano  Float
-  kmCiclo0       Float
-  kmCiclo1       Float
-  kmCiclo2       Float
+  tipoVehiculoId Int
+  kmRecorrido    Float
   sedeId         Int
   anioId         Int
+  mesId          Int
+  anio_mes       Int
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
 
-  vehicle Vehicle @relation(fields: [vechicleId], references: [id])
-  sede    Sede    @relation(fields: [sedeId], references: [id])
-  anio    Anio    @relation(fields: [anioId], references: [id])
+  tipoVehiculo TipoVehiculo? @relation(fields: [tipoVehiculoId], references: [id])
+  sede         Sede?         @relation(fields: [sedeId], references: [id])
+  anio         Anio?         @relation(fields: [anioId], references: [id])
+  mes          Mes?          @relation(fields: [mesId], references: [id])
 
   @@map("casatrabajo")
 }
 
 model CasaTrabajoCalculos {
   id               Int      @id @default(autoincrement())
-  vehicleId        Int
+  tipoVehiculoId   Int
   periodoCalculoId Int
   sedeId           Int
   kmRecorrido      Float
@@ -1200,39 +1202,41 @@ model CasaTrabajoCalculos {
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt
 
-  vehicle        Vehicle        @relation(fields: [vehicleId], references: [id])
-  sede           Sede           @relation(fields: [sedeId], references: [id])
-  PeriodoCalculo PeriodoCalculo @relation(fields: [periodoCalculoId], references: [id])
+  tipoVehiculo              TipoVehiculo?               @relation(fields: [tipoVehiculoId], references: [id])
+  sede                      Sede?                       @relation(fields: [sedeId], references: [id])
+  PeriodoCalculo            PeriodoCalculo?             @relation(fields: [periodoCalculoId], references: [id])
+  CasaTrabajoCalculosDetail CasaTrabajoCalculosDetail[]
 
   @@map("casatrabajocalculos")
 }
 
 model CasaTrabajoCalculosDetail {
-  id                   Int      @id @default(autoincrement())
-  vehicleId            Int
-  factorCasaTrabajoId  Int
-  anioId               Int
-  sedeId               Int
-  pesoTotal            Float
-  totalGEI             Float
-  consumibleCalculosId Int
-  created_at           DateTime @default(now())
-  updated_at           DateTime @updatedAt
+  id                    Int      @id @default(autoincrement())
+  tipoVehiculoId        Int
+  factorCasaTrabajoId   Int
+  casaTrabajoCalculosId Int
+  anioId                Int
+  sedeId                Int
+  kmRecorrido           Float
+  totalGEI              Float
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
 
-  vehicle            Vehicle                     @relation(fields: [vehicleId], references: [id])
-  factorCasaTrabajo  FactorTrasnporteCasaTrabajo @relation(fields: [factorCasaTrabajoId], references: [id])
-  anio               Anio                        @relation(fields: [anioId], references: [id])
-  sede               Sede                        @relation(fields: [sedeId], references: [id])
-  consumibleCalculos ConsumibleCalculos          @relation(fields: [consumibleCalculosId], references: [id])
+  casaTrabajoCalculos CasaTrabajoCalculos          @relation(fields: [casaTrabajoCalculosId], references: [id])
+  tipoVehiculo        TipoVehiculo?                @relation(fields: [tipoVehiculoId], references: [id])
+  factorCasaTrabajo   FactorTransporteCasaTrabajo? @relation(fields: [factorCasaTrabajoId], references: [id])
+  anio                Anio?                        @relation(fields: [anioId], references: [id])
+  sede                Sede?                        @relation(fields: [sedeId], references: [id])
 
   @@map("casatrabajocalculosdetail")
 }
 
 model GrupoActivo {
-  id                   Int                    @id @default(autoincrement())
-  nombre               String
-  created_at           DateTime               @default(now())
-  updated_at           DateTime               @updatedAt
+  id         Int      @id @default(autoincrement())
+  nombre     String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
   CategoriaActivo      CategoriaActivo[]
   FactorTipoActivo     FactorTipoActivo[]
   ActivoCalculos       ActivoCalculos[]
