@@ -31,12 +31,12 @@ export interface TransporteCasaTrabajoCalcRequest {
 export interface TransporteCasaTrabajoCalcResponse {
     rn: number;
     id: number;
-    grupoTransporteCasaTrabajoId: number;
+    tipoVehiculoId: number;
     periodoCalculoId: number;
     sedeId: number;
     cantidadTotal: string;
     totalGEI: string;
-    grupoTransporteCasaTrabajo: string;
+    tipoVehiculo: string;
     sede: string;
     factoresEmision: FactoresEmision[];
     factoresEmisionString: string;

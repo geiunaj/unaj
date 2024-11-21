@@ -202,6 +202,11 @@ export const menu: MenuItem[] = [
                 icon: "Bus",
                 href: "/transporte-terrestre-factor",
             },
+            {
+                title: "Factor de Vehículo",
+                icon: "Car",
+                href: "/tipo-vehiculo-factor",
+            },
         ],
     },
     {
@@ -223,6 +228,11 @@ export const menu: MenuItem[] = [
                 title: "Tipos de Combustible",
                 icon: "Flame",
                 href: "/tipo-combustible",
+            },
+            {
+                title: "Tipos de Vehículo",
+                icon: "Car",
+                href: "/tipo-vehiculo",
             },
             {
                 title: "Tipos de Consumible",

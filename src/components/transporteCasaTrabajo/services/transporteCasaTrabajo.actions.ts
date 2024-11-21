@@ -11,7 +11,8 @@ interface Response {
 }
 
 export async function getTransporteCasaTrabajo(
-    tipoTransporteCasaTrabajoId?: number,
+    tipoVehiculoId?: number,
+    tipo?: string,
     sedeId?: number,
     from?: string,
     to?: string,
@@ -21,7 +22,8 @@ export async function getTransporteCasaTrabajo(
 ): Promise<TransporteCasaTrabajoCollection> {
     const config: AxiosRequestConfig = {
         params: {
-            tipoTransporteCasaTrabajoId,
+            tipoVehiculoId,
+            tipo,
             sedeId,
             from,
             to,
@@ -31,14 +33,15 @@ export async function getTransporteCasaTrabajo(
         },
     };
     const {data} = await api.get<TransporteCasaTrabajoCollection>(
-        "/api/activo",
+        "/api/transporteCasaTrabajo",
         config
     );
     return data;
 }
 
 export async function getTransporteCasaTrabajoReport(
-    tipoTransporteCasaTrabajoId?: number,
+    tipoVehiculoId?: number,
+    tipo?: string,
     claseTransporteCasaTrabajo?: string,
     sedeId?: number,
     from?: string,
@@ -48,7 +51,8 @@ export async function getTransporteCasaTrabajoReport(
 ): Promise<TransporteCasaTrabajoCollection> {
     const config: AxiosRequestConfig = {
         params: {
-            tipoTransporteCasaTrabajoId,
+            tipoVehiculoId,
+            tipo,
             claseTransporteCasaTrabajo,
             sedeId,
             from,
@@ -59,25 +63,25 @@ export async function getTransporteCasaTrabajoReport(
         },
     };
     const {data} = await api.get<TransporteCasaTrabajoCollection>(
-        "/api/activo",
+        "/api/transporteCasaTrabajo",
         config
     );
     return data;
 }
 
 export async function getTransporteCasaTrabajoById(id: number): Promise<TransporteCasaTrabajoResource> {
-    const {data} = await api.get(`/api/activo/${id}`);
+    const {data} = await api.get(`/api/transporteCasaTrabajo/${id}`);
     return data;
 }
 
 export async function createTransporteCasaTrabajo(body: TransporteCasaTrabajoRequest): Promise<AxiosResponse<Response>> {
-    return await api.post("/api/activo", body);
+    return await api.post("/api/transporteCasaTrabajo", body);
 }
 
 export async function updateTransporteCasaTrabajo(id: number, body: TransporteCasaTrabajoRequest): Promise<AxiosResponse<Response>> {
-    return await api.put(`/api/activo/${id}`, body);
+    return await api.put(`/api/transporteCasaTrabajo/${id}`, body);
 }
 
 export async function deleteTransporteCasaTrabajo(id: number): Promise<AxiosResponse<Response>> {
-    return await api.delete(`/api/activo/${id}`);
+    return await api.delete(`/api/transporteCasaTrabajo/${id}`);
 }

@@ -1,12 +1,12 @@
 "use client";
 
 import LayoutWrapper from "@/components/Layout/layout";
-import ActivoFactorPage from "@/components/tipoActivo/components/ActivoFactorPage";
+import VehiculoFactorPage from "@/components/tipoVehiculo/components/VehiculoFactorPage";
 
 export default function Page() {
     return (
         <LayoutWrapper>
-            <ActivoFactorPage/>
+            <VehiculoFactorPage/>
         </LayoutWrapper>
     );
 }

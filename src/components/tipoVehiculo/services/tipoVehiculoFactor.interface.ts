@@ -31,6 +31,9 @@ export interface VehiculoFactorCollectionPaginate {
 
 export interface VehiculoFactorCollection {
     id: number;
+    factorCO2: number | null;
+    factorCH4: number | null;
+    factorN2O: number | null;
     factor: number;
     tipoVehiculoId: number;
     anioId: number;

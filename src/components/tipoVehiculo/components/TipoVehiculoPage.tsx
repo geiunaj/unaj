@@ -62,10 +62,6 @@ export default function TipoVehiculoPage() {
     const COLUMS = [
         "N°",
         "NOMBRE",
-        "CATEGORIA",
-        "PESO [Kg]",
-        "COSTO | UNITARIO",
-        "LINK",
         "ACCIONES",
     ];
 
@@ -136,19 +132,6 @@ export default function TipoVehiculoPage() {
                             onChange={(e) => handleNameChange(e.target.value)}
                         />
 
-                        <Link href="/tipo-vehiculo/categoria">
-                            <Button variant="secondary" size="sm" className="h-7 gap-1">
-                                <Bolt className="h-3.5 w-3.5"/>
-                                Categorías
-                            </Button>
-                        </Link>
-                        <Link href="/tipo-vehiculo/grupo">
-                            <Button variant="secondary" size="sm" className="h-7 gap-1">
-                                <Bolt className="h-3.5 w-3.5"/>
-                                Grupos
-                            </Button>
-                        </Link>
-
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button size="sm" className="h-7 gap-1">
@@ -197,26 +180,6 @@ export default function TipoVehiculoPage() {
                                     <TableCell
                                         className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.nombre}
-                                    </TableCell>
-                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.categoria}
-                                    </TableCell>
-                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.peso}
-                                    </TableCell>
-                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.costoUnitario}
-                                    </TableCell>
-                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis p-1">
-                                        <Link href={item.fuente} target="_blank" hidden={!item.fuente}>
-                                            <Button
-                                                className="h-7 w-7"
-                                                size="icon"
-                                                variant="outline"
-                                            >
-                                                <Link2 className="h-3.5 text-primary"/>
-                                            </Button>
-                                        </Link>
                                     </TableCell>
 
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis p-1">

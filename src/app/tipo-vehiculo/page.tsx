@@ -1,13 +1,13 @@
 "use client";
 
 import LayoutWrapper from "@/components/Layout/layout";
-import TipoActivoPage from "@/components/tipoActivo/components/TipoActivoPage";
+import TipoVehiculoPage from "@/components/tipoVehiculo/components/TipoVehiculoPage";
 
 
 export default function Page() {
     return (
         <LayoutWrapper>
-            <TipoActivoPage/>
+            <TipoVehiculoPage/>
         </LayoutWrapper>
     );
 }

@@ -1,12 +1,17 @@
 import {useQuery} from "@tanstack/react-query";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
-import {getActivo, getActivoById, getActivoReport} from "@/components/activos/services/activos.actions";
-import {getTiposActivo} from "@/components/tipoActivo/services/tipoActivo.actions";
+import {
+    getTransporteCasaTrabajo,
+    getTransporteCasaTrabajoById,
+    getTransporteCasaTrabajoReport
+} from "@/components/transporteCasaTrabajo/services/transporteCasaTrabajo.actions";
+import {getTiposVehiculo} from "@/components/tipoVehiculo/services/tipoVehiculo.actions";
 
-interface getActivoInterface {
-    tipoActivoId?: number;
-    claseActivo?: string;
+interface getTransporteCasaTrabajoInterface {
+    tipoVehiculoId?: number;
+    tipo?: string;
+    claseTransporteCasaTrabajo?: string;
     sedeId?: number;
     from?: string;
     to?: string;
@@ -15,44 +20,46 @@ interface getActivoInterface {
     page?: number;
 }
 
-export const useActivo =
+export const useTransporteCasaTrabajo =
     ({
-         tipoActivoId,
+         tipoVehiculoId,
+         tipo,
          sedeId,
          from,
          to,
          sort,
          direction,
          page
-     }: getActivoInterface) => {
+     }: getTransporteCasaTrabajoInterface) => {
         return useQuery({
-            queryKey: ['activoH'],
-            queryFn: () => getActivo(tipoActivoId, sedeId, from, to, sort, direction, page),
+            queryKey: ['transporteCasaTrabajoH'],
+            queryFn: () => getTransporteCasaTrabajo(tipoVehiculoId, tipo, sedeId, from, to, sort, direction, page),
             refetchOnWindowFocus: false,
         });
     }
 
-export const useActivoReport =
+export const useTransporteCasaTrabajoReport =
     ({
-         tipoActivoId,
-         claseActivo,
+         tipoVehiculoId,
+         tipo,
+         claseTransporteCasaTrabajo,
          sedeId,
          from,
          to,
          sort,
          direction,
-     }: getActivoInterface) => {
+     }: getTransporteCasaTrabajoInterface) => {
         return useQuery({
-            queryKey: ['activoReportH'],
-            queryFn: () => getActivoReport(tipoActivoId, claseActivo, sedeId, from, to, sort, direction),
+            queryKey: ['transporteCasaTrabajoReportH'],
+            queryFn: () => getTransporteCasaTrabajoReport(tipoVehiculoId, tipo, claseTransporteCasaTrabajo, sedeId, from, to, sort, direction),
             refetchOnWindowFocus: false,
         });
     }
 
-export const useTipoActivo = () => {
+export const useTipoVehiculos = () => {
     return useQuery({
-        queryKey: ['tipoActivoH'],
-        queryFn: () => getTiposActivo(),
+        queryKey: ['tipoVehiculoH'],
+        queryFn: () => getTiposVehiculo(),
         refetchOnWindowFocus: false,
     });
 }
@@ -73,10 +80,10 @@ export const useAnio = () => {
     });
 }
 
-export const useActivoId = (id: number) => {
+export const useTransporteCasaTrabajoId = (id: number) => {
     return useQuery({
-        queryKey: ["activoH", id],
-        queryFn: () => getActivoById(id),
+        queryKey: ["transporteCasaTrabajoH", id],
+        queryFn: () => getTransporteCasaTrabajoById(id),
         refetchOnWindowFocus: false,
     });
 }

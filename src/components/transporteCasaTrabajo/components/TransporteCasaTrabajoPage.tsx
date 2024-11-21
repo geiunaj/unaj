@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {
-    Bean,
+    Car,
     Building,
     FileSpreadsheet,
     LeafyGreen,
@@ -28,7 +28,10 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import {Badge} from "@/components/ui/badge";
-import {ActivoCollectionItem} from "@/components/activos/services/activos.interface";
+import {
+    TipoCasaTrabajo,
+    TransporteCasaTrabajoCollectionItem
+} from "@/components/transporteCasaTrabajo/services/transporteCasaTrabajo.interface";
 import SelectFilter from "@/components/SelectFilter";
 import {
     AlertDialog,
@@ -46,13 +49,15 @@ import {useRouter} from "next/navigation";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {
     useAnio,
-    useActivo,
-    useActivoReport,
+    useTransporteCasaTrabajo,
+    useTransporteCasaTrabajoReport,
     useSede,
-    useTipoActivo,
-} from "@/components/activos/lib/activo.hook";
-import {deleteActivo} from "@/components/activos/services/activos.actions";
-import {UpdateFormActivo} from "@/components/activos/components/UpdateFormActivo";
+    useTipoVehiculos,
+} from "@/components/transporteCasaTrabajo/lib/transporteCasaTrabajo.hook";
+import {deleteTransporteCasaTrabajo} from "@/components/transporteCasaTrabajo/services/transporteCasaTrabajo.actions";
+import {
+    UpdateFormTransporteCasaTrabajo
+} from "@/components/transporteCasaTrabajo/components/UpdateFormTransporteCasaTrabajo";
 import CustomPagination from "@/components/Pagination";
 import {
     errorToast,
@@ -65,16 +70,10 @@ import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {useMes} from "@/components/combustion/lib/combustion.hook";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function TransporteCasaTrabajoPage() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Activos Fijos");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Activos Fijos");
-    }, [setTitleHeader]);
+    ChangeTitle("Transporte Casa Trabajo");
     // NAVIGATION
     const {push} = useRouter();
     const [page, setPage] = useState(1);
@@ -89,8 +88,9 @@ export default function TransporteCasaTrabajoPage() {
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
     //SELECTS - FILTERS
-    const [selectedTipoActivoId, setSelectedTipoActivoId] =
+    const [selectedTipoVehiculoId, setSelectedTipoVehiculoId] =
         useState<string>("");
+    const [selectedTipo, setSelectedTipo] = useState<string>("");
     const [selectedSede, setSelectedSede] = useState<string>("1");
     const [selectedAnio, setSelectedAnio] = useState<string>(
         new Date().getFullYear().toString()
@@ -100,19 +100,20 @@ export default function TransporteCasaTrabajoPage() {
     const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     // HOOKS
-    const activo = useActivo({
-        tipoActivoId: selectedTipoActivoId
-            ? parseInt(selectedTipoActivoId)
+    const transporteCasaTrabajo = useTransporteCasaTrabajo({
+        tipoVehiculoId: selectedTipoVehiculoId
+            ? parseInt(selectedTipoVehiculoId)
             : undefined,
+        tipo: selectedTipo,
         sedeId: parseInt(selectedSede),
         from,
         to,
         page: page,
     });
 
-    const activoReport = useActivoReport({
-        tipoActivoId: selectedTipoActivoId
-            ? parseInt(selectedTipoActivoId)
+    const transporteCasaTrabajoReport = useTransporteCasaTrabajoReport({
+        tipoVehiculoId: selectedTipoVehiculoId
+            ? parseInt(selectedTipoVehiculoId)
             : undefined,
         sedeId: parseInt(selectedSede),
         from,
@@ -132,10 +133,15 @@ export default function TransporteCasaTrabajoPage() {
         "ACCIONES",
     ];
 
-    const tipoActivo = useTipoActivo();
+    const tipoVehiculo = useTipoVehiculos();
     const sedes = useSede();
     const anios = useAnio();
     const meses = useMes();
+    const tipos = [
+        {nombre: "Alumno", upper: "ALUMNO"},
+        {nombre: "Docente", upper: "DOCENTE"},
+        {nombre: "Administrativo", upper: "ADMINISTRATIVO"},
+    ];
 
     // HANDLE FUNCTIONS
     const handleClickUpdate = (id: number) => {
@@ -152,95 +158,101 @@ export default function TransporteCasaTrabajoPage() {
         async (value: string) => {
             await setPage(1);
             await setSelectedSede(value);
-            await activo.refetch();
-            await activoReport.refetch();
+            await transporteCasaTrabajo.refetch();
+            await transporteCasaTrabajoReport.refetch();
         },
-        [activo, activoReport]
+        [transporteCasaTrabajo, transporteCasaTrabajoReport]
     );
 
     const handleFromChange = useCallback(
         async (value: string) => {
             await setPage(1);
             await setFrom(value);
-            await activo.refetch();
-            await activoReport.refetch();
-        }, [activo, activoReport]);
+            await transporteCasaTrabajo.refetch();
+            await transporteCasaTrabajoReport.refetch();
+        }, [transporteCasaTrabajo, transporteCasaTrabajoReport]);
 
     const handleToChange = useCallback(
         async (value: string) => {
             await setPage(1);
             await setTo(value);
-            await activo.refetch();
-            await activoReport.refetch();
-        }, [activo, activoReport]);
+            await transporteCasaTrabajo.refetch();
+            await transporteCasaTrabajoReport.refetch();
+        }, [transporteCasaTrabajo, transporteCasaTrabajoReport]);
 
-    const handleTipoActivoChange = useCallback(
+    const handleTipoTransporteCasaTrabajoChange = useCallback(
         async (value: string) => {
             await setPage(1);
-            await setSelectedTipoActivoId(value);
-            await activo.refetch();
-            await activoReport.refetch();
+            await setSelectedTipoVehiculoId(value);
+            await transporteCasaTrabajo.refetch();
+            await transporteCasaTrabajoReport.refetch();
         },
-        [activo, activoReport]
+        [transporteCasaTrabajo, transporteCasaTrabajoReport]
+    );
+
+    const handleTipoChange = useCallback(async (value: string) => {
+            await setPage(1);
+            await setSelectedTipo(value);
+            await transporteCasaTrabajo.refetch();
+            await transporteCasaTrabajoReport.refetch();
+        },
+        [transporteCasaTrabajo, transporteCasaTrabajoReport]
     );
 
     const handleCalculate = () => {
-        push("/activos-fijos/calculos");
+        push("/transporte-casa-trabajo/calculos");
     };
 
     const handleClose = useCallback(async () => {
         setIsDialogOpen(false);
-        await activo.refetch();
-        await activoReport.refetch();
-    }, [activo, activoReport]);
+        await transporteCasaTrabajo.refetch();
+        await transporteCasaTrabajoReport.refetch();
+    }, [transporteCasaTrabajo, transporteCasaTrabajoReport]);
 
     const handleCloseUpdate = useCallback(async () => {
         setIsUpdateDialogOpen(false);
-        await activo.refetch();
-        await activoReport.refetch();
-    }, [activo, activoReport]);
+        await transporteCasaTrabajo.refetch();
+        await transporteCasaTrabajoReport.refetch();
+    }, [transporteCasaTrabajo, transporteCasaTrabajoReport]);
 
     const handleDelete = useCallback(async () => {
         try {
-            const response = await deleteActivo(idForDelete);
+            const response = await deleteTransporteCasaTrabajo(idForDelete);
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
             errorToast(error.response.data.message);
         }
-        await activo.refetch();
-        await activoReport.refetch();
-    }, [activo, activoReport, idForDelete]);
+        await transporteCasaTrabajo.refetch();
+        await transporteCasaTrabajoReport.refetch();
+    }, [transporteCasaTrabajo, transporteCasaTrabajoReport, idForDelete]);
 
     const handlePageChage = async (page: number) => {
         await setPage(page);
-        await activo.refetch();
+        await transporteCasaTrabajo.refetch();
     };
 
     const handleClickReport = useCallback(
         async (period: ReportRequest) => {
             const columns = [
                 {header: "N°", key: "rn", width: 15},
-                {header: "NOMBRE", key: "tipoActivo", width: 60},
-                {header: "CATEGORIA", key: "categoria", width: 20},
-                {header: "CANTIDAD COMPRADA [S/.]", key: "cantidadComprada", width: 20},
-                {header: "COSTO TOTAL [S/.]", key: "costoTotal", width: 20},
-                {header: "CANTIDAD CONSUMIDA [Kg]", key: "cantidadConsumida", width: 20},
-                {header: "CONSUMO TOTAL [Kg]", key: "consumoTotal", width: 20},
+                {header: "TIPO", key: "tipo", width: 20},
+                {header: "TIPO VEHICULO", key: "tipoVehiculo", width: 20},
+                {header: "KM RECORRIDO", key: "kmRecorrido", width: 20},
                 {header: "AÑO", key: "anio", width: 20},
                 {header: "MES", key: "mes", width: 20},
                 {header: "SEDE", key: "sede", width: 20},
             ];
-            const data = await activoReport.refetch();
+            const data = await transporteCasaTrabajoReport.refetch();
             await GenerateReport(
                 data.data!.data,
                 columns,
                 formatPeriod(period, true),
-                "REPORTE DE ACTIVOS",
-                "Activos"
+                "REPORTE DE TRANSPORTE CASA TRABAJO",
+                "Transporte Casa Trabajo"
             );
         },
-        [activoReport]
+        [transporteCasaTrabajoReport]
     );
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
@@ -252,21 +264,21 @@ export default function TransporteCasaTrabajoPage() {
     };
 
     if (
-        activo.isLoading ||
-        tipoActivo.isLoading ||
+        transporteCasaTrabajo.isLoading ||
+        tipoVehiculo.isLoading ||
         sedes.isLoading ||
         anios.isLoading ||
-        activoReport.isLoading
+        transporteCasaTrabajoReport.isLoading
     ) {
         return <SkeletonTable/>;
     }
 
     if (
-        activo.isError ||
-        tipoActivo.isError ||
+        transporteCasaTrabajo.isError ||
+        tipoVehiculo.isError ||
         sedes.isError ||
         anios.isError ||
-        activoReport.isError
+        transporteCasaTrabajoReport.isError
     ) {
         return <div>Error al cargar los datos</div>;
     }
@@ -281,14 +293,25 @@ export default function TransporteCasaTrabajoPage() {
                             className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
 
                             <SelectFilter
-                                list={tipoActivo.data!}
-                                itemSelected={selectedTipoActivoId}
-                                handleItemSelect={handleTipoActivoChange}
+                                list={tipos}
+                                itemSelected={selectedTipo}
+                                handleItemSelect={handleTipoChange}
+                                value={"upper"}
+                                nombre={"nombre"}
+                                id={"nombre"}
+                                all={true}
+                                icon={<Car className="h-3 w-3"/>}
+                            />
+
+                            <SelectFilter
+                                list={tipoVehiculo.data!}
+                                itemSelected={selectedTipoVehiculoId}
+                                handleItemSelect={handleTipoTransporteCasaTrabajoChange}
                                 value={"id"}
                                 nombre={"nombre"}
                                 id={"id"}
                                 all={true}
-                                icon={<Bean className="h-3 w-3"/>}
+                                icon={<Car className="h-3 w-3"/>}
                             />
 
                             <SelectFilter
@@ -323,24 +346,21 @@ export default function TransporteCasaTrabajoPage() {
                             </Button>
 
                             <ExportPdfReport
-                                data={activoReport.data!.data}
-                                fileName={`REPORTE DE ACTIVOS_${formatPeriod({
+                                data={transporteCasaTrabajoReport.data!.data}
+                                fileName={`REPORTE DE TRANSPORTE CASA TRABAJO_${formatPeriod({
                                     from,
                                     to,
                                 }, true)}`}
                                 columns={[
                                     {header: "N°", key: "rn", width: 5},
-                                    {header: "NOMBRE", key: "tipoActivo", width: 35},
-                                    {header: "CATEGORIA", key: "categoria", width: 8},
-                                    {header: "CANTIDAD COMPRADA [S/.]", key: "cantidadComprada", width: 8},
-                                    {header: "COSTO TOTAL [S/.]", key: "costoTotal", width: 8},
-                                    {header: "CANTIDAD CONSUMIDA [Kg]", key: "cantidadConsumida", width: 8},
-                                    {header: "CONSUMO TOTAL [Kg]", key: "consumoTotal", width: 8},
-                                    {header: "AÑO", key: "anio", width: 5},
-                                    {header: "MES", key: "mes", width: 5},
-                                    {header: "SEDE", key: "sede", width: 10},
+                                    {header: "TIPO", key: "tipo", width: 15},
+                                    {header: "TIPO VEHICULO", key: "tipoVehiculo", width: 25},
+                                    {header: "KM RECORRIDO", key: "kmRecorrido", width: 20},
+                                    {header: "AÑO", key: "anio", width: 10},
+                                    {header: "MES", key: "mes", width: 10},
+                                    {header: "SEDE", key: "sede", width: 15},
                                 ]}
-                                title="REPORTE DE ACTIVOS"
+                                title="REPORTE DE TRANSPORTE CASA TRABAJO"
                                 period={formatPeriod({from, to}, true)}
                             />
 
@@ -355,7 +375,7 @@ export default function TransporteCasaTrabajoPage() {
                                 </DialogTrigger>
                                 <DialogContent className="max-w-lg border-2">
                                     <DialogHeader className="">
-                                        <DialogTitle>Registro Activo</DialogTitle>
+                                        <DialogTitle>Registro Transporte Casa Trabajo</DialogTitle>
                                         <DialogClose></DialogClose>
                                     </DialogHeader>
                                     <FormTransporteCasaTrabajo onClose={handleClose}/>
@@ -374,22 +394,13 @@ export default function TransporteCasaTrabajoPage() {
                                 N°
                             </TableHead>
                             <TableHead className="font-Manrope text-xs font-bold text-center py-1">
-                                NOMBRE
+                                TIPO
                             </TableHead>
-                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
-                                CATEGORIA
+                            <TableHead className="font-Manrope text-xs leading-3 font-bold text-center py-1">
+                                TIPO DE<br/> VEHICULO
                             </TableHead>
-                            <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
-                                CANTIDAD<br/> COMPRADA <span className="text-[9px]">[S/.]</span>
-                            </TableHead>
-                            <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
-                                COSTO<br/> TOTAL <span className="text-[9px]">[S/.]</span>
-                            </TableHead>
-                            <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
-                                CANTIDAD <br/> CONSUMIDA <span className="text-[9px]">[Kg]</span>
-                            </TableHead>
-                            <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
-                                CONSUMO<br/> TOTAL <span className="text-[9px]">[Kg]</span>
+                            <TableHead className="font-Manrope text-xs leading-3 font-bold text-center py-1">
+                                KM<br/> RECORRIDO
                             </TableHead>
                             <TableHead className="font-Manrope text-xs font-bold text-center py-1">
                                 AÑO
@@ -403,8 +414,8 @@ export default function TransporteCasaTrabajoPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {activo.data!.data.map(
-                            (item: ActivoCollectionItem, index: number) => (
+                        {transporteCasaTrabajo.data!.data.map(
+                            (item: TransporteCasaTrabajoCollectionItem, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs">
                                         <Badge variant="secondary">
@@ -413,27 +424,15 @@ export default function TransporteCasaTrabajoPage() {
                                     </TableCell>
                                     <TableCell
                                         className="text-xs w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.tipoActivo}
+                                        {item.tipo}
                                     </TableCell>
                                     <TableCell
                                         className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {item.categoria}
+                                        {item.tipoVehiculo}
                                     </TableCell>
                                     <TableCell
                                         className="text-xs max-w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                        <Badge variant="outline"> {item.cantidadComprada}</Badge>
-                                    </TableCell>
-                                    <TableCell
-                                        className="text-xs max-w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                        <Badge variant="secondary">{item.costoTotal}</Badge>
-                                    </TableCell>
-                                    <TableCell
-                                        className="text-xs max-w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                        <Badge variant="outline">{item.cantidadConsumida}</Badge>
-                                    </TableCell>
-                                    <TableCell
-                                        className="text-xs max-w-[20%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                        <Badge variant="default">{item.consumoTotal}</Badge>
+                                        <Badge variant="default">{item.kmRecorrido}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs">
                                         {item.anio}
@@ -469,9 +468,9 @@ export default function TransporteCasaTrabajoPage() {
                         )}
                     </TableBody>
                 </Table>
-                {activo.data!.meta.totalPages > 1 && (
+                {transporteCasaTrabajo.data!.meta.totalPages > 1 && (
                     <CustomPagination
-                        meta={activo.data!.meta}
+                        meta={transporteCasaTrabajo.data!.meta}
                         onPageChange={handlePageChage}
                     />
                 )}
@@ -482,10 +481,10 @@ export default function TransporteCasaTrabajoPage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Activo</DialogTitle>
+                        <DialogTitle>Actualizar Registro de Transporte Casa Trabajo</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <UpdateFormActivo
+                    <UpdateFormTransporteCasaTrabajo
                         onClose={handleCloseUpdate}
                         id={idForUpdate}
                     />

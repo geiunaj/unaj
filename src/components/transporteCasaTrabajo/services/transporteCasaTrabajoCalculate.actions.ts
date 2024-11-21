@@ -32,7 +32,7 @@ export async function getTransporteCasaTrabajoCalculate(
             page,
         }
     };
-    const {data} = await api.get<TransporteCasaTrabajoCalculosCollection>("/api/activo/calculate", config);
+    const {data} = await api.get<TransporteCasaTrabajoCalculosCollection>("/api/transporteCasaTrabajo/calculate", config);
     return data;
 }
 
@@ -50,7 +50,7 @@ export async function getTransporteCasaTrabajoCalculateReport(
             all: true
         }
     };
-    const {data} = await api.get("/api/activo/calculate", config);
+    const {data} = await api.get("/api/transporteCasaTrabajo/calculate", config);
     return data;
 }
 
@@ -68,6 +68,6 @@ export async function createTransporteCasaTrabajoCalculate(
         to: to,
     };
 
-    const {data} = await api.post("/api/activo/calculate", body);
+    const {data} = await api.post("/api/transporteCasaTrabajo/calculate", body);
     return data;
 }

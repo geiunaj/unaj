@@ -46,7 +46,7 @@ export async function PUT(
             where: {id: body.anioId},
         });
         if (!anio) return NextResponse.json({message: "Año no encontrado"}, {status: 404});
-        const tipoVehiculo = await prisma.casaTrabajo.findFirst({
+        const tipoVehiculo = await prisma.tipoVehiculo.findFirst({
             where: {id: body.tipoVehiculoId},
         });
         if (!tipoVehiculo) return NextResponse.json({message: "Tipo de Vehiculo no encontrado"}, {status: 404});

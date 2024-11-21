@@ -5,6 +5,6 @@ export function formatTipoVehiculoFactor(tipoCombustibleFactor: any) {
         created_at: undefined,
         updated_at: undefined,
         anio: anio.nombre,
-        tipoVehicle: tipoVehiculo.nombre,
+        tipoVehiculo: tipoVehiculo.nombre,
     };
 }

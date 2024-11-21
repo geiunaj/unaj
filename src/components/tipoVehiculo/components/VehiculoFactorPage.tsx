@@ -2,7 +2,7 @@
 
 import React, {useCallback, useState} from "react";
 import SelectFilter from "@/components/SelectFilter";
-import {Pen, Plus, Trash2, Calendar, Link2, Bean, Milk} from "lucide-react";
+import {Pen, Plus, Trash2, Calendar, Link2, Bean, Car} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -35,23 +35,21 @@ import {
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {
-    useAnio,
-    useActivoFactor, useTipoActivo,
-
-} from "../lib/tipoActivoFactor.hook";
-import {deleteTipoActivoFactor} from "../services/tipoActivoFactor.actions";
+    useAnio, useTipoVehiculo, useVehiculoFactor,
+} from "../lib/tipoVehiculoFactor.hook";
 import {errorToast, successToast} from "@/lib/utils/core.function";
-import {ActivoFactorCollection} from "../services/tipoActivoFactor.interface";
+import {VehiculoFactorCollection} from "../services/tipoVehiculoFactor.interface";
 import Link from "next/link";
 import CustomPagination from "@/components/Pagination";
-import {CreateFormTipoActivoFactor} from "@/components/tipoActivo/components/CreateFormTipoActivoFactor";
+import {CreateFormTipoVehiculoFactor} from "@/components/tipoVehiculo/components/CreateFormTipoVehiculoFactor";
 import {
-    UpdateFormTipoActivoFactor
-} from "@/components/tipoActivo/components/UpdateFormTipoActivoFactor";
+    UpdateFormTipoVehiculoFactor
+} from "@/components/tipoVehiculo/components/UpdateFormTipoVehiculoFactor";
 import {ChangeTitle} from "@/components/TitleUpdater";
+import {deleteTipoVehiculoFactor} from "@/components/tipoVehiculo/services/tipoVehiculoFactor.actions";
 
 export default function VehiculoFactorPage() {
-    ChangeTitle("Factor de Emisión de Activo");
+    ChangeTitle("Factor de Emisión de Vehiculo");
 
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -59,19 +57,19 @@ export default function VehiculoFactorPage() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     const [selectAnio, setSelectAnio] = useState<string>(new Date().getFullYear().toString());
-    const [selectTipoActivo, setSelectTipoActivo] = useState<string>("");
+    const [selectTipoVehiculo, setSelectTipoVehiculo] = useState<string>("");
     const [page, setPage] = useState<number>(1);
 
     const anioQuery = useAnio();
-    const tipoActivoQuery = useTipoActivo();
+    const tipoVehiculoQuery = useTipoVehiculo();
 
     //IDS
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
 
-    const factorEmisionQuery = useActivoFactor({
-        tipoActivoId: selectTipoActivo,
+    const factorEmisionQuery = useVehiculoFactor({
+        tipoVehiculoId: selectTipoVehiculo,
         anioId: selectAnio,
         page,
         perPage: 10
@@ -79,8 +77,12 @@ export default function VehiculoFactorPage() {
 
     const columns = [
         "N°",
-        "ACTIVO",
+        "TIPO VEHICULO",
+        "FACTOR CO2",
+        "FACTOR CH4",
+        "FACTOR N2O",
         "FACTOR",
+        "FUENTE",
         "AÑO",
         "ACCIONES"
     ];
@@ -90,8 +92,8 @@ export default function VehiculoFactorPage() {
         await factorEmisionQuery.refetch();
     }, [factorEmisionQuery]);
 
-    const handleTipoActivoChange = useCallback(async (value: string) => {
-        await setSelectTipoActivo(value);
+    const handleTipoVehiculoChange = useCallback(async (value: string) => {
+        await setSelectTipoVehiculo(value);
         await factorEmisionQuery.refetch();
     }, [factorEmisionQuery]);
 
@@ -108,13 +110,11 @@ export default function VehiculoFactorPage() {
 
     const handleDelete = useCallback(async () => {
         try {
-            const response = await deleteTipoActivoFactor(idForDelete);
+            const response = await deleteTipoVehiculoFactor(idForDelete);
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
-            errorToast(
-                error.response?.data?.message || "Error al eliminar el factor de emisión de fertilizante"
-            );
+            errorToast(error.response?.data?.message);
         } finally {
             await factorEmisionQuery.refetch();
         }
@@ -134,7 +134,7 @@ export default function VehiculoFactorPage() {
         await factorEmisionQuery.refetch();
     }
 
-    if (anioQuery.isLoading || factorEmisionQuery.isLoading || tipoActivoQuery.isLoading) {
+    if (anioQuery.isLoading || factorEmisionQuery.isLoading || tipoVehiculoQuery.isLoading) {
         return <SkeletonTable/>;
     }
 
@@ -145,14 +145,14 @@ export default function VehiculoFactorPage() {
                     <div
                         className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
                         <SelectFilter
-                            list={tipoActivoQuery.data!}
-                            itemSelected={selectTipoActivo}
-                            handleItemSelect={handleTipoActivoChange}
+                            list={tipoVehiculoQuery.data!}
+                            itemSelected={selectTipoVehiculo}
+                            handleItemSelect={handleTipoVehiculoChange}
                             value={"id"}
                             nombre={"nombre"}
                             id={"id"}
                             all={true}
-                            icon={<Milk className="h-3 w-3"/>}
+                            icon={<Car className="h-3 w-3"/>}
                         />
                         <SelectFilter
                             list={anioQuery.data!}
@@ -175,13 +175,13 @@ export default function VehiculoFactorPage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle> Factor de Tipo de Activo</DialogTitle>
+                                    <DialogTitle> Factor de Tipo de Vehiculo</DialogTitle>
                                     <DialogDescription>
-                                        Agregar Factor de Tipo de Activo
+                                        Agregar Factor de Tipo de Vehiculo
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                <CreateFormTipoActivoFactor onClose={handleClose}/>
+                                <CreateFormTipoVehiculoFactor onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -203,18 +203,36 @@ export default function VehiculoFactorPage() {
                     </TableHeader>
                     <TableBody>
                         {factorEmisionQuery.data!.data.map(
-                            (item: ActivoFactorCollection, index: number) => (
+                            (item: VehiculoFactorCollection, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{index + 1}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {item.tipoActivo}
+                                        {item.tipoVehiculo}
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        <Badge variant="secondary" className="space-x-2">
+                                            {item.factorCO2}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        <Badge variant="secondary" className="space-x-2">
+                                            {item.factorCH4}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        <Badge variant="secondary" className="space-x-2">
+                                            {item.factorN2O}
+                                        </Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="default" className="space-x-2">
                                             {item.factor}
                                         </Badge>
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {item.fuente}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.anio}
@@ -265,10 +283,10 @@ export default function VehiculoFactorPage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Activo</DialogTitle>
+                        <DialogTitle>Actualizar Registro de Vehiculo</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    <UpdateFormTipoActivoFactor onClose={handleCloseUpdate} id={idForUpdate}/>
+                    <UpdateFormTipoVehiculoFactor onClose={handleCloseUpdate} id={idForUpdate}/>
                 </DialogContent>
             </Dialog>
 

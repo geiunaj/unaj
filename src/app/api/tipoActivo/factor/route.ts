@@ -1,8 +1,8 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
 import {ActivoFactorRequest} from "@/components/tipoActivo/services/tipoActivoFactor.interface";
-import {formatTipoActivoFactor} from "@/lib/resources/tipoActivoFactor";
 import {getAnioId} from "@/lib/utils";
+import {formatTipoActivoFactor} from "@/lib/resources/tipoActivoFactor";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {

@@ -3,30 +3,30 @@ import {getSedes} from "@/components/sede/services/sede.actions";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {getMes} from "@/components/mes/services/mes.actions";
 import {
-    getActivoCalculate,
-    getActivoCalculateReport
+    getTransporteCasaTrabajoCalculate,
+    getTransporteCasaTrabajoCalculateReport
 } from "@/components/activos/services/activosCalculate.actions";
 
-interface getActivoCalculoInterface {
+interface getTransporteCasaTrabajoCalculoInterface {
     sedeId: number;
     from?: string;
     to?: string;
     page?: number;
 }
 
-export const useActivoCalculos =
-    ({sedeId, from, to, page}: getActivoCalculoInterface) => {
+export const useTransporteCasaTrabajoCalculos =
+    ({sedeId, from, to, page}: getTransporteCasaTrabajoCalculoInterface) => {
         return useQuery({
             queryKey: ['fertilizanteCalculos'],
-            queryFn: () => getActivoCalculate({sedeId, from, to, page}),
+            queryFn: () => getTransporteCasaTrabajoCalculate({sedeId, from, to, page}),
             refetchOnWindowFocus: false,
         });
     }
-export const useActivoCalculosReport =
-    ({sedeId, from, to}: getActivoCalculoInterface) => {
+export const useTransporteCasaTrabajoCalculosReport =
+    ({sedeId, from, to}: getTransporteCasaTrabajoCalculoInterface) => {
         return useQuery({
             queryKey: ['fertilizanteCalculosReport'],
-            queryFn: () => getActivoCalculateReport({sedeId, from, to}),
+            queryFn: () => getTransporteCasaTrabajoCalculateReport({sedeId, from, to}),
             refetchOnWindowFocus: false,
         });
     }

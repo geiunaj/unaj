@@ -23,18 +23,14 @@ export interface Meta {
 export interface TransporteCasaTrabajoCollectionItem {
     rn: number;
     id: number;
-    tipoTransporteCasaTrabajoId: number;
+    tipo: string;
+    tipoVehiculoId: number;
+    kmRecorrido: number;
     sedeId: number;
     anioId: number;
     mesId: number;
     anio_mes: number;
-    cantidadComprada: number;
-    cantidadConsumida: number;
-    costoTotal: string;
-    consumoTotal: string;
-    tipoTransporteCasaTrabajo: string;
-    categoria: string;
-    unidad: string;
+    tipoVehiculo: string;
     mes: string;
     anio: string;
     sede: string;
@@ -43,18 +39,14 @@ export interface TransporteCasaTrabajoCollectionItem {
 //PARA EL SHOW
 export interface TransporteCasaTrabajoResource {
     id: number;
-    tipoTransporteCasaTrabajoId: number;
+    tipo: string;
+    tipoVehiculoId: number;
+    kmRecorrido: number;
     sedeId: number;
     anioId: number;
     mesId: number;
     anio_mes: number;
-    cantidadComprada: number;
-    cantidadConsumida: number;
-    costoTotal: string;
-    consumoTotal: string;
-    tipoTransporteCasaTrabajo: string;
-    categoria: string;
-    unidad: string;
+    tipoVehiculo: string;
     mes: string;
     anio: string;
     sede: string;
@@ -82,10 +74,10 @@ export interface TipoTransporteCasaTrabajo {
     updated_at: Date;
 }
 
-export type TipoCasaTrabajo = "ALUMNO" | "DOCENTE" | "ADMINISTRATIVO";
+export type TipoCasaTrabajo = "ALUMNO" | "DOCENTE" | "ADMINISTRATIVO" | "";
 
 export interface TransporteCasaTrabajoRequest {
-    tipo: TipoCasaTrabajo;
+    tipo: TipoCasaTrabajo | string;
     tipoVehiculoId: number;
     kmRecorrido: number;
     sedeId: number;

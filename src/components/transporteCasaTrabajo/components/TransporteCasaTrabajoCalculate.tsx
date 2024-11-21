@@ -18,15 +18,19 @@ import ReportComponent from "@/components/ReportComponent";
 import GenerateReport from "@/lib/utils/generateReport";
 import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import {
-    useActivoCalculos,
-    useActivoCalculosReport, useSedes
-} from "@/components/activos/lib/activoCalculos.hooks";
+    useTransporteCasaTrabajoCalculos,
+    useTransporteCasaTrabajoCalculosReport, useSedes
+} from "@/components/transporteCasaTrabajo/lib/transporteCasaTrabajoCalculos.hooks";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {createActivoCalculate} from "@/components/activos/services/activosCalculate.actions";
+import {
+    createTransporteCasaTrabajoCalculate
+} from "@/components/transporteCasaTrabajo/services/transporteCasaTrabajoCalculate.actions";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {Button} from "@/components/ui/button";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
-import {ActivoCalcResponse} from "@/components/activos/services/activosCalculate.interface";
+import {
+    TransporteCasaTrabajoCalcResponse
+} from "@/components/transporteCasaTrabajo/services/transporteCasaTrabajoCalculate.interface";
 import CustomPagination from "@/components/Pagination";
 import {FactoresEmision} from "@/components/consumoAgua/services/consumoAguaCalculos.interface";
 
@@ -41,13 +45,13 @@ export default function TransporteCasaTrabajoCalculate() {
     const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     // HOOKS
-    const activoCalculos = useActivoCalculos({
+    const transporteCasaTrabajoCalculos = useTransporteCasaTrabajoCalculos({
         sedeId: parseInt(selectedSede),
         from: from,
         to: to,
         page,
     });
-    const activoCalculosReport = useActivoCalculosReport({
+    const transporteCasaTrabajoCalculosReport = useTransporteCasaTrabajoCalculosReport({
         sedeId: parseInt(selectedSede),
         from: from,
         to: to,
@@ -55,33 +59,33 @@ export default function TransporteCasaTrabajoCalculate() {
 
     const sedes = useSedes();
 
-    const handleActivo = () => {
-        push("/activos-fijos");
+    const handleTransporteCasaTrabajo = () => {
+        push("/transporte-casa-trabajo");
     };
 
     const handleSedeChange = useCallback(async (value: string) => {
         await setPage(1);
         await setSelectedSede(value);
-        await activoCalculos.refetch();
-        await activoCalculosReport.refetch();
-    }, [activoCalculos, activoCalculosReport]);
+        await transporteCasaTrabajoCalculos.refetch();
+        await transporteCasaTrabajoCalculosReport.refetch();
+    }, [transporteCasaTrabajoCalculos, transporteCasaTrabajoCalculosReport]);
 
     const handleFromChange = useCallback(async (value: string) => {
         await setPage(1);
         await setFrom(value);
-        await activoCalculos.refetch();
-        await activoCalculosReport.refetch();
-    }, [activoCalculos, activoCalculosReport]);
+        await transporteCasaTrabajoCalculos.refetch();
+        await transporteCasaTrabajoCalculosReport.refetch();
+    }, [transporteCasaTrabajoCalculos, transporteCasaTrabajoCalculosReport]);
 
     const handleToChange = useCallback(async (value: string) => {
         await setPage(1);
         await setTo(value);
-        await activoCalculos.refetch();
-        await activoCalculosReport.refetch();
-    }, [activoCalculos, activoCalculosReport]);
+        await transporteCasaTrabajoCalculos.refetch();
+        await transporteCasaTrabajoCalculosReport.refetch();
+    }, [transporteCasaTrabajoCalculos, transporteCasaTrabajoCalculosReport]);
 
     const handleCalculate = useCallback(async () => {
-        await createActivoCalculate({
+        await createTransporteCasaTrabajoCalculate({
             sedeId: selectedSede ? Number(selectedSede) : undefined,
             from,
             to,
@@ -91,27 +95,24 @@ export default function TransporteCasaTrabajoCalculate() {
             .catch((error: any) => {
                 errorToast(error.response.data.message);
             });
-        activoCalculos.refetch();
-        activoCalculosReport.refetch();
-    }, [selectedSede, from, to, activoCalculos, activoCalculosReport]);
+        transporteCasaTrabajoCalculos.refetch();
+        transporteCasaTrabajoCalculosReport.refetch();
+    }, [selectedSede, from, to, transporteCasaTrabajoCalculos, transporteCasaTrabajoCalculosReport]);
 
 
     const handleClickExcelReport = useCallback(async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10},
-            {header: "ACTIVO", key: "tipoActivo", width: 80},
-            {header: "CATEGORIA", key: "categoria", width: 25},
-            {header: "UNIDAD", key: "unidad", width: 10},
-            // {header: "GRUPO", key: "grupo", width: 25},
-            // {header: "PROCESO", key: "proceso", width: 90},
-            {header: "PESO TOTAL", key: "pesoTotal", width: 20},
+            {header: "SEDE", key: "sede", width: 20},
+            {header: "TIPO VEHICULO", key: "tipoVehiculo", width: 30},
+            {header: "FACTOR EMISIÓN", key: "factoresEmisionString", width: 30},
             {header: "TOTAL GEI", key: "totalGEI", width: 20},
         ];
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
-        const data = await activoCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE ACTIVOS", "Activos");
-    }, [activoCalculosReport]);
+        const data = await transporteCasaTrabajoCalculosReport.refetch();
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), "REPORTE DE EMISIONES DE TRANSPORTE CASA TRABAJO", "TransporteCasaTrabajos");
+    }, [transporteCasaTrabajoCalculosReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
 
@@ -123,14 +124,14 @@ export default function TransporteCasaTrabajoCalculate() {
 
     const handlePageChage = async (page: number) => {
         await setPage(page);
-        await activoCalculos.refetch();
+        await transporteCasaTrabajoCalculos.refetch();
     };
 
-    if (activoCalculos.isLoading || activoCalculosReport.isLoading || sedes.isLoading) {
+    if (transporteCasaTrabajoCalculos.isLoading || transporteCasaTrabajoCalculosReport.isLoading || sedes.isLoading) {
         return <SkeletonTable/>;
     }
 
-    if (activoCalculos.isError || activoCalculosReport.isError || sedes.isError) {
+    if (transporteCasaTrabajoCalculos.isError || transporteCasaTrabajoCalculosReport.isError || sedes.isError) {
         return <div>Error al cargar los datos</div>;
     }
 
@@ -138,10 +139,10 @@ export default function TransporteCasaTrabajoCalculate() {
         <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div className="flex gap-4 items-center">
-                    <ButtonBack onClick={handleActivo}/>
+                    <ButtonBack onClick={handleTransporteCasaTrabajo}/>
                     <div className="font-Manrope">
                         <h1 className="text-base text-foreground font-bold">
-                            Emisiones de Activos
+                            Emisiones de Transporte Casa Trabajo
                         </h1>
                         <h2 className="text-xs sm:text-sm text-muted-foreground">
                             Huella de carbono
@@ -186,20 +187,20 @@ export default function TransporteCasaTrabajoCalculate() {
                             </Button>
 
                             <ExportPdfReport
-                                data={activoCalculosReport.data!.data}
-                                fileName={`REPORTE CALCULOS DE ACTIVOS_${formatPeriod({from, to}, true)}`}
+                                data={transporteCasaTrabajoCalculosReport.data!.data}
+                                fileName={`REPORTE CALCULOS DE TRANSPORTE CASA TRABAJO_${formatPeriod({
+                                    from,
+                                    to
+                                }, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 10},
-                                    {header: "ACTIVO", key: "tipoActivo", width: 100},
-                                    {header: "CATEGORIA", key: "categoria", width: 20},
-                                    {header: "UNIDAD", key: "unidad", width: 15},
-                                    // {header: "GRUPO", key: "grupo", width: 15},
-                                    // {header: "PROCESO", key: "proceso", width: 20},
-                                    {header: "PESO TOTAL", key: "pesoTotal", width: 20},
+                                    {header: "SEDE", key: "sede", width: 20},
+                                    {header: "TIPO VEHICULO", key: "tipoVehiculo", width: 25},
+                                    {header: "FACTOR EMISIÓN", key: "factoresEmisionString", width: 25},
                                     {header: "TOTAL GEI", key: "totalGEI", width: 20},
                                 ]}
-                                title="REPORTE DE CALCULOS DE ACTIVOS"
-                                period={formatPeriod({from, to})}
+                                title="REPORTE DE CALCULOS DE TRANSPORTE CASA TRABAJO"
+                                period={formatPeriod({from, to}, true)}
                             />
 
                             <ButtonCalculate
@@ -222,7 +223,7 @@ export default function TransporteCasaTrabajoCalculate() {
                             </TableHead>
                             <TableHead
                                 className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
-                                GRUPO DE ACTIVO
+                                TIPO DE VEHICULO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 FACTOR DE EMISIÓN
@@ -233,7 +234,7 @@ export default function TransporteCasaTrabajoCalculate() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {activoCalculos.data!.data.length === 0 && (
+                        {transporteCasaTrabajoCalculos.data!.data.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={7} className="text-center">
                                     Click en el botón <strong className="text-primary">Calcular</strong> para obtener
@@ -241,21 +242,21 @@ export default function TransporteCasaTrabajoCalculate() {
                                 </TableCell>
                             </TableRow>
                         )}
-                        {activoCalculos.data!.data.map(
-                            (ActivoCalculate: ActivoCalcResponse) => (
+                        {transporteCasaTrabajoCalculos.data!.data.map(
+                            (TransporteCasaTrabajoCalculate: TransporteCasaTrabajoCalcResponse) => (
                                 <TableRow
                                     className="text-center"
-                                    key={ActivoCalculate.id}
+                                    key={TransporteCasaTrabajoCalculate.id}
                                 >
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {ActivoCalculate.sede}
+                                        {TransporteCasaTrabajoCalculate.sede}
                                     </TableCell>
                                     <TableCell
                                         className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {ActivoCalculate.grupoActivo}
+                                        {TransporteCasaTrabajoCalculate.tipoVehiculo}
                                     </TableCell>
                                     <TableCell className="text-xs flex gap-2 justify-center sm:text-sm">
-                                        {ActivoCalculate.factoresEmision.map((factorEmision: FactoresEmision) => (
+                                        {TransporteCasaTrabajoCalculate.factoresEmision.map((factorEmision: FactoresEmision) => (
                                             <Badge key={factorEmision.anio + factorEmision.factor} variant="secondary">
                                                 {factorEmision.factor}<span
                                                 className="text-[8px] ps-[2px] text-muted-foreground">{factorEmision.anio}</span>
@@ -264,7 +265,7 @@ export default function TransporteCasaTrabajoCalculate() {
                                     </TableCell>
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         <Badge variant="default">
-                                            {ActivoCalculate.totalGEI}
+                                            {TransporteCasaTrabajoCalculate.totalGEI}
                                         </Badge>
                                     </TableCell>
                                 </TableRow>
@@ -272,9 +273,9 @@ export default function TransporteCasaTrabajoCalculate() {
                         )}
                     </TableBody>
                 </Table>
-                {activoCalculos.data!.meta.totalPages > 1 && (
+                {transporteCasaTrabajoCalculos.data!.meta.totalPages > 1 && (
                     <CustomPagination
-                        meta={activoCalculos.data!.meta}
+                        meta={transporteCasaTrabajoCalculos.data!.meta}
                         onPageChange={handlePageChage}
                     />
                 )}

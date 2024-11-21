@@ -2,7 +2,7 @@
 
 import React, {useCallback, useState} from "react";
 import SelectFilter from "@/components/SelectFilter";
-import {Pen, Plus, Trash2, Calendar, Link2, Bean, Milk} from "lucide-react";
+import {Pen, Plus, Trash2, Calendar, Link2, Bean, LampDesk} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -152,7 +152,7 @@ export default function ActivoFactorPage() {
                             nombre={"nombre"}
                             id={"id"}
                             all={true}
-                            icon={<Milk className="h-3 w-3"/>}
+                            icon={<LampDesk className="h-3 w-3"/>}
                         />
                         <SelectFilter
                             list={anioQuery.data!}

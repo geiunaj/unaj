@@ -21,23 +21,27 @@ import {
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {
-    ActivoRequest,
-    UpdateActivoProps,
-} from "@/components/activos/services/activos.interface";
+    TransporteCasaTrabajoRequest,
+    UpdateTransporteCasaTrabajoProps,
+} from "@/components/transporteCasaTrabajo/services/transporteCasaTrabajo.interface";
 import {useQuery} from "@tanstack/react-query";
 import {
-    getTiposActivo
-} from "@/components/tipoActivo/services/tipoActivo.actions";
-import {updateActivo} from "@/components/activos/services/activos.actions";
+    getTiposVehiculo
+} from "@/components/tipoVehiculo/services/tipoVehiculo.actions";
+import {updateTransporteCasaTrabajo} from "@/components/transporteCasaTrabajo/services/transporteCasaTrabajo.actions";
 import SkeletonForm from "@/components/Layout/skeletonForm";
-import {useAnio, useActivoId, useSede} from "@/components/activos/lib/activo.hook";
+import {
+    useAnio,
+    useTransporteCasaTrabajoId,
+    useSede
+} from "@/components/transporteCasaTrabajo/lib/transporteCasaTrabajo.hook";
 import {errorToast, parseNumber, successToast} from "@/lib/utils/core.function";
 import {getMes} from "@/components/mes/services/mes.actions";
 
-const Activo = z.object({
-    tipoActivoId: z.string().min(1, "Seleccione un tipo de activo"),
-    cantidadComprada: z.preprocess(parseNumber, z.number({message: "Ingrese un número"}).min(0, "Ingresa un valor mayor a 0")),
-    cantidadConsumida: z.preprocess(parseNumber, z.number({message: "Ingrese un número"}).min(0, "Ingresa un valor mayor a 0")),
+const TransporteCasaTrabajo = z.object({
+    tipo: z.string().min(1, "Seleccione un tipo"),
+    tipoVehiculoId: z.string().min(1, "Seleccione un tipo de Vehiculo"),
+    kmRecorrido: z.preprocess(parseNumber, z.number({message: "Ingrese un número"}).min(0, "Ingresa un valor mayor a 0")),
     sede: z.string().min(1, "Seleccione una sede"),
     anio: z.string().min(1, "Seleccione un año"),
     mes: z.string().min(1, "Seleccione un mes"),
@@ -45,13 +49,13 @@ const Activo = z.object({
 
 export function UpdateFormTransporteCasaTrabajo({
                                                     id, onClose,
-                                                }: UpdateActivoProps) {
-    const form = useForm<z.infer<typeof Activo>>({
-        resolver: zodResolver(Activo),
+                                                }: UpdateTransporteCasaTrabajoProps) {
+    const form = useForm<z.infer<typeof TransporteCasaTrabajo>>({
+        resolver: zodResolver(TransporteCasaTrabajo),
         defaultValues: {
-            tipoActivoId: "",
-            cantidadComprada: 0,
-            cantidadConsumida: 0,
+            tipo: "",
+            tipoVehiculoId: "",
+            kmRecorrido: 0,
             sede: "",
             anio: "",
             mes: "1",
@@ -59,7 +63,7 @@ export function UpdateFormTransporteCasaTrabajo({
     });
 
     // HOOKS
-    const activo = useActivoId(id);
+    const transporteCasaTrabajo = useTransporteCasaTrabajoId(id);
     const sedes = useSede();
     const anios = useAnio();
     const meses = useQuery({
@@ -67,41 +71,41 @@ export function UpdateFormTransporteCasaTrabajo({
         queryFn: () => getMes(),
         refetchOnWindowFocus: false,
     });
-    const tiposActivo = useQuery({
-        queryKey: ['tipoActivo'],
-        queryFn: () => getTiposActivo(),
+    const tiposVehiculo = useQuery({
+        queryKey: ['tipoVehiculoU'],
+        queryFn: () => getTiposVehiculo(),
         refetchOnWindowFocus: false,
     });
 
     const loadForm = useCallback(async () => {
-        if (activo.data) {
-            const activoData = await activo.data;
+        if (transporteCasaTrabajo.data) {
+            const transporteCasaTrabajoData = await transporteCasaTrabajo.data;
             form.reset({
-                tipoActivoId: activoData.tipoActivoId.toString(),
-                cantidadComprada: activoData.cantidadComprada,
-                cantidadConsumida: activoData.cantidadConsumida,
-                sede: activoData.sedeId.toString(),
-                anio: activoData.anioId.toString(),
-                mes: activoData.mesId.toString(),
+                tipo: transporteCasaTrabajoData.tipo,
+                tipoVehiculoId: transporteCasaTrabajoData.tipoVehiculoId.toString(),
+                kmRecorrido: transporteCasaTrabajoData.kmRecorrido,
+                sede: transporteCasaTrabajoData.sedeId.toString(),
+                anio: transporteCasaTrabajoData.anioId.toString(),
+                mes: transporteCasaTrabajoData.mesId.toString(),
             });
         }
-    }, [activo.data, id]);
+    }, [transporteCasaTrabajo.data, id]);
 
     useEffect(() => {
         loadForm();
     }, [loadForm, id]);
 
-    const onSubmit = async (data: z.infer<typeof Activo>) => {
-        const activoRequest: ActivoRequest = {
-            tipoActivoId: parseInt(data.tipoActivoId),
+    const onSubmit = async (data: z.infer<typeof TransporteCasaTrabajo>) => {
+        const transporteCasaTrabajoRequest: TransporteCasaTrabajoRequest = {
+            tipoVehiculoId: parseInt(data.tipoVehiculoId),
             sedeId: parseInt(data.sede),
             anioId: parseInt(data.anio),
             mesId: parseInt(data.mes),
-            cantidadConsumida: data.cantidadConsumida,
-            cantidadComprada: data.cantidadComprada,
+            kmRecorrido: data.kmRecorrido,
+            tipo: data.tipo,
         };
         try {
-            const response = await updateActivo(id, activoRequest);
+            const response = await updateTransporteCasaTrabajo(id, transporteCasaTrabajoRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -109,7 +113,7 @@ export function UpdateFormTransporteCasaTrabajo({
         }
     };
 
-    if (activo.isLoading || sedes.isLoading || anios.isLoading || tiposActivo.isLoading || meses.isLoading) {
+    if (transporteCasaTrabajo.isLoading || sedes.isLoading || anios.isLoading || tiposVehiculo.isLoading || meses.isLoading) {
         return <SkeletonForm/>;
     }
 
@@ -151,30 +155,54 @@ export function UpdateFormTransporteCasaTrabajo({
                             )}
                         />
 
-                        {/* Tipo de Activo */}
+                        {/* Tipo de Vehiculo */}
                         <FormField
-                            name="tipoActivoId"
+                            name="tipoVehiculoId"
                             control={form.control}
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Nombre de Activo</FormLabel>
+                                    <FormLabel>Tipo de Vehiculo</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Tipo de Vehiculo"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {tiposVehiculo.data!.map((tipo) => (
+                                                    <SelectItem key={tipo.id} value={tipo.id.toString()}>
+                                                        {tipo.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormItem>
+                            )}
+                        />
+
+                        {/* Tipo */}
+                        <FormField
+                            name="tipo"
+                            control={form.control}
+                            render={({field}) => (
+                                <FormItem className="pt-2">
+                                    <FormLabel>Tipo</FormLabel>
                                     <Select
-                                        disabled={tiposActivo.data!.length === 0}
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Nombre de Activo"/>
+                                                <SelectValue placeholder="Selecciona el Tipo"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {tiposActivo.data!.map((tipo) => (
-                                                    <SelectItem key={tipo.id} value={tipo.id.toString()}>
-                                                        {tipo.nombre}
-                                                    </SelectItem>
-                                                ))}
+                                                <SelectItem value="ALUMNO"> ALUMNO </SelectItem>
+                                                <SelectItem value="DOCENTE"> DOCENTE </SelectItem>
+                                                <SelectItem value="ADMINISTRATIVO"> ADMINISTRATIVO </SelectItem>
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
@@ -245,49 +273,26 @@ export function UpdateFormTransporteCasaTrabajo({
                             />
                         </div>
 
-                        <div className="flex gap-4">
-                            {/* Cantidad Comprada */}
-                            <FormField
-                                control={form.control}
-                                name="cantidadComprada"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-full">
-                                        <FormLabel>Cantidad Comprada [UND]</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="Cantidad Comprada [UND]"
-                                                type="number"
-                                                step="0.01"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* Cantidad Consumida */}
-                            <FormField
-                                control={form.control}
-                                name="cantidadConsumida"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-full">
-                                        <FormLabel>Cantidad Consumida [UND]</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="Cantidad Consumida [UND]"
-                                                type="number"
-                                                step="0.01"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
+                        {/* Km Recorrido */}
+                        <FormField
+                            control={form.control}
+                            name="kmRecorrido"
+                            render={({field}) => (
+                                <FormItem className="pt-2 w-full">
+                                    <FormLabel>Km Recorrido</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            placeholder="Km Recorrido"
+                                            type="number"
+                                            step="0.01"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-primary">

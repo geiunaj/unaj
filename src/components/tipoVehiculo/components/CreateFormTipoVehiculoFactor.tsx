@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -18,61 +18,73 @@ import {useQuery} from "@tanstack/react-query";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {getAnio} from "@/components/anio/services/anio.actions";
-import {getGrupoActivo} from "@/components/tipoActivo/services/grupoActivo.actions";
 import {
-    ActivoFactorRequest,
-    CreateActivoFactorProps
-} from "@/components/tipoActivo/services/tipoActivoFactor.interface";
-import {createFactorEmisionActivo} from "@/components/tipoActivo/services/tipoActivoFactor.actions";
+    VehiculoFactorRequest,
+    CreateVehiculoFactorProps
+} from "@/components/tipoVehiculo/services/tipoVehiculoFactor.interface";
+import {createFactorEmisionVehiculo} from "@/components/tipoVehiculo/services/tipoVehiculoFactor.actions";
+import {getTiposVehiculo} from "@/components/tipoVehiculo/services/tipoVehiculo.actions";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
-const TipoActivoFactor = z.object({
+const TipoVehiculoFactor = z.object({
+    factorCO2: z.preprocess((val) => parseFloat(val as string,),
+        z.number().min(0, "Ingresa un valor mayor a 0")),
+    factorCH4: z.preprocess((val) => parseFloat(val as string,),
+        z.number().min(0, "Ingresa un valor mayor a 0")),
+    factorN2O: z.preprocess((val) => parseFloat(val as string,),
+        z.number().min(0, "Ingresa un valor mayor a 0")),
     factor: z.preprocess((val) => parseFloat(val as string,),
         z.number().min(0, "Ingresa un valor mayor a 0")),
-    grupoActivoId: z.string().min(1, "Seleccione un grupo de activo"),
+    tipoVehiculoId: z.string().min(1, "Seleccione un tipo de activo"),
     anioId: z.string().min(1, "Seleccione un año"),
-    fuente: z.string().min(1, "Ingrese una fuente"),
+    fuente: z.string().optional(),
     link: z.string().optional(),
 });
 
 export function CreateFormTipoVehiculoFactor({
                                                  onClose,
-                                             }: CreateActivoFactorProps) {
-    const form = useForm<z.infer<typeof TipoActivoFactor>>({
-        resolver: zodResolver(TipoActivoFactor),
+                                             }: CreateVehiculoFactorProps) {
+    const form = useForm<z.infer<typeof TipoVehiculoFactor>>({
+        resolver: zodResolver(TipoVehiculoFactor),
         defaultValues: {
+            factorCO2: 0,
+            factorCH4: 0,
+            factorN2O: 0,
             factor: 0,
-            grupoActivoId: "",
+            tipoVehiculoId: "",
             anioId: "",
             fuente: "",
             link: "",
         },
     });
 
-    const gruposActivo = useQuery({
-        queryKey: ["grupoActivoFactorC"],
-        queryFn: () => getGrupoActivo(),
+    const tiposVehiculo = useQuery({
+        queryKey: ["tipoVehiculoFactorC"],
+        queryFn: () => getTiposVehiculo(),
         refetchOnWindowFocus: false,
     });
 
     const anios = useQuery({
-        queryKey: ["aniosFactorTipoActivoFactor"],
+        queryKey: ["aniosFactorTipoVehiculoFactor"],
         queryFn: () => getAnio(),
         refetchOnWindowFocus: false,
     });
 
-    const onSubmit = async (data: z.infer<typeof TipoActivoFactor>) => {
-        const TipoActivoFactorRequest: ActivoFactorRequest = {
+    const onSubmit = async (data: z.infer<typeof TipoVehiculoFactor>) => {
+        const TipoVehiculoFactorRequest: VehiculoFactorRequest = {
+            factorCO2: data.factorCO2,
+            factorCH4: data.factorCH4,
+            factorN2O: data.factorN2O,
             factor: data.factor,
-            grupoActivoId: parseNumber(data.grupoActivoId),
+            tipoVehiculoId: parseNumber(data.tipoVehiculoId),
             anioId: parseNumber(data.anioId),
             fuente: data.fuente,
             link: data.link,
         };
         try {
-            const response = await createFactorEmisionActivo(TipoActivoFactorRequest);
+            const response = await createFactorEmisionVehiculo(TipoVehiculoFactorRequest);
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
@@ -80,7 +92,8 @@ export function CreateFormTipoVehiculoFactor({
         }
     };
 
-    if (gruposActivo.isLoading || anios.isLoading) {
+
+    if (tiposVehiculo.isLoading || anios.isLoading) {
         return <SkeletonForm/>;
     }
 
@@ -92,25 +105,53 @@ export function CreateFormTipoVehiculoFactor({
                         className="w-full flex flex-col gap-2"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
-                        {/*GRUPO DE ACTIVO*/}
+                        {/*TIPO DE ACTIVO*/}
                         <FormField
-                            name="grupoActivoId"
+                            name="tipoVehiculoId"
                             control={form.control}
                             render={({field}) => (
                                 <FormItem className="pt-2 w-full">
-                                    <FormLabel>Grupo Activo</FormLabel>
+                                    <FormLabel>Tipo Vehiculo</FormLabel>
                                     <Select onValueChange={field.onChange}>
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Grupo Activo"/>
+                                                <SelectValue placeholder="Tipo Vehiculo"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectGroup>
-                                                {gruposActivo.data!.map((grupoActivo) => (
-                                                    <SelectItem key={grupoActivo.id}
-                                                                value={grupoActivo.id.toString()}>
-                                                        {grupoActivo.nombre}
+                                                {tiposVehiculo.data!.map((tipoVehiculo) => (
+                                                    <SelectItem key={tipoVehiculo.id}
+                                                                value={tipoVehiculo.id.toString()}>
+                                                        {tipoVehiculo.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormItem>
+                            )}
+                        />
+
+                        {/*AÑO*/}
+                        <FormField
+                            name="anioId"
+                            control={form.control}
+                            render={({field}) => (
+                                <FormItem className="pt-2 w-full">
+                                    <FormLabel>Año</FormLabel>
+                                    <Select onValueChange={field.onChange}>
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Año"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {anios.data!.map((anio) => (
+                                                    <SelectItem key={anio.id}
+                                                                value={anio.id.toString()}>
+                                                        {anio.nombre}
                                                     </SelectItem>
                                                 ))}
                                             </SelectGroup>
@@ -121,50 +162,116 @@ export function CreateFormTipoVehiculoFactor({
                         />
 
                         <div className="flex w-full gap-5">
-                            {/*FACTOR*/}
+                            {/*FACTOR CO2*/}
                             <FormField
                                 control={form.control}
-                                name="factor"
+                                name="factorCO2"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor</FormLabel>
+                                        <FormLabel>Factor CO2</FormLabel>
                                         <FormControl>
                                             <Input
-                                                type="string"
+                                                type="number"
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                                 placeholder="0"
+                                                step={0.00000000001}
                                                 min={0}
                                                 {...field}
+                                                onChange={(e) => {
+                                                    const newValue = e.target.value;
+                                                    field.onChange(newValue);
+                                                    const factorCO2 = Number(newValue || 0);
+                                                    const factorCH4 = Number(form.getValues("factorCH4") || 0);
+                                                    const factorN2O = Number(form.getValues("factorN2O") || 0);
+                                                    form.setValue("factor", parseFloat((factorCO2 + (factorCH4 * 30) + (factorN2O * 265)).toFixed(6)));
+                                                }}
                                             />
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
                                 )}
                             />
-                            {/*AÑO*/}
+
+                            {/*FACTOR CH4*/}
                             <FormField
-                                name="anioId"
                                 control={form.control}
+                                name="factorCH4"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Año</FormLabel>
-                                        <Select onValueChange={field.onChange}>
-                                            <FormControl className="w-full">
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Año"/>
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    {anios.data!.map((anio) => (
-                                                        <SelectItem key={anio.id}
-                                                                    value={anio.id.toString()}>
-                                                            {anio.nombre}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
+                                        <FormLabel>Factor CH4</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                placeholder="0"
+                                                step={0.00000000001}
+                                                min={0}
+                                                {...field}
+                                                onChange={(e) => {
+                                                    const newValue = e.target.value;
+                                                    field.onChange(newValue);
+                                                    const factorCO2 = Number(form.getValues("factorCO2") || 0);
+                                                    const factorCH4 = Number(newValue || 0);
+                                                    const factorN2O = Number(form.getValues("factorN2O") || 0);
+                                                    form.setValue("factor", parseFloat((factorCO2 + (factorCH4 * 30) + (factorN2O * 265)).toFixed(6)));
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <div className="flex w-full gap-5">
+                            {/*FACTOR N2O*/}
+                            <FormField
+                                control={form.control}
+                                name="factorN2O"
+                                render={({field}) => (
+                                    <FormItem className="pt-2 w-1/2">
+                                        <FormLabel>Factor N2O</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                placeholder="0"
+                                                step={0.00000000001}
+                                                min={0}
+                                                {...field}
+                                                onChange={(e) => {
+                                                    const newValue = e.target.value;
+                                                    field.onChange(newValue);
+                                                    const factorCO2 = Number(form.getValues("factorCO2") || 0);
+                                                    const factorCH4 = Number(form.getValues("factorCH4") || 0);
+                                                    const factorN2O = Number(newValue || 0);
+                                                    form.setValue("factor", parseFloat((factorCO2 + (factorCH4 * 30) + (factorN2O * 265)).toFixed(6)));
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/*FACTOR*/}
+                            <FormField
+                                control={form.control}
+                                name="factor"
+                                render={({field}) => (
+                                    <FormItem className="pt-2 w-1/2">
+                                        <FormLabel>Factor Equivalente</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                placeholder="0"
+                                                step={0.00000000001}
+                                                min={0}
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />

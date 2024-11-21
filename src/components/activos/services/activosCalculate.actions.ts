@@ -1,27 +1,29 @@
 import api from "../../../../config/api";
 import {AxiosRequestConfig} from "axios";
-import {ActivoCalculosCollection} from "@/components/activos/services/activosCalculate.interface";
+import {
+    TransporteCasaTrabajoCalculosCollection
+} from "@/components/transporteCasaTrabajo/services/transporteCasaTrabajoCalculate.interface";
 
-interface GetActivoProps {
+interface GetTransporteCasaTrabajoProps {
     sedeId?: number,
     from?: string,
     to?: string,
     page?: number
 }
 
-interface CreateCalculosActivoProps {
+interface CreateCalculosTransporteCasaTrabajoProps {
     sedeId?: number;
     from?: string;
     to?: string;
 }
 
-export async function getActivoCalculate(
+export async function getTransporteCasaTrabajoCalculate(
     {
         sedeId,
         from,
         to,
         page,
-    }: GetActivoProps): Promise<ActivoCalculosCollection> {
+    }: GetTransporteCasaTrabajoProps): Promise<TransporteCasaTrabajoCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
@@ -30,16 +32,16 @@ export async function getActivoCalculate(
             page,
         }
     };
-    const {data} = await api.get<ActivoCalculosCollection>("/api/activo/calculate", config);
+    const {data} = await api.get<TransporteCasaTrabajoCalculosCollection>("/api/transporteCasaTrabajo/calculate", config);
     return data;
 }
 
-export async function getActivoCalculateReport(
+export async function getTransporteCasaTrabajoCalculateReport(
     {
         sedeId,
         from,
         to,
-    }: GetActivoProps): Promise<ActivoCalculosCollection> {
+    }: GetTransporteCasaTrabajoProps): Promise<TransporteCasaTrabajoCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
@@ -48,17 +50,17 @@ export async function getActivoCalculateReport(
             all: true
         }
     };
-    const {data} = await api.get("/api/activo/calculate", config);
+    const {data} = await api.get("/api/transporteCasaTrabajo/calculate", config);
     return data;
 }
 
-export async function createActivoCalculate(
+export async function createTransporteCasaTrabajoCalculate(
     {
         sedeId,
         from,
         to,
-    }: CreateCalculosActivoProps):
-    Promise<ActivoCalculosCollection> {
+    }: CreateCalculosTransporteCasaTrabajoProps):
+    Promise<TransporteCasaTrabajoCalculosCollection> {
 
     const body = {
         sedeId,
@@ -66,6 +68,6 @@ export async function createActivoCalculate(
         to: to,
     };
 
-    const {data} = await api.post("/api/activo/calculate", body);
+    const {data} = await api.post("/api/transporteCasaTrabajo/calculate", body);
     return data;
 }

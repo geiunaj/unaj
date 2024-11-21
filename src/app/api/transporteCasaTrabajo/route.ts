@@ -10,7 +10,8 @@ import {formatTransporteCasaTrabajo} from "@/lib/resources/transporteCasaTrabajo
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
-        const tipoTransporteCasaTrabajoId = searchParams.get("tipoTransporteCasaTrabajoId") ?? undefined
+        const tipoVehiculoId = searchParams.get("tipoVehiculoId") ?? undefined
+        const tipo = searchParams.get("tipo") ?? undefined
         const sedeId = searchParams.get("sedeId") ?? undefined;
         const anio = searchParams.get("anio") ?? undefined;
         const mesId = searchParams.get("mesId") ?? undefined;
@@ -35,13 +36,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         if (monthTo) mesToId = parseInt(monthTo);
 
         const whereOptions = {
-            tipoTransporteCasaTrabajoId: tipoTransporteCasaTrabajoId ? parseInt(tipoTransporteCasaTrabajoId) : undefined,
+            tipoVehiculoId: tipoVehiculoId ? parseInt(tipoVehiculoId) : undefined,
             sedeId: sedeId ? parseInt(sedeId) : undefined,
             mesId: mesId ? parseInt(mesId) : undefined,
+            tipo: tipo == "" ? undefined : tipo,
         } as {
-            tipoTransporteCasaTrabajoId?: number;
+            tipoVehiculoId?: number;
             sedeId?: number;
             mesId?: number;
+            tipo?: string;
             anio_mes?: {
                 gte?: number;
                 lte?: number;
