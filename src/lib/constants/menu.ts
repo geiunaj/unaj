@@ -63,6 +63,8 @@ export const iconComponents: Record<string, any> = {
     LampDesk,
 };
 
+export const STEP_NUMBER = 0.00000000000000001;
+
 export const menu: MenuItem[] = [
     {
         title: "Resumen",

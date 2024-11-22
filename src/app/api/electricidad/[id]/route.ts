@@ -26,14 +26,14 @@ export async function GET(
         });
 
         if (!electricidad) {
-            return new NextResponse("Electricidad not found", {status: 404});
+            return NextResponse.json({message: "Electricidad not found"}, {status: 404});
         }
 
         return NextResponse.json(electricidad);
 
     } catch (error) {
         console.error("Error buscando consumo", error);
-        return new NextResponse("Error buscando consumo", {status: 500});
+        return NextResponse.json({message: "Error buscando consumo"}, {status: 500});
     }
 }
 
@@ -45,11 +45,6 @@ export async function PUT(
     try {
         const id = parseInt(params.id);
         const body: electricidadRequest = await req.json();
-
-        // VALIDATE BODY
-        if (!body.consumo || !body.area_id || !body.mes_id || !body.anio_id || !body.numeroSuministro) {
-            return new NextResponse("Missing required fields", {status: 400});
-        }
 
         const electricidad = await prisma.consumoEnergia.update({
             where: {
@@ -80,7 +75,7 @@ export async function PUT(
         });
     } catch (error) {
         console.error("Error actualizando consumo", error);
-        return new NextResponse("Error actualizando consumo", {status: 500});
+        return NextResponse.json({message: "Error actualizando consumo"}, {status: 500});
     }
 }
 
@@ -102,6 +97,6 @@ export async function DELETE(
         });
     } catch (error) {
         console.error("Error eliminando consumo", error);
-        return new NextResponse("Error eliminando consumo", {status: 500});
+        return NextResponse.json({message: "Error eliminando consumo"}, {status: 500});
     }
 }

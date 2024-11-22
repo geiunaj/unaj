@@ -28,6 +28,7 @@ import { useQuery } from "@tanstack/react-query";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import { toast } from "sonner";
 import { errorToast, successToast } from "@/lib/utils/core.function";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -165,7 +166,7 @@ export function UpdateFormTipoPapel({ id, onClose }: UpdateTipoPapelProps) {
                       <Input
                         className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                         type="number"
-                        step="0.01"
+                        step={STEP_NUMBER}
                         min={0}
                         {...field}
                       />

@@ -32,6 +32,7 @@ import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {getArea} from "@/components/area/services/area.actions";
 import {createConsumoAgua} from "../services/consumoAgua.actions";
+import {STEP_NUMBER} from "@/lib/constants/menu";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -240,7 +241,7 @@ export function FormConsumoAgua({onClose}: CreateconsumoAguaProps) {
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                             placeholder="En m3"
                                             type="number"
-                                            step="0.01"
+                                            step={STEP_NUMBER}
                                             {...field}
                                         />
                                     </FormControl>

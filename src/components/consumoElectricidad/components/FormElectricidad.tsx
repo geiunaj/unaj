@@ -32,6 +32,7 @@ import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {createElectricidad} from "../services/electricidad.actions";
 import {getArea} from "@/components/area/services/area.actions";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -210,7 +211,7 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                                 placeholder="kw/h"
                                                 type="number"
-                                                step="0.01"
+                                                step={STEP_NUMBER}
                                                 {...field}
                                             />
                                         </FormControl>

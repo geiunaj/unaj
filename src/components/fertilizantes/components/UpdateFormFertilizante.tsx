@@ -34,6 +34,7 @@ import {updateFertilizante} from "@/components/fertilizantes/services/fertilizan
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {useAnio, useFertilizanteId, useSede} from "@/components/fertilizantes/lib/fertilizante.hook";
 import {successToast} from "@/lib/utils/core.function";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const Fertilizante = z.object({
     clase: z.string().min(1, "Seleccione una clase de fertilizante"),
@@ -240,7 +241,7 @@ export function UpdateFormFertilizantes({
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                                 placeholder="Cantidad Kg/año"
                                                 type="number"
-                                                step="0.01"
+                                                step={STEP_NUMBER}
                                                 {...field}
                                             />
                                         </FormControl>

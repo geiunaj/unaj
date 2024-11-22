@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect } from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, {useCallback, useEffect} from "react";
+import {z} from "zod";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 import {
     Form,
     FormControl,
@@ -18,15 +18,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "../../ui/button";
+import {Input} from "@/components/ui/input";
+import {Button} from "../../ui/button";
 
-import { useQuery } from "@tanstack/react-query";
-import { errorToast, successToast } from "@/lib/utils/core.function";
+import {useQuery} from "@tanstack/react-query";
+import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonForm from "@/components/Layout/skeletonForm";
-import { UpdateFactorEmisionSEINProps, FactorEmisionSEINRequest } from "../services/factorEmisionSEIN.interface";
-import { getAnio } from "@/components/anio/services/anio.actions";
-import { showFactorSEIN, updateFactorSEIN } from "../services/factorEmisionSEIN.actions";
+import {UpdateFactorEmisionSEINProps, FactorEmisionSEINRequest} from "../services/factorEmisionSEIN.interface";
+import {getAnio} from "@/components/anio/services/anio.actions";
+import {showFactorSEIN, updateFactorSEIN} from "../services/factorEmisionSEIN.actions";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const UpdateFactorConversionSEIN = z.object({
     anio: z.string().min(1, "Selecciona un año"),
@@ -35,7 +36,7 @@ const UpdateFactorConversionSEIN = z.object({
     factorN2O: z.preprocess((val) => parseFloat(val as string), z.number().min(0, "Ingresa un valor mayor a 0")),
 });
 
-export function UpdateFormFactorSEIN({ id, onClose }: UpdateFactorEmisionSEINProps) {
+export function UpdateFormFactorSEIN({id, onClose}: UpdateFactorEmisionSEINProps) {
     const form = useForm<z.infer<typeof UpdateFactorConversionSEIN>>({
         resolver: zodResolver(UpdateFactorConversionSEIN),
         defaultValues: {
@@ -92,7 +93,7 @@ export function UpdateFormFactorSEIN({ id, onClose }: UpdateFactorEmisionSEINPro
     };
 
     if (factorSEIN.isLoading || anios.isLoading) {
-        return <SkeletonForm />;
+        return <SkeletonForm/>;
     }
 
     return (
@@ -104,13 +105,13 @@ export function UpdateFormFactorSEIN({ id, onClose }: UpdateFactorEmisionSEINPro
                         <FormField
                             control={form.control}
                             name="anio"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <FormItem className="pt-2 w-full">
                                     <FormLabel>Año</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Selecciona el año" />
+                                                <SelectValue placeholder="Selecciona el año"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -123,7 +124,7 @@ export function UpdateFormFactorSEIN({ id, onClose }: UpdateFactorEmisionSEINPro
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
-                                    <FormMessage />
+                                    <FormMessage/>
                                 </FormItem>
                             )}
                         />
@@ -132,58 +133,60 @@ export function UpdateFormFactorSEIN({ id, onClose }: UpdateFactorEmisionSEINPro
                         <FormField
                             control={form.control}
                             name="factorCO2"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor de emisión CO2</FormLabel>
+                                    <FormLabel>Factor de emisión</FormLabel>
                                     <FormControl>
                                         <Input
+                                            type="number"
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Factor de emisión CO2"
+                                            placeholder="Factor de emisión"
+                                            step={STEP_NUMBER}
                                             {...field}
                                         />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage/>
                                 </FormItem>
                             )}
                         />
 
-                        {/* Factor CH4 */}
-                        <FormField
-                            control={form.control}
-                            name="factorCH4"
-                            render={({ field }) => (
-                                <FormItem className="pt-2">
-                                    <FormLabel>Factor de emisión CH4</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Factor de emisión CH4"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {/*/!* Factor CH4 *!/*/}
+                        {/*<FormField*/}
+                        {/*    control={form.control}*/}
+                        {/*    name="factorCH4"*/}
+                        {/*    render={({ field }) => (*/}
+                        {/*        <FormItem className="pt-2">*/}
+                        {/*            <FormLabel>Factor de emisión CH4</FormLabel>*/}
+                        {/*            <FormControl>*/}
+                        {/*                <Input*/}
+                        {/*                    className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"*/}
+                        {/*                    placeholder="Factor de emisión CH4"*/}
+                        {/*                    {...field}*/}
+                        {/*                />*/}
+                        {/*            </FormControl>*/}
+                        {/*            <FormMessage />*/}
+                        {/*        </FormItem>*/}
+                        {/*    )}*/}
+                        {/*/>*/}
 
-                        {/* Factor N2O */}
-                        <FormField
-                            control={form.control}
-                            name="factorN2O"
-                            render={({ field }) => (
-                                <FormItem className="pt-2">
-                                    <FormLabel>Factor de emisión N2O</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Factor de emisión N2O"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {/*/!* Factor N2O *!/*/}
+                        {/*<FormField*/}
+                        {/*    control={form.control}*/}
+                        {/*    name="factorN2O"*/}
+                        {/*    render={({ field }) => (*/}
+                        {/*        <FormItem className="pt-2">*/}
+                        {/*            <FormLabel>Factor de emisión N2O</FormLabel>*/}
+                        {/*            <FormControl>*/}
+                        {/*                <Input*/}
+                        {/*                    className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"*/}
+                        {/*                    placeholder="Factor de emisión N2O"*/}
+                        {/*                    {...field}*/}
+                        {/*                />*/}
+                        {/*            </FormControl>*/}
+                        {/*            <FormMessage />*/}
+                        {/*        </FormItem>*/}
+                        {/*    )}*/}
+                        {/*/>*/}
 
                         {/* Botón Guardar */}
                         <div className="flex gap-3 w-full pt-4">

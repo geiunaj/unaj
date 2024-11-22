@@ -30,6 +30,7 @@ import {
     CreateTransporteAereoFactorProps,
     TransporteAereoFactorRequest
 } from "@/components/transporte-aereo-factor/services/transporteAereoFactor.interface";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const TransporteAereoFactor = z.object({
     anio: z.string().min(1, "Seleciona el anio"),
@@ -172,7 +173,7 @@ export function FormTransporteAereoFactor({onClose}: CreateTransporteAereoFactor
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                             type="number"
-                                            step="0.01"
+                                            step={STEP_NUMBER}
                                             {...field}
                                         />
                                     </FormControl>

@@ -28,7 +28,7 @@ import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import GenerateReport from "@/lib/utils/generateReport";
 import {Button} from "@/components/ui/button";
 import {ReportRequest} from "@/lib/interfaces/globals";
-import {formatPeriod} from "@/lib/utils/core.function";
+import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import usePageTitle from "@/lib/stores/titleStore.store";
 
 export default function ElectricidadCalculate() {
@@ -81,6 +81,10 @@ export default function ElectricidadCalculate() {
             sedeId: selectedSede ? Number(selectedSede) : undefined,
             from,
             to,
+        }).then(() => {
+            successToast("Emisiones de Consumo de Electricidad calculadas");
+        }).catch((error: any) => {
+            errorToast(error.response.data.message);
         });
         electricidadCalculos.refetch();
         electricidadCalculosReport.refetch();

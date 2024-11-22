@@ -42,6 +42,7 @@ import {FactorEmisionSEINCollection} from "../services/factorEmisionSEIN.interfa
 import {FormFactorSEIN} from "./createFactorEmisionSEIN";
 import {UpdateFormFactorSEIN} from "./updateFactorEmisionSEIN";
 import {ChangeTitle} from "@/components/TitleUpdater";
+import {deleteFactorSEIN} from "@/components/factorEmisionSEIN/services/factorEmisionSEIN.actions";
 
 export default function FactorEmisionSEINPage() {
     ChangeTitle("Factor de Emisión SEIN");
@@ -84,18 +85,6 @@ export default function FactorEmisionSEINPage() {
         factoremisionSEINQuery.refetch();
     }, [factoremisionSEINQuery]);
 
-    // const handleDelete = useCallback(async () => {
-    //     try {
-    //         const response = await deleteFactorEmisionSEIN(idForDelete);
-    //         setIsDeleteDialogOpen(false);
-    //         successToast(response.data.message);
-    //     } catch (error: any) {
-    //         errorToast(error.response.data || error.response.data.message);
-    //     } finally {
-    //         await aniosQuery.refetch();
-    //     }
-    // }, [aniosQuery]);
-
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
         setIsUpdateDialogOpen(true);
@@ -110,6 +99,18 @@ export default function FactorEmisionSEINPage() {
         await setPage(page);
         await factoremisionSEINQuery.refetch();
     };
+
+    const handleDelete = useCallback(async () => {
+        try {
+            const response = await deleteFactorSEIN(idForDelete);
+            setIsDeleteDialogOpen(false);
+            successToast(response.data.message);
+        } catch (error: any) {
+            errorToast(error.response?.data?.message);
+        } finally {
+            await factoremisionSEINQuery.refetch();
+        }
+    }, [factoremisionSEINQuery]);
 
     if (factoremisionSEINQuery.isLoading || aniosQuery.isLoading) {
         return <SkeletonTable/>;
@@ -161,17 +162,14 @@ export default function FactorEmisionSEINPage() {
                                 N°
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CO2 [tCO2/MWh]
-                                {/* <p className="text-xs font-extrabold">[tCO2/MWh]</p> */}
+                                CO2 <span className="text-[9px]">[kCO2e]</span>
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CH4 [tCH4/MWh]
-                                {/* <p className="text-xs font-extrabold">[tCH4/MWh]</p> */}
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                N2O [tN2o/MWh]
-                                {/* <p className="text-xs font-extrabold">[tN2o/MWh]</p> */}
-                            </TableHead>
+                            {/*<TableHead className="text-xs sm:text-sm font-bold text-center">*/}
+                            {/*    CH4 [tCH4/MWh]*/}
+                            {/*</TableHead>*/}
+                            {/*<TableHead className="text-xs sm:text-sm font-bold text-center">*/}
+                            {/*    N2O [tN2o/MWh]*/}
+                            {/*</TableHead>*/}
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO
                             </TableHead>
@@ -190,12 +188,12 @@ export default function FactorEmisionSEINPage() {
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="default"> {item.factorCO2}</Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default"> {item.factorCH4}</Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default"> {item.factorN2O}</Badge>
-                                    </TableCell>
+                                    {/*<TableCell className="text-xs sm:text-sm">*/}
+                                    {/*    <Badge variant="default"> {item.factorCH4}</Badge>*/}
+                                    {/*</TableCell>*/}
+                                    {/*<TableCell className="text-xs sm:text-sm">*/}
+                                    {/*    <Badge variant="default"> {item.factorN2O}</Badge>*/}
+                                    {/*</TableCell>*/}
 
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary"> {item.anio}</Badge>
@@ -268,12 +266,12 @@ export default function FactorEmisionSEINPage() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        {/* <AlertDialogAction
+                        <AlertDialogAction
                             className={buttonVariants({variant: "destructive"})}
                             onClick={handleDelete}
                         >
                             Eliminar
-                        </AlertDialogAction> */}
+                        </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

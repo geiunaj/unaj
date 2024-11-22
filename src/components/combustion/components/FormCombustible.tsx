@@ -32,6 +32,7 @@ import {getMes} from "@/components/mes/services/mes.actions";
 import {createCombustion} from "@/components/combustion/services/combustion.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonForm from "@/components/Layout/skeletonForm";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const Combustion = z.object({
     sede: z.string().min(1, "Selecciona la sede"),
@@ -267,7 +268,7 @@ export function FormCombustible({onClose, tipo}: CreateCombustionProps) {
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                             type="number"
-                                            step="0.01"
+                                            step={STEP_NUMBER}
                                             {...field}
                                         />
                                     </FormControl>

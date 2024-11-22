@@ -34,6 +34,7 @@ import {cn} from "@/lib/utils";
 import {format} from "date-fns";
 import {CalendarIcon} from "lucide-react";
 import {Calendar} from "@/components/ui/calendar";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const ExtintorSchema = z.object({
     consumo: z.preprocess(
@@ -231,7 +232,7 @@ export function UpdateFormExtintor({id, onClose}: UpdateExtintorProps) {
                                             type="number"
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                             placeholder="Consumo"
-                                            step="0.000000001"
+                                            step={STEP_NUMBER}
                                             {...field}
                                         />
                                     </FormControl>

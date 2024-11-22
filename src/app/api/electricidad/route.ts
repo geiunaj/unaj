@@ -112,7 +112,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         });
     } catch (error) {
         console.error("Error buscando consumos", error);
-        return new NextResponse("Error buscando consumos", {status: 500});
+        return NextResponse.json({message: "Error buscando consumos"}, {status: 500});
     }
 }
 
@@ -123,7 +123,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const anio = await prisma.anio.findFirst({
             where: {id: body.anio_id},
         });
-        if (!anio) return new NextResponse("Año no encontrado", {status: 404});
+        if (!anio) return NextResponse.json({message: "Año no encontrado"}, {status: 404});
 
         const electricidad = await prisma.consumoEnergia.create({
             data: {
@@ -156,6 +156,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         });
     } catch (error) {
         console.error("Error registrando consumo", error);
-        return new NextResponse("Error registrando consumo", {status: 500});
+        return NextResponse.json({message: "Error registrando consumo"}, {status: 500});
     }
 }

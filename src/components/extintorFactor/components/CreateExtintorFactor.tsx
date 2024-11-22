@@ -32,6 +32,7 @@ import {
     CreateExtintorFactorProps,
     ExtintorFactorRequest
 } from "@/components/extintorFactor/services/extintorFactor.interface";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const ExtintorFactor = z.object({
     anio: z.string().min(1, "Seleciona el año"),
@@ -124,7 +125,7 @@ export function FormExtintorFactor({onClose}: CreateExtintorFactorProps) {
                                             type="number"
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                             placeholder="Factor"
-                                            step="0.000001"
+                                            step={STEP_NUMBER}
                                             {...field}
                                         />
                                     </FormControl>

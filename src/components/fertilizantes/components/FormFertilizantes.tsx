@@ -35,6 +35,7 @@ import {
 } from "@/components/tipoFertilizante/services/tipoFertilizante.actions";
 import {createFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
 import SkeletonForm from "@/components/Layout/skeletonForm";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const Fertilizante = z.object({
     clase: z.string().min(1, "Seleccione una clase de fertilizante"),
@@ -226,7 +227,7 @@ export function FormFertilizantes({onClose}: CreateFertilizanteProps) {
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                                 placeholder="Cantidad Kg/año"
                                                 type="number"
-                                                step="0.01"
+                                                step={STEP_NUMBER}
                                                 {...field}
                                             />
                                         </FormControl>

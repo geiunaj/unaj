@@ -33,6 +33,7 @@ import SkeletonForm from "@/components/Layout/skeletonForm";
 import {useAnio, useActivoId, useSede} from "@/components/activos/lib/activo.hook";
 import {errorToast, parseNumber, successToast} from "@/lib/utils/core.function";
 import {getMes} from "@/components/mes/services/mes.actions";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const Activo = z.object({
     tipoActivoId: z.string().min(1, "Seleccione un tipo de activo"),
@@ -258,7 +259,7 @@ export function UpdateFormActivo({
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                                 placeholder="Cantidad Comprada [UND]"
                                                 type="number"
-                                                step="0.01"
+                                                step={STEP_NUMBER}
                                                 {...field}
                                             />
                                         </FormControl>
@@ -279,7 +280,7 @@ export function UpdateFormActivo({
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                                 placeholder="Cantidad Consumida [UND]"
                                                 type="number"
-                                                step="0.01"
+                                                step={STEP_NUMBER}
                                                 {...field}
                                             />
                                         </FormControl>

@@ -1,6 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
-import { formatfactorEmisionSEIN } from "@/lib/resources/factorEmisionSEIN.Resource";
+import {formatfactorEmisionSEIN} from "@/lib/resources/factorEmisionSEIN.Resource";
+import {FactorEmisionSEINRequest} from "@/components/factorEmisionSEIN/services/factorEmisionSEIN.interface";
 
 export async function GET(
     req: NextRequest,
@@ -18,13 +19,13 @@ export async function GET(
         });
 
         if (!factorEmisionSEIN) {
-            return new NextResponse("Factor de emisión SEIN no encontrado", {status: 404});
+            return NextResponse.json({message: "Factor de emisión SEIN no encontrado"}, {status: 404});
         }
 
         return NextResponse.json(formatfactorEmisionSEIN(factorEmisionSEIN));
     } catch (error) {
         console.error("Error buscando factor de emisión SEIN", error);
-        return new NextResponse("Error buscando factor de emisión SEIN", {status: 500});
+        return NextResponse.json({message: "Error buscando factor de emisión SEIN"}, {status: 500});
     }
 }
 
@@ -35,25 +36,15 @@ export async function PUT(
     try {
         const id = parseInt(params.id, 10);
         if (isNaN(id)) {
-            return new NextResponse("ID inválido", {status: 400});
+            return NextResponse.json({message: "ID inválido"}, {status: 400});
         }
 
-        const body = await req.json();
         const {
             factorCO2,
             factorCH4,
             factorN2O,
             anioId,
-        } = body;
-
-        if (
-            (factorCO2 && typeof factorCO2 !== "number") ||
-            (factorCH4 && typeof factorCH4 !== "number") ||
-            (factorN2O && typeof factorN2O !== "number") ||
-            (anioId && typeof anioId !== "number")
-        ) {
-            return new NextResponse("Faltan o son inválidos los campos requeridos", {status: 400});
-        }
+        }: FactorEmisionSEINRequest = await req.json();
 
         const factorEmisionSEINRequest = {
             factorCO2,
@@ -68,7 +59,7 @@ export async function PUT(
             },
             data: factorEmisionSEINRequest,
             include: {
-                anio: true, 
+                anio: true,
             },
         });
 
@@ -78,7 +69,7 @@ export async function PUT(
         });
     } catch (error) {
         console.error("Error actualizando factor de emisión SEIN", error);
-        return new NextResponse("Error actualizando factor de emisión SEIN", {status: 500});
+        return NextResponse.json({message: "Error actualizando factor de emisión SEIN"}, {status: 500});
     }
 }
 
@@ -89,7 +80,7 @@ export async function DELETE(
     try {
         const id = parseInt(params.id, 10);
         if (isNaN(id)) {
-            return new NextResponse("ID inválido", {status: 400});
+            return NextResponse.json({message: "ID inválido"}, {status: 400});
         }
 
         await prisma.factorConversionSEIN.delete({
@@ -101,6 +92,6 @@ export async function DELETE(
         });
     } catch (error: any) {
         console.error("Error eliminando factor de emisión SEIN", error);
-        return new NextResponse("Error eliminando factor de emisión SEIN", {status: 500});
+        return NextResponse.json({message: "Error eliminando factor de emisión SEIN"}, {status: 500});
     }
 }

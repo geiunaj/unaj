@@ -34,6 +34,7 @@ import {
 import {createConsumible} from "@/components/consumibles/services/consumible.actions";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {getMes} from "@/components/mes/services/mes.actions";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const Consumible = z.object({
     tipoConsumibleId: z.string().min(1, "Seleccione un tipo de consumible"),
@@ -248,7 +249,7 @@ export function FormConsumibles({onClose}: CreateConsumibleProps) {
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                             placeholder="Cantidad Kg/año"
                                             type="number"
-                                            step="0.01"
+                                            step={STEP_NUMBER}
                                             {...field}
                                         />
                                     </FormControl>

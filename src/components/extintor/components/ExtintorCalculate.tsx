@@ -79,8 +79,8 @@ export default function ExtintorCalculate() {
             to,
         }).then(() => {
             successToast("Emisiones de Extintores Calculadas");
-        }).catch(() => {
-            errorToast("Error calculando Emisiones de Extintores");
+        }).catch((error: any) => {
+            errorToast(error.response.data.message);
         });
         extintorCalculos.refetch();
         extintorCalculosReport.refetch();

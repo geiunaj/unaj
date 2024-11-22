@@ -7,7 +7,7 @@ export function formatElectricidadCalculo(combustibleCalculo: any) {
         updated_at,
         anioId,
         sedeId,
-        areaId,
+        areaId, consumoArea, emisionCO2, emisionCH4, emisionN2O, totalGEI, consumoTotal,
         EnergiaCalculosDetail,
         ...rest
     } = combustibleCalculo;
@@ -20,6 +20,12 @@ export function formatElectricidadCalculo(combustibleCalculo: any) {
         created_at: undefined,
         updated_at: undefined,
         ...rest,
+        consumoArea: parseFloat(consumoArea.toFixed(2)),
+        emisionN2O: parseFloat(emisionN2O.toFixed(2)),
+        emisionCH4: parseFloat(emisionCH4.toFixed(2)),
+        emisionCO2: parseFloat(emisionCO2.toFixed(2)),
+        totalGEI: parseFloat(totalGEI.toFixed(2)),
+        consumoTotal: parseFloat(consumoTotal.toFixed(2)),
         area: area.nombre,
     };
 }

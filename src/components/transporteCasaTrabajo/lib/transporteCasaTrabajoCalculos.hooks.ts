@@ -5,7 +5,7 @@ import {getMes} from "@/components/mes/services/mes.actions";
 import {
     getTransporteCasaTrabajoCalculate,
     getTransporteCasaTrabajoCalculateReport
-} from "@/components/activos/services/activosCalculate.actions";
+} from "@/components/transporteCasaTrabajo/services/transporteCasaTrabajoCalculate.actions";
 
 interface getTransporteCasaTrabajoCalculoInterface {
     sedeId: number;

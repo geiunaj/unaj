@@ -17,10 +17,25 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const dateTo = searchParams.get("to") ?? undefined;
         const all = searchParams.get("all") === "true";
 
+        let yearFrom, yearTo, monthFrom, monthTo;
+        let yearFromId, yearToId, mesFromId, mesToId;
+
+        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
+        if (yearFrom) yearFromId = await getAnioId(yearFrom);
+        if (yearTo) yearToId = await getAnioId(yearTo);
+        if (monthFrom) mesFromId = parseInt(monthFrom);
+        if (monthTo) mesToId = parseInt(monthTo);
+
+        const fromValue = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
+        const toValue = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
+
         let period = await prisma.periodoCalculo.findFirst({
             where: {
                 fechaInicio: dateFrom ? dateFrom : undefined,
                 fechaFin: dateTo ? dateTo : undefined,
+                fechaInicioValue: fromValue,
+                fechaFinValue: toValue,
             },
         });
 
@@ -29,13 +44,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 data: {
                     fechaInicio: dateFrom ? dateFrom : undefined,
                     fechaFin: dateTo ? dateTo : undefined,
+                    fechaInicioValue: fromValue,
+                    fechaFinValue: toValue,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
             });
         }
 
-        if (!period && all) return new NextResponse("Periodo no encontrado", {status: 404,});
+        if (!period && all) return NextResponse.json({message: "Periodo no encontrado"}, {status: 404,});
 
         const whereOptions = {
             area: {
@@ -65,7 +82,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const formattedElectricidadCalculos: any[] = electricidadCalculos
             .map((electricidadCalculo: any, index: number) => {
-                if (electricidadCalculo.consumo !== 0) {
+                if (electricidadCalculo.consumoArea !== 0) {
                     const consumo = formatElectricidadCalculo(electricidadCalculo)
                     consumo.rn = index + 1 + (page - 1) * perPage;
                     return consumo;
@@ -85,7 +102,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         });
     } catch (error) {
         console.error("Error buscando calculos", error);
-        return new NextResponse("Error buscando calculos", {status: 500,});
+        return NextResponse.json({message: "Error buscando calculos"}, {status: 500,});
     }
 }
 
@@ -106,10 +123,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         if (monthFrom) mesFromId = parseInt(monthFrom);
         if (monthTo) mesToId = parseInt(monthTo);
 
+        const fromValue = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
+        const toValue = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
+
         let period = await prisma.periodoCalculo.findFirst({
             where: {
                 fechaInicio: dateFrom ? dateFrom : undefined,
                 fechaFin: dateTo ? dateTo : undefined,
+                fechaInicioValue: fromValue,
+                fechaFinValue: toValue,
             },
         });
 
@@ -118,6 +140,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 data: {
                     fechaInicio: dateFrom ? dateFrom : undefined,
                     fechaFin: dateTo ? dateTo : undefined,
+                    fechaInicioValue: fromValue,
+                    fechaFinValue: toValue,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
@@ -155,7 +179,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const allPeriodsBetweenYears: WhereAnioMes[] = [];
 
         if (dateFrom && dateTo) {
-            if (!yearFrom || !yearTo || !mesFromId || !mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+            if (!yearFrom || !yearTo || !mesFromId || !mesToId) return NextResponse.json({message: "Error en los parámetros de fecha"}, {status: 400});
 
             let currentYear = Number(yearFrom);
 
@@ -194,13 +218,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         } else if (dateFrom) {
             // Lógica para solo from
-            if (!mesFromId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+            if (!mesFromId) return NextResponse.json({message: "Error en los parámetros de fecha"}, {status: 400});
 
             const lastYear = await prisma.anio.findFirst({
                 orderBy: {nombre: "desc"},
             });
 
-            if (!lastYear) return new NextResponse("Error buscando el último año", {status: 404});
+            if (!lastYear) return NextResponse.json({message: "Error buscando el último año"}, {status: 404});
 
             let currentYear = Number(yearFrom);
 
@@ -217,13 +241,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         } else if (dateTo) {
             // Lógica para solo to
-            if (!mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+            if (!mesToId) return NextResponse.json({message: "Error en los parámetros de fecha"}, {status: 400});
 
             const firstYear = await prisma.anio.findFirst({
                 orderBy: {nombre: "asc"},
             });
 
-            if (!firstYear) return new NextResponse("Error buscando el primer año", {status: 404});
+            if (!firstYear) return NextResponse.json({message: "Error buscando el primer año"}, {status: 404});
 
             let currentYear = Number(firstYear.nombre);
 
@@ -247,7 +271,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 orderBy: {nombre: "desc"},
             });
 
-            if (!firstYear || !lastYear) return new NextResponse("Error buscando años", {status: 404});
+            if (!firstYear || !lastYear) return NextResponse.json({message: "Error buscando años"}, {status: 404});
 
             let currentYear = Number(firstYear.nombre);
 
@@ -292,7 +316,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     where: {anioId},
                 });
 
-                if (!factorSEIN) return new NextResponse("No se encontró el factor de conversión para el año seleccionado", {status: 404});
+                if (!factorSEIN) return NextResponse.json({message: "No se encontró el factor de conversión para el año seleccionado"}, {status: 404});
 
                 let whereOptionDetails = whereOptionsConsumoElectricidad;
                 whereOptionDetails.areaId = area.id;
@@ -309,11 +333,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     return acc;
                 }, 0);
 
-                const consumo = factorConversion * totalConsumo;
+                const consumo = totalConsumo;
                 const emisionCO2 = factorSEIN.factorCO2 * consumo;
-                const emisionCH4 = factorSEIN.factorCH4 * consumo;
-                const emisionN2O = factorSEIN.factorN2O * consumo;
-                const totalEmisionesAnuales = emisionCO2 + emisionCH4 + emisionN2O;
+                const emisionCH4 = 0;
+                const emisionN2O = 0;
+                // const totalEmisionesAnuales = emisionCO2 + emisionCH4 + emisionN2O;
+                const totalEmisionesAnuales = emisionCO2;
 
                 await prisma.energiaCalculosDetail.create({
                     data: {
@@ -347,10 +372,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     consumoArea: consumoArea,
                     factorConversion: factorConversion,
                     consumoTotal: consumoTotal,
-                    emisionCO2: totalEmisionCO2,
-                    emisionCH4: totalEmisionCH4,
-                    emisionN2O: totalEmisionN2O,
-                    totalGEI: totalGEI,
+                    emisionCO2: totalEmisionCO2 / 1000,
+                    emisionCH4: totalEmisionCH4 / 1000,
+                    emisionN2O: totalEmisionN2O / 1000,
+                    totalGEI: totalGEI / 1000,
                     updated_at: new Date(),
                 },
             });
@@ -359,6 +384,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         return NextResponse.json({message: "Cálculo realizado exitosamente"});
     } catch (error) {
         console.error("Error calculating combustion", error);
-        return new NextResponse("Error calculating combustion", {status: 500});
+        return NextResponse.json({message: "Error calculating combustion"}, {status: 500});
     }
 }

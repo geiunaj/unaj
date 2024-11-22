@@ -34,6 +34,7 @@ import {
 } from "../services/consumoAgua.actions";
 import {UpdateElectricidadProps} from "@/components/consumoElectricidad/services/electricidad.interface";
 import {consumoAguaRequest} from "../services/consumoAgua.interface";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -286,7 +287,7 @@ export function UpdateFormConsumoAgua({
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                             placeholder="kw/h"
                                             type="number"
-                                            step="0.01"
+                                            step={STEP_NUMBER}
                                             {...field}
                                         />
                                     </FormControl>

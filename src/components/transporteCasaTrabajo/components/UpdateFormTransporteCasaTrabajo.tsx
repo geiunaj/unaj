@@ -37,6 +37,7 @@ import {
 } from "@/components/transporteCasaTrabajo/lib/transporteCasaTrabajo.hook";
 import {errorToast, parseNumber, successToast} from "@/lib/utils/core.function";
 import {getMes} from "@/components/mes/services/mes.actions";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const TransporteCasaTrabajo = z.object({
     tipo: z.string().min(1, "Seleccione un tipo"),
@@ -285,7 +286,7 @@ export function UpdateFormTransporteCasaTrabajo({
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                             placeholder="Km Recorrido"
                                             type="number"
-                                            step="0.01"
+                                            step={STEP_NUMBER}
                                             {...field}
                                         />
                                     </FormControl>

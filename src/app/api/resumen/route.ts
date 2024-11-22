@@ -106,13 +106,28 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         // CATEGORIA 2
 
+        const consumoEnergiaData = await prisma.energiaCalculos.findMany({
+            where: {
+                PeriodoCalculo: {
+                    fechaInicioValue: {
+                        gte: fromValue,
+                        lte: toValue,
+                    },
+                },
+                area: {
+                    sede_id: sedeId ? parseInt(sedeId) : undefined,
+                },
+            }
+        });
+        const co2emmissionsConsumoEnergia = parseFloat((consumoEnergiaData.reduce((acc, curr) => acc + curr.totalGEI, 0)).toFixed(2).toString());
+
         const ConsumoEnergia: SummaryItem = {
             emissionSource: "Consumo de Energia",
-            co2Emissions: 0,
+            co2Emissions: co2emmissionsConsumoEnergia,
             ch4Emissions: 0,
             N2OEmissions: 0,
             hfcEmissions: 0,
-            totalEmissions: 0,
+            totalEmissions: co2emmissionsConsumoEnergia,
             generalContributions: 0,
         };
 
@@ -156,13 +171,26 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             totalEmissions: 0,
             generalContributions: 0
         };
+
+        const transporteCasaTrabajoData = await prisma.casaTrabajoCalculos.findMany({
+            where: {
+                PeriodoCalculo: {
+                    fechaInicioValue: {
+                        gte: fromValue,
+                        lte: toValue,
+                    },
+                },
+                sedeId: sedeId ? parseInt(sedeId) : undefined,
+            }
+        });
+        const co2emmissionsTransporteCasasTrabajo = parseFloat((transporteCasaTrabajoData.reduce((acc, curr) => acc + curr.totalGEI, 0)).toFixed(2).toString());
         const TransporteCasaTrabajo: SummaryItem = {
             emissionSource: "Transporte Casa Trabajo",
-            co2Emissions: 0,
-            ch4Emissions: 0,
-            N2OEmissions: 0,
+            co2Emissions: co2emmissionsTransporteCasasTrabajo,
+            ch4Emissions: ch4emmissionsTransporteCasasTrabajo,
+            N2OEmissions: n2oemmissionsTransporteCasasTrabajo,
             hfcEmissions: 0,
-            totalEmissions: 0,
+            totalEmissions: totalEmissionsTransporteCasasTrabajo,
             generalContributions: 0
         };
 

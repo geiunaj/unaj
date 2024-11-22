@@ -90,10 +90,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const formattedActivoCalculos: any[] = activoCalculos
             .map((activoCalculo, index: number) => {
-                const consumo = formatActivoCalculo(activoCalculo);
-                consumo.rn = (page - 1) * perPage + index + 1;
-                return consumo;
-            });
+                if (activoCalculo.cantidadTotal !== 0) {
+                    const consumo = formatActivoCalculo(activoCalculo);
+                    consumo.rn = (page - 1) * perPage + index + 1;
+                    return consumo;
+                }
+                return null;
+            }).filter((activoCalculo) => activoCalculo !== null);
 
         return NextResponse.json({
             data: formattedActivoCalculos,

@@ -16,6 +16,7 @@ import { Button } from "../../ui/button";
 import { errorToast, successToast } from "@/lib/utils/core.function";
 import { CreateGPWProps, GPWRequest } from "../services/gwp.interface";
 import { createGPW } from "../services/gwp.actions";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const parseNumber = (val: any) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -114,7 +115,7 @@ export function CreateFormGWP({ onClose }: CreateGPWProps) {
                         type="number"
                         className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                         placeholder="Valor"
-                        step="0.01"
+                        step={STEP_NUMBER}
                         {...field}
                       />
                     </FormControl>

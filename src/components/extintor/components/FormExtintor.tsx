@@ -28,6 +28,7 @@ import {getMes} from "@/components/mes/services/mes.actions";
 import {CreateExtintorProps, ExtintorRequest} from "../service/extintor.interface";
 import {createExtintor} from "../service/extintor.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import { STEP_NUMBER } from "@/lib/constants/menu";
 
 const Extintor = z.object({
     consumo: z.preprocess(
@@ -210,7 +211,7 @@ export function FormExtintor({onClose}: CreateExtintorProps) {
                                             type="number"
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                             placeholder="Consumo"
-                                            step="0.000000001"
+                                            step={STEP_NUMBER}
                                             {...field}
                                         />
                                     </FormControl>
