@@ -12,14 +12,14 @@ interface Response {
 
 export async function getFactorEmisionActivoPage(
     {
-        tipoActivoId,
+        grupoActivoId,
         anioId,
         page = 1,
         perPage = 10,
     }: FactorEmisionActivoIndex): Promise<ActivoFactorCollectionPaginate> {
     const config: AxiosRequestConfig = {
         params: {
-            tipoActivoId,
+            grupoActivoId,
             anioId,
             page,
             perPage,

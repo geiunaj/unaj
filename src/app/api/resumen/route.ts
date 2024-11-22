@@ -69,13 +69,26 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             totalEmissions: totalEmissionsCombustionEstacionaria,
             generalContributions: 0
         };
+
+        const extintorData = await prisma.extintorCalculos.findMany({
+            where: {
+                PeriodoCalculo: {
+                    fechaInicioValue: {
+                        gte: fromValue,
+                        lte: toValue,
+                    },
+                },
+                sedeId: sedeId ? parseInt(sedeId) : undefined,
+            }
+        });
+        const co2emmissionsExtintor = parseFloat((extintorData.reduce((acc, curr) => acc + curr.totalGEI, 0)).toFixed(2).toString());
         const Extintores: SummaryItem = {
             emissionSource: "Extintores",
-            co2Emissions: 0,
+            co2Emissions: co2emmissionsExtintor,
             ch4Emissions: 0,
             N2OEmissions: 0,
             hfcEmissions: 0,
-            totalEmissions: 0,
+            totalEmissions: co2emmissionsExtintor,
             generalContributions: 0
         };
 
@@ -230,12 +243,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const EMISSIONS: SummaryItem = {
             emissionSource: "Emisiones Totales",
-            co2Emissions: CATEGORIA1.co2Emissions + CATEGORIA2.co2Emissions + CATEGORIA3.co2Emissions + CATEGORIA4.co2Emissions,
-            ch4Emissions: CATEGORIA1.ch4Emissions + CATEGORIA2.ch4Emissions + CATEGORIA3.ch4Emissions + CATEGORIA4.ch4Emissions,
-            N2OEmissions: CATEGORIA1.N2OEmissions + CATEGORIA2.N2OEmissions + CATEGORIA3.N2OEmissions + CATEGORIA4.N2OEmissions,
-            hfcEmissions: CATEGORIA1.hfcEmissions + CATEGORIA2.hfcEmissions + CATEGORIA3.hfcEmissions + CATEGORIA4.hfcEmissions,
-            totalEmissions: CATEGORIA1.totalEmissions + CATEGORIA2.totalEmissions + CATEGORIA3.totalEmissions + CATEGORIA4.totalEmissions,
-            generalContributions: CATEGORIA1.generalContributions + CATEGORIA2.generalContributions + CATEGORIA3.generalContributions + CATEGORIA4.generalContributions,
+            co2Emissions: parseFloat((CATEGORIA1.co2Emissions + CATEGORIA2.co2Emissions + CATEGORIA3.co2Emissions + CATEGORIA4.co2Emissions).toFixed(2)),
+            ch4Emissions: parseFloat((CATEGORIA1.ch4Emissions + CATEGORIA2.ch4Emissions + CATEGORIA3.ch4Emissions + CATEGORIA4.ch4Emissions).toFixed(2)),
+            N2OEmissions: parseFloat((CATEGORIA1.N2OEmissions + CATEGORIA2.N2OEmissions + CATEGORIA3.N2OEmissions + CATEGORIA4.N2OEmissions).toFixed(2)),
+            hfcEmissions: parseFloat((CATEGORIA1.hfcEmissions + CATEGORIA2.hfcEmissions + CATEGORIA3.hfcEmissions + CATEGORIA4.hfcEmissions).toFixed(2)),
+            totalEmissions: parseFloat((CATEGORIA1.totalEmissions + CATEGORIA2.totalEmissions + CATEGORIA3.totalEmissions + CATEGORIA4.totalEmissions).toFixed(2)),
+            generalContributions: parseFloat((CATEGORIA1.generalContributions + CATEGORIA2.generalContributions + CATEGORIA3.generalContributions + CATEGORIA4.generalContributions).toFixed(2)),
             category: true,
         }
 

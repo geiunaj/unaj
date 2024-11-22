@@ -61,9 +61,6 @@ model Sede {
   ConsumoPapelCalculosDetail        ConsumoPapelCalculosDetail[]
   ConsumoPapelCalculos              ConsumoPapelCalculos[]
   fertilizanteCalculosDetail        fertilizanteCalculosDetail[]
-  Refrigerante                      Refrigerante[]
-  RefrigeranteCalculos              RefrigeranteCalculos[]
-  RefrigeranteCalculosDetail        RefrigeranteCalculosDetail[]
   Consumible                        Consumible[]
   ConsumibleCalculos                ConsumibleCalculos[]
   ConsumibleCalculosDetail          ConsumibleCalculosDetail[]
@@ -81,6 +78,9 @@ model Sede {
   Activo                            Activo[]
   ActivoCalculos                    ActivoCalculos[]
   ActivoCalculosDetail              ActivoCalculosDetail[]
+  Extintor                          Extintor[]
+  ExtintorCalculos                  ExtintorCalculos[]
+  ExtintorCalculosDetail            ExtintorCalculosDetail[]
 
   @@map("sede")
 }
@@ -131,6 +131,7 @@ model Mes {
   TransporteTerrestre TransporteTerrestre[]
   Activo              Activo[]
   CasaTrabajo         CasaTrabajo[]
+  Extintor            Extintor[]
 
   @@map("mes")
 }
@@ -153,9 +154,6 @@ model Anio {
   FactorTipoPapel                  FactorTipoPapel[]
   ConsumoPapelCalculosDetail       ConsumoPapelCalculosDetail[]
   FactorEmisionFertilizante        FactorEmisionFertilizante[]
-  Refrigerante                     Refrigerante[]
-  FactorTipoRefrigerante           FactorTipoRefrigerante[]
-  RefrigeranteCalculosDetail       RefrigeranteCalculosDetail[]
   FactorTipoConsumible             FactorTipoConsumible[]
   Consumible                       Consumible[]
   ConsumibleCalculosDetail         ConsumibleCalculosDetail[]
@@ -170,6 +168,8 @@ model Anio {
   Activo                           Activo[]
   FactorTipoActivo                 FactorTipoActivo[]
   ActivoCalculosDetail             ActivoCalculosDetail[]
+  FactorEmisionExtintor            FactorEmisionExtintor[]
+  Extintor                         Extintor[]
 
   @@map("anio")
 }
@@ -720,122 +720,15 @@ model PeriodoCalculo {
   fertilizanteCalculos        fertilizanteCalculos[]
   combustibleCalculos         combustibleCalculos[]
   ConsumoPapelCalculos        ConsumoPapelCalculos[]
-  ConsumoRefrigeranteCalculos RefrigeranteCalculos[]
   ConsumibleCalculos          ConsumibleCalculos[]
   TaxiCalculos                TaxiCalculos[]
   TransporteAereoCalculos     TransporteAereoCalculos[]
   TransporteTerrestreCalculos TransporteTerrestreCalculos[]
   CasaTrabajoCalculos         CasaTrabajoCalculos[]
   ActivoCalculos              ActivoCalculos[]
+  ExtintorCalculos            ExtintorCalculos[]
 
   @@map("periodocalculo")
-}
-
-model TipoEquipoRefrigerante {
-  id                  Int            @id @default(autoincrement())
-  nombre              String
-  created_at          DateTime       @default(now())
-  updated_at          DateTime       @updatedAt
-  ConsumoRefrigerante Refrigerante[]
-
-  @@map("tipoequiporefrigerante")
-}
-
-model TipoRefrigerante {
-  id                         Int                          @id @default(autoincrement())
-  nombre                     String
-  formula                    String
-  created_at                 DateTime                     @default(now())
-  updated_at                 DateTime                     @updatedAt
-  ConsumoRefrigerante        Refrigerante[]
-  FactorTipoRefrigerante     FactorTipoRefrigerante[]
-  RefrigeranteCalculosDetail RefrigeranteCalculosDetail[]
-  RefrigeranteCalculos       RefrigeranteCalculos[]
-
-  @@map("tiporefrigerante")
-}
-
-model FactorTipoRefrigerante {
-  id                 Int      @id @default(autoincrement())
-  PCA100             Float
-  anioId             Int
-  tipoRefrigeranteId Int
-  created_at         DateTime @default(now())
-  updated_at         DateTime @updatedAt
-
-  anio                       Anio?                        @relation(fields: [anioId], references: [id])
-  tipoRefrigerante           TipoRefrigerante?            @relation(fields: [tipoRefrigeranteId], references: [id])
-  RefrigeranteCalculosDetail RefrigeranteCalculosDetail[]
-
-  @@map("factortiporefrigerante")
-}
-
-model Refrigerante {
-  id                       Int      @id @default(autoincrement())
-  tipo                     String // I: INSTALACION, O: OPERACION, D:DISPOSICION
-  tipoEquipoRefrigeranteId Int
-  tipoRefrigeranteId       Int
-  sedeId                   Int
-  anioId                   Int
-  numeroEquipos            Int
-  cargaAnual               Float
-  fugaInstalacion          Float?
-  fugaUso                  Float?
-  tiempoUso                Float?
-  fraccionDisposicion      Float?
-  fraccionRecuperacion     Float?
-  created_at               DateTime @default(now())
-  updated_at               DateTime @updatedAt
-
-  tipoEquipoRefrigerante TipoEquipoRefrigerante? @relation(fields: [tipoEquipoRefrigeranteId], references: [id])
-  tipoRefrigerante       TipoRefrigerante?       @relation(fields: [tipoRefrigeranteId], references: [id])
-  sede                   Sede?                   @relation(fields: [sedeId], references: [id])
-  anio                   Anio?                   @relation(fields: [anioId], references: [id])
-
-  @@map("refrigerante")
-}
-
-model RefrigeranteCalculos {
-  id                 Int      @id @default(autoincrement())
-  tipoRefrigeranteId Int
-  periodoCalculoId   Int
-  sedeId             Int
-  instalacion        Float?
-  operacion          Float?
-  disposicion        Float?
-  perdidaTotal       Float
-  totalGEI           Float
-  created_at         DateTime @default(now())
-  updated_at         DateTime @updatedAt
-
-  tipoRefrigerante           TipoRefrigerante?            @relation(fields: [tipoRefrigeranteId], references: [id])
-  PeriodoCalculo             PeriodoCalculo?              @relation(fields: [periodoCalculoId], references: [id])
-  sede                       Sede?                        @relation(fields: [sedeId], references: [id])
-  RefrigeranteCalculosDetail RefrigeranteCalculosDetail[]
-
-  @@map("refrigerantecalculos")
-}
-
-model RefrigeranteCalculosDetail {
-  id                       Int      @id @default(autoincrement())
-  tipoRefrigeranteId       Int
-  factorTipoRefrigeranteId Int
-  sedeId                   Int
-  anioId                   Int
-  instalacion              Float? // # EQUIPOS * CARGA ANUAL * % FUGA INSTALACION
-  operacion                Float? // # EQUIPOS * CARGA ANUAL * AÑOS DE USO * % FUGA USO
-  disposicion              Float? // # EQUIPOS * CARGA ANUAL * % FRACCION DISPOSICION * % FRACCION RECUPERACION
-  perdidaTotal             Float
-  totalGEI                 Float
-  refrigeranteCalculosId   Int
-  created_at               DateTime @default(now())
-  updated_at               DateTime @updatedAt
-
-  tipoRefrigerante       TipoRefrigerante?       @relation(fields: [tipoRefrigeranteId], references: [id])
-  factorTipoRefrigerante FactorTipoRefrigerante? @relation(fields: [factorTipoRefrigeranteId], references: [id])
-  refrigeranteCalculos   RefrigeranteCalculos?   @relation(fields: [refrigeranteCalculosId], references: [id])
-  sede                   Sede?                   @relation(fields: [sedeId], references: [id])
-  anio                   Anio?                   @relation(fields: [anioId], references: [id])
 }
 
 // CONSUMIBLES GENERALES
@@ -1353,4 +1246,73 @@ model ActivoCalculosDetail {
   activoCalculos   ActivoCalculos?   @relation(fields: [activoCalculosId], references: [id])
 
   @@map("activocalculosdetail")
+}
+
+// EXTINTOR
+model FactorEmisionExtintor {
+  id      Int   @id @default(autoincrement())
+  factor  Float
+  anio_id Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  ExtintorCalculosDetail ExtintorCalculosDetail[]
+
+  anio Anio @relation(fields: [anio_id], references: [id])
+
+  @@map("factoremisionextintor")
+}
+
+model Extintor {
+  id       Int   @id @default(autoincrement())
+  consumo  Float
+  sede_id  Int
+  anio_id  Int
+  mes_id   Int
+  anio_mes Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  sede Sede? @relation(fields: [sede_id], references: [id])
+  anio Anio? @relation(fields: [anio_id], references: [id])
+  mes  Mes?  @relation(fields: [mes_id], references: [id])
+
+  @@map("extintor")
+}
+
+model ExtintorCalculos {
+  id               Int   @id @default(autoincrement())
+  consumoTotal     Float
+  totalGEI         Float
+  sedeId           Int
+  periodoCalculoId Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  sede                   Sede?                    @relation(fields: [sedeId], references: [id])
+  PeriodoCalculo         PeriodoCalculo?          @relation(fields: [periodoCalculoId], references: [id])
+  ExtintorCalculosDetail ExtintorCalculosDetail[]
+
+  @@map("extintorcalculos")
+}
+
+model ExtintorCalculosDetail {
+  id                      Int   @id @default(autoincrement())
+  consumoTotal            Float
+  totalGEI                Float
+  sedeId                  Int
+  factorEmisionExtintorId Int
+  extintorCalculosId      Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  sede                  Sede?                  @relation(fields: [sedeId], references: [id])
+  factorEmisionExtintor FactorEmisionExtintor? @relation(fields: [factorEmisionExtintorId], references: [id])
+  extintorCalculos      ExtintorCalculos       @relation(fields: [extintorCalculosId], references: [id])
+
+  @@map("extintorcalculosdetail")
 }

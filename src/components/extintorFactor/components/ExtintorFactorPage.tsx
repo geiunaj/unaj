@@ -1,8 +1,6 @@
 "use client";
-
 import React, {useCallback, useState} from "react";
-import SelectFilter from "@/components/SelectFilter";
-import {Pen, Plus, Trash2, Calendar, Link2, Bean, LampDesk} from "lucide-react";
+import {Flame, Pen, Plus, Trash2} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -34,91 +32,77 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import {
-    useAnio,
-    useActivoFactor, useTipoActivo, useGrupoActivo,
-
-} from "../lib/tipoActivoFactor.hook";
-import {deleteTipoActivoFactor} from "../services/tipoActivoFactor.actions";
-import {errorToast, successToast} from "@/lib/utils/core.function";
-import {ActivoFactorCollection} from "../services/tipoActivoFactor.interface";
-import Link from "next/link";
 import CustomPagination from "@/components/Pagination";
-import {CreateFormTipoActivoFactor} from "@/components/tipoActivo/components/CreateFormTipoActivoFactor";
+
+import SelectFilter from "@/components/SelectFilter";
+import {useExtintorFactorPaginate} from "../lib/extintorFactor.hook";
+import {useAnio} from "@/components/combustion/lib/combustion.hook";
+import {ExtintorFactorCollection} from "../services/extintorFactor.interface";
 import {
-    UpdateFormTipoActivoFactor
-} from "@/components/tipoActivo/components/UpdateFormTipoActivoFactor";
+    FormExtintorFactor
+} from "@/components/extintorFactor/components/CreateExtintorFactor";
+import {
+    UpdateFormExtintorFactor
+} from "@/components/extintorFactor/components/UpdateExtintorFactor";
+import {errorToast, successToast} from "@/lib/utils/core.function";
+import {
+    deleteExtintorFactor
+} from "@/components/extintorFactor/services/extintorFactor.actions";
 import {ChangeTitle} from "@/components/TitleUpdater";
 
-export default function ActivoFactorPage() {
-    ChangeTitle("Factor de Emisión de Activo");
-
+export default function ExtintorFactorPage() {
+    ChangeTitle("Factor de Emisión de Extintor");
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
-    const [selectAnio, setSelectAnio] = useState<string>(new Date().getFullYear().toString());
-    const [selectTipoActivo, setSelectTipoActivo] = useState<string>("");
-    const [page, setPage] = useState<number>(1);
-
-    const anioQuery = useAnio();
-    const tipoActivoQuery = useGrupoActivo();
-
-    //IDS
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
+    const [selectAnio, setSelectAnio] = useState<string>("");
+    const [page, setPage] = useState<number>(1);
 
-    const factorEmisionQuery = useActivoFactor({
-        grupoActivoId: selectTipoActivo,
+    //USE QUERIES
+    const extintorFactorQuery = useExtintorFactorPaginate({
         anioId: selectAnio,
         page,
-        perPage: 10
+        perPage: 10,
     });
 
-    const columns = [
-        "N°",
-        "ACTIVO",
-        "FACTOR",
-        "AÑO",
-        "ACCIONES"
-    ];
-
-    const handleAnioChange = useCallback(async (value: string) => {
-        await setSelectAnio(value);
-        await factorEmisionQuery.refetch();
-    }, [factorEmisionQuery]);
-
-    const handleTipoActivoChange = useCallback(async (value: string) => {
-        await setSelectTipoActivo(value);
-        await factorEmisionQuery.refetch();
-    }, [factorEmisionQuery]);
+    const aniosQuery = useAnio();
 
     // HANDLES
+    const handleAnio = useCallback(
+        async (value: string) => {
+            await setPage(1);
+            await setSelectAnio(value);
+            await extintorFactorQuery.refetch();
+        },
+        [extintorFactorQuery]
+    );
+
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
-        factorEmisionQuery.refetch();
-    }, [factorEmisionQuery]);
+        extintorFactorQuery.refetch();
+    }, [extintorFactorQuery]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
-        factorEmisionQuery.refetch();
-    }, [factorEmisionQuery]);
+        extintorFactorQuery.refetch();
+    }, [extintorFactorQuery]);
 
     const handleDelete = useCallback(async () => {
         try {
-            const response = await deleteTipoActivoFactor(idForDelete);
+            const response = await deleteExtintorFactor(idForDelete);
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
-            errorToast(
-                error.response?.data?.message || "Error al eliminar el factor de emisión de fertilizante"
-            );
+            errorToast(error.response.data || error.response.data.message);
         } finally {
-            await factorEmisionQuery.refetch();
+            await extintorFactorQuery.refetch();
         }
-    }, [factorEmisionQuery]);
+    }, [extintorFactorQuery]);
+
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
         setIsUpdateDialogOpen(true);
@@ -131,10 +115,10 @@ export default function ActivoFactorPage() {
 
     const handlePageChange = async (page: number) => {
         await setPage(page);
-        await factorEmisionQuery.refetch();
-    }
+        await extintorFactorQuery.refetch();
+    };
 
-    if (anioQuery.isLoading || factorEmisionQuery.isLoading || tipoActivoQuery.isLoading) {
+    if (extintorFactorQuery.isLoading || aniosQuery.isLoading) {
         return <SkeletonTable/>;
     }
 
@@ -142,30 +126,17 @@ export default function ActivoFactorPage() {
         <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-center mb-6">
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
-                    <div
-                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
                         <SelectFilter
-                            list={tipoActivoQuery.data!}
-                            itemSelected={selectTipoActivo}
-                            handleItemSelect={handleTipoActivoChange}
+                            list={aniosQuery.data!}
+                            itemSelected={selectAnio}
+                            handleItemSelect={handleAnio}
                             value={"id"}
                             nombre={"nombre"}
                             id={"id"}
                             all={true}
-                            icon={<LampDesk className="h-3 w-3"/>}
+                            icon={<Flame className="h-3 w-3"/>}
                         />
-                        <SelectFilter
-                            list={anioQuery.data!}
-                            itemSelected={selectAnio}
-                            handleItemSelect={handleAnioChange}
-                            value={"nombre"}
-                            nombre={"nombre"}
-                            id={"nombre"}
-                            all={true}
-                            icon={<Calendar className="h-3 w-3"/>}
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button size="sm" className="h-7 gap-1">
@@ -175,13 +146,13 @@ export default function ActivoFactorPage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle> Factor de Tipo de Activo</DialogTitle>
+                                    <DialogTitle>Factor de Extintor</DialogTitle>
                                     <DialogDescription>
-                                        Agregar Factor de Tipo de Activo
+                                        Agregar Factor de Emisión de Extintor
                                     </DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                <CreateFormTipoActivoFactor onClose={handleClose}/>
+                                <FormExtintorFactor onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -192,41 +163,36 @@ export default function ActivoFactorPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            {
-                                columns.map((column, index) => (
-                                    <TableHead key={index} className="text-xs sm:text-sm font-bold text-center">
-                                        {column}
-                                    </TableHead>
-                                ))
-                            }
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                N°
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                FACTOR
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                AÑO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                ACCIONES
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {factorEmisionQuery.data!.data.map(
-                            (item: ActivoFactorCollection, index: number) => (
+                        {extintorFactorQuery.data!.data.map(
+                            (item: ExtintorFactorCollection, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{index + 1}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {item.tipoActivo}
+                                        <Badge variant="default"> {item.factor}</Badge>
                                     </TableCell>
+
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default" className="space-x-2">
-                                            {item.factor}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {item.anio}
+                                        <Badge variant="secondary"> {item.anio}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm p-1">
-                                        <div className="flex items-center justify-center gap-4">
-                                            {item.link && <Link href={item.link} target="_blank">
-                                                <Button className="h-7 flex items-center gap-2" size="sm"
-                                                        variant="secondary">
-                                                    <Link2 className="h-3 w-3"/>
-                                                </Button>
-                                            </Link>}
+                                        <div className="flex justify-center gap-4">
                                             {/*UPDATE*/}
                                             <Button
                                                 className="h-7 w-7"
@@ -253,11 +219,12 @@ export default function ActivoFactorPage() {
                         )}
                     </TableBody>
                 </Table>
-                {
-                    factorEmisionQuery.data!.meta.totalPages > 1 && (
-                        <CustomPagination meta={factorEmisionQuery.data!.meta} onPageChange={handlePageChange}/>
-                    )
-                }
+                {extintorFactorQuery.data!.meta.totalPages > 1 && (
+                    <CustomPagination
+                        meta={extintorFactorQuery.data!.meta}
+                        onPageChange={handlePageChange}
+                    />
+                )}
             </div>
 
             {/*MODAL UPDATE*/}
@@ -265,10 +232,14 @@ export default function ActivoFactorPage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Activo</DialogTitle>
-                        <DialogDescription></DialogDescription>
+                        <DialogTitle>Actualizar Registro</DialogTitle>
+                        <DialogDescription>Actualizar Factor de Emisión de Extintor</DialogDescription>
                     </DialogHeader>
-                    <UpdateFormTipoActivoFactor onClose={handleCloseUpdate} id={idForUpdate}/>
+
+                    <UpdateFormExtintorFactor
+                        onClose={handleCloseUpdate}
+                        id={idForUpdate}
+                    />
                 </DialogContent>
             </Dialog>
 

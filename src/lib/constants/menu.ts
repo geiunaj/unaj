@@ -92,7 +92,7 @@ export const menu: MenuItem[] = [
             {
                 title: "Extintores",
                 icon: "FireExtinguisher",
-                href: "/extintores",
+                href: "/extintor",
             },
         ],
     },
@@ -148,7 +148,7 @@ export const menu: MenuItem[] = [
             {
                 title: "Consumo de Agua",
                 icon: "Droplets",
-                href: "/consumoAgua",
+                href: "/consumo-agua",
             },
             {
                 title: "Activos Fijos",
@@ -207,6 +207,11 @@ export const menu: MenuItem[] = [
                 icon: "Car",
                 href: "/tipo-vehiculo-factor",
             },
+            {
+                title: "Factor de Extintor",
+                icon: "Car",
+                href: "/extintor-factor",
+            },
         ],
     },
     {
@@ -222,7 +227,7 @@ export const menu: MenuItem[] = [
             {
                 title: "Tipo de Papel",
                 icon: "Scroll",
-                href: "/tipoPapel",
+                href: "/tipo-papel",
             },
             {
                 title: "Tipos de Combustible",
