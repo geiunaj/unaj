@@ -77,7 +77,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 ? [{anio_mes: 'asc'}]
                 : sort
                     ? [{[sort]: direction || 'desc'}]
-                    : [{anioId: 'desc'}, {mesId: 'desc'}],
+                    : [{tipoVehiculo: {nombre: 'asc'}}, {anioId: 'desc'}, {mesId: 'desc'}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
             // ...(limit ? {take: 100} : all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });

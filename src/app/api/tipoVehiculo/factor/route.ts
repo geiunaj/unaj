@@ -23,6 +23,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             where: whereOptions,
             include: {anio: true, tipoVehiculo: true},
             ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
+            orderBy: {tipoVehiculo: {nombre: "asc"}},
         });
 
         if (perPage > 0) {

@@ -187,10 +187,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const TransporteCasaTrabajo: SummaryItem = {
             emissionSource: "Transporte Casa Trabajo",
             co2Emissions: co2emmissionsTransporteCasasTrabajo,
-            ch4Emissions: ch4emmissionsTransporteCasasTrabajo,
-            N2OEmissions: n2oemmissionsTransporteCasasTrabajo,
+            ch4Emissions: 0,
+            N2OEmissions: 0,
             hfcEmissions: 0,
-            totalEmissions: totalEmissionsTransporteCasasTrabajo,
+            totalEmissions: co2emmissionsTransporteCasasTrabajo,
             generalContributions: 0
         };
 

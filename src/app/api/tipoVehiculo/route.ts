@@ -18,7 +18,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                     contains: nombre,
                 },
             },
-            orderBy: {id: "desc"},
+            orderBy: {nombre: "asc"},
             ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
         });
         if (perPage > 0) {

@@ -1031,6 +1031,85 @@ async function main() {
     }
     console.log("Asset groups created");
 
+    const factorCasaTrabajo = [
+        {
+            consumo: 715318.2, vehiculo: "Auto particular a Diesel", factorCO2: 0.17167, factorCH4: 0.0000003,
+            factorN2O: 0.0000062, factor: 0.173322
+        },
+        {
+            consumo: 1489766.9, vehiculo: "Auto particular a Gasolina", factorCO2: 0.19311, factorCH4: 0.000011,
+            factorN2O: 0.0000014, factor: 0.193811
+        },
+        {
+            consumo: 771906.4, vehiculo: "Auto particular a GLP", factorCO2: 0.1816, factorCH4: 0.0000023,
+            factorN2O: 0.0000017, factor: 0.1821195
+        },
+        {consumo: 702219.9, vehiculo: "Bicicleta", factorCO2: 0, factorCH4: 0, factorN2O: 0, factor: 0},
+        {
+            consumo: 592121.8, vehiculo: "Buses", factorCO2: 0.10017, factorCH4: 0.000001,
+            factorN2O: 0.0000026, factor: 0.100889
+        },
+        {consumo: 80477.6, vehiculo: "Caminando", factorCO2: 0, factorCH4: 0, factorN2O: 0, factor: 0},
+        {
+            consumo: 2595136.1, vehiculo: "Combi o cúster", factorCO2: 0.10017, factorCH4: 0.000001,
+            factorN2O: 0.0000026, factor: 0.100889
+        },
+        {
+            consumo: 1114001.5, vehiculo: "Moto", factorCO2: 0.08248, factorCH4: 0.0000617,
+            factorN2O: 0.000001, factor: 0.084596
+        },
+        {
+            consumo: 10846.3, vehiculo: "Mototaxi", factorCO2: 0.08248, factorCH4: 0.0000617,
+            factorN2O: 0.000001, factor: 0.084596
+        },
+        {consumo: 6327.0, vehiculo: "Scooter eléctrico", factorCO2: 0, factorCH4: 0, factorN2O: 0, factor: 0},
+        {
+            consumo: 129703.2, vehiculo: "Taxi", factorCO2: 0.15211, factorCH4: 0.000003,
+            factorN2O: 0.0000044, factor: 0.153366
+        },
+        {
+            consumo: 1719049.4, vehiculo: "Vehículo colectivo", factorCO2: 0.00000, factorCH4: 0.000000,
+            factorN2O: 0.000000, factor: 0.048453
+        },
+    ];
+
+    for (const factor of factorCasaTrabajo) {
+        const tipoVehiculo = await prisma.tipoVehiculo.create({
+            data: {
+                nombre: factor.vehiculo,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+        await prisma.factorTransporteCasaTrabajo.create({
+            data: {
+                tipoVehiculoId: tipoVehiculo.id,
+                factorCO2: factor.factorCO2,
+                factorCH4: factor.factorCH4,
+                factorN2O: factor.factorN2O,
+                factor: factor.factor,
+                created_at: new Date(),
+                updated_at: new Date(),
+                anioId: 1,
+            },
+        });
+
+        await prisma.casaTrabajo.create({
+            data: {
+                tipo: "ALUMNO",
+                tipoVehiculoId: tipoVehiculo.id,
+                kmRecorrido: factor.consumo,
+                sedeId: 1,
+                anioId: 1,
+                mesId: 1,
+                anio_mes: Number("2024") * 100 + Number(1),
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+    console.log("Casa-trabajo data created");
+
     // console.log({adminType, user});
 }
 
