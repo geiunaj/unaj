@@ -119,7 +119,7 @@ export function FormTransporteTerrestreFactor({onClose}: CreateTransporteTerrest
                             name="factor"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor</FormLabel>
+                                    <FormLabel>Factor <span className="text-[10px]">[kg CO2]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
@@ -131,7 +131,7 @@ export function FormTransporteTerrestreFactor({onClose}: CreateTransporteTerrest
                                 </FormItem>
                             )}
                         />
-                        
+
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-primary">
                                 Guardar

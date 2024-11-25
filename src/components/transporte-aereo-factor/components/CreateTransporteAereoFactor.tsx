@@ -30,7 +30,7 @@ import {
     CreateTransporteAereoFactorProps,
     TransporteAereoFactorRequest
 } from "@/components/transporte-aereo-factor/services/transporteAereoFactor.interface";
-import { STEP_NUMBER } from "@/lib/constants/menu";
+import {STEP_NUMBER} from "@/lib/constants/menu";
 
 const TransporteAereoFactor = z.object({
     anio: z.string().min(1, "Seleciona el anio"),
@@ -133,7 +133,8 @@ export function FormTransporteAereoFactor({onClose}: CreateTransporteAereoFactor
                             name="factor1600"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor Mayor a 1600</FormLabel>
+                                    <FormLabel>Factor Mayor a 1600 <span
+                                        className="text-[10px]">[kg CO2]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
@@ -150,7 +151,8 @@ export function FormTransporteAereoFactor({onClose}: CreateTransporteAereoFactor
                             name="factor1600_3700"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor entre 1600 y 3700</FormLabel>
+                                    <FormLabel>Factor entre 1600 y 3700 <span
+                                        className="text-[10px]">[kg CO2]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
@@ -168,7 +170,8 @@ export function FormTransporteAereoFactor({onClose}: CreateTransporteAereoFactor
                             name="factor3700"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor Mayor a 3700</FormLabel>
+                                    <FormLabel>Factor Mayor a 3700 <span
+                                        className="text-[10px]">[kg CO2]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"

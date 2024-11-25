@@ -163,13 +163,13 @@ export default function TransporteAereoFactorPage() {
                                 N°
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                {"FACTOR"} {"[<1600]"}
+                                FACTOR MENOR <br/> 1600 km <span className="text-[10px]">[kg CO2]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                {"FACTOR"} {"[1600-3700]"}
+                                FACTOR ENTRE <br/> 1600-3700 km <span className="text-[10px]">[kg CO2]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                {"FACTOR"} {"[>3700]"}
+                                FACTOR MAYOR <br/> 3700 km <span className="text-[10px]">[kg CO2]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO

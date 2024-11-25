@@ -326,7 +326,7 @@ export function UpdateFormTransporteAereo({id, onClose}: UpdateTransporteAereoPr
                                 name="distanciaTramo"
                                 render={({field}) => (
                                     <FormItem className="w-1/2">
-                                        <FormLabel> Distancia Tramo </FormLabel>
+                                        <FormLabel> Distancia Tramo [Km]</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"

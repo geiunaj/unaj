@@ -63,7 +63,7 @@ export function UpdateFormTransporteAereoFactor({id, onClose}: UpdateTransporteA
 
     const loadForm = useCallback(async () => {
         if (transporteAereoFactor.data) {
-            const factorData = transporteAereoFactor.data;
+            const factorData = await transporteAereoFactor.data;
             form.reset({
                 anio: factorData.anio_id.toString(),
                 factor1600: factorData.factor1600,
@@ -136,7 +136,8 @@ export function UpdateFormTransporteAereoFactor({id, onClose}: UpdateTransporteA
                             name="factor1600"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor Menor 1600</FormLabel>
+                                    <FormLabel>Factor Menor 1600 <span
+                                        className="text-[10px]">[kg CO2]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
@@ -155,7 +156,8 @@ export function UpdateFormTransporteAereoFactor({id, onClose}: UpdateTransporteA
                             name="factor1600_3700"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor entre 1600 y 3700</FormLabel>
+                                    <FormLabel>Factor entre 1600 y 3700 <span
+                                        className="text-[10px]">[kg CO2]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
@@ -174,7 +176,8 @@ export function UpdateFormTransporteAereoFactor({id, onClose}: UpdateTransporteA
                             name="factor3700"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor Mayor 3700</FormLabel>
+                                    <FormLabel>Factor Mayor 3700 <span
+                                        className="text-[10px]">[kg CO2]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
