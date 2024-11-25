@@ -21,8 +21,10 @@ export interface transporteAereoCalculosCollectionItem {
     id: number;
     consumo: number;
     totalGEI: number;
+    intervalo: string;
     sedeId: number;
     periodoCalculoId: number;
+    rn: number;
     sede: string;
     factoresEmision: FactoresEmision[];
     factoresEmisionString: string;

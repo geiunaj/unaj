@@ -47,7 +47,7 @@ import {
     useSedes,
 } from "@/components/consumoPapel/lib/consumoPapel.hook";
 import {useMeses} from "@/components/consumoElectricidad/lib/electricidadCalculos.hooks";
-import {useTransporteAereo} from "../lib/transporteAereo.hook";
+import {useTransporteAereo, useTransporteAereoReport} from "../lib/transporteAereo.hook";
 import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {Badge} from "@/components/ui/badge";
@@ -109,7 +109,7 @@ export default function TransporteAereoPage() {
         page: page,
     });
 
-    const transporteAereoReport = useTransporteAereo({
+    const transporteAereoReport = useTransporteAereoReport({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
         from: from,
         to: to,
@@ -185,7 +185,7 @@ export default function TransporteAereoPage() {
             {header: "MES", key: "mes", width: 15},
             {header: "AÑO", key: "anio", width: 15},
         ];
-        await GenerateReport(transporteAereoQuery.data!.data, columns, formatPeriod(period), "REPORTE DE TAXIS CONTRATADOS", "TransporteAereos Contratados");
+        await GenerateReport(transporteAereoReport.data!.data, columns, formatPeriod(period), "REPORTE DE TAXIS CONTRATADOS", "TransporteAereos Contratados");
     };
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
@@ -204,7 +204,8 @@ export default function TransporteAereoPage() {
         sedeQuery.isLoading ||
         anioQuery.isLoading ||
         mesQuery.isLoading ||
-        transporteAereoQuery.isLoading
+        transporteAereoQuery.isLoading ||
+        transporteAereoReport.isLoading
     ) {
         return <SkeletonTable/>;
     }
@@ -213,7 +214,8 @@ export default function TransporteAereoPage() {
         sedeQuery.isError ||
         anioQuery.isError ||
         mesQuery.isError ||
-        transporteAereoQuery.isError
+        transporteAereoQuery.isError ||
+        transporteAereoReport.isError
     ) {
         return <div>Error</div>;
     }
@@ -283,6 +285,7 @@ export default function TransporteAereoPage() {
                                     {header: "AÑO", key: "anio", width: 15},
                                 ]}
                                 title="REPORTE DE CONSUMIBLES"
+                                rows={25}
                                 period={formatPeriod({from, to}, true)}
                             />
 
@@ -325,13 +328,16 @@ export default function TransporteAereoPage() {
                                 LUGAR DE<br/> DESTINO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
+                                IDA Y VUELTA
+                            </TableHead>
+                            <TableHead className="font-Manrope text-sm font-bold text-center">
                                 FECHA DE<br/> SALIDA
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 FECHA DE<br/> REGRESO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                DISTANCIA<br/> TRAMO
+                                DISTANCIA<br/> TRAMO <span className="text-xs">[Km]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 KM <br/>RECORRIDO
@@ -357,6 +363,9 @@ export default function TransporteAereoPage() {
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.destino}
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {item.isIdaVuelta ? "SI" : "NO"}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.fechaSalida?.toString()}

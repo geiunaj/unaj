@@ -17,10 +17,25 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const dateTo = searchParams.get("to") ?? undefined;
         const all = searchParams.get("all") === "true";
 
+        let yearFrom, yearTo, monthFrom, monthTo;
+        let yearFromId, yearToId, mesFromId, mesToId;
+
+        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
+        if (yearFrom) yearFromId = await getAnioId(yearFrom);
+        if (yearTo) yearToId = await getAnioId(yearTo);
+        if (monthFrom) mesFromId = parseInt(monthFrom);
+        if (monthTo) mesToId = parseInt(monthTo);
+
+        const fromValue = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
+        const toValue = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
+
         let period = await prisma.periodoCalculo.findFirst({
             where: {
                 fechaInicio: dateFrom ? dateFrom : undefined,
                 fechaFin: dateTo ? dateTo : undefined,
+                fechaInicioValue: fromValue,
+                fechaFinValue: toValue,
             },
         });
 
@@ -29,6 +44,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 data: {
                     fechaInicio: dateFrom ? dateFrom : undefined,
                     fechaFin: dateTo ? dateTo : undefined,
+                    fechaInicioValue: fromValue,
+                    fechaFinValue: toValue,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
@@ -368,7 +385,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 where: {id: transporteAereoCalculos.id},
                 data: {
                     consumo: consumo,
-                    totalGEI: totalGEI,
+                    totalGEI: totalGEI / 1000,
                     updated_at: new Date(),
                 },
             });

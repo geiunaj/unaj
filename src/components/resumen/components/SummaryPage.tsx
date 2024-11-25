@@ -9,6 +9,8 @@ import SelectFilter from "@/components/SelectFilter";
 import {ArrowLeftFromLine, ArrowRightFromLine, Building, Calendar} from "lucide-react";
 import usePageTitle from "@/lib/stores/titleStore.store";
 import {LineChart} from "@/components/resumen/components/LineChart";
+import {PieChartComponent} from "@/components/resumen/components/PieChart";
+import {VerticalBarChart} from "@/components/resumen/components/VerticalBarChart";
 
 
 export default function SummaryPage() {
@@ -53,7 +55,7 @@ export default function SummaryPage() {
     }
 
     return (
-        <div className="w-full flex flex-col gap-10 max-w-screen-xl h-full">
+        <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-start mb-6">
                 <div className="flex flex-col items-end w-full gap-2">
                     <div
@@ -160,7 +162,7 @@ export default function SummaryPage() {
                     </TableBody>
                 </Table>
             </div>
-            <div className="grid gap-10 grid-cols-1 md:grid-cols-2">
+            <div className="grid gap-6 mt-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
                 <LineChart
                     chartData={resumen.data!.filter(
                         (item) => item.category !== true
@@ -174,9 +176,25 @@ export default function SummaryPage() {
                     yearFrom={selectedYearFrom}
                     yearTo={selectedYearTo}
                 />
-                <LineChart
+
+
+                <VerticalBarChart
                     chartData={resumen.data!.filter(
-                        (item) => item.category !== true
+                        (item) => item.category === true && item.emissionSource !== "Emisiones Totales" && item.generalContributions !== 0
+                    )}
+                    itemWithMaxEmission={resumen.data!.filter(
+                        (item) => item.totalEmissions === resumen.data!.reduce(
+                            (acc, item) => (item.totalEmissions > acc && item.category !== true ? item.totalEmissions : acc),
+                            0
+                        ) && item.category !== true
+                    )[0]}
+                    yearFrom={selectedYearFrom}
+                    yearTo={selectedYearTo}
+                />
+
+                <PieChartComponent
+                    chartData={resumen.data!.filter(
+                        (item) => item.category === true && item.emissionSource !== "Emisiones Totales" && item.generalContributions !== 0
                     )}
                     itemWithMaxEmission={resumen.data!.filter(
                         (item) => item.totalEmissions === resumen.data!.reduce(

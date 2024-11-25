@@ -51,7 +51,7 @@ export const LineChart = ({chartData, itemWithMaxEmission, yearFrom, yearTo}: {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Gráfico de Barras de HC UNAJ</CardTitle>
+                <CardTitle>Gráfico de Fuentes de Emisión</CardTitle>
                 <CardDescription>Enero {yearFrom} - Diciembre {yearTo}</CardDescription>
             </CardHeader>
             <CardContent>
@@ -86,24 +86,17 @@ export const LineChart = ({chartData, itemWithMaxEmission, yearFrom, yearTo}: {
                             radius={4}
                         >
                             <LabelList
-                                dataKey="emissionSource"
-                                position="insideLeft"
-                                offset={8}
-                                className="fill-[--color-label]"
-                                fontSize={12}
-                            />
-                            <LabelList
                                 dataKey="totalEmissions"
                                 position="right"
-                                offset={8}
+                                offset={4}
                                 className="fill-foreground"
-                                fontSize={12}
+                                fontSize={10}
                             />
                         </Bar>
                     </BarChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-col items-start gap-2 text-sm">
+            <CardFooter className="flex-col items-start gap-2 text-xs">
                 <div className="flex gap-2 font-medium leading-none">
                     {`${itemWithMaxEmission.emissionSource} fue la mayor con ${itemWithMaxEmission.totalEmissions} tCO2eq`}
                     <TrendingUp className="h-4 w-4"/>

@@ -7,4 +7,6 @@ export interface SummaryItem {
     totalEmissions: number;
     generalContributions: number;
     category?: boolean;
+    chart?: string;
+    fill?: string;
 }

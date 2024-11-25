@@ -34,6 +34,7 @@ import {cn} from "@/lib/utils";
 import {format} from "date-fns";
 import {CalendarIcon} from "lucide-react";
 import {Calendar} from "@/components/ui/calendar";
+import {Switch} from "@/components/ui/switch";
 
 const TransporteAereoSchema = z.object({
     numeroPasajeros: z.preprocess(
@@ -102,7 +103,7 @@ export function UpdateFormTransporteAereo({id, onClose}: UpdateTransporteAereoPr
                 origen: transporteAereos.data.origen,
                 destino: transporteAereos.data.destino,
                 isIdaVuelta: transporteAereos.data.isIdaVuelta,
-                fechaSalida: transporteAereos.data.fechaSalida ? new Date(transporteAereos.data.fechaSalida) : undefined,
+                fechaSalida: transporteAereos.data.fechaSalida ? (new Date(transporteAereos.data.fechaSalida)) : undefined,
                 fechaRegreso: transporteAereos.data.fechaRegreso ? new Date(transporteAereos.data.fechaRegreso) : undefined,
                 distanciaTramo: transporteAereos.data.distanciaTramo ?? undefined,
                 kmRecorrido: transporteAereos.data.kmRecorrido ?? undefined,
@@ -162,37 +163,38 @@ export function UpdateFormTransporteAereo({id, onClose}: UpdateTransporteAereoPr
                         className="w-full flex flex-col gap-3 pt-2"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
+                        {/* Sede */}
+                        <FormField
+                            name="sede"
+                            control={form.control}
+                            render={({field}) => (
+                                <FormItem className="w-full">
+                                    <FormLabel>Sede</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Seleciona tu sede"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <FormMessage/>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {sedeQuery.data!.map((sede) => (
+                                                    <SelectItem key={sede.id} value={sede.id.toString()}>
+                                                        {sede.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormItem>
+                            )}
+                        />
                         <div className="flex gap-5">
-                            {/* Sede */}
-                            <FormField
-                                name="sede"
-                                control={form.control}
-                                render={({field}) => (
-                                    <FormItem className="w-1/2">
-                                        <FormLabel>Sede</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            value={field.value}
-                                        >
-                                            <FormControl className="w-full">
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Seleciona tu sede"/>
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <FormMessage/>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    {sedeQuery.data!.map((sede) => (
-                                                        <SelectItem key={sede.id} value={sede.id.toString()}>
-                                                            {sede.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </FormItem>
-                                )}
-                            />
+
                             {/* NUMERO PASAJEROSS */}
                             <FormField
                                 control={form.control}
@@ -209,6 +211,43 @@ export function UpdateFormTransporteAereo({id, onClose}: UpdateTransporteAereoPr
                                             />
                                         </FormControl>
                                         <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            {/* Ida y Vuelta */}
+                            <FormField
+                                control={form.control}
+                                name="isIdaVuelta"
+                                render={({field}) => (
+                                    <FormItem
+                                        className="w-1/2">
+                                        <FormLabel className="text-sm">
+                                            Ida y Vuelta
+                                        </FormLabel>
+                                        <div
+                                            className="flex flex-row items-center justify-between p-[7px] rounded border">
+                                            <FormDescription>
+                                                ¿Es de Ida y Vuelta?
+                                            </FormDescription>
+                                            <FormControl>
+                                                <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={(checked) => {
+                                                        field.onChange(checked);
+                                                        if (form.getValues("distanciaTramo") === 0) {
+                                                            form.setValue("kmRecorrido", 0);
+                                                        } else {
+                                                            if (checked) {
+                                                                form.setValue("kmRecorrido", form.getValues("distanciaTramo") * 2);
+                                                            } else {
+                                                                form.setValue("kmRecorrido", form.getValues("distanciaTramo"));
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                            </FormControl>
+                                        </div>
+
                                     </FormItem>
                                 )}
                             />

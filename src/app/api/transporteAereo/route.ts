@@ -2,12 +2,9 @@ import prisma from "@/lib/prisma";
 import {NextRequest, NextResponse} from "next/server";
 import {formatTransporteAereo} from "@/lib/resources/transporteAereoResource";
 import {
-    TransporteAereoCollection,
-    TransporteAereoCollectionItem,
     TransporteAereoRequest,
 } from "@/components/transporteAereo/service/transporteAereo.interface";
 import {getAnioId} from "@/lib/utils";
-import {formatConsumible} from "@/lib/resources/consumibleResource";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
@@ -89,8 +86,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 return consumo;
             }
         );
-
-        // const formattedTransporteAereo = transporteAereo.map(formatTransporteAereo);
 
         return NextResponse.json({
             data: formattedTransporteAereo,

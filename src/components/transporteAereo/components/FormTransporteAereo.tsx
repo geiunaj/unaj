@@ -33,6 +33,7 @@ import {cn} from "@/lib/utils";
 import {format} from "date-fns";
 import {CalendarIcon} from "lucide-react";
 import {Calendar} from "@/components/ui/calendar";
+import {Switch} from "@/components/ui/switch";
 
 const TransporteAereo = z.object({
     numeroPasajeros: z.preprocess(
@@ -137,37 +138,38 @@ export function FormTransporteAereo({onClose}: CreateTransporteAereoProps) {
                         className="w-full flex flex-col gap-3 pt-2"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
+                        {/* Sede */}
+                        <FormField
+                            name="sede"
+                            control={form.control}
+                            render={({field}) => (
+                                <FormItem className="w-full">
+                                    <FormLabel>Sede</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                    >
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Seleciona tu sede"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <FormMessage/>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {sedeQuery.data!.map((sede) => (
+                                                    <SelectItem key={sede.id} value={sede.id.toString()}>
+                                                        {sede.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormItem>
+                            )}
+                        />
+
                         <div className="flex gap-5">
-                            {/* Sede */}
-                            <FormField
-                                name="sede"
-                                control={form.control}
-                                render={({field}) => (
-                                    <FormItem className="w-1/2">
-                                        <FormLabel>Sede</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl className="w-full">
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Seleciona tu sede"/>
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <FormMessage/>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    {sedeQuery.data!.map((sede) => (
-                                                        <SelectItem key={sede.id} value={sede.id.toString()}>
-                                                            {sede.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </FormItem>
-                                )}
-                            />
                             {/* NUMERO PASAJEROSS */}
                             <FormField
                                 control={form.control}
@@ -184,6 +186,43 @@ export function FormTransporteAereo({onClose}: CreateTransporteAereoProps) {
                                             />
                                         </FormControl>
                                         <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            {/* Ida y Vuelta */}
+                            <FormField
+                                control={form.control}
+                                name="isIdaVuelta"
+                                render={({field}) => (
+                                    <FormItem
+                                        className="w-1/2">
+                                        <FormLabel className="text-sm">
+                                            Ida y Vuelta
+                                        </FormLabel>
+                                        <div
+                                            className="flex flex-row items-center justify-between p-[7px] rounded border">
+                                            <FormDescription>
+                                                ¿Es de Ida y Vuelta?
+                                            </FormDescription>
+                                            <FormControl>
+                                                <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={(checked) => {
+                                                        field.onChange(checked);
+                                                        if (form.getValues("distanciaTramo") === 0) {
+                                                            form.setValue("kmRecorrido", 0);
+                                                        } else {
+                                                            if (checked) {
+                                                                form.setValue("kmRecorrido", form.getValues("distanciaTramo") * 2);
+                                                            } else {
+                                                                form.setValue("kmRecorrido", form.getValues("distanciaTramo"));
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                            </FormControl>
+                                        </div>
+
                                     </FormItem>
                                 )}
                             />
@@ -268,7 +307,15 @@ export function FormTransporteAereo({onClose}: CreateTransporteAereoProps) {
                                                 type="number"
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                                 placeholder="Número de pasajeros"
-                                                {...field}
+                                                onChange={(e) => {
+                                                    const newValue = e.target.valueAsNumber;
+                                                    field.onChange(newValue);
+                                                    if (form.getValues("isIdaVuelta") === true) {
+                                                        form.setValue("kmRecorrido", newValue * 2);
+                                                    } else {
+                                                        form.setValue("kmRecorrido", newValue);
+                                                    }
+                                                }}
                                             />
                                         </FormControl>
                                         <FormMessage/>

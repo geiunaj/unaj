@@ -1,5 +1,4 @@
 "use client"
-
 import {TrendingUp} from "lucide-react"
 import {LabelList, Pie, PieChart} from "recharts"
 
@@ -13,38 +12,38 @@ import {
 } from "@/components/ui/card"
 import {
     ChartConfig,
-    ChartContainer,
+    ChartContainer, ChartLegend, ChartLegendContent,
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import {SummaryItem} from "@/components/resumen/service/resumen.interface";
 
 const chartData = [
-    {browser: "chrome", visitors: 275, fill: "var(--color-chrome)"},
-    {browser: "safari", visitors: 200, fill: "var(--color-safari)"},
-    {browser: "firefox", visitors: 187, fill: "var(--color-firefox)"},
-    {browser: "edge", visitors: 173, fill: "var(--color-edge)"},
-    {browser: "other", visitors: 90, fill: "var(--color-other)"},
+    {emissionSource: "chrome", generalContributions: 275, fill: "var(--color-categoria1)"},
+    {emissionSource: "safari", generalContributions: 200, fill: "var(--color-safari)"},
+    {emissionSource: "firefox", generalContributions: 187, fill: "var(--color-firefox)"},
+    {emissionSource: "edge", generalContributions: 173, fill: "var(--color-edge)"},
+    {emissionSource: "other", generalContributions: 90, fill: "var(--color-other)"},
 ]
 
 const chartConfig = {
-    visitors: {
-        label: "Visitors",
+    generalContributions: {
+        label: "Emisiones",
     },
-    chrome: {
-        label: "Chrome",
+    categoria1: {
+        label: "Cat. 1",
         color: "hsl(var(--chart-1))",
     },
-    safari: {
-        label: "Safari",
+    categoria2: {
+        label: "Cat. 2",
         color: "hsl(var(--chart-2))",
     },
-    firefox: {
-        label: "Firefox",
+    categoria3: {
+        label: "Cat. 3",
         color: "hsl(var(--chart-3))",
     },
-    edge: {
-        label: "Edge",
+    categoria4: {
+        label: "Cat. 4",
         color: "hsl(var(--chart-4))",
     },
     other: {
@@ -53,7 +52,7 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-export const LineChart = ({chartData, itemWithMaxEmission, yearFrom, yearTo}: {
+export const PieChartComponent = ({chartData, itemWithMaxEmission, yearFrom, yearTo}: {
     chartData: SummaryItem[],
     itemWithMaxEmission: SummaryItem,
     yearFrom: string,
@@ -62,40 +61,27 @@ export const LineChart = ({chartData, itemWithMaxEmission, yearFrom, yearTo}: {
     return (
         <Card className="flex flex-col">
             <CardHeader className="items-center pb-0">
-                <CardTitle>Pie Chart - Label List</CardTitle>
-                <CardDescription>January - June 2024</CardDescription>
+                <CardTitle>Gráfico de Categorías [%]</CardTitle>
+                <CardDescription>Enero {yearFrom} - Diciembre {yearTo}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer
                     config={chartConfig}
-                    className="mx-auto aspect-square max-h-[250px] [&_.recharts-text]:fill-background"
+                    className="mx-auto aspect-square max-h-[300px] [&_.recharts-pie-label-text]:fill-foreground"
                 >
                     <PieChart>
                         <ChartTooltip
-                            content={<ChartTooltipContent nameKey="visitors" hideLabel/>}
+                            content={<ChartTooltipContent nameKey="generalContributions" hideLabel/>}
                         />
-                        <Pie data={chartData} dataKey="visitors">
-                            <LabelList
-                                dataKey="browser"
-                                className="fill-background"
-                                stroke="none"
-                                fontSize={12}
-                                formatter={(value: keyof typeof chartConfig) =>
-                                    chartConfig[value]?.label
-                                }
-                            />
+                        <Pie data={chartData} label dataKey="generalContributions" nameKey="chart">
                         </Pie>
+                        <ChartLegend
+                            content={<ChartLegendContent nameKey="chart"/>}
+                            className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
+                        />
                     </PieChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-col gap-2 text-sm">
-                <div className="flex items-center gap-2 font-medium leading-none">
-                    Trending up by 5.2% this month <TrendingUp className="h-4 w-4"/>
-                </div>
-                <div className="leading-none text-muted-foreground">
-                    Showing total visitors for the last 6 months
-                </div>
-            </CardFooter>
         </Card>
     )
 }

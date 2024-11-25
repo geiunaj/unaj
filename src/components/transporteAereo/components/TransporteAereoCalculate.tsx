@@ -39,13 +39,13 @@ import usePageTitle from "@/lib/stores/titleStore.store";
 export default function TransporteAereoCalculate() {
     const setTitle = usePageTitle((state) => state.setTitle);
     useEffect(() => {
-        setTitle("Transporte Aéreo");
+        setTitle("Cálculos de Transporte Aéreo");
     }, [setTitle]);
     const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
     useEffect(() => {
-        setTitleHeader("TRANSPORTE AÉREO");
+        setTitleHeader("Cálculos de Transporte Aéreo");
     }, [setTitleHeader]);
-    
+
     // NAVIGATION
     const {push} = useRouter();
 
@@ -101,7 +101,7 @@ export default function TransporteAereoCalculate() {
     }, [selectedSede, from, to, transporteAereoCalculos, conusmoAguaCalculosReport]);
 
     const handleTransporteAereo = () => {
-        push("/transporteAereo");
+        push("/transporte-aereo");
     };
 
     const handleSedeChange = useCallback(async (value: string) => {
@@ -141,10 +141,11 @@ export default function TransporteAereoCalculate() {
 
     const handleClickExcelReport = async (period: ReportRequest) => {
         const columns = [
-            {header: "N°", key: "id", width: 10},
-            {header: "AREA", key: "area", width: 20},
-            {header: "CONSUMO TOTAL", key: "consumoArea", width: 25},
-            {header: "FACTOR DE EMISIÓN", key: "factoresEmisionString", width: 25},
+            {header: "N°", key: "id", width: 5},
+            {header: "INTÉRVALO", key: "intervalo", width: 30},
+            {header: "SEDE", key: "sede", width: 30},
+            {header: "CONSUMO TOTAL", key: "consumo", width: 15},
+            {header: "FACTOR EMISIÓN", key: "factoresEmisionString", width: 40},
             {header: "TOTAL GEI", key: "totalGEI", width: 20},
         ];
         await setFrom(period.from ?? "");
@@ -158,6 +159,19 @@ export default function TransporteAereoCalculate() {
             "consumo-agua"
         );
     };
+
+    const intervaloName = (intervalo: string): string => {
+        switch (intervalo) {
+            case "1600":
+                return "Menor a 1600";
+            case "1600_3700":
+                return "Entre 1600 y 3700";
+            case "3700":
+                return "Mayor a 3700";
+            default:
+                return "No definido";
+        }
+    }
 
     const handleClick = () => {
         if (submitFormRef.current) {
@@ -189,23 +203,13 @@ export default function TransporteAereoCalculate() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="flex items-center gap-4">
-                    <ButtonBack onClick={handleTransporteAereo}/>
-                    <div className="font-Manrope">
-                        <h1 className="text-base text-foreground font-bold">
-                            Cálculo de TransporteAereos
-                        </h1>
-                        <h2 className="text-xs sm:text-sm text-muted-foreground">
-                            Huella de carbono
-                        </h2>
-                    </div>
-                </div>
-                <div className="flex flex-col items-end gap-2">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-start mb-6">
+                <div className="flex flex-col items-end w-full gap-2">
                     <div
-                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
+                        className="grid grid-cols-2 grid-rows-1 w-full gap-2 sm:flex sm:justify-between justify-center">
                         <div
-                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
+                            <ButtonBack onClick={handleTransporteAereo}/>
                             <SelectFilter
                                 list={sedes.data!}
                                 itemSelected={selectedSede}
@@ -241,9 +245,10 @@ export default function TransporteAereoCalculate() {
                                 fileName={`REPORTE CALCULOS DE CONSUMO DE ENERGÍA_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
-                                    {header: "AREA", key: "area", width: 25},
-                                    {header: "CONSUMO TOTAL", key: "consumoArea", width: 15},
-                                    {header: "FACTOR DE EMISIÓN", key: "factoresEmisionString", width: 35},
+                                    {header: "INTÉRVALO", key: "intervalo", width: 20},
+                                    {header: "SEDE", key: "sede", width: 20},
+                                    {header: "CONSUMO TOTAL", key: "consumo", width: 15},
+                                    {header: "FACTOR EMISIÓN", key: "factoresEmisionString", width: 20},
                                     {header: "TOTAL GEI", key: "totalGEI", width: 20},
                                 ]}
                                 title="REPORTE DE CALCULOS DE CONSUMO DE ENERGÍA"
@@ -266,16 +271,19 @@ export default function TransporteAereoCalculate() {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                INTÉRVALO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 SEDE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 CONSUMO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FACTOR DE EMISIÓN
+                                FACTOR DE EMISIÓN [kg CO2eq]
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                TOTAL EMISIONES GEI
+                                TOTAL EMISIONES GEI [tCO2eq]
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -294,6 +302,9 @@ export default function TransporteAereoCalculate() {
                                     className="text-center"
                                     key={transporteAereoCalculosItem.id}
                                 >
+                                    <TableCell className="text-xs text-start sm:text-sm">
+                                        {intervaloName(transporteAereoCalculosItem.intervalo)}
+                                    </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {transporteAereoCalculosItem.sede}
                                     </TableCell>
