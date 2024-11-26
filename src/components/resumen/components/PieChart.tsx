@@ -60,11 +60,11 @@ export const PieChartComponent = ({chartData, itemWithMaxEmission, yearFrom, yea
 }) => {
     return (
         <Card className="flex flex-col">
-            <CardHeader className="items-center pb-0">
+            <CardHeader className="items-start pb-2">
                 <CardTitle>Gráfico de Categorías [%]</CardTitle>
-                <CardDescription>Enero {yearFrom} - Diciembre {yearTo}</CardDescription>
+                <CardDescription className="text-xs">Enero {yearFrom} - Diciembre {yearTo}</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 pb-0">
+            <CardContent className="flex-1 pb-2">
                 <ChartContainer
                     config={chartConfig}
                     className="mx-auto aspect-square max-h-[300px] [&_.recharts-pie-label-text]:fill-foreground"

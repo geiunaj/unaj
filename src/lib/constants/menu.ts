@@ -211,7 +211,7 @@ export const menu: MenuItem[] = [
             },
             {
                 title: "Factor de Extintor",
-                icon: "Car",
+                icon: "FireExtinguisher",
                 href: "/extintor-factor",
             },
         ],

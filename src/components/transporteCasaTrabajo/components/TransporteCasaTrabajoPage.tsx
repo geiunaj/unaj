@@ -13,6 +13,7 @@ import {
     Building,
     FileSpreadsheet,
     LeafyGreen,
+    CircleUser,
     Pen,
     Plus,
     Trash2,
@@ -300,7 +301,7 @@ export default function TransporteCasaTrabajoPage() {
                                 nombre={"nombre"}
                                 id={"nombre"}
                                 all={true}
-                                icon={<Car className="h-3 w-3"/>}
+                                icon={<CircleUser className="h-3 w-3"/>}
                             />
 
                             <SelectFilter

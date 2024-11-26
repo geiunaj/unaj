@@ -195,11 +195,12 @@ export default function TaxiPage() {
             {header: "LUGAR SALIDA", key: "lugarSalida", width: 20},
             {header: "LUGAR DESTINO", key: "lugarDestino", width: 20},
             {header: "MONTO GASTADO", key: "montoGastado", width: 20},
+            {header: "KM RECORRIDO", key: "kmRecorrido", width: 20},
             {header: "SEDE", key: "sede", width: 20},
             {header: "AÑO", key: "anio", width: 15},
             {header: "MES", key: "mes", width: 20},
         ];
-        await GenerateReport(taxiQuery.data!.data, columns, formatPeriod(period, true), "REPORTE DE TAXIS CONTRATADOS", "Taxis Contratados");
+        await GenerateReport(taxiReport.data!.data, columns, formatPeriod(period, true), "REPORTE DE TAXIS CONTRATADOS", "Taxis Contratados");
     };
 
     const handleCalculate = () => {
@@ -223,7 +224,8 @@ export default function TaxiPage() {
     if (
         sedeQuery.isLoading ||
         mesQuery.isLoading ||
-        taxiQuery.isLoading
+        taxiQuery.isLoading ||
+        taxiReport.isLoading
     ) {
         return <SkeletonTable/>;
     }
@@ -231,7 +233,8 @@ export default function TaxiPage() {
     if (
         sedeQuery.isError ||
         mesQuery.isError ||
-        taxiQuery.isError
+        taxiQuery.isError ||
+        taxiReport.isError
     ) {
         return <div>Error</div>;
     }
@@ -299,10 +302,12 @@ export default function TaxiPage() {
                                     {header: "LUGAR SALIDA", key: "lugarSalida", width: 20},
                                     {header: "LUGAR DESTINO", key: "lugarDestino", width: 20},
                                     {header: "MONTO GASTADO", key: "montoGastado", width: 20},
+                                    {header: "KM RECORRIDO", key: "kmRecorrido", width: 20},
                                     {header: "SEDE", key: "sede", width: 20},
                                     {header: "AÑO", key: "anio", width: 15},
                                     {header: "MES", key: "mes", width: 20},
                                 ]}
+                                rows={25}
                                 title="REPORTE DE TAXIS CONTRATADOS"
                                 period={formatPeriod({from, to}, true)}
                             />

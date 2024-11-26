@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {getTaxi, getTaxiById} from "../service/taxi.actions";
+import {getTaxi, getTaxiById, getTaxiReport} from "../service/taxi.actions";
 
 interface getTaxiInterface {
     sedeId?: number;
@@ -37,7 +37,7 @@ export const useTaxiReport = ({
                               }: getTaxiInterface) => {
     return useQuery({
         queryKey: ["taxiReport"],
-        queryFn: () => getTaxi(sedeId, from, to, mesId, sort, direction),
+        queryFn: () => getTaxiReport(sedeId, from, to, mesId, sort, direction),
         refetchOnWindowFocus: false,
     });
 }

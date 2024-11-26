@@ -176,6 +176,7 @@ export default function TransporteAereoPage() {
     const handleClickReport = async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "rn", width: 10},
+            {header: "PASAJEROS", key: "numeroPasajeros", width: 25},
             {header: "LUGAR SALIDA", key: "origen", width: 25},
             {header: "LUGAR DESTINO", key: "destino", width: 25},
             {header: "FECHA SALIDA", key: "fechaSalida", width: 20},
@@ -275,6 +276,7 @@ export default function TransporteAereoPage() {
                                 }, true)}`}
                                 columns={[
                                     {header: "N°", key: "rn", width: 10},
+                                    {header: "PASAJEROS", key: "numeroPasajeros", width: 10},
                                     {header: "LUGAR SALIDA", key: "origen", width: 25},
                                     {header: "LUGAR DESTINO", key: "destino", width: 25},
                                     {header: "FECHA SALIDA", key: "fechaSalida", width: 20},
@@ -322,13 +324,16 @@ export default function TransporteAereoPage() {
                                 N°
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
+                                PASAJEROS
+                            </TableHead>
+                            <TableHead className="font-Manrope text-sm font-bold text-center">
                                 LUGAR DE<br/> SALIDA
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 LUGAR DE<br/> DESTINO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                IDA Y VUELTA
+                                IDA Y <br/> VUELTA
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 FECHA DE<br/> SALIDA
@@ -357,6 +362,9 @@ export default function TransporteAereoPage() {
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{item.rn}</Badge>
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {item.numeroPasajeros}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.origen}

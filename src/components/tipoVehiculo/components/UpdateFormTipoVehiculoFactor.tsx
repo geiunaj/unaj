@@ -98,8 +98,8 @@ export function UpdateFormTipoVehiculoFactor({
                 factor: tipoVehiculoData.factor,
                 tipoVehiculoId: tipoVehiculoData.tipoVehiculoId.toString(),
                 anioId: tipoVehiculoData.anioId.toString(),
-                fuente: tipoVehiculoData.fuente,
-                link: tipoVehiculoData.link,
+                fuente: tipoVehiculoData.fuente ?? "",
+                link: tipoVehiculoData.link ?? "",
             });
         }
     }, [tipoVehiculoFactor.data, id]);

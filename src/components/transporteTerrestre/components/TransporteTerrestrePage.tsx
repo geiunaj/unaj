@@ -47,7 +47,7 @@ import {
     useSedes,
 } from "@/components/consumoPapel/lib/consumoPapel.hook";
 import {useMeses} from "@/components/consumoElectricidad/lib/electricidadCalculos.hooks";
-import {useTransporteTerrestre} from "../lib/transporteTerrestre.hook";
+import {useTransporteTerrestre, useTransporteTerrestreReport} from "../lib/transporteTerrestre.hook";
 import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {Badge} from "@/components/ui/badge";
@@ -103,7 +103,7 @@ export default function TransporteTerrestrePage() {
         page: page,
     });
 
-    const transporteTerrestreReport = useTransporteTerrestre({
+    const transporteTerrestreReport = useTransporteTerrestreReport({
         sedeId: selectedSede ? Number(selectedSede) : undefined,
         from: from,
         to: to,
@@ -174,12 +174,11 @@ export default function TransporteTerrestrePage() {
             {header: "LUGAR DESTINO", key: "destino", width: 25},
             {header: "FECHA SALIDA", key: "fechaSalida", width: 20},
             {header: "FECHA REGRESO", key: "fechaRegreso", width: 20},
-            {header: "DISTANCIA", key: "distanciaTramo", width: 20},
-            {header: "KM RECORRIDO", key: "kmRecorrido", width: 20},
+            {header: "DISTANCIA", key: "distancia", width: 20},
             {header: "MES", key: "mes", width: 15},
             {header: "AÑO", key: "anio", width: 15},
         ];
-        await GenerateReport(transporteTerrestreQuery.data!.data, columns, formatPeriod(period), "REPORTE DE TAXIS CONTRATADOS", "TransporteTerrestres Contratados");
+        await GenerateReport(transporteTerrestreReport.data!.data, columns, formatPeriod(period), "REPORTE DE TRANSPORTE TERRESTRE", "Transporte Terrestres");
     };
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
@@ -198,7 +197,8 @@ export default function TransporteTerrestrePage() {
         sedeQuery.isLoading ||
         anioQuery.isLoading ||
         mesQuery.isLoading ||
-        transporteTerrestreQuery.isLoading
+        transporteTerrestreQuery.isLoading ||
+        transporteTerrestreReport.isLoading
     ) {
         return <SkeletonTable/>;
     }
@@ -207,7 +207,8 @@ export default function TransporteTerrestrePage() {
         sedeQuery.isError ||
         anioQuery.isError ||
         mesQuery.isError ||
-        transporteTerrestreQuery.isError
+        transporteTerrestreQuery.isError ||
+        transporteTerrestreReport.isError
     ) {
         return <div>Error</div>;
     }
@@ -261,22 +262,22 @@ export default function TransporteTerrestrePage() {
 
                             <ExportPdfReport
                                 data={transporteTerrestreReport.data!.data}
-                                fileName={`REPORTE DE CONSUMIBLES_${formatPeriod({
+                                fileName={`REPORTE DE TRANSPORTE TERRESTRE_${formatPeriod({
                                     from,
                                     to,
                                 }, true)}`}
                                 columns={[
-                                    {header: "N°", key: "rn", width: 10},
-                                    {header: "LUGAR SALIDA", key: "origen", width: 25},
-                                    {header: "LUGAR DESTINO", key: "destino", width: 25},
-                                    {header: "FECHA SALIDA", key: "fechaSalida", width: 20},
-                                    {header: "FECHA REGRESO", key: "fechaRegreso", width: 20},
-                                    {header: "DISTANCIA", key: "distanciaTramo", width: 20},
-                                    {header: "KM RECORRIDO", key: "kmRecorrido", width: 20},
-                                    {header: "MES", key: "mes", width: 15},
-                                    {header: "AÑO", key: "anio", width: 15},
+                                    {header: "N°", key: "rn", width: 5},
+                                    {header: "LUGAR SALIDA", key: "origen", width: 20},
+                                    {header: "LUGAR DESTINO", key: "destino", width: 20},
+                                    {header: "FECHA SALIDA", key: "fechaSalida", width: 10},
+                                    {header: "FECHA REGRESO", key: "fechaRegreso", width: 10},
+                                    {header: "DISTANCIA", key: "distancia", width: 15},
+                                    {header: "MES", key: "mes", width: 10},
+                                    {header: "AÑO", key: "anio", width: 10},
                                 ]}
-                                title="REPORTE DE CONSUMIBLES"
+                                title="REPORTE DE TRANSPORTE TERRESTRE"
+                                rows={25}
                                 period={formatPeriod({from, to}, true)}
                             />
 

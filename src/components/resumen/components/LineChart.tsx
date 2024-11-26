@@ -52,7 +52,7 @@ export const LineChart = ({chartData, itemWithMaxEmission, yearFrom, yearTo}: {
         <Card>
             <CardHeader>
                 <CardTitle>Gráfico de Fuentes de Emisión</CardTitle>
-                <CardDescription>Enero {yearFrom} - Diciembre {yearTo}</CardDescription>
+                <CardDescription className="text-xs">Enero {yearFrom} - Diciembre {yearTo}</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
@@ -96,12 +96,12 @@ export const LineChart = ({chartData, itemWithMaxEmission, yearFrom, yearTo}: {
                     </BarChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-col items-start gap-2 text-xs">
-                <div className="flex gap-2 font-medium leading-none">
+            <CardFooter className="flex-col items-start gap-1">
+                <div className="flex gap-2 font-medium leading-none text-sm">
                     {`${itemWithMaxEmission.emissionSource} fue la mayor con ${itemWithMaxEmission.totalEmissions} tCO2eq`}
                     <TrendingUp className="h-4 w-4"/>
                 </div>
-                <div className="leading-none text-muted-foreground">
+                <div className="leading-none text-muted-foreground text-xs">
                     Mostrando las emisiones de CO2
                 </div>
             </CardFooter>

@@ -30,6 +30,7 @@ import {
 } from "@/components/combustion/lib/combustion.hook";
 import {updateTaxi} from "../service/taxi.actions";
 import {TaxiRequest, UpdateTaxiProps} from "../service/taxi.interface";
+import {STEP_NUMBER} from "@/lib/constants/menu";
 
 const TaxiSchema = z.object({
     unidadContratante: z.string().min(1, "Seleccione un tipo de hoja"),
@@ -75,6 +76,7 @@ export function UpdateFormTaxi({id, onClose}: UpdateTaxiProps) {
                 lugarSalida: taxis.data.lugarSalida,
                 lugarDestino: taxis.data.lugarDestino,
                 montoGastado: taxis.data.montoGastado,
+                kmRecorrido: taxis.data.kmRecorrido,
                 sede: taxis.data.sede.id.toString(),
                 anio: taxis.data.anio.id.toString(),
                 mes: taxis.data.mes.id.toString(),
@@ -279,20 +281,30 @@ export function UpdateFormTaxi({id, onClose}: UpdateTaxiProps) {
                                 )}
                             />
                         </div>
-                        <div className="flex gap-5">
+                        <div className="flex gap-5 pt-2">
                             {/* Monto */}
                             <FormField
                                 control={form.control}
                                 name="montoGastado"
                                 render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
+                                    <FormItem className="w-1/2">
                                         <FormLabel>Monto</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="Ingresa el monto"
-                                                {...field}
+                                                className="p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                placeholder="S/10.0"
+                                                min={4.2}
+                                                step={STEP_NUMBER}
+                                                value={field.value}
+                                                onChange={(e) => {
+                                                    field.onChange(e.target.value);
+                                                    form.setValue(
+                                                        "kmRecorrido",
+                                                        parseFloat(((Number(e.target.value) - 4.2) / 0.9).toFixed(2))
+                                                    );
+
+                                                }}
                                             />
                                         </FormControl>
                                         <FormMessage/>
@@ -304,15 +316,15 @@ export function UpdateFormTaxi({id, onClose}: UpdateTaxiProps) {
                                 control={form.control}
                                 name="kmRecorrido"
                                 render={({field}) => (
-                                    <FormItem>
+                                    <FormItem className="w-1/2">
                                         <FormLabel>
                                             Km Recorridos
                                         </FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="S/10.0"
+                                                className="p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                placeholder="5400"
                                                 {...field}
                                             />
                                         </FormControl>

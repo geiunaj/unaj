@@ -161,8 +161,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             }
         });
         const co2emmissionsTransporteAereo = parseFloat((transporteAereoData.reduce((acc, curr) => acc + curr.totalGEI, 0)).toFixed(2).toString());
-
-
         const TransporteAereo: SummaryItem = {
             emissionSource: "Transporte Aereo",
             co2Emissions: co2emmissionsTransporteAereo,
@@ -172,22 +170,48 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             totalEmissions: co2emmissionsTransporteAereo,
             generalContributions: 0
         };
+
+        const transporteTerrestreData = await prisma.transporteTerrestreCalculos.findMany({
+            where: {
+                PeriodoCalculo: {
+                    fechaInicioValue: {
+                        gte: fromValue,
+                        lte: toValue,
+                    },
+                },
+                sedeId: sedeId ? parseInt(sedeId) : undefined,
+            }
+        });
+        const co2emmissionsTransporteTerrestre = parseFloat((transporteTerrestreData.reduce((acc, curr) => acc + curr.totalGEI, 0)).toFixed(2).toString());
         const TransporteTerrestre: SummaryItem = {
             emissionSource: "Transporte Terrestre",
-            co2Emissions: 0,
+            co2Emissions: co2emmissionsTransporteTerrestre,
             ch4Emissions: 0,
             N2OEmissions: 0,
             hfcEmissions: 0,
-            totalEmissions: 0,
+            totalEmissions: co2emmissionsTransporteTerrestre,
             generalContributions: 0
         };
+
+        const taxiData = await prisma.taxiCalculos.findMany({
+            where: {
+                PeriodoCalculo: {
+                    fechaInicioValue: {
+                        gte: fromValue,
+                        lte: toValue,
+                    },
+                },
+                sedeId: sedeId ? parseInt(sedeId) : undefined,
+            }
+        });
+        const co2emmissionsTaxi = parseFloat((taxiData.reduce((acc, curr) => acc + curr.totalGEI, 0)).toFixed(2).toString());
         const Taxis: SummaryItem = {
             emissionSource: "Taxis",
-            co2Emissions: 0,
+            co2Emissions: co2emmissionsTaxi,
             ch4Emissions: 0,
             N2OEmissions: 0,
             hfcEmissions: 0,
-            totalEmissions: 0,
+            totalEmissions: co2emmissionsTaxi,
             generalContributions: 0
         };
 
@@ -215,12 +239,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const CATEGORIA3: SummaryItem = {
             emissionSource: "Categoria 3",
-            co2Emissions: TransporteAereo.co2Emissions + TransporteTerrestre.co2Emissions + Taxis.co2Emissions + TransporteCasaTrabajo.co2Emissions,
-            ch4Emissions: TransporteAereo.ch4Emissions + TransporteTerrestre.ch4Emissions + Taxis.ch4Emissions + TransporteCasaTrabajo.ch4Emissions,
-            N2OEmissions: TransporteAereo.N2OEmissions + TransporteTerrestre.N2OEmissions + Taxis.N2OEmissions + TransporteCasaTrabajo.N2OEmissions,
-            hfcEmissions: TransporteAereo.hfcEmissions + TransporteTerrestre.hfcEmissions + Taxis.hfcEmissions + TransporteCasaTrabajo.hfcEmissions,
-            totalEmissions: TransporteAereo.totalEmissions + TransporteTerrestre.totalEmissions + Taxis.totalEmissions + TransporteCasaTrabajo.totalEmissions,
-            generalContributions: TransporteAereo.generalContributions + TransporteTerrestre.generalContributions + Taxis.generalContributions + TransporteCasaTrabajo.generalContributions,
+            co2Emissions: parseFloat((TransporteAereo.co2Emissions + TransporteTerrestre.co2Emissions + Taxis.co2Emissions + TransporteCasaTrabajo.co2Emissions).toFixed(2).toString()),
+            ch4Emissions: parseFloat((TransporteAereo.ch4Emissions + TransporteTerrestre.ch4Emissions + Taxis.ch4Emissions + TransporteCasaTrabajo.ch4Emissions).toFixed(2).toString()),
+            N2OEmissions: parseFloat((TransporteAereo.N2OEmissions + TransporteTerrestre.N2OEmissions + Taxis.N2OEmissions + TransporteCasaTrabajo.N2OEmissions).toFixed(2).toString()),
+            hfcEmissions: parseFloat((TransporteAereo.hfcEmissions + TransporteTerrestre.hfcEmissions + Taxis.hfcEmissions + TransporteCasaTrabajo.hfcEmissions).toFixed(2).toString()),
+            totalEmissions: parseFloat((TransporteAereo.totalEmissions + TransporteTerrestre.totalEmissions + Taxis.totalEmissions + TransporteCasaTrabajo.totalEmissions).toFixed(2).toString()),
+            generalContributions: parseFloat((TransporteAereo.generalContributions + TransporteTerrestre.generalContributions + Taxis.generalContributions + TransporteCasaTrabajo.generalContributions).toFixed(2).toString()),
             category: true,
             chart: "categoria3",
             fill: "var(--color-categoria3)",
@@ -281,12 +305,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const CATEGORIA4: SummaryItem = {
             emissionSource: "Categoria 4",
-            co2Emissions: ConsumoPapel.co2Emissions + ConsumoAgua.co2Emissions + ActivosFijos.co2Emissions + ConsumiblesGenerales.co2Emissions,
-            ch4Emissions: ConsumoPapel.ch4Emissions + ConsumoAgua.ch4Emissions + ActivosFijos.ch4Emissions + ConsumiblesGenerales.ch4Emissions,
-            N2OEmissions: ConsumoPapel.N2OEmissions + ConsumoAgua.N2OEmissions + ActivosFijos.N2OEmissions + ConsumiblesGenerales.N2OEmissions,
-            hfcEmissions: ConsumoPapel.hfcEmissions + ConsumoAgua.hfcEmissions + ActivosFijos.hfcEmissions + ConsumiblesGenerales.hfcEmissions,
-            totalEmissions: ConsumoPapel.totalEmissions + ConsumoAgua.totalEmissions + ActivosFijos.totalEmissions + ConsumiblesGenerales.totalEmissions,
-            generalContributions: ConsumoPapel.generalContributions + ConsumoAgua.generalContributions + ActivosFijos.generalContributions + ConsumiblesGenerales.generalContributions,
+            co2Emissions: parseFloat((ConsumoPapel.co2Emissions + ConsumoAgua.co2Emissions + ActivosFijos.co2Emissions + ConsumiblesGenerales.co2Emissions).toFixed(2).toString()),
+            ch4Emissions: parseFloat((ConsumoPapel.ch4Emissions + ConsumoAgua.ch4Emissions + ActivosFijos.ch4Emissions + ConsumiblesGenerales.ch4Emissions).toFixed(2).toString()),
+            N2OEmissions: parseFloat((ConsumoPapel.N2OEmissions + ConsumoAgua.N2OEmissions + ActivosFijos.N2OEmissions + ConsumiblesGenerales.N2OEmissions).toFixed(2).toString()),
+            hfcEmissions: parseFloat((ConsumoPapel.hfcEmissions + ConsumoAgua.hfcEmissions + ActivosFijos.hfcEmissions + ConsumiblesGenerales.hfcEmissions).toFixed(2).toString()),
+            totalEmissions: parseFloat((ConsumoPapel.totalEmissions + ConsumoAgua.totalEmissions + ActivosFijos.totalEmissions + ConsumiblesGenerales.totalEmissions).toFixed(2).toString()),
+            generalContributions: parseFloat((ConsumoPapel.generalContributions + ConsumoAgua.generalContributions + ActivosFijos.generalContributions + ConsumiblesGenerales.generalContributions).toFixed(2).toString()),
             category: true,
             chart: "categoria4",
             fill: "var(--color-categoria4)",
@@ -307,10 +331,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         CATEGORIA2.generalContributions = EMISSIONS.totalEmissions !== 0 ? parseFloat(((CATEGORIA2.totalEmissions / EMISSIONS.totalEmissions) * 100).toFixed(2).toString()) : 0;
         CATEGORIA3.generalContributions = EMISSIONS.totalEmissions !== 0 ? parseFloat(((CATEGORIA3.totalEmissions / EMISSIONS.totalEmissions) * 100).toFixed(2).toString()) : 0;
         CATEGORIA4.generalContributions = EMISSIONS.totalEmissions !== 0 ? parseFloat(((CATEGORIA4.totalEmissions / EMISSIONS.totalEmissions) * 100).toFixed(2).toString()) : 0;
-        CATEGORIA1.generalContributions = 10;
-        CATEGORIA2.generalContributions = 30;
-        CATEGORIA3.generalContributions = 40;
-        CATEGORIA4.generalContributions = 30;
+        // CATEGORIA1.generalContributions = 10;
+        // CATEGORIA2.generalContributions = 30;
+        // CATEGORIA3.generalContributions = 40;
+        // CATEGORIA4.generalContributions = 30;
         CombustionMovil.generalContributions = EMISSIONS.totalEmissions !== 0 ? parseFloat(((CombustionMovil.totalEmissions / EMISSIONS.totalEmissions) * 100).toFixed(2).toString()) : 0;
         CombustionEstacionaria.generalContributions = EMISSIONS.totalEmissions !== 0 ? parseFloat(((CombustionEstacionaria.totalEmissions / EMISSIONS.totalEmissions) * 100).toFixed(2).toString()) : 0;
         Extintores.generalContributions = EMISSIONS.totalEmissions !== 0 ? parseFloat(((Extintores.totalEmissions / EMISSIONS.totalEmissions) * 100).toFixed(2).toString()) : 0;

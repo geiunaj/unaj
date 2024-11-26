@@ -38,11 +38,11 @@ import usePageTitle from "@/lib/stores/titleStore.store";
 export default function TaxiCalculate() {
     const setTitle = usePageTitle((state) => state.setTitle);
     useEffect(() => {
-        setTitle("Taxis");
+        setTitle("Cálculos de Taxis");
     }, [setTitle]);
     const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
     useEffect(() => {
-        setTitleHeader("TAXIS");
+        setTitleHeader("Cálculos de Taxis");
     }, [setTitleHeader]);
     const {push} = useRouter();
 
@@ -121,9 +121,9 @@ export default function TaxiCalculate() {
     const handleClickExcelReport = async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 10},
-            {header: "AREA", key: "area", width: 20},
-            {header: "CONSUMO TOTAL", key: "consumoArea", width: 25},
-            {header: "FACTOR DE EMISIÓN", key: "factoresEmisionString", width: 25},
+            {header: "SEDE", key: "sede", width: 20},
+            {header: "CONSUMO TOTAL", key: "consumo", width: 25},
+            {header: "FACTOR EMISIÓN", key: "factoresEmisionString", width: 25},
             {header: "TOTAL GEI", key: "totalGEI", width: 20},
         ];
         await setFrom(period.from ?? "");
@@ -133,8 +133,8 @@ export default function TaxiCalculate() {
             data.data!.data,
             columns,
             formatPeriod(period, true),
-            `REPORTE DE CALCULOS DE CONSUMO DE AGUA`,
-            "consumo-agua"
+            `REPORTE DE CALCULOS DE TAXIS`,
+            "taxis"
         );
     };
 
@@ -164,25 +164,13 @@ export default function TaxiCalculate() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="flex items-center gap-4">
-                    <ButtonBack onClick={handleTaxi}/>
-                    <div className="font-Manrope">
-                        <h1 className="text-base text-foreground font-bold">
-                            Cálculo de Taxis
-                        </h1>
-                        <h2 className="text-xs sm:text-sm text-muted-foreground">
-                            Huella de carbono
-                        </h2>
-                    </div>
-                </div>
-                <div className="flex flex-col items-end gap-2">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-start mb-6">
+                <div className="flex flex-col items-end w-full gap-2">
                     <div
-                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
-
+                        className="grid grid-cols-2 grid-rows-1 w-full gap-2 sm:flex sm:justify-between justify-center">
                         <div
-                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
-
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
+                            <ButtonBack onClick={handleTaxi}/>
                             <ReportComponent
                                 onSubmit={handleClickExcelReport}
                                 ref={submitFormRef}
@@ -206,15 +194,16 @@ export default function TaxiCalculate() {
 
                             <ExportPdfReport
                                 data={taxiCalculosReport.data!.data}
-                                fileName={`REPORTE CALCULOS DE CONSUMO DE ENERGÍA_${formatPeriod({from, to}, true)}`}
+                                fileName={`REPORTE CALCULOS DE TAXIS_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
-                                    {header: "AREA", key: "area", width: 25},
-                                    {header: "CONSUMO TOTAL", key: "consumoArea", width: 15},
-                                    {header: "FACTOR DE EMISIÓN", key: "factoresEmisionString", width: 35},
+                                    {header: "SEDE", key: "sede", width: 25},
+                                    {header: "CONSUMO TOTAL", key: "consumo", width: 15},
+                                    {header: "FACTOR EMISIÓN", key: "factoresEmisionString", width: 35},
                                     {header: "TOTAL GEI", key: "totalGEI", width: 20},
                                 ]}
-                                title="REPORTE DE CALCULOS DE CONSUMO DE ENERGÍA"
+                                title="REPORTE DE CALCULOS DE TAXIS"
+                                rows={25}
                                 period={formatPeriod({from, to}, true)}
                             />
 
@@ -266,7 +255,7 @@ export default function TaxiCalculate() {
                                         {taxiCalculosItem.sede}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default">
+                                        <Badge variant="outline">
                                             {taxiCalculosItem.consumo}
                                         </Badge>
                                     </TableCell>
@@ -279,7 +268,9 @@ export default function TaxiCalculate() {
                                         ))}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {taxiCalculosItem.totalGEI}
+                                        <Badge variant="default">
+                                            {taxiCalculosItem.totalGEI}
+                                        </Badge>
                                     </TableCell>
                                 </TableRow>
                             )

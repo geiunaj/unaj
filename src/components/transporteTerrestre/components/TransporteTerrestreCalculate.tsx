@@ -41,11 +41,11 @@ import usePageTitle from "@/lib/stores/titleStore.store";
 export default function TransporteTerrestreCalculate() {
     const setTitle = usePageTitle((state) => state.setTitle);
     useEffect(() => {
-        setTitle("Transporte Terrestre");
+        setTitle("Cálculos de Transporte Terrestre");
     }, [setTitle]);
     const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
     useEffect(() => {
-        setTitleHeader("TRANSPORTE TERRESTRE");
+        setTitleHeader("Cálculos de Transporte Terrestre");
     }, [setTitleHeader]);
 
     // NAVIGATION
@@ -68,11 +68,6 @@ export default function TransporteTerrestreCalculate() {
         to,
     });
 
-    const conusmoAguaCalculosReport = useTransporteTerrestreCalculosReport({
-        from,
-        to,
-        page,
-    });
     const anios = useQuery({
         queryKey: ["aniosTAC"],
         queryFn: () => getAnio(),
@@ -89,10 +84,10 @@ export default function TransporteTerrestreCalculate() {
         });
         transporteTerrestreCalculos.refetch();
         transporteTerrestreCalculosReport.refetch();
-    }, [from, to, transporteTerrestreCalculos, conusmoAguaCalculosReport]);
+    }, [from, to, transporteTerrestreCalculos, transporteTerrestreCalculosReport]);
 
     const handleTransporteTerrestre = () => {
-        push("/transporteTerrestre");
+        push("/transporte-terrestre");
     };
 
     const handleFromChange = useCallback(
@@ -102,7 +97,7 @@ export default function TransporteTerrestreCalculate() {
             await transporteTerrestreCalculos.refetch();
             await transporteTerrestreCalculosReport.refetch();
         },
-        [transporteTerrestreCalculos, conusmoAguaCalculosReport]
+        [transporteTerrestreCalculos, transporteTerrestreCalculosReport]
     );
 
     const handleToChange = useCallback(
@@ -112,7 +107,7 @@ export default function TransporteTerrestreCalculate() {
             await transporteTerrestreCalculos.refetch();
             await transporteTerrestreCalculosReport.refetch();
         },
-        [transporteTerrestreCalculos, conusmoAguaCalculosReport]
+        [transporteTerrestreCalculos, transporteTerrestreCalculosReport]
     );
 
     const handlePageChange = useCallback(
@@ -153,7 +148,7 @@ export default function TransporteTerrestreCalculate() {
         transporteTerrestreCalculos.isLoading ||
         anios.isLoading ||
         transporteTerrestreCalculos.isLoading ||
-        conusmoAguaCalculosReport.isLoading ||
+        transporteTerrestreCalculosReport.isLoading ||
         transporteTerrestreCalculosReport.isLoading
     ) {
         return <SkeletonTable/>;
@@ -163,7 +158,7 @@ export default function TransporteTerrestreCalculate() {
         transporteTerrestreCalculos.isError ||
         anios.isError ||
         transporteTerrestreCalculos.isError ||
-        conusmoAguaCalculosReport.isError ||
+        transporteTerrestreCalculosReport.isError ||
         transporteTerrestreCalculosReport.isError
     ) {
         return <div>Error</div>;
@@ -171,24 +166,13 @@ export default function TransporteTerrestreCalculate() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <div className="flex items-center gap-4">
-                    <ButtonBack onClick={handleTransporteTerrestre}/>
-                    <div className="font-Manrope">
-                        <h1 className="text-base text-foreground font-bold">
-                            Cálculo de TransporteTerrestres
-                        </h1>
-                        <h2 className="text-xs sm:text-sm text-muted-foreground">
-                            Huella de carbono
-                        </h2>
-                    </div>
-                </div>
-                <div className="flex flex-col items-end gap-2">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-start mb-6">
+                <div className="flex flex-col items-end w-full gap-2">
                     <div
-                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
+                        className="grid grid-cols-2 grid-rows-1 w-full gap-2 sm:flex sm:justify-between justify-center">
                         <div
-                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
-
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
+                            <ButtonBack onClick={handleTransporteTerrestre}/>
                             <ReportComponent
                                 onSubmit={handleClickExcelReport}
                                 ref={submitFormRef}

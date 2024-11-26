@@ -28,6 +28,7 @@ import {getMes} from "@/components/mes/services/mes.actions";
 import {CreateTaxiProps, TaxiRequest} from "../service/taxi.interface";
 import {createTaxi} from "../service/taxi.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import {STEP_NUMBER} from "@/lib/constants/menu";
 
 const Taxi = z.object({
     unidad_contratante: z.string().min(1, "Seleccione un tipo de hoja"),
@@ -277,20 +278,30 @@ export function FormTaxi({onClose}: CreateTaxiProps) {
                                 )}
                             />
                         </div>
-                        <div className="flex gap-5">
+                        <div className="flex gap-5 w-full">
                             {/* monto */}
                             <FormField
                                 control={form.control}
                                 name="monto"
                                 render={({field}) => (
-                                    <FormItem>
+                                    <FormItem className="w-1/2">
                                         <FormLabel>Monto</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                className="p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                                                 placeholder="S/10.0"
-                                                {...field}
+                                                min={4.2}
+                                                step={STEP_NUMBER}
+                                                value={field.value}
+                                                onChange={(e) => {
+                                                    field.onChange(e.target.value);
+                                                    form.setValue(
+                                                        "kmRecorrido",
+                                                        parseFloat(((Number(e.target.value) - 4.2) / 0.9).toFixed(2))
+                                                    );
+
+                                                }}
                                             />
                                         </FormControl>
                                         <FormMessage/>
@@ -302,15 +313,15 @@ export function FormTaxi({onClose}: CreateTaxiProps) {
                                 control={form.control}
                                 name="kmRecorrido"
                                 render={({field}) => (
-                                    <FormItem>
+                                    <FormItem className="w-1/2">
                                         <FormLabel>
                                             Km Recorridos
                                         </FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="S/10.0"
+                                                className="p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                placeholder="5400"
                                                 {...field}
                                             />
                                         </FormControl>

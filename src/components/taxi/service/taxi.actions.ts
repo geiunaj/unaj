@@ -32,6 +32,31 @@ export async function getTaxi(
     return data;
 }
 
+export async function getTaxiReport(
+    sedeId?: number,
+    from?: string,
+    to?: string,
+    mesId?: number,
+    sort?: string,
+    direction?: string,
+    page?: number,
+): Promise<TaxiCollection> {
+    const config: AxiosRequestConfig = {
+        params: {
+            sedeId,
+            from,
+            to,
+            mesId,
+            sort,
+            direction,
+            page,
+            all: true,
+        },
+    };
+    const {data} = await api.get<TaxiCollection>("/api/taxi", config);
+    return data;
+}
+
 export async function getTaxiById(id: number) {
     const {data} = await api.get(`/api/taxi/${id}`);
     return data;
