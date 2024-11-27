@@ -78,157 +78,53 @@ async function main() {
     // Crear los tipos de combustible
     const tiposCombustible = [
         {
-            abreviatura: "P500",
-            nombre: "Petróleo Industrial 500",
-            unidad: "L",
-            valorCalorico: 0.000151,
-            factorEmisionCO2: 77.4,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "P6",
-            nombre: "Petróleo Industrial 6",
-            unidad: "L",
-            valorCalorico: 0.000151,
-            factorEmisionCO2: 77.4,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
             abreviatura: "GA",
             nombre: "Gasolina",
-            unidad: "L",
-            valorCalorico: 0.00012,
-            factorEmisionCO2: 69.3,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "D2",
-            nombre: "Diésel 2",
-            unidad: "L",
-            valorCalorico: 0.000142,
-            factorEmisionCO2: 74.1,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
+            unidad: "gal",
+            movil: {
+                consumo: 825,
+                factorEmisionCO2: 8.0507196,
+                factorEmisionCH4: 0.1156026,
+                factorEmisionN2O: 0.099635,
+            },
         },
         {
             abreviatura: "DB5",
             nombre: "Diésel B5",
-            unidad: "L",
-            valorCalorico: 0.000142,
-            factorEmisionCO2: 74.1,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
+            unidad: "gal",
+            movil: {
+                consumo: 6133,
+                factorEmisionCO2: 9.99609,
+                factorEmisionCH4: 0.0125148,
+                factorEmisionN2O: 0.0221567,
+            },
         },
         {
             abreviatura: "GLP",
             nombre: "Gas Licuado de Petróleo",
-            unidad: "L",
-            valorCalorico: 0.00010464768,
-            factorEmisionCO2: 63.1,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
+            unidad: "gal",
+            movil: {
+                factorEmisionCO2: 6.31,
+                factorEmisionCH4: 0.0031394,
+                factorEmisionN2O: 0.0027732,
+            },
+            estacionaria: {
+                consumo: 70.8,
+                factorEmisionCO2: 6.6032686,
+                factorEmisionCH4: 0.0031394,
+                factorEmisionN2O: 0.0027732,
+            }
         },
         {
-            abreviatura: "GNL",
-            nombre: "Gas Natural Licuado",
-            unidad: "m³",
-            valorCalorico: 0.01989,
-            factorEmisionCO2: 64.2,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "GN",
-            nombre: "Gas Natural",
-            unidad: "m³",
-            valorCalorico: 0.000036,
-            factorEmisionCO2: 56.126,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "CO",
-            nombre: "Coque",
-            unidad: "kg",
-            valorCalorico: 0.0267,
-            factorEmisionCO2: 94.6,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "CM",
-            nombre: "Carbón mineral antracita",
-            unidad: "kg",
-            valorCalorico: 0.0267,
-            factorEmisionCO2: 98.3,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "CB",
-            nombre: "Carbón mineral bituminoso",
-            unidad: "kg",
-            valorCalorico: 0.0258,
-            factorEmisionCO2: 94.6,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "CV",
-            nombre: "Carbón vegetal",
-            unidad: "kg",
-            valorCalorico: 0.0295,
-            factorEmisionCO2: 112,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "BZ",
-            nombre: "Bagazo",
-            unidad: "kg",
-            valorCalorico: 0.0116,
-            factorEmisionCO2: 100,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "LE",
-            nombre: "Leña",
-            unidad: "kg",
-            valorCalorico: 0.0116,
-            factorEmisionCO2: 112,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "BI",
-            nombre: "Biocombustible 100%",
-            unidad: "L",
-            valorCalorico: 0.000089,
-            factorEmisionCO2: 70.8,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "ET",
-            nombre: "Etanol",
-            unidad: "L",
-            valorCalorico: 0.00009,
-            factorEmisionCO2: 70.8,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
-        },
-        {
-            abreviatura: "BG",
-            nombre: "Biogás",
-            unidad: "m³",
-            valorCalorico: 0.000034272,
-            factorEmisionCO2: 54.6,
-            factorEmisionCH4: 3,
-            factorEmisionN2O: 0.6,
+            abreviatura: "C2H2",
+            nombre: "Acetileno",
+            unidad: "Kg",
+            estacionaria: {
+                consumo: 9,
+                factorEmisionCO2: 3.38,
+                factorEmisionCH4: 0,
+                factorEmisionN2O: 0,
+            }
         },
     ];
 
@@ -236,7 +132,7 @@ async function main() {
     const allMeses = await prisma.mes.findMany();
 
     for (const tipo of tiposCombustible) {
-        await prisma.tipoCombustible.create({
+        const tipoCombustible = await prisma.tipoCombustible.create({
             data: {
                 nombre: tipo.nombre,
                 abreviatura: tipo.abreviatura,
@@ -245,28 +141,71 @@ async function main() {
                 updated_at: new Date(),
             },
         });
-    }
-    console.log("Fuel types created");
 
-    const allTiposCombustible = await prisma.tipoCombustible.findMany();
-
-    for (const anio of allAnios) {
-        for (const tipo of allTiposCombustible) {
-            const tipoSearch = tiposCombustible.find((t) => t.nombre === tipo.nombre);
+        if (tipo.movil) {
             await prisma.tipoCombustibleFactor.create({
                 data: {
-                    valorCalorico: tipoSearch!.valorCalorico,
-                    factorEmisionCO2: tipoSearch!.factorEmisionCO2,
-                    factorEmisionCH4: tipoSearch!.factorEmisionCH4,
-                    factorEmisionN2O: tipoSearch!.factorEmisionN2O,
-                    anio_id: anio.id,
-                    tipoCombustible_id: tipo.id,
+                    tipo: "movil",
+                    factorEmisionCO2: tipo.movil.factorEmisionCO2,
+                    factorEmisionCH4: tipo.movil.factorEmisionCH4,
+                    factorEmisionN2O: tipo.movil.factorEmisionN2O,
+                    anio_id: 1,
+                    tipoCombustible_id: tipoCombustible.id,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
             });
+            if (tipo.movil.consumo) {
+                await prisma.combustible.create({
+                    data: {
+                        tipo: "movil",
+                        tipoEquipo: "Vehículo",
+                        consumo: tipo.movil.consumo,
+                        tipoCombustible_id: tipoCombustible.id,
+                        mes_id: 1,
+                        anio_id: 1,
+                        sede_id: 1,
+                        anio_mes: Number("2024") * 100 + Number(1),
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                    },
+                });
+            }
+        }
+
+        if (tipo.estacionaria) {
+            await prisma.tipoCombustibleFactor.create({
+                data: {
+                    tipo: "estacionaria",
+                    factorEmisionCO2: tipo.estacionaria.factorEmisionCO2,
+                    factorEmisionCH4: tipo.estacionaria.factorEmisionCH4,
+                    factorEmisionN2O: tipo.estacionaria.factorEmisionN2O,
+                    anio_id: 1,
+                    tipoCombustible_id: tipoCombustible.id,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+
+            if (tipo.estacionaria.consumo) {
+                await prisma.combustible.create({
+                    data: {
+                        tipo: "estacionaria",
+                        tipoEquipo: "Equipo",
+                        consumo: tipo.estacionaria.consumo,
+                        tipoCombustible_id: tipoCombustible.id,
+                        mes_id: 1,
+                        anio_id: 1,
+                        sede_id: 1,
+                        anio_mes: Number("2024") * 100 + Number(1),
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                    },
+                });
+            }
         }
     }
+    console.log("Fuel types created");
     console.log("Fuel types factors created");
 
     const allSedes = await prisma.sede.findMany();
@@ -1835,7 +1774,7 @@ async function main() {
         {monto: 20},
         {monto: 20},
         {monto: 38},
-    ]
+    ];
 
     for (const taxi of taxis) {
         await prisma.taxi.create({

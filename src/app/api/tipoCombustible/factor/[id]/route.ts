@@ -46,7 +46,6 @@ export async function PUT(
             },
             data: {
                 tipoCombustible_id: body.tipoCombustible_id,
-                valorCalorico: body.valorCalorico,
                 factorEmisionCO2: body.factorEmisionCO2,
                 factorEmisionCH4: body.factorEmisionCH4,
                 factorEmisionN2O: body.factorEmisionN2O,

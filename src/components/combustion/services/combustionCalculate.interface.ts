@@ -14,7 +14,6 @@ export interface combustionCalculosResource {
     tipo: string;
     tipoCombustibleId: number;
     consumoTotal: number;
-    valorCalorico: number;
     consumo: number;
     emisionCO2: number;
     emisionCH4: number;
@@ -35,7 +34,6 @@ export interface CombustionCalculosRequest {
     tipo: string;
     tipoCombustibleId: number;
     consumoTotal: number;
-    valorCalorico: number;
     consumo: number;
     emisionCO2: number;
     emisionCH4: number;
@@ -54,7 +52,6 @@ export interface CombustionCalcResponse {
     tipoCombustible: string;
     unidad: string;
     cantidad: number;
-    valorCalorico: number;
     consumo: number;
     emisionCO2: number;
     emisionCH4: number;

@@ -38,8 +38,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const body: TipoCombustibleFactorRequest = await req.json();
         const factorTipoCombustible = await prisma.tipoCombustibleFactor.create({
             data: {
+                tipo: body.tipo,
                 tipoCombustible_id: body.tipoCombustible_id,
-                valorCalorico: body.valorCalorico,
                 factorEmisionCO2: body.factorEmisionCO2,
                 factorEmisionCH4: body.factorEmisionCH4,
                 factorEmisionN2O: body.factorEmisionN2O,

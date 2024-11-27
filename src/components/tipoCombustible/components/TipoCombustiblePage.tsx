@@ -183,9 +183,6 @@ export default function TipoCombustiblePage() {
                                         {item.unidad}
                                     </TableCell>
                                     {/*<TableCell className="text-xs sm:text-sm">*/}
-                                    {/*    <Badge variant="default"> {item.valorCalorico}</Badge>*/}
-                                    {/*</TableCell>*/}
-                                    {/*<TableCell className="text-xs sm:text-sm">*/}
                                     {/*    <Badge variant="secondary"> {item.factorEmisionCO2}</Badge>*/}
                                     {/*</TableCell>*/}
                                     {/*<TableCell className="text-xs sm:text-sm">*/}

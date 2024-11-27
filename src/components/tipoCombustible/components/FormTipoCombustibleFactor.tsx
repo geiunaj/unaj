@@ -29,8 +29,6 @@ import {getAnio} from "@/components/anio/services/anio.actions";
 
 const TipoCombustibleFactor = z.object({
     tipoConsumibleId: z.string().min(1, "Selecciona un tipo de consumible"),
-    valorCalorico: z.preprocess((val) => parseFloat(val as string,),
-        z.number().min(0, "Ingresa un valor mayor a 0")),
     factorEmisionCO2: z.preprocess((val) => parseFloat(val as string,),
         z.number().min(0, "Ingresa un valor mayor a 0")),
     factorEmisionCH4: z.preprocess((val) => parseFloat(val as string,),
@@ -44,7 +42,6 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
     const form = useForm<z.infer<typeof TipoCombustibleFactor>>({
         resolver: zodResolver(TipoCombustibleFactor),
         defaultValues: {
-            valorCalorico: 0,
             factorEmisionCO2: 0,
             factorEmisionCH4: 0,
             factorEmisionN2O: 0,
@@ -68,7 +65,6 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
     const onSubmit = async (data: z.infer<typeof TipoCombustibleFactor>) => {
         const tipoCombustibleFactorRequest: TipoCombustibleFactorRequest = {
             tipoCombustible_id: parseInt(data.tipoConsumibleId),
-            valorCalorico: data.valorCalorico,
             factorEmisionCO2: data.factorEmisionCO2,
             factorEmisionCH4: data.factorEmisionCH4,
             factorEmisionN2O: data.factorEmisionN2O,

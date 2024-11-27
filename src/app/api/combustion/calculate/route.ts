@@ -318,11 +318,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     where: {
                         anio_id: anio_id,
                         tipoCombustible_id: tipoCombustible.id,
+                        tipo: tipo,
                     },
                 });
 
                 if (!factorTipoCombustible) return NextResponse.json({
-                    message: `Agregue el factor de tipo de combustible para el año ${anio?.nombre ?? anio_id}`
+                    message: `Agregue el factor de tipo de combustible para el año ${anio?.nombre ?? anio_id} del tipo ${tipo}`
                 }, {status: 404});
 
                 let whereOptionDetails = whereOptionsCombustion;
@@ -340,8 +341,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     return acc;
                 }, 0);
 
-                console.log("factorTipoCombustible: ", factorTipoCombustible);
-
                 const emisionCO2 = factorTipoCombustible.factorEmisionCO2 * totalConsumoTipoCombustible;
                 const emisionCH4 = factorTipoCombustible.factorEmisionCH4 * totalConsumoTipoCombustible;
                 const emisionN2O = factorTipoCombustible.factorEmisionN2O * totalConsumoTipoCombustible;
@@ -352,7 +351,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                         tipo: tipo,
                         tipoCombustibleFactorId: factorTipoCombustible.id,
                         consumoTotal: totalConsumoTipoCombustible,
-                        valorCalorico: factorTipoCombustible.valorCalorico,
                         consumo: totalConsumoTipoCombustible,
                         emisionCO2: emisionCO2,
                         emisionCH4: emisionCH4,

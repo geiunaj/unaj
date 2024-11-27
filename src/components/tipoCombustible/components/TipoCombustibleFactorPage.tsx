@@ -161,6 +161,9 @@ export default function TipoCombustibleFactorPage() {
                                 N°
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                TIPO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 NOMBRE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
@@ -186,6 +189,10 @@ export default function TipoCombustibleFactorPage() {
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{index + 1}</Badge>
+                                    </TableCell>
+                                    <TableCell className="text-xs text-center">
+                                        <Badge className="text-xs text-start"
+                                               variant="outline">{item.tipo.charAt(0).toUpperCase() + item.tipo.slice(1)}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs text-start sm:text-sm">
                                         {item.tipoCombustible}

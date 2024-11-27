@@ -32,7 +32,6 @@ export interface TipoCombustibleCollection {
     nombre: string;
     abreviatura: string;
     unidad: string;
-    // valorCalorico: number;
     // factorEmisionCO2: number;
     // factorEmisionCH4: number;
     // factorEmisionN2O: number;

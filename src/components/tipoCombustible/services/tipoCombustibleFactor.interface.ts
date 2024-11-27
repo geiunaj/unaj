@@ -10,8 +10,8 @@ export interface TipoCombustibleFactor {
 }
 
 export interface TipoCombustibleFactorRequest {
+    tipo: string;
     tipoCombustible_id: number;
-    valorCalorico: number;
     factorEmisionCO2: number;
     factorEmisionCH4: number;
     factorEmisionN2O: number;
@@ -32,7 +32,7 @@ export interface TipoCombustibleFactorCollectionPaginate {
 
 export interface TipoCombustibleFactorCollection {
     id: number;
-    valorCalorico: number;
+    tipo: string;
     factorEmisionCO2: number;
     factorEmisionCH4: number;
     factorEmisionN2O: number;

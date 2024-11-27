@@ -1,13 +1,13 @@
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-}
-
 // datasource db {
-//   provider  = "postgresql"
-//   url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-//   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+//   provider = "mysql"
+//   url      = env("DATABASE_URL")
 // }
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
 
 generator client {
   provider = "prisma-client-js"
@@ -87,7 +87,7 @@ model Sede {
 
 model tipoCombustibleFactor {
   id                        Int                         @id @default(autoincrement())
-  valorCalorico             Float
+  tipo                      String
   factorEmisionCO2          Float
   factorEmisionCH4          Float
   factorEmisionN2O          Float
@@ -402,7 +402,6 @@ model combustibleCalculosDetail {
   tipo                    String @db.VarChar(45)
   tipoCombustibleFactorId Int
   consumoTotal            Float
-  valorCalorico           Float
   consumo                 Float
   emisionCO2              Float
   emisionCH4              Float
