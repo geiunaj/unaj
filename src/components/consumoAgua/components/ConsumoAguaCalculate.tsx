@@ -302,13 +302,13 @@ export default function ConsumoAguaCalculate() {
                         )}
                     </TableBody>
                 </Table>
-                {consumoAguaCalculos.data!.meta.totalPages > 1 && (
-                    <CustomPagination
-                        meta={consumoAguaCalculos.data!.meta}
-                        onPageChange={handlePageChange}
-                    />
-                )
-
+                {
+                    consumoAguaCalculos.data!.meta.totalPages > 1 && (
+                        <CustomPagination
+                            meta={consumoAguaCalculos.data!.meta}
+                            onPageChange={handlePageChange}
+                        />
+                    )
                 }
             </div>
         </div>

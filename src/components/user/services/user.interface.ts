@@ -1,4 +1,4 @@
-import { Sede } from "@/components/sede/services/sede.interface";
+import {Sede} from "@/components/sede/services/sede.interface";
 
 export interface User {
     id: number;
@@ -32,7 +32,8 @@ export interface UserRequest {
     email: string;
     telefono: string;
     password: string;
-    type_user: string;
+    type_user_id: number;
+    sede_id: number;
 }
 
 export interface CreateUserProps {

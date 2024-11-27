@@ -1,6 +1,6 @@
 "use client";
-import {useCallback, useState} from "react";
-import {Pen, Plus, Trash2, Building} from "lucide-react";
+import React, {useCallback, useState} from "react";
+import {Pen, Plus, Trash2} from "lucide-react";
 import {
     Sheet,
     SheetContent,
@@ -9,15 +9,6 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {
     Table,
@@ -46,6 +37,9 @@ import {ChangeTitle} from "@/components/TitleUpdater";
 import {CreateRol} from "@/components/rol/components/CreateRol";
 import {RolCollectionItem} from "@/components/rol/services/rol.interface";
 import {UpdateRol} from "@/components/rol/components/UpdateRol";
+import {deleteRol} from "@/components/rol/services/rol.actions";
+import {errorToast, successToast} from "@/lib/utils/core.function";
+import CustomPagination from "@/components/Pagination";
 
 export default function RolPage() {
     ChangeTitle("Roles");
@@ -59,10 +53,11 @@ export default function RolPage() {
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
-    const [selectedSede, setSelectedSede] = useState<string>("1");
-
     // USE QUERY
-    const rol = useRol();
+    const rol = useRol({
+        perPage: 10,
+        page: page,
+    });
 
     const sedes = useSede();
 
@@ -77,28 +72,30 @@ export default function RolPage() {
         rol.refetch();
     }, [rol]);
 
-    // const handleDelete = useCallback(async () => {
-    //     try {
-    //         const response = await deleteUsuario(idForDelete);
-    //         setIsDeleteDialogOpen(false);
-    //         successToast(response.data.message);
-    //     } catch (error: any) {
-    //         errorToast(error.response.data || error.response.data.message);
-    //     } finally {
-    //         await rol.refetch();
-    //     }
-    // }, [rol]);
+    const handleDelete = useCallback(async () => {
+        try {
+            const response = await deleteRol(idForDelete);
+            setIsDeleteDialogOpen(false);
+            successToast(response.data.message);
+        } catch (error: any) {
+            errorToast(error.response.data.message);
+        } finally {
+            await rol.refetch();
+        }
+    }, [rol]);
 
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
         setIsUpdateDialogOpen(true);
     };
 
-    const handleSedeChange = useCallback(async (value: string) => {
-        await setPage(1);
-        await setSelectedSede(value);
-        await rol.refetch();
-    }, [rol]);
+    const handlePageChange = useCallback(
+        async (page: number) => {
+            await setPage(page);
+            await rol.refetch();
+        },
+        [rol]
+    );
 
     const handleCLickDelete = (id: number) => {
         setIdForDelete(id);
@@ -186,6 +183,14 @@ export default function RolPage() {
                         ))}
                     </TableBody>
                 </Table>
+                {
+                    rol.data!.meta.totalPages > 1 && (
+                        <CustomPagination
+                            meta={rol.data!.meta}
+                            onPageChange={handlePageChange}
+                        />
+                    )
+                }
             </div>
 
             {/*MODAL UPDATE*/}
@@ -219,7 +224,7 @@ export default function RolPage() {
                         <AlertDialogCancel>Cancelar</AlertDialogCancel>
                         <AlertDialogAction
                             className={buttonVariants({variant: "destructive"})}
-                            // onClick={handleDelete}
+                            onClick={handleDelete}
                         >
                             Eliminar
                         </AlertDialogAction>

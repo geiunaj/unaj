@@ -40,6 +40,8 @@ import {UserCollectionItem} from "@/components/user/services/user.interface";
 import {useSede} from "@/components/combustion/lib/combustion.hook";
 import SelectFilter from "@/components/SelectFilter";
 import {ChangeTitle} from "@/components/TitleUpdater";
+import {CreateUser} from "@/components/user/components/CreateUser";
+import {deleteUser} from "@/components/user/services/user.actions";
 
 export default function UsuarioPage() {
     ChangeTitle("Usuarios");
@@ -73,17 +75,17 @@ export default function UsuarioPage() {
         user.refetch();
     }, [user]);
 
-    // const handleDelete = useCallback(async () => {
-    //     try {
-    //         const response = await deleteUsuario(idForDelete);
-    //         setIsDeleteDialogOpen(false);
-    //         successToast(response.data.message);
-    //     } catch (error: any) {
-    //         errorToast(error.response.data || error.response.data.message);
-    //     } finally {
-    //         await user.refetch();
-    //     }
-    // }, [user]);
+    const handleDelete = useCallback(async () => {
+        try {
+            const response = await deleteUser(idForDelete);
+            setIsDeleteDialogOpen(false);
+            successToast(response.data.message);
+        } catch (error: any) {
+            errorToast(error.response.data.message);
+        } finally {
+            await user.refetch();
+        }
+    }, [user]);
 
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
@@ -132,7 +134,7 @@ export default function UsuarioPage() {
                                     <DialogDescription>Agregar Usuario</DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                {/* <CreateFormUsuario onClose={handleClose}/> */}
+                                <CreateUser onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>

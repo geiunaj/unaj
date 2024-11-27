@@ -25,7 +25,7 @@ const Area = z.object({
     nombre: z.string().min(1, requiredMessage("nombre"))
 });
 
-export function UpdateFormArea({id, onClose}: UpdateAreaProps) {
+export function UpdateUser({id, onClose}: UpdateAreaProps) {
 
     const form = useForm<z.infer<typeof Area>>({
         resolver: zodResolver(Area),

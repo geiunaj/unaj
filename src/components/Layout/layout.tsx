@@ -10,7 +10,7 @@ import {ThemeProvider} from "@/components/theme-provider";
 import {usePathname, useRouter} from "next/navigation";
 import {useMenuStore} from "@/lib/stores/menuStore.store";
 import {getPermisos} from "@/components/Layout/services/menu.actions";
-import {MenuItem} from "@/lib/constants/menu";
+import {MenuItem, menuItems} from "@/lib/constants/menu";
 
 const LayoutWrapper = ({children}: { children: React.ReactNode }) => {
     const session: any = useSession();
@@ -48,7 +48,7 @@ const LayoutWrapper = ({children}: { children: React.ReactNode }) => {
             );
         });
 
-        if (!menuItem) pushToHome();
+        if (!menuItem && path !== '/cuenta') pushToHome();
         setLoading(false);
     }, [pathname, menuFiltered]);
 

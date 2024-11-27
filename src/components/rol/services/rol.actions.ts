@@ -1,13 +1,26 @@
 import api from "../../../../config/api";
 import {AxiosRequestConfig, AxiosResponse} from "axios";
-import {Rol, RolById, RolCollection, RolRequest} from "./rol.interface";
+import {Rol, RolById, RolCollection, RolCollectionItem, RolRequest} from "./rol.interface";
 
 interface Response {
     message: string;
 }
 
-export async function getRol(): Promise<RolCollection> {
-    const {data} = await api.get<RolCollection>("/api/roles");
+export interface getRolIndex {
+    perPage: number;
+    page: number;
+}
+
+export async function getRolPaginate({perPage, page}: getRolIndex): Promise<RolCollection> {
+    const config: AxiosRequestConfig = {
+        params: {perPage, page}
+    };
+    const {data} = await api.get<RolCollection>("/api/roles", config);
+    return data;
+}
+
+export async function getRol(): Promise<RolCollectionItem[]> {
+    const {data} = await api.get<RolCollectionItem[]>("/api/roles");
     return data;
 }
 

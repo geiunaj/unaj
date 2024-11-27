@@ -8,30 +8,23 @@ import {RolRequest} from "@/components/rol/services/rol.interface";
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
+        const perPage = parseInt(searchParams.get("perPage") ?? "0");
         const page = parseInt(searchParams.get("page") ?? "1");
-        const perPage = parseInt(searchParams.get("perPage") ?? "10");
 
-        const totalRecords = await prisma.typeUser.count();
-        const totalPages = Math.ceil(totalRecords / perPage);
-
-        const users = await prisma.typeUser.findMany({
-            include: {
-                access: true,
-            },
-            orderBy: {type_name: "asc"},
-            skip: (page - 1) * perPage,
-            take: perPage,
+        const roles = await prisma.typeUser.findMany({
+            ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
         });
 
-        return NextResponse.json({
-            data: users,
-            meta: {
-                page,
-                perPage,
-                totalRecords,
-                totalPages,
-            },
-        });
+        if (perPage > 0) {
+            const totalRecords = await prisma.typeUser.count();
+            const totalPages = Math.ceil(totalRecords / perPage);
+            return NextResponse.json({
+                data: roles,
+                meta: {page, perPage, totalRecords, totalPages},
+            });
+        }
+
+        return NextResponse.json(roles);
     } catch (error) {
         console.error("Error buscando roles", error);
         return new NextResponse("Error buscando roles", {status: 500});

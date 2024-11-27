@@ -20,11 +20,11 @@ export async function GET(
             }
         });
 
-        if (!rol) return new NextResponse("Area no encontrada", {status: 404});
+        if (!rol) return NextResponse.json({message: "Rol no encontrado"}, {status: 404});
         return NextResponse.json(formatRol(rol));
     } catch (error) {
-        console.error("Error buscando area", error);
-        return new NextResponse("Error buscando area", {status: 500});
+        console.error("Error buscando Rol", error);
+        return NextResponse.json({message: "Error buscando Rol"}, {status: 500});
     }
 }
 
@@ -58,7 +58,7 @@ export async function PUT(req: NextRequest, {params}: { params: { id: string } }
         });
     } catch (error) {
         console.error("Error actualizando rol", error);
-        return new NextResponse("Error actualizando rol", {status: 500});
+        return NextResponse.json({message: "Error actualizando rol"}, {status: 500});
     }
 }
 
@@ -67,17 +67,15 @@ export async function DELETE(
     {params}: { params: { id: string } }): Promise<NextResponse> {
     try {
         const id = parseInt(params.id, 10);
-        if (isNaN(id)) return new NextResponse("ID inválido", {status: 400});
-
-        await prisma.area.delete({
-            where: {id},
-        });
-
-        return NextResponse.json({
-            message: "Area eliminada correctamente",
-        });
+        if (isNaN(id)) return NextResponse.json({message: "ID inválido"}, {status: 400});
+        if (id === 1) return NextResponse.json({message: "No se puede eliminar el rol de administrador"}, {status: 400});
+        const users = await prisma.user.findMany({where: {type_user_id: id},});
+        if (users.length > 0) return NextResponse.json({message: "No se puede eliminar el rol porque tiene usuarios asociados"}, {status: 400});
+        await prisma.access.deleteMany({where: {type_user_id: id}});
+        await prisma.typeUser.delete({where: {id}});
+        return NextResponse.json({message: "Rol eliminado correctamente"});
     } catch (error: any) {
-        console.error("Error eliminando area", error);
-        return new NextResponse("Error eliminando area", {status: 500});
+        console.error("Error eliminando rol", error);
+        return NextResponse.json({message: "Error eliminando rol"}, {status: 500});
     }
 }

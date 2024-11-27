@@ -1,10 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
-import {getRol} from "../services/rol.actions";
+import {getRolIndex, getRolPaginate} from "../services/rol.actions";
 
-export const useRol = () => {
+export const useRol = ({perPage, page}: getRolIndex) => {
     return useQuery({
         queryKey: ["roles"],
-        queryFn: () => getRol(),
+        queryFn: () => getRolPaginate({perPage, page}),
         refetchOnWindowFocus: false,
     });
 };

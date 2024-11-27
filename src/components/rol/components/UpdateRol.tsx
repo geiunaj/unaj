@@ -109,11 +109,6 @@ export function UpdateRol({id, onClose}: UpdateRolProps) {
                 rolData.permisos.forEach((permiso) => {
                     updated[permiso] = true;
                 });
-                Object.keys(prev).forEach((key) => {
-                    if (!rolData.permisos.includes(parseNumber(key))) {
-                        updated[parseNumber(key)] = false;
-                    }
-                });
                 return updated;
             });
         }
