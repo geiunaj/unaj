@@ -163,20 +163,14 @@ export default function TipoCombustibleFactorPage() {
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 NOMBRE
                             </TableHead>
-                            {/*<TableHead className="text-xs sm:text-sm font-bold text-center">*/}
-                            {/*    UNIDAD*/}
-                            {/*</TableHead>*/}
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                VALOR CALORICO
+                                FE CO2 <span className="text-[10px]">[kg CO2]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FE CO2
+                                FE CH4 <span className="text-[10px]">[kg CO2eq]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FE CH4
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FE N2O
+                                FE N2O <span className="text-[10px]">[kg CO2eq]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO
@@ -196,17 +190,8 @@ export default function TipoCombustibleFactorPage() {
                                     <TableCell className="text-xs text-start sm:text-sm">
                                         {item.tipoCombustible}
                                     </TableCell>
-                                    {/* <TableCell className="text-xs sm:text-sm">
-                    {item.abreviatura}
-                  </TableCell> */}
-                                    {/*<TableCell className="text-xs sm:text-sm">*/}
-                                    {/*    {item.unidad}*/}
-                                    {/*</TableCell>*/}
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default"> {item.valorCalorico}</Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary"> {item.factorEmisionCO2}</Badge>
+                                        <Badge variant="default"> {item.factorEmisionCO2}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary"> {item.factorEmisionCH4}</Badge>
@@ -215,7 +200,7 @@ export default function TipoCombustibleFactorPage() {
                                         <Badge variant="secondary"> {item.factorEmisionN2O}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary"> {item.anio}</Badge>
+                                        <Badge variant="outline"> {item.anio}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm p-1">
                                         <div className="flex justify-center gap-4">

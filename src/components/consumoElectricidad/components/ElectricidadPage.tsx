@@ -62,16 +62,10 @@ import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function ElectricidadPage() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Consumo de Energía");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Consumo de Energía");
-    }, [setTitleHeader]);
+    ChangeTitle("Consumo de Energía");
     //NAVIGATION
     const {push} = useRouter();
     const [page, setPage] = useState<number>(1);

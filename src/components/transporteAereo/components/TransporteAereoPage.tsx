@@ -67,16 +67,10 @@ import ReportComponent from "@/components/ReportComponent";
 import {useConsumibleReport} from "@/components/consumibles/lib/consumible.hook";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function TransporteAereoPage() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Transporte Aéreo");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Transporte Aéreo");
-    }, [setTitleHeader]);
+    ChangeTitle("Transporte Aéreo");
 
     //NAVIGATION
     const {push} = useRouter();

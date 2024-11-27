@@ -65,16 +65,10 @@ import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {useMes} from "@/components/combustion/lib/combustion.hook";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function ConsumiblePage() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Consumibles Generales");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Consumibles Generales");
-    }, [setTitleHeader]);
+    ChangeTitle("Consumibles Generales");
 
     // NAVIGATION
     const {push} = useRouter();

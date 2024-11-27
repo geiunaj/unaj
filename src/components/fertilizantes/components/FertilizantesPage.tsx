@@ -65,16 +65,10 @@ import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function FertilizantePage() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Fertilizantes");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Fertilizantes");
-    }, [setTitleHeader]);
+    ChangeTitle("Fertilizantes");
     // NAVIGATION
     const {push} = useRouter();
     const [page, setPage] = useState(1);

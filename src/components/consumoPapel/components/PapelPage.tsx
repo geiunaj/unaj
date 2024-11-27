@@ -57,17 +57,10 @@ import {ReportRequest} from "@/lib/interfaces/globals";
 import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function PapelPage() {
-
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Consumo de Papel");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Consumo de Papel");
-    }, [setTitleHeader]);
+    ChangeTitle("Consumo de Papel");
 
     const {push} = useRouter();
     const [page, setPage] = useState<number>(1);

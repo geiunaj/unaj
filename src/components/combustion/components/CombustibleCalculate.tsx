@@ -34,6 +34,7 @@ import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function"
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {updateTipoCombustibleFactor} from "@/components/tipoCombustible/services/tipoCombustibleFactor.actions";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 interface CombustionCalculateProps {
     tipo: Tipo;
@@ -44,14 +45,7 @@ type Tipo = "estacionaria" | "movil";
 export default function CombustibleCalculate({
                                                  tipo = "estacionaria",
                                              }: CombustionCalculateProps) {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle(tipo === "estacionaria" ? "Cálculos de Combustión Estacionaria" : "Cálculos de Combustión Móvil");
-    }, [setTitle, tipo]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader(tipo === "estacionaria" ? "Cálculos de Combustión Estacionaria" : "Cálculos de Combustión Móvil");
-    }, [setTitleHeader, tipo]);
+    ChangeTitle(tipo === "estacionaria" ? "Cálculos de Combustión Estacionaria" : "Cálculos de Combustión Móvil");
     const {push} = useRouter();
 
     // SELECTS - FILTERS

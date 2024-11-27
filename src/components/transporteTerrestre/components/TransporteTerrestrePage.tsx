@@ -61,16 +61,10 @@ import ButtonCalculate from "@/components/ButtonCalculate";
 import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function TransporteTerrestrePage() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Transporte Terrestre");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Transporte Terrestre");
-    }, [setTitleHeader]);
+    ChangeTitle("Transporte Terrestre");
 
     //NAVIGATION
     const {push} = useRouter();

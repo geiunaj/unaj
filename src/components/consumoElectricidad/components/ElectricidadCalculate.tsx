@@ -30,16 +30,10 @@ import {Button} from "@/components/ui/button";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function ElectricidadCalculate() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Consumo de Energía");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("CONSUMO DE ENERGÍA");
-    }, [setTitleHeader]);
+    ChangeTitle("Cálculos de Consumo de Electricidad");
     const {push} = useRouter();
 
     // SELECTS - FILTERS

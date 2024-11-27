@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -16,7 +16,7 @@ import {Button} from "../../ui/button";
 
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {
-    CreateTipoCombustibleProps,
+    CreateTipoCombustibleProps, TipoCombustibleCollection,
     TipoCombustibleRequest,
 } from "../services/tipoCombustible.interface";
 import {createTipoCombustible, getTiposCombustible} from "../services/tipoCombustible.actions";
@@ -50,6 +50,8 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
             factorEmisionN2O: 0,
         },
     });
+
+    const [tipoCombustibleSelected, setTipoCombustibleSelected] = useState<TipoCombustibleCollection | null>(null);
 
     const tipoCombustibles = useQuery({
         queryKey: ["tiposCombustibleCF"],
@@ -91,7 +93,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
             <div className="flex flex-col items-center justify-center w-full">
                 <Form {...form}>
                     <form
-                        className="w-full flex flex-col gap-3 pt-2 "
+                        className="w-full flex flex-col gap-3"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
                         {/* Tipo de Consumible */}
@@ -101,7 +103,14 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                             render={({field}) => (
                                 <FormItem className="pt-2">
                                     <FormLabel>Nombre de Consumible</FormLabel>
-                                    <Select onValueChange={field.onChange}>
+                                    <Select
+                                        onValueChange={(value) => {
+                                            const selectedCombustible = tipoCombustibles.data!.find(tipo => tipo.id.toString() === value);
+                                            setTipoCombustibleSelected(selectedCombustible || null);
+                                            field.onChange(value);
+                                        }}
+                                        value={field.value}
+                                    >
                                         <FormControl className="w-full">
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Nombre de Consumible"/>
@@ -122,25 +131,6 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                         />
 
                         <div className="flex gap-5">
-                            {/* Valor Calorico */}
-                            <FormField
-                                control={form.control}
-                                name="valorCalorico"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Valor Calorico</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                // placeholder="GAS, DIE, etc."
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
 
                             {/* CO2 */}
                             <FormField
@@ -148,12 +138,35 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 name="factorEmisionCO2"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor CO2 [Kg CO2/TJ]</FormLabel>
+                                        <FormLabel>Factor CO2 <span
+                                            className="text-xs">[kg GEI /{tipoCombustibleSelected?.unidad}]</span></FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                // placeholder="Litros, Galones, etc."
+                                                placeholder="0"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            {/* CH4 */}
+                            <FormField
+                                control={form.control}
+                                name="factorEmisionCH4"
+                                render={({field}) => (
+                                    <FormItem className="pt-2 w-1/2">
+                                        <FormLabel>
+                                            Factor CH4 <span
+                                            className="text-xs">[kg GEI /{tipoCombustibleSelected?.unidad}]</span>
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                                placeholder="0"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -164,26 +177,6 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                         </div>
 
                         <div className="flex gap-5">
-                            {/* CH4 */}
-                            <FormField
-                                control={form.control}
-                                name="factorEmisionCH4"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor CH4 [Kg CH4/TJ]
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                // placeholder="GAS, DIE, etc."
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
 
                             {/* N2O */}
                             <FormField
@@ -191,12 +184,14 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 name="factorEmisionN2O"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor N2O[Kg N2O/TJ]</FormLabel>
+                                        <FormLabel>Factor N2O <span
+                                            className="text-xs">[kg GEI /{tipoCombustibleSelected?.unidad}]</span>
+                                        </FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                // placeholder="Litros, Galones, etc."
+                                                placeholder="0"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -204,35 +199,35 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                     </FormItem>
                                 )}
                             />
+                            {/* Año */}
+                            <FormField
+                                control={form.control}
+                                name="anio_id"
+                                render={({field}) => (
+                                    <FormItem className="pt-2 w-1/2">
+                                        <FormLabel>Año</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Selecciona el año"/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {anios.data!.map((anio) => (
+                                                        <SelectItem key={anio.id} value={anio.id.toString()}>
+                                                            {anio.nombre}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormItem>
+                                )}
+                            />
                         </div>
-                        {/* Año */}
-                        <FormField
-                            control={form.control}
-                            name="anio_id"
-                            render={({field}) => (
-                                <FormItem className="pt-2 w-full">
-                                    <FormLabel>Año</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                    >
-                                        <FormControl className="w-full">
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Selecciona el año"/>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {anios.data!.map((anio) => (
-                                                    <SelectItem key={anio.id} value={anio.id.toString()}>
-                                                        {anio.nombre}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </FormItem>
-                            )}
-                        />
 
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-primary">

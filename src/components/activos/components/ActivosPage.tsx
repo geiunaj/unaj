@@ -64,17 +64,10 @@ import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {useMes} from "@/components/combustion/lib/combustion.hook";
-import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function ActivosPage() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Activos Fijos");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Activos Fijos");
-    }, [setTitleHeader]);
+    ChangeTitle("Activos Fijos");
     // NAVIGATION
     const {push} = useRouter();
     const [page, setPage] = useState(1);

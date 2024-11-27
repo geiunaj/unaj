@@ -12,7 +12,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const {searchParams} = new URL(req.url);
         const sedeId = searchParams.get("sedeId");
         const tipo = searchParams.get("tipo");
-        if (!sedeId) return new NextResponse("SedeId is required", {status: 400});
+        if (!sedeId) return NextResponse.json({message: "SedeId is required"}, {status: 400});
 
         const page = parseInt(searchParams.get("page") ?? "1");
         const perPage = parseInt(searchParams.get("perPage") ?? "10");
@@ -56,7 +56,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             });
         }
 
-        if (!period && all) return new NextResponse("Periodo no encontrado", {status: 404,});
+        if (!period && all) return NextResponse.json({message: "Periodo no encontrado"}, {status: 404,});
 
         const whereOptions = {
             sedeId: parseInt(sedeId),
@@ -99,7 +99,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         });
     } catch (error) {
         console.error("Error buscando calculos", error);
-        return new NextResponse("Error buscando calculos", {status: 500,});
+        return NextResponse.json({message: "Error buscando calculos"}, {status: 500,});
     }
 }
 
@@ -180,7 +180,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const allPeriodsBetweenYears: WhereAnioMes[] = [];
 
         if (dateFrom && dateTo) {
-            if (!yearFrom || !yearTo || !mesFromId || !mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+            if (!yearFrom || !yearTo || !mesFromId || !mesToId) return NextResponse.json({message: "Error en los parámetros de fecha"}, {status: 400});
             let currentYear = Number(yearFrom);
 
             while (currentYear <= Number(yearTo)) {
@@ -218,13 +218,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         } else if (dateFrom) {
             // Lógica para solo from
-            if (!mesFromId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+            if (!mesFromId) return NextResponse.json({message: "Error en los parámetros de fecha"}, {status: 400});
 
             const lastYear = await prisma.anio.findFirst({
                 orderBy: {nombre: "desc"},
             });
 
-            if (!lastYear) return new NextResponse("Error buscando el último año", {status: 404});
+            if (!lastYear) return NextResponse.json({message: "Error buscando el último año"}, {status: 404});
 
             let currentYear = Number(yearFrom);
 
@@ -241,13 +241,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         } else if (dateTo) {
             // Lógica para solo to
-            if (!mesToId) return new NextResponse("Error en los parámetros de fecha", {status: 400});
+            if (!mesToId) return NextResponse.json({message: "Error en los parámetros de fecha"}, {status: 400});
 
             const firstYear = await prisma.anio.findFirst({
                 orderBy: {nombre: "asc"},
             });
 
-            if (!firstYear) return new NextResponse("Error buscando el primer año", {status: 404});
+            if (!firstYear) return NextResponse.json({message: "Error buscando el primer año"}, {status: 404});
 
             let currentYear = Number(firstYear.nombre);
 
@@ -271,7 +271,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 orderBy: {nombre: "desc"},
             });
 
-            if (!firstYear || !lastYear) return new NextResponse("Error buscando años", {status: 404});
+            if (!firstYear || !lastYear) return NextResponse.json({message: "Error buscando años"}, {status: 404});
             let currentYear = Number(firstYear.nombre);
             while (currentYear <= Number(lastYear.nombre)) {
                 allPeriodsBetweenYears.push({
@@ -315,10 +315,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     where: {id: anio_id},
                 });
                 const factorTipoCombustible = await prisma.tipoCombustibleFactor.findFirst({
-                    where: {anio_id},
+                    where: {
+                        anio_id: anio_id,
+                        tipoCombustible_id: tipoCombustible.id,
+                    },
                 });
 
-                if (!factorTipoCombustible) return new NextResponse(`Agregue el factor de tipo de combustible para el año ${anio?.nombre ?? anio_id}`, {status: 404});
+                if (!factorTipoCombustible) return NextResponse.json({
+                    message: `Agregue el factor de tipo de combustible para el año ${anio?.nombre ?? anio_id}`
+                }, {status: 404});
 
                 let whereOptionDetails = whereOptionsCombustion;
                 whereOptionDetails.tipoCombustible_id = tipoCombustible.id;
@@ -335,20 +340,20 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     return acc;
                 }, 0);
 
-                const consumo = factorTipoCombustible.valorCalorico * totalConsumoTipoCombustible;
-                const emisionCO2 = factorTipoCombustible.factorEmisionCO2 * consumo;
-                const emisionCH4 = factorTipoCombustible.factorEmisionCH4 * consumo;
-                const emisionN2O = factorTipoCombustible.factorEmisionN2O * consumo;
+                console.log("factorTipoCombustible: ", factorTipoCombustible);
+
+                const emisionCO2 = factorTipoCombustible.factorEmisionCO2 * totalConsumoTipoCombustible;
+                const emisionCH4 = factorTipoCombustible.factorEmisionCH4 * totalConsumoTipoCombustible;
+                const emisionN2O = factorTipoCombustible.factorEmisionN2O * totalConsumoTipoCombustible;
                 const totalEmisionesAnuales = emisionCO2 + emisionCH4 + emisionN2O;
 
-                console.log(tipoCombustibleCalculos.id);
                 await prisma.combustibleCalculosDetail.create({
                     data: {
                         tipo: tipo,
                         tipoCombustibleFactorId: factorTipoCombustible.id,
                         consumoTotal: totalConsumoTipoCombustible,
                         valorCalorico: factorTipoCombustible.valorCalorico,
-                        consumo: consumo,
+                        consumo: totalConsumoTipoCombustible,
                         emisionCO2: emisionCO2,
                         emisionCH4: emisionCH4,
                         emisionN2O: emisionN2O,
@@ -362,7 +367,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 });
 
                 consumoTipoCombustible += totalConsumoTipoCombustible;
-                consumoTotal += consumo;
+                consumoTotal += totalConsumoTipoCombustible;
                 totalEmisionCO2 += emisionCO2;
                 totalEmisionCH4 += emisionCH4;
                 totalEmisionN2O += emisionN2O;
@@ -374,10 +379,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 data: {
                     consumoTotal: consumoTipoCombustible,
                     consumo: consumoTotal,
-                    emisionCO2: totalEmisionCO2,
-                    emisionCH4: totalEmisionCH4,
-                    emisionN2O: totalEmisionN2O,
-                    totalGEI: totalGEI,
+                    emisionCO2: totalEmisionCO2 / 1000,
+                    emisionCH4: totalEmisionCH4 / 1000,
+                    emisionN2O: totalEmisionN2O / 1000,
+                    totalGEI: totalGEI / 1000,
 
                     updated_at: new Date(),
                 }
@@ -387,6 +392,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         return NextResponse.json({message: "Cálculo realizado exitosamente"});
     } catch (error) {
         console.error("Error calculating combustion", error);
-        return new NextResponse("Error calculating combustion", {status: 500});
+        return NextResponse.json({message: "Error calculating combustion"}, {status: 500});
     }
 }

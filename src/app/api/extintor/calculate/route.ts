@@ -260,7 +260,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         } else if (dateTo) {
             // Lógica para solo to
             if (!mesToId)
-                return NextResponse.json("Error en los parámetros de fecha", {
+                return NextResponse.json({message: "Error en los parámetros de fecha"}, {
                     status: 400,
                 });
 
@@ -269,7 +269,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             });
 
             if (!firstYear)
-                return NextResponse.json("Error buscando el primer año", {
+                return NextResponse.json({message: "Error buscando el primer año"}, {
                     status: 404,
                 });
 
@@ -296,7 +296,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             });
 
             if (!firstYear || !lastYear)
-                return NextResponse.json("Error buscando años", {status: 404});
+                return NextResponse.json({message: "Error buscando años"}, {status: 404});
 
             let currentYear = Number(firstYear.nombre);
 
@@ -334,7 +334,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
                 if (!factorEmision)
                     return NextResponse.json(
-                        "No se encontró el factor de emisión para el año seleccionado",
+                        {
+                            message: `Agregue el factor de emisión para el año ${period.anio}`
+                        },
                         {status: 404}
                     );
 
@@ -381,7 +383,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         return NextResponse.json({message: "Cálculo realizado exitosamente"});
     } catch (error) {
         console.error("Error calculando Extintores", error);
-        return NextResponse.json("Error calculando Extintores", {
+        return NextResponse.json({message: "Error calculando Extintores"}, {
             status: 500,
         });
     }

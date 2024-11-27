@@ -34,16 +34,10 @@ import {ReportRequest} from "@/lib/interfaces/globals";
 import {useQuery} from "@tanstack/react-query";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function TaxiCalculate() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Cálculos de Taxis");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Cálculos de Taxis");
-    }, [setTitleHeader]);
+    ChangeTitle("Cálculos de Taxis");
     const {push} = useRouter();
 
     // SELECTS - FILTERS

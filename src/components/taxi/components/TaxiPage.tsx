@@ -67,16 +67,10 @@ import usePageTitle from "@/lib/stores/titleStore.store";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {useFertilizanteReport} from "@/components/fertilizantes/lib/fertilizante.hook";
 import ReportComponent from "@/components/ReportComponent";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function TaxiPage() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Taxis");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Taxis");
-    }, [setTitleHeader]);
+    ChangeTitle("Taxis");
 
     //NAVIGATION
     const {push} = useRouter();

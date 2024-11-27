@@ -11,17 +11,11 @@ import usePageTitle from "@/lib/stores/titleStore.store";
 import {LineChart} from "@/components/resumen/components/LineChart";
 import {PieChartComponent} from "@/components/resumen/components/PieChart";
 import {VerticalBarChart} from "@/components/resumen/components/VerticalBarChart";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 
 export default function SummaryPage() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Resumen");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Resumen");
-    }, [setTitleHeader]);
+    ChangeTitle("Resumen");
 
     const [selectedSede, setSelectedSede] = useState<string>("");
     const [selectedYearFrom, setSelectedYearFrom] = useState<string>(new Date().getFullYear().toString());

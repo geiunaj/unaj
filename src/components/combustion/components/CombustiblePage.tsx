@@ -54,17 +54,11 @@ import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import ReportComponent from "@/components/ReportComponent";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function CombustiblePage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle(tipo === "estacionaria" ? "Combustión Estacionaria" : "Combustión Móvil");
-    }, [setTitle, tipo]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader(tipo === "estacionaria" ? "Combustión Estacionaria" : "Combustión Móvil");
-    }, [setTitleHeader, tipo]);
+    ChangeTitle(tipo === "estacionaria" ? "Combustión Estacionaria" : "Combustión Móvil");
     const [page, setPage] = useState<number>(1);
     //   NAVIGATION
     const {push} = useRouter();

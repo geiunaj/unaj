@@ -316,7 +316,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     where: {anioId},
                 });
 
-                if (!factorSEIN) return NextResponse.json({message: "No se encontró el factor de conversión para el año seleccionado"}, {status: 404});
+                if (!factorSEIN) return NextResponse.json({message: `Agregue el factor de emisión para el año ${period.anio}`}, {status: 404});
 
                 let whereOptionDetails = whereOptionsConsumoElectricidad;
                 whereOptionDetails.areaId = area.id;

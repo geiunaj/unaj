@@ -61,16 +61,10 @@ import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function ConsumoAguaPage() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Consumo de Agua");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Consumo de Agua");
-    }, [setTitleHeader]);
+    ChangeTitle("Consumo de Agua");
 
     //NAVIGATION
     const {push} = useRouter();

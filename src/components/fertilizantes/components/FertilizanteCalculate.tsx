@@ -28,16 +28,10 @@ import {ReportRequest} from "@/lib/interfaces/globals";
 import {Button} from "@/components/ui/button";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function FertilizanteCalculate() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Fertilizantes");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("FERTILIZANTES");
-    }, [setTitleHeader]);
+    ChangeTitle("Fertilizantes");
     const {push} = useRouter();
 
     // SELECTS - FILTERS

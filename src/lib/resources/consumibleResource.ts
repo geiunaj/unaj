@@ -14,7 +14,7 @@ export function formatConsumible(consumible: any) {
         ...rest,
         created_at: undefined,
         updated_at: undefined,
-        pesoTotal: pesoTotal.toFixed(3),
+        pesoTotal: pesoTotal.toFixed(2),
         tipoConsumible: tipoConsumible.nombre,
         descripcion: tipoConsumible.descripcion.nombre,
         categoria: tipoConsumible.categoria.nombre,

@@ -34,17 +34,10 @@ import {ReportRequest} from "@/lib/interfaces/globals";
 import {useQuery} from "@tanstack/react-query";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {getSedes} from "@/components/sede/services/sede.actions";
-import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function TransporteAereoCalculate() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Cálculos de Transporte Aéreo");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Cálculos de Transporte Aéreo");
-    }, [setTitleHeader]);
+    ChangeTitle("Cálculos de Transporte Aéreo");
 
     // NAVIGATION
     const {push} = useRouter();

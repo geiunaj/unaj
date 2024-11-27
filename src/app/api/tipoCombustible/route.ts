@@ -11,6 +11,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const tiposCombustible = await prisma.tipoCombustible.findMany({
             ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
+            orderBy: {nombre: "asc"},
         });
 
         if (perPage > 0) {

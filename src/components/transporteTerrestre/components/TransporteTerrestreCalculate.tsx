@@ -37,16 +37,10 @@ import {useQuery} from "@tanstack/react-query";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {getSedes} from "@/components/sede/services/sede.actions";
 import usePageTitle from "@/lib/stores/titleStore.store";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function TransporteTerrestreCalculate() {
-    const setTitle = usePageTitle((state) => state.setTitle);
-    useEffect(() => {
-        setTitle("Cálculos de Transporte Terrestre");
-    }, [setTitle]);
-    const setTitleHeader = usePageTitle((state) => state.setTitleHeader);
-    useEffect(() => {
-        setTitleHeader("Cálculos de Transporte Terrestre");
-    }, [setTitleHeader]);
+    ChangeTitle("Cálculos de Transporte Terrestre");
 
     // NAVIGATION
     const {push} = useRouter();
