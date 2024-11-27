@@ -1,6 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/lib/prisma";
-import {formatUser} from "@/lib/resources/userResource";
 import {UserRequest} from "@/components/user/services/user.interface";
 import bcrypt from "bcrypt";
 
@@ -14,10 +13,14 @@ export async function GET(
             where: {
                 id: id,
             },
+            include: {
+                type_user: true,
+                sede: true,
+            }
         });
 
         if (!user) return NextResponse.json({message: "Usuario no encontrado"}, {status: 404});
-        return NextResponse.json(formatUser(user));
+        return NextResponse.json(user);
     } catch (error) {
         console.error("Error buscando Usuario", error);
         return NextResponse.json({message: "Error buscando Usuario"}, {status: 500});
@@ -30,7 +33,7 @@ export async function PUT(req: NextRequest, {params}: { params: { id: string } }
         if (isNaN(id)) return NextResponse.json({message: "Invalid ID"}, {status: 400});
 
         const body: UserRequest = await req.json();
-        const hashedPassword = await bcrypt.hash(body.password, 10);
+        const hashedPassword = body.password ? await bcrypt.hash(body.password, 10) : undefined;
         const user = await prisma.user.update({
             where: {id},
             data: {
@@ -59,14 +62,11 @@ export async function DELETE(
     try {
         const id = parseInt(params.id, 10);
         if (isNaN(id)) return NextResponse.json({message: "ID inválido"}, {status: 400});
-        if (id === 1) return NextResponse.json({message: "No se puede eliminar el user de administrador"}, {status: 400});
-        const users = await prisma.user.findMany({where: {type_user_id: id},});
-        if (users.length > 0) return NextResponse.json({message: "No se puede eliminar el user porque tiene usuarios asociados"}, {status: 400});
-        await prisma.access.deleteMany({where: {type_user_id: id}});
+        if (id === 1) return NextResponse.json({message: "No se puede eliminar el Usuario de administrador"}, {status: 400});
         await prisma.user.delete({where: {id}});
-        return NextResponse.json({message: "User eliminado correctamente"});
+        return NextResponse.json({message: "Usuario eliminado correctamente"});
     } catch (error: any) {
-        console.error("Error eliminando user", error);
-        return NextResponse.json({message: "Error eliminando user"}, {status: 500});
+        console.error("Error eliminando Usuario", error);
+        return NextResponse.json({message: "Error eliminando Usuario"}, {status: 500});
     }
 }

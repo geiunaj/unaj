@@ -31,7 +31,7 @@ export interface UserRequest {
     nombre: string;
     email: string;
     telefono: string;
-    password: string;
+    password?: string;
     type_user_id: number;
     sede_id: number;
 }

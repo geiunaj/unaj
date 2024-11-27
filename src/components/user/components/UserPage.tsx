@@ -35,13 +35,13 @@ import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import {User} from "@prisma/client";
-import {useUser} from "../lib/user.hook";
+import {useRol, useSede, useUser} from "../lib/user.hook";
 import {UserCollectionItem} from "@/components/user/services/user.interface";
-import {useSede} from "@/components/combustion/lib/combustion.hook";
 import SelectFilter from "@/components/SelectFilter";
 import {ChangeTitle} from "@/components/TitleUpdater";
 import {CreateUser} from "@/components/user/components/CreateUser";
 import {deleteUser} from "@/components/user/services/user.actions";
+import {UpdateUser} from "@/components/user/components/UpdateUser";
 
 export default function UsuarioPage() {
     ChangeTitle("Usuarios");
@@ -55,14 +55,18 @@ export default function UsuarioPage() {
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
-    const [selectedSede, setSelectedSede] = useState<string>("1");
+    const [selectedSede, setSelectedSede] = useState<string>("");
+    const [selectedTypeUser, setSelectedTypeUser] = useState<string>("");
 
     // USE QUERY
     const user = useUser({
-        sedeId: parseInt(selectedSede),
+        sedeId: selectedSede ? parseInt(selectedSede) : undefined,
+        type_user_id: selectedTypeUser ? parseInt(selectedTypeUser) : undefined,
+        page,
     });
 
     const sedes = useSede();
+    const roles = useRol();
 
     // HANDLES
     const handleClose = useCallback(() => {
@@ -98,12 +102,18 @@ export default function UsuarioPage() {
         await user.refetch();
     }, [user]);
 
+    const handleRolChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setSelectedTypeUser(value);
+        await user.refetch();
+    }, [user]);
+
     const handleCLickDelete = (id: number) => {
         setIdForDelete(id);
         setIsDeleteDialogOpen(true);
     };
 
-    if (user.isLoading || sedes.isLoading) {
+    if (user.isLoading || sedes.isLoading || roles.isLoading) {
         return <SkeletonTable/>;
     }
 
@@ -120,6 +130,17 @@ export default function UsuarioPage() {
                             nombre={"name"}
                             id={"id"}
                             icon={<Building className="h-3 w-3"/>}
+                            all={true}
+                        />
+                        <SelectFilter
+                            list={roles.data!}
+                            itemSelected={selectedTypeUser}
+                            handleItemSelect={handleRolChange}
+                            value={"id"}
+                            nombre={"type_name"}
+                            id={"id"}
+                            icon={<Building className="h-3 w-3"/>}
+                            all={true}
                         />
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
@@ -161,6 +182,9 @@ export default function UsuarioPage() {
                                 TIPO DE USUARIO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                SEDE
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 ACCIONES
                             </TableHead>
                         </TableRow>
@@ -182,9 +206,17 @@ export default function UsuarioPage() {
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">
                                     <Badge
-                                        variant={'default'}>
+                                        variant="default">
                                         {item.type_user.type_name.charAt(0).toUpperCase() + item.type_user.type_name.slice(1)}
                                     </Badge>
+                                </TableCell>
+                                <TableCell className="text-xs sm:text-sm">
+                                    {item.sede?.name && (
+                                        <Badge
+                                            variant="secondary">
+                                            {item.sede?.name}
+                                        </Badge>
+                                    )}
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">
@@ -220,10 +252,10 @@ export default function UsuarioPage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Tipo de Papel</DialogTitle>
+                        <DialogTitle>Actualizar Usuario</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
-                    {/* <UpdateFormUsuario onClose={handleCloseUpdate} id={idForUpdate}/> */}
+                    <UpdateUser onClose={handleCloseUpdate} id={idForUpdate}/>
                 </DialogContent>
             </Dialog>
 
@@ -245,7 +277,7 @@ export default function UsuarioPage() {
                         <AlertDialogCancel>Cancelar</AlertDialogCancel>
                         <AlertDialogAction
                             className={buttonVariants({variant: "destructive"})}
-                            // onClick={handleDelete}
+                            onClick={handleDelete}
                         >
                             Eliminar
                         </AlertDialogAction>

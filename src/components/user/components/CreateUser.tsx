@@ -77,7 +77,7 @@ export function CreateUser({onClose}: CreateUserProps) {
         }
     };
 
-    if (roles.isLoading) return <SkeletonForm/>;
+    if (roles.isLoading || sedes.isLoading) return <SkeletonForm/>;
 
     return (
         <div className="flex items-center justify-center">

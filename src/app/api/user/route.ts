@@ -10,7 +10,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const {searchParams} = new URL(req.url);
         const name = searchParams.get("name") ?? undefined;
         const email = searchParams.get("email") ?? undefined;
-        const typeUserId = searchParams.get("typeUserId") ?? undefined;
+        const typeUserId = searchParams.get("type_user_id") ?? undefined;
         const sedeId = searchParams.get("sedeId") ?? undefined;
 
         const page = parseInt(searchParams.get("page") ?? "1");
@@ -20,6 +20,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             name: name ? {contains: name} : undefined,
             email: email ? {contains: email} : undefined,
             type_user_id: typeUserId ? parseInt(typeUserId) : undefined,
+            sede_id: sedeId ? parseInt(sedeId) : undefined,
         };
 
         const totalRecords = await prisma.user.count({where: whereOptions});
@@ -55,7 +56,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         const body: UserRequest = await req.json();
-        const hashedPassword = await bcrypt.hash(body.password, 10);
+        const hashedPassword = await bcrypt.hash(body.password!, 10);
 
         const user = await prisma.user.create({
             data: {

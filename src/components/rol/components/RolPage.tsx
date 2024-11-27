@@ -154,7 +154,9 @@ export default function RolPage() {
                                     <Badge variant="secondary">{index + 1}</Badge>
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">
-                                    {item.type_name}
+                                    <Badge>
+                                        {item.type_name}
+                                    </Badge>
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">
@@ -163,6 +165,7 @@ export default function RolPage() {
                                             className="h-7 w-7"
                                             size="icon"
                                             variant="outline"
+                                            disabled={item.id === 1}
                                             onClick={() => handleClickUpdate(item.id)}
                                         >
                                             <Pen className="h-3.5 text-primary"/>
@@ -173,6 +176,7 @@ export default function RolPage() {
                                             className="h-7 w-7"
                                             size="icon"
                                             variant="outline"
+                                            disabled={item.id === 1}
                                             onClick={() => handleCLickDelete(item.id)}
                                         >
                                             <Trash2 className="h-3.5 text-gray-500"/>

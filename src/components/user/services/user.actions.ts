@@ -2,15 +2,18 @@ import {User} from "@prisma/client";
 import api from "../../../../config/api";
 import {AxiosRequestConfig, AxiosResponse} from "axios";
 import {UserCollection, UserRequest} from "./user.interface";
+import {getUserInterface} from "@/components/user/lib/user.hook";
 
 interface Response {
     message: string;
 }
 
 export async function getUser(
-    page?: number,
-    type_user_id?: number,
-    sedeId?: number,
+    {
+        sedeId,
+        type_user_id,
+        page,
+    }: getUserInterface
 ): Promise<UserCollection> {
     const config: AxiosRequestConfig = {
         params: {
