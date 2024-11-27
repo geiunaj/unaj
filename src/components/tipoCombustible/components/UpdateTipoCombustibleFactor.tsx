@@ -34,6 +34,7 @@ import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVal
 import {getAnio} from "@/components/anio/services/anio.actions";
 
 const TipoCombustibleFactor = z.object({
+    tipo: z.string().min(1, "Selecciona un tipo de combustible"),
     tipoConsumibleId: z.string().min(1, "Selecciona un tipo de consumible"),
     factorEmisionCO2: z.preprocess((val) => parseFloat(val as string,),
         z.number().min(0, "Ingresa un valor mayor a 0")),
@@ -48,6 +49,7 @@ export function UpdateTipoCombustibleFactor({onClose, id}: UpdateTipoCombustible
     const form = useForm<z.infer<typeof TipoCombustibleFactor>>({
         resolver: zodResolver(TipoCombustibleFactor),
         defaultValues: {
+            tipo: "",
             tipoConsumibleId: "",
             factorEmisionCO2: 0,
             factorEmisionCH4: 0,
@@ -81,6 +83,7 @@ export function UpdateTipoCombustibleFactor({onClose, id}: UpdateTipoCombustible
             const tipoCombustibleFactorData = await tipoCombustibleFactor.data;
             console.log(tipoCombustibleFactorData);
             form.reset({
+                tipo: tipoCombustibleFactorData.tipo,
                 tipoConsumibleId: tipoCombustibleFactorData.tipoCombustible_id.toString(),
                 factorEmisionCO2: tipoCombustibleFactorData.factorEmisionCO2,
                 factorEmisionCH4: tipoCombustibleFactorData.factorEmisionCH4,
@@ -96,6 +99,7 @@ export function UpdateTipoCombustibleFactor({onClose, id}: UpdateTipoCombustible
 
     const onSubmit = async (data: z.infer<typeof TipoCombustibleFactor>) => {
         const tipoCombustibleFactorRequest: TipoCombustibleFactorRequest = {
+            tipo: data.tipo,
             tipoCombustible_id: parseInt(data.tipoConsumibleId),
             factorEmisionCO2: data.factorEmisionCO2,
             factorEmisionCH4: data.factorEmisionCH4,
@@ -124,6 +128,32 @@ export function UpdateTipoCombustibleFactor({onClose, id}: UpdateTipoCombustible
                         className="w-full flex flex-col gap-3"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
+                        {/* Tipo */}
+                        <FormField
+                            name="tipo"
+                            control={form.control}
+                            render={({field}) => (
+                                <FormItem className="pt-2">
+                                    <FormLabel>Tipo de Combustible</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Nombre de Consumible"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value="estacionaria">Estacionaria</SelectItem>
+                                                <SelectItem value="movil">Móvil</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormItem>
+                            )}
+                        />
                         {/* Tipo de Consumible */}
                         <FormField
                             name="tipoConsumibleId"
