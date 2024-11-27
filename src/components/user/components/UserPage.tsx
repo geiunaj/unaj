@@ -179,9 +179,11 @@ export default function UsuarioPage() {
                                     {item.telefono}
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">
-                                    {item.type_user.type_name}
+                                    <Badge
+                                        variant={'default'}>
+                                        {item.type_user.type_name.charAt(0).toUpperCase() + item.type_user.type_name.slice(1)}
+                                    </Badge>
                                 </TableCell>
-
                                 <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">
                                         {/*UPDATE*/}

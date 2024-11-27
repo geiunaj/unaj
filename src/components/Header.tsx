@@ -23,7 +23,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import {iconComponents, menu, MenuItem} from "@/lib/constants/menu";
+import {iconComponents, menuItems, MenuItem} from "@/lib/constants/menu";
 import {useEffect, useState} from "react";
 import {usePathname, useRouter} from "next/navigation";
 import {Separator} from "./ui/separator";
@@ -32,6 +32,7 @@ import * as React from "react";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import usePageTitle from "@/lib/stores/titleStore.store";
 import TitleUpdater from "@/components/TitleUpdater";
+import {useMenuStore} from "@/lib/stores/menuStore.store";
 
 export default function Header() {
     const logo = "/img/logoUNAJ.png";
@@ -47,6 +48,14 @@ export default function Header() {
             return;
         }
         setItemActive(path);
+        const menuItem = menuFiltered.find((item) =>
+            item.items?.some((subItem) => subItem.href === path)
+        );
+        if (menuItem) {
+            setOpenAccordion(menuItem.title);
+        } else {
+            setOpenAccordion(null);
+        }
     }, [pathname]);
 
     const handleItemClick = (item: MenuItem) => {
@@ -79,26 +88,12 @@ export default function Header() {
         setOpenAccordion(value ? value : null);
     };
 
+    const {menuFiltered} = useMenuStore();
+
     const {setTheme} = useTheme();
     const {titleHeader} = usePageTitle();
 
     return (
-        // <div className="flex justify-between items-center p-3">
-        //   {/* <div className="flex items-center">
-        //     <img src={logo} className="w-[178px] h-[55px]" alt="logo" />
-        //   </div> */}
-
-        // </div>
-        // <div className="flex items-center justify-end space-x-5 p-2">
-        //   <div className="flex flex-col justify-end items-end">
-        //     <h1 className="font-medium">Admin User</h1>
-        //     <p className="text-xs text-gray-400">adminuser@example.com</p>
-        //   </div>
-        //   <Avatar>
-        //     <AvatarFallback>NC</AvatarFallback>
-        //   </Avatar>
-        // </div>
-
         <header
             className="flex h-14 justify-between md:justify-center items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
             <Sheet>
@@ -131,7 +126,7 @@ export default function Header() {
                     </SheetHeader>
 
                     <nav className="grid items-start px-2 text-sm font-medium overflow-hidden">
-                        {menu.map((item) => {
+                        {menuFiltered.map((item) => {
                             const Icon = iconComponents[item.icon];
                             const isAccordionOpen = openAccordion === item.title;
 

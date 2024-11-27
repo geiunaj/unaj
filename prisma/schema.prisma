@@ -15,8 +15,12 @@ generator client {
 
 model Access {
   id           Int      @id @default(autoincrement())
+  menu         Int
   type_user_id Int
-  type_user    TypeUser @relation(fields: [type_user_id], references: [id])
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  type_user TypeUser @relation(fields: [type_user_id], references: [id])
 
   @@index([type_user_id])
   @@map("access")

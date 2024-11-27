@@ -1,6 +1,6 @@
 import {useRouter, usePathname} from "next/navigation";
 import {Button} from "./ui/button";
-import {iconComponents, menu, MenuItem} from "@/lib/constants/menu";
+import {iconComponents, MenuItem} from "@/lib/constants/menu";
 import {useState, useEffect} from "react";
 import Link from "next/link";
 import {Separator} from "./ui/separator";
@@ -10,12 +10,15 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
+import {useMenuStore} from "@/lib/stores/menuStore.store";
 
 export default function Sidebar() {
     const router = useRouter();
     const pathname = usePathname();
     const [itemActive, setItemActive] = useState<string>("");
     const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+
+    const {menuFiltered} = useMenuStore();
 
     useEffect(() => {
         const path = "/" + pathname.split("/")[1];
@@ -25,7 +28,7 @@ export default function Sidebar() {
         }
         setItemActive(path);
 
-        const menuItem = menu.find((item) =>
+        const menuItem = menuFiltered.find((item) =>
             item.items?.some((subItem) => subItem.href === path)
         );
         if (menuItem) {
@@ -76,7 +79,7 @@ export default function Sidebar() {
             </div>
             <div className="flex-1">
                 <nav className="grid items-start px-2 text-xs font-medium overflow-hidden">
-                    {menu.map((item) => {
+                    {menuFiltered.map((item) => {
                         const Icon = iconComponents[item.icon];
                         const isAccordionOpen = openAccordion === item.title;
 
