@@ -1028,6 +1028,8 @@ async function transporteAereo() {
             },
         });
     }
+
+    console.log("Air transport created");
 }
 
 // 1
@@ -1877,6 +1879,8 @@ async function taxiConsumo() {
             },
         });
     }
+
+    console.log("Taxi data created");
 }
 
 // 3
@@ -2021,39 +2025,42 @@ async function casaTrabajoConsumo() {
 
 async function main() {
     // ------- 0
-    typeUsers();
-    meses();
-    years();
-    gwp();
-    sedes();
+    // await typeUsers();
+    // await meses();
+    // await years();
+    // await gwp();
+    // await sedes();
     AllYears = await prisma.anio.findMany();
     AllSedes = await prisma.sede.findMany();
-    areas();
+    // await areas();
+    // // ------- 6
+    // await tipoCombustible();
+    // await fertilizantes();
     // ------- 6
-    tipoCombustible();
-    fertilizantes();
-    // ------- 6
-    tipoPapel();
-    factorTipoPapel();
-    factorSEIN();
-    factorAgua();
-    factorTaxi();
-    factorAereo();
-    // ------- 6
-    transporteAereo();
-    factorTerrestre();
-    transporteTerrestre();
-    grupoConsumible();
-    categoriaConsumible();
-    procesoConsumible();
-    // ------- 6
-    descripcionConsumible();
-    tipoConsumible();
-    grupoActivo();
-    // ------- 6
-    taxiConsumo();
-    casaTrabajoConsumo();
-    // ------- 4
+    // await tipoPapel();
+    // await factorTipoPapel();
+    // await factorSEIN();
+    // await factorAgua();
+    // await factorTaxi();
+    // await factorAereo();
+    // // ------- 6
+    // await transporteAereo();
+    // await factorTerrestre();
+    // await transporteTerrestre();
+    // // ------- 3
+    // await grupoConsumible();
+    // await categoriaConsumible();
+    // await procesoConsumible();
+    // // ------- 3
+    // await descripcionConsumible();
+    // await tipoConsumible();
+    // // ------- 3
+    // await grupoActivo();
+    // // ------- 3
+    // await taxiConsumo();
+    // // ------- 1
+    await casaTrabajoConsumo();
+    // // ------- 3
 }
 
 main()
