@@ -1,4 +1,4 @@
-import create from 'zustand';
+import {create} from 'zustand';
 import {menuItems} from "@/lib/constants/menu"; // Asegúrate de tener los elementos de menú en esta constante
 
 interface MenuItem {
