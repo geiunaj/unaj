@@ -4,7 +4,11 @@ const {faker} = require("@faker-js/faker");
 
 const prisma = new PrismaClient();
 
-async function main() {
+let AllYears = prisma.anio.findMany();
+let AllSedes = prisma.sede.findMany();
+
+// 1
+async function typeUsers() {
     const adminType = await prisma.typeUser.create({
         data: {
             type_name: "Administrador",
@@ -43,7 +47,10 @@ async function main() {
         },
     });
     console.log("User created");
+}
 
+// 1
+async function meses() {
     // Crear los meses
     const meses = [
         "Enero",
@@ -69,8 +76,10 @@ async function main() {
         });
     }
     console.log("Months created");
+}
 
-    // Crear los últimos 5 años
+// 1
+async function years() {
     const currentYear = new Date().getFullYear();
     for (let i = 0; i < 5; i++) {
         await prisma.anio.create({
@@ -82,7 +91,58 @@ async function main() {
         });
     }
     console.log("Years created");
+}
 
+// 1
+async function gwp() {
+    const gwpData = [
+        {
+            nombre: "Dióxido de carbono",
+            formula: "CO2",
+            valor: 1,
+        },
+        {
+            nombre: "Metano - fosil",
+            formula: "CH4",
+            valor: 30,
+        },
+        {
+            nombre: "Metano - biomasa",
+            formula: "CH4",
+            valor: 28,
+        },
+        {
+            nombre: "Óxido nitroso",
+            formula: "N2O",
+            valor: 265,
+        },
+        {
+            nombre: "Hexafluoruro de azufre",
+            formula: "SF6",
+            valor: 23500,
+        },
+        {
+            nombre: "Trifluoruro de nitrógeno",
+            formula: "NF3",
+            valor: 16100,
+        },
+    ];
+    for (const gwp of gwpData) {
+        await prisma.gWP.create({
+            data: {
+                nombre: gwp.nombre,
+                formula: gwp.formula,
+                valor: gwp.valor,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+    console.log("GWP data created");
+}
+
+// 1
+async function sedes() {
     const sedesNames = ["Sede Ayabacas", "Sede Central", "Sede La Capilla"];
 
     for (const sedeName of sedesNames) {
@@ -93,7 +153,27 @@ async function main() {
         });
     }
     console.log("Sedes created");
+}
 
+// 1
+async function areas() {
+    for (const sede of AllSedes) {
+        for (let i = 0; i < 3; i++) {
+            await prisma.area.create({
+                data: {
+                    nombre: `Area ${sede.id}${i + 1}`,
+                    sede_id: sede.id,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+        }
+    }
+    console.log("Areas created");
+}
+
+// 4
+async function tipoCombustible() {
     // Crear los tipos de combustible
     const tiposCombustible = [
         {
@@ -146,9 +226,6 @@ async function main() {
             }
         },
     ];
-
-    const allAnios = await prisma.anio.findMany();
-    const allMeses = await prisma.mes.findMany();
 
     for (const tipo of tiposCombustible) {
         const tipoCombustible = await prisma.tipoCombustible.create({
@@ -226,11 +303,10 @@ async function main() {
     }
     console.log("Fuel types created");
     console.log("Fuel types factors created");
+}
 
-    const allSedes = await prisma.sede.findMany();
-    const types = ["estacionaria", "movil"];
-
-    // Crear tipos de Fertilizantes
+// 2
+async function fertilizantes() {
     const tiposFertilizantes = [
         {
             clase: "Sintético",
@@ -294,7 +370,7 @@ async function main() {
         },
     ];
 
-    for (const anio of allAnios) {
+    for (const anio of AllYears) {
         await prisma.factorEmisionFertilizante.create({
             data: {
                 valor: 0.0125,
@@ -320,53 +396,10 @@ async function main() {
         });
     }
     console.log("Fertilizer types created");
+}
 
-    // Crear datos para GWP
-    const gwpData = [
-        {
-            nombre: "Dióxido de carbono",
-            formula: "CO2",
-            valor: 1,
-        },
-        {
-            nombre: "Metano - fosil",
-            formula: "CH4",
-            valor: 30,
-        },
-        {
-            nombre: "Metano - biomasa",
-            formula: "CH4",
-            valor: 28,
-        },
-        {
-            nombre: "Óxido nitroso",
-            formula: "N2O",
-            valor: 265,
-        },
-        {
-            nombre: "Hexafluoruro de azufre",
-            formula: "SF6",
-            valor: 23500,
-        },
-        {
-            nombre: "Trifluoruro de nitrógeno",
-            formula: "NF3",
-            valor: 16100,
-        },
-    ];
-    for (const gwp of gwpData) {
-        await prisma.gWP.create({
-            data: {
-                nombre: gwp.nombre,
-                formula: gwp.formula,
-                valor: gwp.valor,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
-    }
-    console.log("GWP data created");
-
+// 1
+async function tipoPapel() {
     const tipoPapel = [
         // A3
         {
@@ -477,11 +510,14 @@ async function main() {
         });
     }
     console.log("Paper types created");
+}
 
+// 1
+async function factorTipoPapel() {
     const allTiposPapel = await prisma.tipoPapel.findMany();
 
     for (const tipoPapel of allTiposPapel) {
-        for (const anio of allAnios) {
+        for (const anio of AllYears) {
             await prisma.factorTipoPapel.create({
                 data: {
                     tipoPapelId: tipoPapel.id,
@@ -495,9 +531,11 @@ async function main() {
         }
     }
     console.log("Paper factors created");
+}
 
+// 1
+async function factorSEIN() {
     //Datos Factor de Emisión SEIN
-
     const emisionSEIN = [
         {
             factorCO2: 0.168088403,
@@ -542,24 +580,11 @@ async function main() {
         });
     }
     console.log("SEIN emission factors created");
+}
 
-    //Datos prueba para area
-
-    for (const sede of allSedes) {
-        for (let i = 0; i < 3; i++) {
-            await prisma.area.create({
-                data: {
-                    nombre: `Area ${sede.id}${i + 1}`,
-                    sede_id: sede.id,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                },
-            });
-        }
-    }
-    console.log("Areas created");
-
-    for (const anio of allAnios) {
+// 1
+async function factorAgua() {
+    for (const anio of AllYears) {
         await prisma.factorEmisionAgua.create({
             data: {
                 factor: 0.344,
@@ -568,8 +593,11 @@ async function main() {
         });
     }
     console.log("Water emission factor created");
+}
 
-    for (const anio of allAnios) {
+// 1
+async function factorTaxi() {
+    for (const anio of AllYears) {
         await prisma.factorEmisionTaxi.create({
             data: {
                 factor: 0.100889,
@@ -578,8 +606,11 @@ async function main() {
         });
     }
     console.log("Taxi emission factor created");
+}
 
-    for (const anio of allAnios) {
+// 1
+async function factorAereo() {
+    for (const anio of AllYears) {
         await prisma.factorEmisionTransporteAereo.create({
             data: {
                 factor1600: 0.29832,
@@ -592,7 +623,10 @@ async function main() {
         });
     }
     console.log("Transporte aereo factors created");
+}
 
+// 1
+async function transporteAereo() {
     const transportesAereo = [
         {
             pasajeros: 32,
@@ -994,8 +1028,11 @@ async function main() {
             },
         });
     }
+}
 
-    for (const anio of allAnios) {
+// 1
+async function factorTerrestre() {
+    for (const anio of AllYears) {
         await prisma.factorEmisionTransporteTerrestre.create({
             data: {
                 factor: 0.12007,
@@ -1006,7 +1043,10 @@ async function main() {
         });
     }
     console.log("Transporte terrestre factors created");
+}
 
+// 1
+async function transporteTerrestre() {
     const tranporteTerrestre = [
         {
             origen: "Puno - San Roman - Juliaca",
@@ -1259,12 +1299,10 @@ async function main() {
             },
         });
     }
+}
 
-    const categoriaConsumibles = [
-        {nombre: "INSUMOS ALIMENTARIOS"},
-        {nombre: "MATERIAL DE LIMPIEZA"},
-        {nombre: "MATERIAL DE OFICINA"},
-    ];
+// 1
+async function grupoConsumible() {
     const grupoConsumibles = [
         {nombre: "Aceite vegetal"},
         {nombre: "Acrílico"},
@@ -1306,6 +1344,40 @@ async function main() {
         {nombre: "Toner"},
         {nombre: "Yogurt"},
     ];
+    for (const grupo of grupoConsumibles) {
+        await prisma.grupoConsumible.create({
+            data: {
+                nombre: grupo.nombre,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+
+    console.log("Consumibles groups created");
+}
+
+// 1
+async function categoriaConsumible() {
+    const categoriaConsumibles = [
+        {nombre: "INSUMOS ALIMENTARIOS"},
+        {nombre: "MATERIAL DE LIMPIEZA"},
+        {nombre: "MATERIAL DE OFICINA"},
+    ];
+    for (const categoria of categoriaConsumibles) {
+        await prisma.categoriaConsumible.create({
+            data: {
+                nombre: categoria.nombre,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+    console.log("Consumibles categories created");
+}
+
+// 1
+async function procesoConsumible() {
     const procesoConsumibles = [
         {nombre: "Paper and board for (fat) food packaging"},
         {
@@ -1353,6 +1425,21 @@ async function main() {
         {nombre: "Milk, whole"},
         {nombre: "MMA (Methyl methacrylate)"},
     ];
+    for (const proceso of procesoConsumibles) {
+        await prisma.procesoConsumible.create({
+            data: {
+                nombre: proceso.nombre,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+
+    console.log("Consumibles processes created");
+}
+
+// 1
+async function descripcionConsumible() {
     const descripcionConsumibles = [
         {descripcion: "ABASTECIMIENTO"},
         {descripcion: "ACADEMICA"},
@@ -1394,6 +1481,25 @@ async function main() {
         {descripcion: "TESORERIA"},
         {descripcion: "TEXTIL"},
     ];
+    for (const descripcion of descripcionConsumibles) {
+        await prisma.descripcionConsumible.create({
+            data: {
+                descripcion: descripcion.descripcion,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+
+    console.log("Consumibles descriptions created");
+}
+
+// 2
+async function tipoConsumible() {
+    const allDescripcionConsumibles = await prisma.descripcionConsumible.findMany();
+    const allCategoriaConsumibles = await prisma.categoriaConsumible.findMany();
+    const allGrupoConsumibles = await prisma.grupoConsumible.findMany();
+    const allProcesoConsumibles = await prisma.procesoConsumible.findMany();
     const tipoConsumibles = [
         {nombre: "ACEITE VEGETAL COMESTIBLE", unidad: "kg", factor: 0.12089},
         {
@@ -1489,53 +1595,6 @@ async function main() {
             factor: 0.438471383,
         },
     ];
-
-    for (const descripcion of descripcionConsumibles) {
-        await prisma.descripcionConsumible.create({
-            data: {
-                descripcion: descripcion.descripcion,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
-    }
-
-    for (const categoria of categoriaConsumibles) {
-        await prisma.categoriaConsumible.create({
-            data: {
-                nombre: categoria.nombre,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
-    }
-
-    for (const grupo of grupoConsumibles) {
-        await prisma.grupoConsumible.create({
-            data: {
-                nombre: grupo.nombre,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
-    }
-
-    for (const proceso of procesoConsumibles) {
-        await prisma.procesoConsumible.create({
-            data: {
-                nombre: proceso.nombre,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
-    }
-
-    const allDescripcionConsumibles =
-        await prisma.descripcionConsumible.findMany();
-    const allCategoriaConsumibles = await prisma.categoriaConsumible.findMany();
-    const allGrupoConsumibles = await prisma.grupoConsumible.findMany();
-    const allProcesoConsumibles = await prisma.procesoConsumible.findMany();
-
     for (const tipoConsumible of tipoConsumibles) {
         const newTipoConsumible = await prisma.tipoConsumible.create({
             data: {
@@ -1550,7 +1609,7 @@ async function main() {
             },
         });
 
-        for (const anio of allAnios) {
+        for (const anio of AllYears) {
             await prisma.factorTipoConsumible.create({
                 data: {
                     factor: tipoConsumible.factor,
@@ -1564,12 +1623,17 @@ async function main() {
             });
         }
     }
+}
 
-    const grupoActivos: {
+// 3
+async function grupoActivo() {
+    interface GrupoActivoInterface {
         nombre: string;
         categoria: string[];
         factor: number;
-    }[] = [
+    }
+
+    const grupoActivos: GrupoActivoInterface[] = [
         {
             nombre: "Steel hot rolled sheet USA",
             categoria: ["Metal", "Acero"],
@@ -1658,7 +1722,10 @@ async function main() {
         });
     }
     console.log("Asset groups created");
+}
 
+// 1
+async function taxiConsumo() {
     const taxis: { monto: number }[] = [
         {monto: 50},
         {monto: 42},
@@ -1810,7 +1877,10 @@ async function main() {
             },
         });
     }
+}
 
+// 3
+async function casaTrabajoConsumo() {
     const factorCasaTrabajo = [
         {
             consumo: 715318.2,
@@ -1946,8 +2016,44 @@ async function main() {
         });
     }
     console.log("Casa-trabajo data created");
+}
 
-    // console.log({adminType, user});
+
+async function main() {
+    // ------- 0
+    typeUsers();
+    meses();
+    years();
+    gwp();
+    sedes();
+    AllYears = await prisma.anio.findMany();
+    AllSedes = await prisma.sede.findMany();
+    areas();
+    // ------- 6
+    tipoCombustible();
+    fertilizantes();
+    // ------- 6
+    tipoPapel();
+    factorTipoPapel();
+    factorSEIN();
+    factorAgua();
+    factorTaxi();
+    factorAereo();
+    // ------- 6
+    transporteAereo();
+    factorTerrestre();
+    transporteTerrestre();
+    grupoConsumible();
+    categoriaConsumible();
+    procesoConsumible();
+    // ------- 6
+    descripcionConsumible();
+    tipoConsumible();
+    grupoActivo();
+    // ------- 6
+    taxiConsumo();
+    casaTrabajoConsumo();
+    // ------- 4
 }
 
 main()
