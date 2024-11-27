@@ -5,6 +5,11 @@ const {faker} = require("@faker-js/faker");
 const prisma = new PrismaClient();
 
 async function main() {
+    const adminType = await prisma.typeUser.create({
+        data: {
+            type_name: "Administrador",
+        },
+    });
     const roles = ["Categoria 1", "Categoria 2", "Categoria 3", "Categoria 4"];
     for (const role of roles) {
         await prisma.typeUser.create({
@@ -13,11 +18,6 @@ async function main() {
             },
         });
     }
-    const adminType = await prisma.typeUser.create({
-        data: {
-            type_name: "Administrador",
-        },
-    });
     console.log("Type User created");
 
     for (let i = 1; i <= 40; i++) {

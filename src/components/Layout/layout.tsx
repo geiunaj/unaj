@@ -48,7 +48,13 @@ const LayoutWrapper = ({children}: { children: React.ReactNode }) => {
             );
         });
 
-        if (!menuItem && path !== '/cuenta') pushToHome();
+        if (menuFiltered.length !== 0) {
+            if (path !== "/cuenta") {
+                if (!menuItem) {
+                    pushToHome();
+                }
+            }
+        }
         setLoading(false);
     }, [pathname, menuFiltered]);
 

@@ -99,20 +99,24 @@ export function UpdateRol({id, onClose}: UpdateRolProps) {
 
     const loadForm = useCallback(async () => {
         if (rol.data) {
-            const rolData = await rol.data;
+            const rolData: any = await rol.data;
+            setCheckedItems({});
+
             form.reset({
                 type_name: rolData.type_name,
                 permisos: rolData.permisos,
             });
-            setCheckedItems((prev) => {
-                const updated = {...prev};
-                rolData.permisos.forEach((permiso) => {
+
+            setCheckedItems(() => {
+                const updated: CheckedItems = {};
+                rolData.permisos.forEach((permiso: any) => {
                     updated[permiso] = true;
                 });
                 return updated;
             });
         }
     }, [rol.data, id]);
+
 
     useEffect(() => {
         loadForm();
@@ -205,7 +209,12 @@ export function UpdateRol({id, onClose}: UpdateRolProps) {
 
 
                         <div className="flex gap-3 w-full pt-4">
-                            <Button type="submit" size="sm" className="w-full bg-primary">
+                            <Button
+                                type="submit"
+                                size="sm"
+                                className="w-full bg-primary"
+                                disabled={rol.isLoading || form.formState.isSubmitting || id === 1}
+                            >
                                 Guardar
                             </Button>
                         </div>

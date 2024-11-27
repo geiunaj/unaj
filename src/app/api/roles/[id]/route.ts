@@ -32,6 +32,7 @@ export async function PUT(req: NextRequest, {params}: { params: { id: string } }
     try {
         const id = parseInt(params.id, 10);
         if (isNaN(id)) return NextResponse.json({message: "Invalid ID"}, {status: 400});
+        if (id === 1) return NextResponse.json({message: "No se puede editar el rol de administrador"}, {status: 400});
 
         const body: RolRequest = await req.json();
 
