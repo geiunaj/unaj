@@ -2,6 +2,9 @@ import prisma from "@/lib/prisma";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
+import {Session, User} from "next-auth";
+import {JWT} from "next-auth/jwt";
+
 
 const authOptions = {
     providers: [
@@ -13,7 +16,7 @@ const authOptions = {
             },
             async authorize(credentials, req): Promise<any> {
                 if (!credentials?.email || !credentials.password) {
-                    throw new Error("Email and password are required");
+                    throw new Error("Email y contraseña son requeridos");
                 }
 
                 const userFound = await prisma.user.findUnique({
@@ -23,7 +26,7 @@ const authOptions = {
                 });
 
                 if (!userFound) {
-                    throw new Error("No user found with the provided email");
+                    throw new Error("Credenciales inválidas");
                 }
 
                 const matchPassword = await bcrypt.compare(
@@ -32,7 +35,7 @@ const authOptions = {
                 );
 
                 if (!matchPassword) {
-                    throw new Error("Incorrect password");
+                    throw new Error("Credenciales inválidas");
                 }
 
                 return {
@@ -43,6 +46,28 @@ const authOptions = {
             },
         }),
     ],
+    callbacks: {
+        async jwt({token, user}: { token: JWT; user?: any }) {
+            if (user) {
+                token.id = user.id;
+            }
+            return token;
+        },
+        async session({session, token}: { session: any; token: JWT }) {
+            session.id = token.id;
+            if (token.id) {
+                const user = await prisma.user.findUnique({
+                    where: {id: Number(token.id)},
+                });
+                session.user = {
+                    id: user?.id || "",
+                    name: user?.name || "",
+                    email: user?.email || "",
+                };
+            }
+            return session;
+        },
+    },
     secret: process.env.SECRET,
 
     // Puedes agregar más configuraciones aquí, por ejemplo:

@@ -59,6 +59,10 @@ export default function Header() {
         await signOut({redirect: false, callbackUrl: "/"});
     };
 
+    const handleAccount = async () => {
+        router.push("/cuenta");
+    };
+
     const className = (classname: string, href: string) => {
         return `${classname} ${
             itemActive === href ? "text-primary" : "text-muted-foreground"
@@ -216,8 +220,7 @@ export default function Header() {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="text-xs">Cuenta</DropdownMenuItem>
-                        <DropdownMenuItem className="text-xs">Ajutes</DropdownMenuItem>
+                        <DropdownMenuItem className="text-xs" onClick={handleAccount}>Cuenta</DropdownMenuItem>
                         <DropdownMenuSeparator/>
                         <DropdownMenuGroup>
                             <DropdownMenuSub>

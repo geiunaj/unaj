@@ -16,6 +16,7 @@ import {Input} from "@/components/ui/input";
 import {signIn} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import Image from 'next/image';
+import {errorToast} from "@/lib/utils/core.function";
 
 export default function LoginPage() {
     // CONSTANTES DE IMAGNES DE FONDO Y LOGO
@@ -49,14 +50,12 @@ export default function LoginPage() {
         });
 
         if (!result) {
-            console.error("Login fallido: No se recibió una respuesta del servidor");
+            errorToast("No se recibió una respuesta del servidor");
             return;
         }
-
         if (result.error) {
-            console.error("Login fallido:", result.error);
+            errorToast(result.error);
         } else {
-            // console.log("Login exitoso");
             navigation.push("/home");
         }
     };
