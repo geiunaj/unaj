@@ -2023,6 +2023,7 @@ async function consumoPapel() {
             }
         });
     }
+    console.log("Consumo de papel creado");
 }
 
 
@@ -2069,7 +2070,8 @@ async function main() {
     await consumoEnergia();
     await consumibles();
     await activos();
-    // ------- 2
+    await consumoPapel();
+    // ------- 4
 
 
 }

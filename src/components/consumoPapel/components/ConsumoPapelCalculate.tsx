@@ -35,20 +35,21 @@ export default function ConsumoPapelCalculate() {
     const [selectedSede, setSelectedSede] = useState<string>("1");
     const [page, setPage] = useState(1);
 
-    const [yearFrom, setYearFrom] = useState<string>(new Date().getFullYear().toString());
-    const [yearTo, setYearTo] = useState<string>(new Date().getFullYear().toString());
+
+    const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
+    const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     // HOOKS
     const consumoPapelCalculos = useConsumoPapelCalculos({
         sedeId: parseInt(selectedSede),
-        yearFrom: yearFrom,
-        yearTo: yearTo,
+        from: from,
+        to: to,
         page,
     });
     const consumoPapelCalculosReport = useConsumoPapelCalculosReport({
         sedeId: parseInt(selectedSede),
-        yearFrom: yearFrom,
-        yearTo: yearTo,
+        from: from,
+        to: to,
     });
 
     const sedes = useSedes();
@@ -64,16 +65,16 @@ export default function ConsumoPapelCalculate() {
         await consumoPapelCalculosReport.refetch();
     }, [consumoPapelCalculos, consumoPapelCalculosReport]);
 
-    const handleYearFromChange = useCallback(async (value: string) => {
+    const handleFromChange = useCallback(async (value: string) => {
         await setPage(1);
-        await setYearFrom(value);
+        await setFrom(value);
         await consumoPapelCalculos.refetch();
         await consumoPapelCalculosReport.refetch();
     }, [consumoPapelCalculos, consumoPapelCalculosReport]);
 
-    const handleYearToChange = useCallback(async (value: string) => {
+    const handleToChange = useCallback(async (value: string) => {
         await setPage(1);
-        await setYearTo(value);
+        await setTo(value);
         await consumoPapelCalculos.refetch();
         await consumoPapelCalculosReport.refetch();
     }, [consumoPapelCalculos, consumoPapelCalculosReport]);
@@ -81,8 +82,8 @@ export default function ConsumoPapelCalculate() {
     const handleCalculate = useCallback(async () => {
         await createConsumoPapelCalculate({
             sedeId: selectedSede ? Number(selectedSede) : undefined,
-            yearFrom,
-            yearTo,
+            from,
+            to,
         }).then(() => {
             successToast("Calculo realizado con éxito");
         })
@@ -91,7 +92,7 @@ export default function ConsumoPapelCalculate() {
             });
         await consumoPapelCalculos.refetch();
         await consumoPapelCalculosReport.refetch();
-    }, [selectedSede, yearFrom, yearTo, consumoPapelCalculos, consumoPapelCalculosReport]);
+    }, [selectedSede, from, to, consumoPapelCalculos, consumoPapelCalculosReport]);
 
 
     const handleClickExcelReport = useCallback(async (period: ReportRequest) => {
@@ -105,10 +106,10 @@ export default function ConsumoPapelCalculate() {
             {header: "SEDE", key: "sede", width: 25},
             {header: "TOTAL GEI", key: "totalGEI", width: 10},
         ];
-        await setYearFrom(period.yearFrom ?? "");
-        await setYearTo(period.yearTo ?? "");
+        await setFrom(period.from ?? "");
+        await setTo(period.to ?? "");
         const data = await consumoPapelCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE PAPEL", "consumo-papel");
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), "REPORTE DE EMISIONES DE PAPEL", "consumo-papel");
     }, [consumoPapelCalculosReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
@@ -149,10 +150,11 @@ export default function ConsumoPapelCalculate() {
                             <ReportComponent
                                 onSubmit={handleClickExcelReport}
                                 ref={submitFormRef}
-                                yearFrom={yearFrom}
-                                yearTo={yearTo}
-                                handleYearFromChange={handleYearFromChange}
-                                handleYearToChange={handleYearToChange}
+                                from={from}
+                                to={to}
+                                handleFromChange={handleFromChange}
+                                handleToChange={handleToChange}
+                                withMonth={true}
                             />
 
                         </div>
@@ -169,7 +171,7 @@ export default function ConsumoPapelCalculate() {
 
                             <ExportPdfReport
                                 data={consumoPapelCalculosReport.data!.data}
-                                fileName={`REPORTE DE EMISIONES DE PAPEL_${formatPeriod({yearFrom, yearTo}, true)}`}
+                                fileName={`REPORTE DE EMISIONES DE PAPEL_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "rn", width: 10},
                                     {header: "TIPO PAPEL", key: "tipoPapel", width: 15},
@@ -181,7 +183,7 @@ export default function ConsumoPapelCalculate() {
                                     {header: "TOTAL GEI", key: "totalGEI", width: 15},
                                 ]}
                                 title="REPORTE DE EMISIONES DE PAPEL"
-                                period={formatPeriod({yearFrom, yearTo})}
+                                period={formatPeriod({from, to}, true)}
                             />
 
                             <ButtonCalculate

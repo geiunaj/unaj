@@ -11,36 +11,35 @@ interface Response {
 export async function getConsumoPapel(
     tipoPapelId?: number,
     sedeId?: number,
-    yearFrom?: string,
-    yearTo?: string,
+    from?: string,
+    to?: string,
     sort?: string,
     direction?: string,
     page?: number,
-
 ): Promise<CollectionConsumoPapel> {
-        const config: AxiosRequestConfig = {
-            params: {
-                tipoPapelId,
-                sedeId,
-                yearFrom,
-                yearTo,
-                sort,
-                direction,
-                page,
-            },
-        };
-        const {data} = await api.get<CollectionConsumoPapel>(
-            "/api/consumoPapel",
-            config
-        );
-        return data;
+    const config: AxiosRequestConfig = {
+        params: {
+            tipoPapelId,
+            sedeId,
+            from,
+            to,
+            sort,
+            direction,
+            page,
+        },
+    };
+    const {data} = await api.get<CollectionConsumoPapel>(
+        "/api/consumoPapel",
+        config
+    );
+    return data;
 }
 
 export async function getConsumoPapelReport(
     tipoPapelId?: number,
     sedeId?: number,
-    yearFrom?: string,
-    yearTo?: string,
+    from?: string,
+    to?: string,
     sort?: string,
     direction?: string,
 ): Promise<CollectionConsumoPapel> {
@@ -48,8 +47,8 @@ export async function getConsumoPapelReport(
         params: {
             tipoPapelId,
             sedeId,
-            yearFrom,
-            yearTo,
+            from,
+            to,
             sort,
             direction,
             all: true,

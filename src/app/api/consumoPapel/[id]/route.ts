@@ -58,7 +58,7 @@ export async function PUT(
             data: {
                 tipoPapel_id: body.tipoPapel_id,
                 cantidad_paquete: body.cantidad_paquete,
-                peso: (tipoPapel?.area ?? 0) * (tipoPapel?.hojas ?? 0) * (tipoPapel?.gramaje ?? 0) * body.cantidad_paquete,
+                peso: (tipoPapel?.area ?? 0) * (tipoPapel?.hojas ?? 0) * (tipoPapel?.gramaje ?? 0) * body.cantidad_paquete / 1000,
                 comentario: body.comentario,
                 anio_id: body.anio_id,
                 mes_id: body.mes_id,

@@ -9,24 +9,24 @@ import {
 
 interface getConsumoPapelCalculoInterface {
     sedeId: number;
-    yearFrom?: string;
-    yearTo?: string;
+    from?: string;
+    to?: string;
     page?: number;
 }
 
 export const useConsumoPapelCalculos =
-    ({sedeId, yearFrom, yearTo, page}: getConsumoPapelCalculoInterface) => {
+    ({sedeId, from, to, page}: getConsumoPapelCalculoInterface) => {
         return useQuery({
             queryKey: ['consumoPapelCalculos'],
-            queryFn: () => getConsumoPapelCalculate({sedeId, yearFrom, yearTo, page}),
+            queryFn: () => getConsumoPapelCalculate({sedeId, from, to, page}),
             refetchOnWindowFocus: false,
         });
     }
 export const useConsumoPapelCalculosReport =
-    ({sedeId, yearFrom, yearTo}: getConsumoPapelCalculoInterface) => {
+    ({sedeId, from, to}: getConsumoPapelCalculoInterface) => {
         return useQuery({
             queryKey: ['consumoPapelCalculosReport'],
-            queryFn: () => getConsumoPapelCalculateReport({sedeId, yearFrom, yearTo}),
+            queryFn: () => getConsumoPapelCalculateReport({sedeId, from, to}),
             refetchOnWindowFocus: false,
         });
     }

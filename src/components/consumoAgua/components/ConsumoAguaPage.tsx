@@ -179,7 +179,7 @@ export default function ConsumoAguaPage() {
     }, [consumoAgua, consumoAguaReport]);
 
     const handleCalculate = () => {
-        push("/consumoAgua/calculos");
+        push("/consumo-agua/calculos");
     };
 
     const handleDelete = useCallback(async () => {

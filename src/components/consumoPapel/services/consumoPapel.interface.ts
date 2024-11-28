@@ -51,17 +51,21 @@ export interface CollectionConsumoPapel {
 }
 
 export interface ConsumoPapelCollectionItem {
+    rn: number;
     id: number;
     nombre: string;
     cantidad_paquete: number;
-    peso: number;
-    comentario: null;
+    comentario: string;
     anio_id: number;
-    mes_id: number;
     sede_id: number;
     gramaje: number;
     anio: string;
     sede: string;
+    tipoPapel_id: number;
+    peso: number;
+    mes_id: number;
+    created_at: Date;
+    updated_at: Date;
 }
 
 export interface Meta {

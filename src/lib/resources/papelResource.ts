@@ -1,5 +1,6 @@
 export function formatConsumoPapel(consumoPapel: any): any {
     const {
+        rn,
         id,
         cantidad_paquete,
         comentario,
@@ -8,20 +9,22 @@ export function formatConsumoPapel(consumoPapel: any): any {
         tipoPapel,
         anio,
         sede,
+        peso,
+        ...rest
     } = consumoPapel;
 
     return {
+        rn,
         id,
         nombre: tipoPapel?.nombre ?? "",
         cantidad_paquete,
         comentario: comentario ?? null,
         anio_id,
         sede_id,
+        peso: Number(peso.toFixed(2)),
         gramaje: tipoPapel?.gramaje ?? 0,
-        unidad_paquete: tipoPapel?.unidad_paquete ?? "",
-        porcentaje_reciclado: tipoPapel?.porcentaje_reciclado ?? 0,
-        nombre_certificado: tipoPapel?.nombre_certificado ?? "",
         anio: anio?.nombre ?? "",
         sede: sede?.name ?? "",
+        ...rest,
     };
 }

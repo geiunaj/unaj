@@ -4,29 +4,29 @@ import {consumoPapelCalculosCollection} from "@/components/consumoPapel/services
 
 interface GetConsumoPapelProps {
     sedeId?: number,
-    yearFrom?: string,
-    yearTo?: string,
+    from?: string,
+    to?: string,
     page?: number
 }
 
 interface CreateCalculosConsumoPapelProps {
     sedeId?: number;
-    yearFrom?: string;
-    yearTo?: string;
+    from?: string;
+    to?: string;
 }
 
 export async function getConsumoPapelCalculate(
     {
         sedeId,
-        yearFrom,
-        yearTo,
+        from,
+        to,
         page,
     }: GetConsumoPapelProps): Promise<consumoPapelCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
-            yearFrom,
-            yearTo,
+            from,
+            to,
             page,
         }
     };
@@ -37,14 +37,14 @@ export async function getConsumoPapelCalculate(
 export async function getConsumoPapelCalculateReport(
     {
         sedeId,
-        yearFrom,
-        yearTo,
+        from,
+        to,
     }: GetConsumoPapelProps): Promise<consumoPapelCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
             sedeId,
-            yearFrom,
-            yearTo,
+            from,
+            to,
             all: true
         }
     };
@@ -55,15 +55,15 @@ export async function getConsumoPapelCalculateReport(
 export async function createConsumoPapelCalculate(
     {
         sedeId,
-        yearFrom,
-        yearTo,
+        from,
+        to,
     }: CreateCalculosConsumoPapelProps):
     Promise<consumoPapelCalculosCollection> {
 
     const body = {
         sedeId,
-        from: yearFrom,
-        to: yearTo,
+        from: from,
+        to: to,
     };
 
     const {data} = await api.post("/api/consumoPapel/calculate", body);

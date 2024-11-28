@@ -77,20 +77,16 @@ export default function PapelPage() {
     //SELECTS - FILTERS
     const [selectedSede, setSelectedSede] = useState<string>("1");
     const [selectedTipoPapel, setSelectedTipoPapel] = useState<string>("");
-    const [yearFrom, setYearFrom] = useState<string>(
-        new Date().getFullYear().toString()
-    );
-    const [yearTo, setYearTo] = useState<string>(
-        new Date().getFullYear().toString()
-    );
+    const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
+    const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     //HOOKS
 
     const consumoPapelQuery = useConsumosPapel({
         tipoPapelId: selectedTipoPapel ? Number(selectedTipoPapel) : undefined,
         sedeId: selectedSede ? Number(selectedSede) : undefined,
-        yearFrom: yearFrom,
-        yearTo: yearTo,
+        from: from,
+        to: to,
         page: page,
     });
     const tiposPapelQuery = useTipoPapel();
@@ -124,17 +120,19 @@ export default function PapelPage() {
         [consumoPapelQuery]
     );
 
-    const handleYearFromChange = useCallback(async (value: string) => {
-        await setPage(1);
-        await setYearFrom(value);
-        await consumoPapelQuery.refetch();
-    }, [consumoPapelQuery]);
+    const handleFromChange = useCallback(
+        async (value: string) => {
+            await setPage(1);
+            await setFrom(value);
+            await consumoPapelQuery.refetch();
+        }, [consumoPapelQuery]);
 
-    const handleYearToChange = useCallback(async (value: string) => {
-        await setPage(1);
-        await setYearTo(value);
-        await consumoPapelQuery.refetch();
-    }, [consumoPapelQuery]);
+    const handleToChange = useCallback(
+        async (value: string) => {
+            await setPage(1);
+            await setTo(value);
+            await consumoPapelQuery.refetch();
+        }, [consumoPapelQuery]);
 
 
 //   const handleAnioChange = useCallback(
@@ -180,8 +178,8 @@ export default function PapelPage() {
         {
             tipoPapelId: selectedTipoPapel ? parseInt(selectedTipoPapel) : undefined,
             sedeId: parseInt(selectedSede),
-            yearFrom: yearFrom,
-            yearTo: yearTo,
+            from: from,
+            to: to,
         }
     );
 
@@ -198,7 +196,7 @@ export default function PapelPage() {
             {header: "SEDE", key: "sede", width: 20,}
         ];
         const data = await ConsumoPapelReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE CONSUMO DE PAPEL", "Consumo de Papel");
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), "REPORTE DE CONSUMO DE PAPEL", "Consumo de Papel");
     }, [ConsumoPapelReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
@@ -250,10 +248,11 @@ export default function PapelPage() {
                             <ReportComponent
                                 onSubmit={handleClickReport}
                                 ref={submitFormRef}
-                                yearFrom={yearFrom}
-                                yearTo={yearTo}
-                                handleYearFromChange={handleYearFromChange}
-                                handleYearToChange={handleYearToChange}
+                                from={from}
+                                to={to}
+                                handleFromChange={handleFromChange}
+                                handleToChange={handleToChange}
+                                withMonth={true}
                             />
 
                         </div>
@@ -270,7 +269,7 @@ export default function PapelPage() {
 
                             <ExportPdfReport
                                 data={ConsumoPapelReport.data!.data}
-                                fileName={`REPORTE DE PAPEL_${formatPeriod({yearFrom, yearTo})}`}
+                                fileName={`REPORTE DE PAPEL_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "rn", width: 5,},
                                     {header: "TIPO PAPEL", key: "nombre", width: 15,},
@@ -283,7 +282,7 @@ export default function PapelPage() {
                                     {header: "SEDE", key: "sede", width: 15,}
                                 ]}
                                 title="REPORTE DE PAPEL"
-                                period={formatPeriod({yearFrom, yearTo})}
+                                period={formatPeriod({from, to}, true)}
                             />
 
                             <ButtonCalculate onClick={handleCalculate}/>
@@ -323,13 +322,10 @@ export default function PapelPage() {
                                 NOMBRE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                UNIDAD
+                                PAQUETES
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CANTIDAD
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                GRAMAJE
+                                PESO TOTAL
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO
@@ -344,16 +340,16 @@ export default function PapelPage() {
                             (item: ConsumoPapelCollectionItem, index: number) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary">{index + 1}</Badge>
+                                        <Badge variant="secondary">{item.rn}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.nombre}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default">{item.cantidad_paquete}</Badge>
+                                        <Badge variant="secondary">{item.cantidad_paquete}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {item.gramaje}
+                                        <Badge variant="default"> {item.peso}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.anio}

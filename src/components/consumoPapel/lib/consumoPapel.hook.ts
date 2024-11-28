@@ -11,8 +11,8 @@ import {getAnio} from "@/components/anio/services/anio.actions";
 interface getConsumoPapelInterface {
     tipoPapelId?: number;
     sedeId?: number;
-    yearFrom?: string;
-    yearTo?: string;
+    from?: string;
+    to?: string;
     sort?: string;
     direction?: string;
     page?: number;
@@ -24,15 +24,15 @@ export const useConsumosPapel = (
     {
         tipoPapelId,
         sedeId,
-        yearFrom,
-        yearTo,
+        from,
+        to,
         sort,
         direction,
         page,
     }: getConsumoPapelInterface) => {
     return useQuery({
         queryKey: ['consumoPapelQuery'],
-        queryFn: () => getConsumoPapel(tipoPapelId, sedeId, yearFrom, yearTo, sort, direction, page),
+        queryFn: () => getConsumoPapel(tipoPapelId, sedeId, from, to, sort, direction, page),
         refetchOnWindowFocus: false,
     });
 }
@@ -41,14 +41,14 @@ export const useConsumoPapelReport =
     ({
          tipoPapelId,
          sedeId,
-         yearFrom,
-         yearTo,
+         from,
+         to,
          sort,
          direction,
      }: getConsumoPapelInterface) => {
         return useQuery({
             queryKey: ['consumoPapelReport'],
-            queryFn: () => getConsumoPapelReport(tipoPapelId, sedeId, yearFrom, yearTo, sort, direction),
+            queryFn: () => getConsumoPapelReport(tipoPapelId, sedeId, from, to, sort, direction),
             refetchOnWindowFocus: false,
         });
     }
