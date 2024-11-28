@@ -27,7 +27,7 @@ const LayoutWrapper = ({children}: { children: React.ReactNode }) => {
     }, [session.status]);
 
     useEffect(() => {
-        if (session.data) {
+        if (session.data && menuFiltered.length === 0) {
             getPermisos({id: session.data.id}).then((data) => {
                 setLinkPermitido(data);
             });

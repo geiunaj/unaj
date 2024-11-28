@@ -161,13 +161,20 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             };
         };
 
+        console.log("Periodo", period);
+        console.log("SedeId", sedeId);
+
+
         await prisma.consumibleCalculosDetail.deleteMany({
             where: {
+                sedeId: sedeId,
                 consumibleCalculos: {
                     periodoCalculoId: period.id,
                 },
             },
         });
+
+        console.log("Deleted details");
 
         await prisma.consumibleCalculos.deleteMany({
             where: {
@@ -175,6 +182,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 periodoCalculoId: period.id,
             },
         });
+
+        console.log("Deleted main");
 
         const allPeriodsBetweenYears: WhereAnioMes[] = [];
 
@@ -298,6 +307,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     updated_at: new Date(),
                 },
             });
+
+            console.log(tipoConsumibleCalculos);
 
             for (const period of allPeriodsBetweenYears) {
                 const anioId = await getAnioId(String(period.anio));
