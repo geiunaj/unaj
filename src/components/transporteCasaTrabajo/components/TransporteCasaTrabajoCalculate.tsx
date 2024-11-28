@@ -254,7 +254,7 @@ export default function TransporteCasaTrabajoCalculate() {
                                         {TransporteCasaTrabajoCalculate.cantidadTotal}
                                     </TableCell>
                                     <TableCell className="text-xs flex gap-2 justify-center sm:text-sm">
-                                        {TransporteCasaTrabajoCalculate.factoresEmision.map((factorEmision: FactoresEmision) => (
+                                        {TransporteCasaTrabajoCalculate?.factoresEmision.map((factorEmision: FactoresEmision) => (
                                             <Badge key={factorEmision.anio + factorEmision.factor} variant="secondary">
                                                 {factorEmision.factor}<span
                                                 className="text-[8px] ps-[2px] text-muted-foreground">{factorEmision.anio}</span>

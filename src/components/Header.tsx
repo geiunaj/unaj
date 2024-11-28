@@ -95,7 +95,7 @@ export default function Header() {
 
     return (
         <header
-            className="flex h-14 justify-between md:justify-center items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+            className="flex h-14 justify-between md:justify-center items-center sm:gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
             <Sheet>
                 <SheetTrigger asChild>
                     <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -196,8 +196,8 @@ export default function Header() {
             </Sheet>
 
             <div className="max-w-screen-xl flex items-center justify-between w-full">
-                <div>
-                    <h1 className="text-lg text-muted-foreground font-medium">
+                <div className="w-full">
+                    <h1 className="text-sm md:text-lg text-center sm:text-start text-muted-foreground font-medium">
                         {titleHeader}
                         <TitleUpdater/>
                     </h1>
