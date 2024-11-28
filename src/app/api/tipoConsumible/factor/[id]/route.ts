@@ -25,8 +25,8 @@ export async function GET(
 
         return NextResponse.json(formatTipoConsumibleFactor(factorTipoConsumible));
     } catch (error) {
-        console.error("Error finding tipo combustible factor", error);
-        return new NextResponse("Error finding tipo combustible factor", {status: 500});
+        console.error("Error finding tipo consumible factor", error);
+        return new NextResponse("Error finding tipo consumible factor", {status: 500});
     }
 }
 
@@ -52,6 +52,10 @@ export async function PUT(
                 link: body.link,
                 updated_at: new Date(),
             },
+            include: {
+                anio: true,
+                tipoConsumible: true
+            }
         });
 
         return NextResponse.json({

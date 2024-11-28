@@ -94,7 +94,7 @@ export default function CombustibleCalculate({
             successToast(response.message);
         } catch (error: any) {
             console.error(error);
-            errorToast(error.response?.data);
+            errorToast(error.response?.data.message);
         }
         combustionCalculos.refetch();
         combustionCalculosReport.refetch();
@@ -138,7 +138,7 @@ export default function CombustibleCalculate({
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
         const data = await combustionCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CALCULOS DE COMBUSTION ${tipo.toUpperCase()}`, `COMBUSTION-${tipo.toUpperCase()}`);
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), `REPORTE DE CALCULOS DE COMBUSTIBLE ${tipo.toUpperCase()}`, `COMBUSTIBLE-${tipo.toUpperCase()}`);
     }
 
     const handleClick = () => {
@@ -197,7 +197,7 @@ export default function CombustibleCalculate({
 
                             <ExportPdfReport
                                 data={combustionCalculosReport.data!.data}
-                                fileName={`REPORTE CALCULOS DE CONSUMO DE ENERGÍA_${formatPeriod({from, to}, true)}`}
+                                fileName={`REPORTE CALCULOS DE COMBUSTIBLE_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
                                     {header: "TIPO COMBUSTIBLE", key: "tipoCombustible", width: 20},
@@ -208,7 +208,7 @@ export default function CombustibleCalculate({
                                     {header: "TOTAL GEI", key: "totalGEI", width: 10},
                                     {header: "SEDE", key: "sede", width: 10},
                                 ]}
-                                title="REPORTE DE CALCULOS DE CONSUMO DE ENERGÍA"
+                                title="REPORTE DE CALCULOS DE COMBUSTIBLE"
                                 period={formatPeriod({from, to}, true)}
                             />
 

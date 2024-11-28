@@ -352,7 +352,7 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
                             <TableHead className="text-xs sm:text-sm  font-bold text-center">
                                 TIPO DE COMBUSTIBLE
                             </TableHead>
-                            <TableHead className="text-center">
+                            <TableHead className="text-xs sm:text-sm  font-bold text-center">
                                 CONSUMO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm  font-bold text-center">

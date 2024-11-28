@@ -314,6 +314,17 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 const anio = await prisma.anio.findFirst({
                     where: {id: anio_id},
                 });
+
+                let whereOptionDetails = whereOptionsCombustion;
+                whereOptionDetails.tipoCombustible_id = tipoCombustible.id;
+                whereOptionDetails.anio_mes = {gte: period.from, lte: period.to,};
+
+                const combustibles = await prisma.combustible.findMany({
+                    where: whereOptionDetails,
+                });
+
+                if (!combustibles.length) break;
+
                 const factorTipoCombustible = await prisma.tipoCombustibleFactor.findFirst({
                     where: {
                         anio_id: anio_id,
@@ -323,16 +334,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 });
 
                 if (!factorTipoCombustible) return NextResponse.json({
-                    message: `Agregue el factor de tipo de combustible para el año ${anio?.nombre ?? anio_id} del tipo ${tipo}`
+                    message: `Agregue el factor de ${tipoCombustible.nombre} para el año ${anio?.nombre ?? anio_id} del tipo ${tipo}`
                 }, {status: 404});
 
-                let whereOptionDetails = whereOptionsCombustion;
-                whereOptionDetails.tipoCombustible_id = tipoCombustible.id;
-                whereOptionDetails.anio_mes = {gte: period.from, lte: period.to,};
-
-                const combustibles = await prisma.combustible.findMany({
-                    where: whereOptionDetails,
-                });
 
                 const totalConsumoTipoCombustible: number = combustibles.reduce((acc, combustible) => {
                     if (combustible.anio_id === anio_id) {

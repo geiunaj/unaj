@@ -190,7 +190,7 @@ export function UpdateFormTipoConsumibleFactor({
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
                                         <FormLabel>Año</FormLabel>
-                                        <Select onValueChange={field.onChange}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl className="w-full">
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Año"/>

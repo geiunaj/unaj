@@ -28,8 +28,10 @@ import {Button} from "@/components/ui/button";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ConsumibleCalcResponse} from "@/components/consumibles/services/consumibleCalculate.interface";
 import CustomPagination from "@/components/Pagination";
+import {ChangeTitle} from "@/components/TitleUpdater";
 
 export default function ConsumiblesCalculate() {
+    ChangeTitle("Calculo de Consumibles");
     const {push} = useRouter();
 
     // SELECTS - FILTERS
@@ -132,23 +134,13 @@ export default function ConsumiblesCalculate() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
-                <div className="flex gap-4 items-center">
-                    <ButtonBack onClick={handleConsumible}/>
-                    <div className="font-Manrope">
-                        <h1 className="text-base text-foreground font-bold">
-                            Emisiones de Consumibles
-                        </h1>
-                        <h2 className="text-xs sm:text-sm text-muted-foreground">
-                            Huella de carbono
-                        </h2>
-                    </div>
-                </div>
-                <div className="flex flex-col items-end gap-2">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-start mb-6">
+                <div className="flex flex-col items-end w-full gap-2">
                     <div
-                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
+                        className="grid grid-cols-2 grid-rows-1 w-full gap-2 sm:flex sm:justify-between justify-center">
                         <div
-                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
+                            <ButtonBack onClick={handleConsumible}/>
                             <SelectFilter
                                 list={sedes.data!}
                                 itemSelected={selectedSede}

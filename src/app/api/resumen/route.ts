@@ -293,13 +293,27 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             totalEmissions: co2emmissionsActivosFijos,
             generalContributions: 0
         };
+
+        const consumiblesData = await prisma.consumibleCalculos.findMany({
+            where: {
+                PeriodoCalculo: {
+                    fechaInicioValue: {
+                        gte: fromValue,
+                        lte: toValue,
+                    },
+                },
+                sedeId: sedeId ? parseInt(sedeId) : undefined,
+            }
+        });
+        const co2emmissionsConsumibles = parseFloat((consumiblesData.reduce((acc, curr) => acc + curr.totalGEI, 0)).toFixed(2).toString());
+
         const ConsumiblesGenerales: SummaryItem = {
             emissionSource: "Consumibles Generales",
-            co2Emissions: 0,
+            co2Emissions: co2emmissionsConsumibles,
             ch4Emissions: 0,
             N2OEmissions: 0,
             hfcEmissions: 0,
-            totalEmissions: 0,
+            totalEmissions: co2emmissionsConsumibles,
             generalContributions: 0
         };
 

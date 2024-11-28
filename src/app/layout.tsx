@@ -5,12 +5,15 @@ import {ReactQueryClientProvider} from "@/components/Provider";
 import {Toaster} from "@/components/ui/sonner";
 import {SessionWrapper} from "@/components/SessionWrapper/SessionWrapper";
 
-const inter = Inter({subsets: ["latin"]});
-
+const inter = Inter({
+    subsets: ['latin'],
+    display: 'auto',
+})
 export const metadata: Metadata = {
     title: "Calculadora de Huella Ecológica - UNAJ",
     description: "UNAJ",
 };
+
 
 export default function RootLayout({
                                        children,

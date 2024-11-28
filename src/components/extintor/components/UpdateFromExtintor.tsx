@@ -34,7 +34,7 @@ import {cn} from "@/lib/utils";
 import {format} from "date-fns";
 import {CalendarIcon} from "lucide-react";
 import {Calendar} from "@/components/ui/calendar";
-import { STEP_NUMBER } from "@/lib/constants/menu";
+import {STEP_NUMBER} from "@/lib/constants/menu";
 
 const ExtintorSchema = z.object({
     consumo: z.preprocess(
@@ -59,30 +59,31 @@ export function UpdateFormExtintor({id, onClose}: UpdateExtintorProps) {
 
     const extintor = useExtintorId(id);
     const sedeQuery = useQuery({
-        queryKey: ["sedesUTA"],
+        queryKey: ["sedesUE"],
         queryFn: () => getSedes(),
         refetchOnWindowFocus: false,
     });
 
     const mesQuery = useQuery({
-        queryKey: ["mesesUTA"],
+        queryKey: ["mesesUE"],
         queryFn: () => getMes(),
         refetchOnWindowFocus: false,
     });
 
     const anioQuery = useQuery({
-        queryKey: ["aniosUTA"],
+        queryKey: ["aniosUE"],
         queryFn: () => getAnio(),
         refetchOnWindowFocus: false,
     });
 
-    const loadForm = useCallback(() => {
+    const loadForm = useCallback(async () => {
         if (extintor.data) {
+            const extintorData = await extintor.data;
             form.reset({
-                consumo: extintor.data.consumo,
-                anio: extintor.data.anio_id.toString(),
-                sede: extintor.data.sede_id.toString(),
-                mes: extintor.data.mes_id.toString(),
+                consumo: extintorData.consumo,
+                anio: extintorData.anio_id.toString(),
+                sede: extintorData.sede_id.toString(),
+                mes: extintorData.mes_id.toString(),
             });
         }
     }, [extintor.data, form]);

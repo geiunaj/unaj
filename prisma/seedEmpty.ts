@@ -535,47 +535,13 @@ async function factorTipoPapel() {
 
 // 1
 async function factorSEIN() {
-    //Datos Factor de Emisión SEIN
-    const emisionSEIN = [
-        {
-            factorCO2: 0.168088403,
-            factorCH4: 0.000005552,
-            factorN2O: 0.00000066,
-            anioId: 5,
-        },
-        {
-            factorCO2: 0.205780931,
-            factorCH4: 0.000006533,
-            factorN2O: 0.000001015,
-            anioId: 4,
-        },
-        {
-            factorCO2: 0.248289658,
-            factorCH4: 0.000007353,
-            factorN2O: 0.000001129,
-            anioId: 3,
-        },
-        {
-            factorCO2: 0.226922179,
-            factorCH4: 0.000007427,
-            factorN2O: 0.000000951,
-            anioId: 2,
-        },
-        {
-            factorCO2: 0.168088403,
-            factorCH4: 0.000005552,
-            factorN2O: 0.00000066,
-            anioId: 1,
-        },
-    ];
-
-    for (const factor of emisionSEIN) {
+    for (const anio of AllYears) {
         await prisma.factorConversionSEIN.create({
             data: {
-                factorCO2: factor.factorCO2,
-                factorCH4: factor.factorCH4,
-                factorN2O: factor.factorN2O,
-                anioId: factor.anioId,
+                factorCO2: 0.213687985,
+                factorCH4: 0,
+                factorN2O: 0,
+                anioId: anio.id,
             },
         });
     }
@@ -2022,45 +1988,172 @@ async function casaTrabajoConsumo() {
     console.log("Casa-trabajo data created");
 }
 
+async function extintor() {
+    await prisma.factorEmisionExtintor.create({
+        data: {
+            factor: 1,
+            anio_id: 1,
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
+    });
+
+    console.log("Extintor data created");
+
+    await prisma.extintor.create({
+        data: {
+            consumo: 173,
+            mes_id: 1,
+            anio_id: 1,
+            sede_id: 1,
+            anio_mes: Number("2024") * 100 + Number(1),
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
+    });
+
+    console.log("Extintor data created");
+}
+
+async function consumoEnergia() {
+    const sedes = [
+        {
+            area: 1,
+            numeroSuministro: "49134",
+            consumo: 3749.7,
+        },
+        {
+            area: 4,
+            numeroSuministro: "49132",
+            consumo: 134910.5,
+        },
+        {
+            area: 7,
+            numeroSuministro: "49135",
+            consumo: 214952.7,
+        },
+
+    ];
+    for (const sede of sedes) {
+        await prisma.consumoEnergia.create({
+            data: {
+                areaId: sede.area,
+                numeroSuministro: sede.numeroSuministro,
+                consumo: sede.consumo,
+                anio_id: 1,
+                mes_id: 1,
+                anio_mes: Number("2024") * 100 + Number(1),
+            }
+        });
+    }
+    console.log("Consumo de energia creado");
+}
+
+async function consumibles() {
+    await prisma.consumible.create({
+        data: {
+            tipoConsumibleId: 1,
+            sedeId: 1,
+            anioId: 1,
+            mesId: 1,
+            anio_mes: Number("2024") * 100 + Number(1),
+            pesoTotal: 694.1,
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
+    });
+    await prisma.consumible.create({
+        data: {
+            tipoConsumibleId: 2,
+            sedeId: 1,
+            anioId: 1,
+            mesId: 1,
+            anio_mes: Number("2024") * 100 + Number(1),
+            pesoTotal: 4183.5,
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
+    });
+}
+
+async function activos() {
+    const tipoActivo = await prisma.tipoActivo.create({
+        data: {
+            nombre: "Tipo Activo",
+            unidad: "Kg",
+            peso: 1,
+            fuente: "IDEMAT 2024 V2.3",
+            costoUnitario: 4007.421583,
+            categoriaId: 4,
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
+    });
+
+    await prisma.activo.create({
+        data: {
+            tipoActivoId: tipoActivo.id,
+            sedeId: 1,
+            anioId: 1,
+            mesId: 1,
+            anio_mes: Number("2024") * 100 + Number(1),
+            cantidadComprada: 27,
+            cantidadConsumida: 120,
+            costoTotal: 120 * (tipoActivo.costoUnitario ?? 0),
+            consumoTotal: 120 * tipoActivo.peso,
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
+    });
+}
+
 
 async function main() {
     // ------- 0
-    // await typeUsers();
-    // await meses();
-    // await years();
-    // await gwp();
-    // await sedes();
+    await typeUsers();
+    await meses();
+    await years();
+    await gwp();
+    await sedes();
     AllYears = await prisma.anio.findMany();
     AllSedes = await prisma.sede.findMany();
-    // await areas();
-    // // ------- 6
-    // await tipoCombustible();
-    // await fertilizantes();
+    await areas();
     // ------- 6
-    // await tipoPapel();
-    // await factorTipoPapel();
-    // await factorSEIN();
-    // await factorAgua();
-    // await factorTaxi();
-    // await factorAereo();
-    // // ------- 6
-    // await transporteAereo();
-    // await factorTerrestre();
-    // await transporteTerrestre();
-    // // ------- 3
-    // await grupoConsumible();
-    // await categoriaConsumible();
-    // await procesoConsumible();
-    // // ------- 3
-    // await descripcionConsumible();
-    // await tipoConsumible();
-    // // ------- 3
-    // await grupoActivo();
-    // // ------- 3
-    // await taxiConsumo();
-    // // ------- 1
+    await tipoCombustible();
+    await fertilizantes();
+    // ------- 6
+    await tipoPapel();
+    await factorTipoPapel();
+    await factorSEIN();
+    await factorAgua();
+    await factorTaxi();
+    await factorAereo();
+    // ------- 6
+    await transporteAereo();
+    await factorTerrestre();
+    await transporteTerrestre();
+    // ------- 3
+    await grupoConsumible();
+    await categoriaConsumible();
+    await procesoConsumible();
+    // ------- 3
+    await descripcionConsumible();
+    await tipoConsumible();
+    // ------- 3
+    await grupoActivo();
+    // ------- 3
+    await taxiConsumo();
+    // ------- 1
     await casaTrabajoConsumo();
-    // // ------- 3
+    // ------- 3
+    await extintor();
+    // ------- 1
+    await consumoEnergia();
+    await consumibles();
+    await activos();
+    // ------- 2
+
+
 }
 
 main()

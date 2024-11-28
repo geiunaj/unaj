@@ -36,7 +36,7 @@ export default function Sidebar() {
         } else {
             setOpenAccordion(null);
         }
-    }, [pathname]);
+    }, [pathname, menuFiltered]);
 
     const handleItemClick = (item: MenuItem) => {
         setItemActive(item.href);
