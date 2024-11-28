@@ -130,6 +130,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 anio_id: body.anio_id,
                 mes_id: body.mes_id,
                 sede_id: body.sede_id,
+                anio_mes: body.anio_id * 100 + body.mes_id,
 
                 created_at: new Date(),
                 updated_at: new Date(),

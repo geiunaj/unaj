@@ -306,6 +306,7 @@ model ConsumoPapel {
   anio_id          Int
   mes_id           Int
   sede_id          Int
+  anio_mes         Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

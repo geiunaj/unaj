@@ -1,7 +1,10 @@
 export function formatConsumoAguaCalculo(combustibleCalculo: any) {
     const {
+        rn,
         area,
         ConsumoAguaCalculosDetail,
+        totalGEI,
+        consumo,
         created_at,
         updated_at,
         ...rest
@@ -16,12 +19,15 @@ export function formatConsumoAguaCalculo(combustibleCalculo: any) {
     }).join(', ');
 
     return {
+        rn,
         areaId: undefined,
         periodoCalculoId: undefined,
         created_at: undefined,
         updated_at: undefined,
         ...rest,
         area: area.nombre,
+        consumo: Number(consumo).toFixed(2),
+        totalGEI: Number(totalGEI).toFixed(2),
         sede: area.sede.name,
         factoresEmision,
         factoresEmisionString,

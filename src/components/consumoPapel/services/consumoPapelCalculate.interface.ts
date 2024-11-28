@@ -22,15 +22,18 @@ export interface ConsumoPapelCalculoRequest {
 export interface ConsumoPapelCalculoResponse {
     id: number;
     tipoPapel_id: number;
-    gramaje: number;
-    cantidad: number;
-    consumo: number;
     period_id: number;
     sede_id: number;
-    totalGEI: number;
     tipoPapel: string;
-    porcentajeReciclado: number;
-    porcentajeVirgen: number;
     sede: string;
+    consumo: string;
+    totalGEI: string;
+    factoresEmision: FactoresEmision[];
+    factoresEmisionString: string;
     rn: number;
+}
+
+export interface FactoresEmision {
+    anio: string;
+    factor: number;
 }

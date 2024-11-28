@@ -6,6 +6,7 @@ import {
     consumoAguaCalculoRequest
 } from "@/components/consumoAgua/services/consumoAguaCalculos.interface";
 import {formatConsumoAguaCalculo} from "@/lib/resources/consumoAguaCalculateResource";
+import {formatConsumoPapelCalculo} from "@/lib/resources/consumoPapelCalculateResource";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
@@ -37,6 +38,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             where: {
                 fechaInicio: dateFrom ? dateFrom : undefined,
                 fechaFin: dateTo ? dateTo : undefined,
+                fechaInicioValue: fromValue,
+                fechaFinValue: toValue,
             },
         });
 
@@ -45,6 +48,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 data: {
                     fechaInicio: dateFrom ? dateFrom : undefined,
                     fechaFin: dateTo ? dateTo : undefined,
+                    fechaInicioValue: fromValue,
+                    fechaFinValue: toValue,
                     created_at: new Date(),
                     updated_at: new Date(),
                 }
@@ -58,6 +63,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 sede_id: sedeId ? Number(sedeId) : undefined,
             },
             periodoCalculoId: period?.id,
+            totalGEI: {not: 0},
         };
 
         const totalRecords = await prisma.consumoAguaCalculos.count({
@@ -90,13 +96,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const formattedConsumoAguaCalculos: any[] = consumoAguaCalculos
             .map((consumoAguaCalculo: any, index: number) => {
-                if (consumoAguaCalculo.consumoArea !== 0) {
-                    consumoAguaCalculo.id = index + 1;
-                    return formatConsumoAguaCalculo(consumoAguaCalculo);
-                }
-                return null;
-            })
-            .filter((combustibleCalculo) => combustibleCalculo !== null);
+                const consumo = formatConsumoAguaCalculo(consumoAguaCalculo);
+                consumo.rn = (page - 1) * perPage + index + 1;
+                return consumo;
+            });
 
 
         return NextResponse.json({
@@ -170,7 +173,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         const whereOptionsConsumoAgua = {
             area: {sede_id: sedeId ? Number(sedeId) : undefined,},
-            fuenteAgua: "Red Publica",
         } as {
             area_id?: number;
             area: { sede_id: number };
@@ -356,7 +358,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 where: {id: aguaCalculos.id},
                 data: {
                     consumoArea: consumoArea,
-                    totalGEI: totalGEI,
+                    totalGEI: totalGEI / 1000,
                     updated_at: new Date(),
                 },
             });

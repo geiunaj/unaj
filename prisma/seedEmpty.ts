@@ -2015,15 +2015,53 @@ async function consumoPapel() {
             data: {
                 tipoPapel_id: 1,
                 cantidad_paquete: consumo,
-                peso: tipoPapel.area * tipoPapel.hojas * tipoPapel.gramaje * consumo,
+                peso: tipoPapel.area * tipoPapel.hojas * tipoPapel.gramaje * consumo / 1000,
                 comentario: "-",
                 anio_id: 1,
                 mes_id: 1,
                 sede_id: 1,
+                anio_mes: Number("2024") * 100 + Number(1),
             }
         });
     }
     console.log("Consumo de papel creado");
+}
+
+async function consumoAgua() {
+    await prisma.consumoAgua.create({
+        data: {
+            area_id: 1,
+            codigoMedidor: "132456",
+            fuenteAgua: "POZO",
+            consumo: 6702,
+            anio_id: 1,
+            mes_id: 1,
+            anio_mes: Number("2024") * 100 + Number(1),
+
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
+    })
+
+    console.log("Consumo de agua creado");
+}
+
+async function consumoFertilizantes() {
+    const consumos = [50, 100, 150, 200, 250, 300];
+    for (const consumo of consumos) {
+        await prisma.fertilizante.create({
+            data: {
+                tipoFertilizante_id: 6,
+                cantidad: consumo,
+                sede_id: 1,
+                anio_id: 1,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
+
+    console.log("Consumo de fertilizantes creado");
 }
 
 
@@ -2071,6 +2109,8 @@ async function main() {
     await consumibles();
     await activos();
     await consumoPapel();
+    await consumoAgua();
+    await consumoFertilizantes();
     // ------- 4
 
 

@@ -84,7 +84,7 @@ export default function ConsumoAguaCalculate() {
     }, [selectedSede, from, to, consumoAguaCalculos, conusmoAguaCalculosReport]);
 
     const handleConsumoAgua = () => {
-        push("/consumoAgua");
+        push("/consumo-agua");
     };
 
     const handleFromChange = useCallback(
@@ -241,13 +241,13 @@ export default function ConsumoAguaCalculate() {
                                 AREA
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CONSUMO
+                                CONSUMO <span className="text-[10px]">[m3]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FACTOR DE EMISIÓN
+                                FACTOR DE <br/> EMISIÓN <span className="text-[10px]">[kgCO2/m3]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                TOTAL EMISIONES GEI
+                                TOTAL EMISIONES <br/> GEI <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -270,7 +270,7 @@ export default function ConsumoAguaCalculate() {
                                         {consumoAguaCalculosItem.area}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default">
+                                        <Badge variant="outline">
                                             {consumoAguaCalculosItem.consumoArea}
                                         </Badge>
                                     </TableCell>
@@ -283,7 +283,9 @@ export default function ConsumoAguaCalculate() {
                                         ))}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {consumoAguaCalculosItem.totalGEI}
+                                        <Badge variant="default">
+                                            {consumoAguaCalculosItem.totalGEI}
+                                        </Badge>
                                     </TableCell>
                                 </TableRow>
                             )

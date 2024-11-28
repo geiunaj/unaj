@@ -59,7 +59,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 sede_id: sedeId ? Number(sedeId) : undefined,
             },
             periodoCalculoId: period?.id,
-            consumo: {
+            totalGEI: {
                 not: 0
             },
         };

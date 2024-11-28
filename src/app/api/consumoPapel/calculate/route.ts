@@ -8,22 +8,37 @@ import {WhereAnioMes} from "@/lib/interfaces/globals";
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const {searchParams} = new URL(req.url);
-
         const sedeId = searchParams.get("sedeId");
-        const all = searchParams.get("all") === "true";
-        const yearFrom = searchParams.get("yearFrom") ?? undefined;
-        const yearTo = searchParams.get("yearTo") ?? undefined;
+        if (!sedeId) return new NextResponse("SedeId is required", {status: 400});
 
         const page = parseInt(searchParams.get("page") ?? "1");
         const perPage = parseInt(searchParams.get("perPage") ?? "10");
 
-        let yearFromId = await getAnioId(yearFrom ?? "");
-        let yearToId = await getAnioId(yearTo ?? "");
+        const dateFrom = searchParams.get("from") ?? undefined;
+        const dateTo = searchParams.get("to") ?? undefined;
+        const all = searchParams.get("all") === "true";
+
+        let yearFrom, yearTo, monthFrom, monthTo;
+        let yearFromId, yearToId, mesFromId, mesToId;
+
+        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
+        if (yearFrom) yearFromId = await getAnioId(yearFrom);
+        if (yearTo) yearToId = await getAnioId(yearTo);
+        if (monthFrom) mesFromId = parseInt(monthFrom);
+        if (monthTo) mesToId = parseInt(monthTo);
+
+
+        const fromValue = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
+        const toValue = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
+
 
         let period = await prisma.periodoCalculo.findFirst({
             where: {
                 yearInicio: yearFromId ? yearFrom : null,
                 yearFin: yearToId ? yearTo : null,
+                fechaInicioValue: fromValue,
+                fechaFinValue: toValue,
             },
         });
 
@@ -32,17 +47,19 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 data: {
                     yearInicio: yearFromId ? yearFrom : null,
                     yearFin: yearToId ? yearTo : null,
+                    fechaInicioValue: fromValue,
+                    fechaFinValue: toValue,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },
             });
         }
-
+        if (!period && all) return new NextResponse("Periodo no encontrado", {status: 404,});
 
         const whereOptions = {
             sede_id: sedeId ? parseInt(sedeId) : undefined,
             period_id: period?.id,
-            consumo: {not: 0},
+            totalGEI: {not: 0},
         };
 
         const totalRecords = await prisma.consumoPapelCalculos.count({where: whereOptions});
@@ -53,10 +70,22 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             include: {
                 tipoPapel: true,
                 sede: true,
+                ConsumoPapelCalculosDetail: {
+                    include: {
+                        factorTipoPapel: {
+                            include: {
+                                anio: true,
+                            },
+                        },
+                    },
+                },
+
             },
             orderBy: [{tipoPapel: {nombre: 'asc'}}],
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
+
+        console.log(consumoPapelCalculos);
 
         const formattedConsumoPapelCalculos = consumoPapelCalculos.map(
             (consumoPapelCalculo, index) => {
@@ -267,7 +296,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         for (const tipoPapel of tiposPapel) {
             let totalTipoPapel = 0;
-            let totalConsumo = 0;
             let totalEmisionGEI = 0;
 
             const consumoPapelCalculo = await prisma.consumoPapelCalculos.create({
@@ -322,7 +350,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             await prisma.consumoPapelCalculos.update({
                 where: {id: consumoPapelCalculo.id,},
                 data: {
-                    consumo: totalConsumo,
+                    consumo: totalTipoPapel / 1000,
                     totalGEI: totalEmisionGEI / 1000,
                     created_at: new Date(),
                     updated_at: new Date(),

@@ -252,22 +252,51 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         // CATEGORIA 4
 
+        const papelData = await prisma.consumoPapelCalculos.findMany({
+            where: {
+                Periodo: {
+                    fechaInicioValue: {
+                        gte: fromValue,
+                        lte: toValue,
+                    },
+                },
+                sede_id: sedeId ? parseInt(sedeId) : undefined,
+            }
+        });
+        const co2emmissionsPapel = parseFloat((papelData.reduce((acc, curr) => acc + curr.totalGEI, 0)).toFixed(2).toString());
+
         const ConsumoPapel: SummaryItem = {
             emissionSource: "Consumo de Papel",
-            co2Emissions: 0,
+            co2Emissions: co2emmissionsPapel,
             ch4Emissions: 0,
             N2OEmissions: 0,
             hfcEmissions: 0,
-            totalEmissions: 0,
+            totalEmissions: co2emmissionsPapel,
             generalContributions: 0
         };
+
+        const aguaData = await prisma.consumoAguaCalculos.findMany({
+            where: {
+                PeriodoCalculo: {
+                    fechaInicioValue: {
+                        gte: fromValue,
+                        lte: toValue,
+                    },
+                },
+                area: {
+                    sede_id: sedeId ? parseInt(sedeId) : undefined
+                },
+            }
+        });
+        const co2emmissionsAgua = parseFloat((aguaData.reduce((acc, curr) => acc + curr.totalGEI, 0)).toFixed(2).toString());
+
         const ConsumoAgua: SummaryItem = {
             emissionSource: "Consumo de Agua",
-            co2Emissions: 0,
+            co2Emissions: co2emmissionsAgua,
             ch4Emissions: 0,
             N2OEmissions: 0,
             hfcEmissions: 0,
-            totalEmissions: 0,
+            totalEmissions: co2emmissionsAgua,
             generalContributions: 0
         };
 

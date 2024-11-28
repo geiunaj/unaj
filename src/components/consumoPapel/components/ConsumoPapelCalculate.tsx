@@ -27,6 +27,7 @@ import {
 } from "@/components/consumoPapel/lib/consumoPapelCalculos.hooks";
 import {ConsumoPapelCalculoResponse} from "@/components/consumoPapel/services/consumoPapelCalculate.interface";
 import {createConsumoPapelCalculate} from "@/components/consumoPapel/services/consumoPapelCalculate.actions";
+import {FactoresEmision} from "@/components/taxi/service/taxiCalculos.interface";
 
 export default function ConsumoPapelCalculate() {
     const {push} = useRouter();
@@ -205,19 +206,10 @@ export default function ConsumoPapelCalculate() {
                                 TIPO PAPEL
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                GRAMAJE <span className="text-[10px]">[g/m2]</span>
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CANTIDAD
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 CONSUMO <span className="text-[10px]">[kg]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                RECICLADO <span className="text-[10px]">[%]</span>
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                VIRGEN <span className="text-[10px]">[%]</span>
+                                FACTOR DE <br/> EMISIÓN <span className="text-[10px]">[kgCO2/kg]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 EMISIONES GEI <span className="text-[10px]">[tCO2eq]</span>
@@ -234,34 +226,30 @@ export default function ConsumoPapelCalculate() {
                             </TableRow>
                         )}
                         {consumoPapelCalculos.data!.data.map(
-                            (FertilizanteCalculate: ConsumoPapelCalculoResponse) => (
+                            (ConsumoPapelCalculate: ConsumoPapelCalculoResponse) => (
                                 <TableRow
                                     className="text-center"
-                                    key={FertilizanteCalculate.id}
+                                    key={ConsumoPapelCalculate.rn}
                                 >
                                     <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.tipoPapel}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.gramaje}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.cantidad}
+                                        {ConsumoPapelCalculate.tipoPapel}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">
-                                            {FertilizanteCalculate.consumo}
+                                            {ConsumoPapelCalculate.consumo}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.porcentajeReciclado}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.porcentajeVirgen}
+                                    <TableCell className="text-xs flex gap-2 justify-center sm:text-sm">
+                                        {ConsumoPapelCalculate.factoresEmision.map((factorEmision: FactoresEmision) => (
+                                            <Badge key={factorEmision.anio + factorEmision.factor} variant="secondary">
+                                                {factorEmision.factor}<span
+                                                className="text-[8px] ps-[2px] text-muted-foreground">{factorEmision.anio}</span>
+                                            </Badge>
+                                        ))}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="default">
-                                            {FertilizanteCalculate.totalGEI}
+                                            {ConsumoPapelCalculate.totalGEI}
                                         </Badge>
                                     </TableCell>
                                 </TableRow>
