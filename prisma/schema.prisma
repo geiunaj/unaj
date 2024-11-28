@@ -136,6 +136,7 @@ model Mes {
   Activo              Activo[]
   CasaTrabajo         CasaTrabajo[]
   Extintor            Extintor[]
+  ConsumoPapel        ConsumoPapel[]
 
   @@map("mes")
 }
@@ -264,16 +265,11 @@ model Fertilizante {
 }
 
 model TipoPapel {
-  id                   Int     @id @default(autoincrement())
-  nombre               String  @db.VarChar(50)
-  largo                Float // cm
-  ancho                Float // cm
-  area                 Float // m2
-  gramaje              Float // densidad
-  unidad_paquete       String  @db.VarChar(45)
-  porcentaje_reciclado Float?
-  porcentaje_virgen    Float?
-  nombre_certificado   String? @db.VarChar(50)
+  id      Int    @id @default(autoincrement())
+  nombre  String @db.VarChar(50)
+  gramaje Float // g/m2
+  area    Float // m2
+  hojas   Float // cantidad de hojas
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -287,9 +283,8 @@ model TipoPapel {
 
 model FactorTipoPapel {
   id          Int   @id @default(autoincrement())
+  factor      Float
   tipoPapelId Int
-  reciclado   Float
-  virgen      Float
   anioId      Int
 
   created_at DateTime @default(now())
@@ -306,15 +301,18 @@ model ConsumoPapel {
   id               Int     @id @default(autoincrement())
   tipoPapel_id     Int
   cantidad_paquete Int
+  peso             Float
   comentario       String?
   anio_id          Int
-  sede_id          Int?
+  mes_id           Int
+  sede_id          Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
   tipoPapel TipoPapel @relation(fields: [tipoPapel_id], references: [id])
   anio      Anio      @relation(fields: [anio_id], references: [id])
+  mes       Mes       @relation(fields: [mes_id], references: [id])
   sede      Sede?     @relation(fields: [sede_id], references: [id])
 
   @@map("consumopapel")
@@ -323,7 +321,6 @@ model ConsumoPapel {
 model ConsumoPapelCalculos {
   id           Int   @id @default(autoincrement())
   tipoPapel_id Int
-  cantidad     Float // registro
   consumo      Float
   period_id    Int
   sede_id      Int
@@ -343,7 +340,6 @@ model ConsumoPapelCalculos {
 
 model ConsumoPapelCalculosDetail {
   id                     Int   @id @default(autoincrement())
-  cantidad               Float // registro
   factorTipoPapelId      Int
   consumo                Float
   totalGEI               Float

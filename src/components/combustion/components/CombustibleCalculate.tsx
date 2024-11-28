@@ -129,6 +129,7 @@ export default function CombustibleCalculate({
             {header: "N°", key: "id", width: 10},
             {header: "TIPO DE COMBUSTIBLE", key: "tipoCombustible", width: 40},
             {header: "CONSUMO", key: "consumo", width: 20},
+            {header: "UNIDAD", key: "unidad", width: 10},
             {header: "EMISIONES DE CO2", key: "emisionCO2", width: 25},
             {header: "EMISIONES DE CH4", key: "emisionCH4", width: 25},
             {header: "EMISIONES DE N2O", key: "emisionN2O", width: 25},
@@ -201,11 +202,12 @@ export default function CombustibleCalculate({
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
                                     {header: "TIPO COMBUSTIBLE", key: "tipoCombustible", width: 20},
-                                    {header: "CONSUMO", key: "consumo", width: 10},
-                                    {header: "EMISIONES CO2", key: "emisionCO2", width: 15},
-                                    {header: "EMISIONES CH4", key: "emisionCH4", width: 15},
-                                    {header: "EMISIONES N2O", key: "emisionN2O", width: 15},
-                                    {header: "TOTAL GEI", key: "totalGEI", width: 10},
+                                    {header: "CONSUMO", key: "consumo", width: 8},
+                                    {header: "UNIDAD", key: "unidad", width: 2},
+                                    {header: "EMISIONES CO2[tCO2eq]", key: "emisionCO2", width: 15},
+                                    {header: "EMISIONES CH4[tCO2eq]", key: "emisionCH4", width: 15},
+                                    {header: "EMISIONES N2O[tCO2eq]", key: "emisionN2O", width: 15},
+                                    {header: "TOTAL GEI[tCO2eq]", key: "totalGEI", width: 10},
                                     {header: "SEDE", key: "sede", width: 10},
                                 ]}
                                 title="REPORTE DE CALCULOS DE COMBUSTIBLE"
@@ -223,22 +225,22 @@ export default function CombustibleCalculate({
                     <TableHeader>
                         <TableRow>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                TIPO DE COMBUSTIBLE
+                                TIPO DE <br/>COMBUSTIBLE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 CONSUMO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                EMISIONES DE CO2
+                                EMISIONES <br/> DE CO2 <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                EMISIONES DE CH4
+                                EMISIONES <br/> DE CH4 <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                EMISIONES DE N2O
+                                EMISIONES <br/> DE N2O <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                TOTAL EMISIONES GEI
+                                TOTAL EMISIONES <br/> GEI <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -259,7 +261,8 @@ export default function CombustibleCalculate({
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">
-                                            {combustionCalculate.consumo}
+                                            {combustionCalculate.consumo} <span
+                                            className="text-[10px] text-muted-foreground">{combustionCalculate.unidad}</span>
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">

@@ -215,11 +215,15 @@ export default function TransporteCasaTrabajoCalculate() {
                                 className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
                                 TIPO DE VEHICULO
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FACTOR DE EMISIÓN
+                            <TableHead
+                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                                CANTIDAD <span className="text-[10px]">[km]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                TOTAL EMISIONES GEI
+                                FACTOR DE <br/> EMISIÓN <span className="text-[10px]">[kgCO2/km]</span>
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                TOTAL EMISIONES <br/> GEI <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -244,6 +248,10 @@ export default function TransporteCasaTrabajoCalculate() {
                                     <TableCell
                                         className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {TransporteCasaTrabajoCalculate.tipoVehiculo}
+                                    </TableCell>
+
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
+                                        {TransporteCasaTrabajoCalculate.cantidadTotal}
                                     </TableCell>
                                     <TableCell className="text-xs flex gap-2 justify-center sm:text-sm">
                                         {TransporteCasaTrabajoCalculate.factoresEmision.map((factorEmision: FactoresEmision) => (

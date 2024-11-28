@@ -170,13 +170,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             let totalConsumo = 0;
             let totalEmisionGEI = 0;
 
-            if (!tipoPapel.area || !tipoPapel.gramaje || !tipoPapel.porcentaje_reciclado || !tipoPapel.porcentaje_virgen) {
-                return new NextResponse(`El tipo de papel ${tipoPapel.nombre} no tiene todos los datos necesarios`, {status: 400});
-            }
-
             const consumoPapelCalculo = await prisma.consumoPapelCalculos.create({
                 data: {
-                    cantidad: 0,
                     consumo: 0,
                     totalGEI: 0,
                     tipoPapel_id: tipoPapel.id,
@@ -187,7 +182,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
             for (const year of allYears) {
                 const anioId = await getAnioId(year);
-                if (!anioId) return new NextResponse(`El año ${year} no está registrado del ${tipoPapel.nombre}`, {status: 400});
+                if (!anioId) return new NextResponse(`Agregue el factor de emisión para el año ${year} de ${tipoPapel.nombre}`, {status: 400});
                 const factorTipoPapel = await prisma.factorTipoPapel.findFirst({where: {anioId}});
                 if (!factorTipoPapel) return new NextResponse(`Agregue el factor de emisión para el año ${year}`, {status: 400});
 
@@ -200,18 +195,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 });
 
                 const totalConsumoYear: number = consumoPapel.reduce((acc, consumoPapel) => {
-                    return acc + consumoPapel.cantidad_paquete;
+                    return acc + consumoPapel.peso;
                 }, 0);
 
-
-                const cantidadUsada = totalConsumoYear * tipoPapel.area * tipoPapel.gramaje;
-                const emisionoGEI = cantidadUsada * ((tipoPapel.porcentaje_reciclado / 100 * factorTipoPapel.reciclado) + (tipoPapel.porcentaje_virgen / 100 * factorTipoPapel.virgen)) / 100;
+                const emisionoGEI = totalConsumoYear * factorTipoPapel.factor;
 
                 await prisma.consumoPapelCalculosDetail.create({
                     data: {
-                        cantidad: totalConsumoYear,
                         factorTipoPapelId: factorTipoPapel.id,
-                        consumo: cantidadUsada,
+                        consumo: totalConsumoYear,
                         totalGEI: emisionoGEI,
                         consumoPapelCalculosId: consumoPapelCalculo.id,
                         sedeId: sedeId,
@@ -222,16 +214,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 });
 
                 totalTipoPapel += totalConsumoYear;
-                totalConsumo += cantidadUsada;
                 totalEmisionGEI += emisionoGEI;
             }
 
             await prisma.consumoPapelCalculos.update({
                 where: {id: consumoPapelCalculo.id,},
                 data: {
-                    cantidad: totalTipoPapel,
                     consumo: totalConsumo,
-                    totalGEI: totalEmisionGEI,
+                    totalGEI: totalEmisionGEI / 1000,
                     created_at: new Date(),
                     updated_at: new Date(),
                 },

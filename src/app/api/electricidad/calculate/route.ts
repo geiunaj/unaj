@@ -59,6 +59,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 sede_id: sedeId ? Number(sedeId) : undefined,
             },
             periodoCalculoId: period?.id,
+            consumo: {
+                not: 0
+            },
         };
 
         const totalRecords = await prisma.energiaCalculos.count({
@@ -89,7 +92,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 }
                 return null;
             })
-            .filter((combustibleCalculo) => combustibleCalculo !== null);
+            .filter((electricidadCalculo) => electricidadCalculo !== null);
 
         return NextResponse.json({
             data: formattedElectricidadCalculos,

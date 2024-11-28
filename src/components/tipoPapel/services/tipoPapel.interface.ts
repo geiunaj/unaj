@@ -1,12 +1,9 @@
 export interface tipoPapel {
     id: number;
     nombre: string;
+    area: number
     gramaje: number;
-    unidad_paquete: string;
-    is_certificado?: boolean;
-    is_reciclable?: boolean;
-    porcentaje_reciclado?: number;
-    nombre_certificado?: string;
+    hojas: number;
     created_at: Date;
     updated_at: Date;
     // comentario: string;
@@ -15,26 +12,17 @@ export interface tipoPapel {
 export interface TipoPapelCollection {
     id: number;
     nombre: string;
-    ancho: number;
-    largo: number;
     area: number;
     gramaje: number;
-    unidad_paquete: string;
-    porcentaje_reciclado: number;
-    porcentaje_virgen: number;
-    nombre_certificado?: string;
+    hojas: number;
     nombreFiltro: string;
 }
 
 export interface TipoPapelRequest {
     nombre: string;
-    ancho: number;
-    largo: number;
-    area?: number;
+    area: number;
     gramaje: number;
-    unidad_paquete: string;
-    porcentaje_reciclado: number;
-    nombre_certificado?: string;
+    hojas: number;
 }
 
 export interface CreateTipoPapelProps {

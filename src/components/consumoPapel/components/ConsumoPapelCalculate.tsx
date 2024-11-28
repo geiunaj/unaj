@@ -16,7 +16,7 @@ import ButtonBack from "@/components/ButtonBack";
 import {useRouter} from "next/navigation";
 import ReportComponent from "@/components/ReportComponent";
 import GenerateReport from "@/lib/utils/generateReport";
-import {formatPeriod} from "@/lib/utils/core.function";
+import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import {Button} from "@/components/ui/button";
@@ -83,7 +83,12 @@ export default function ConsumoPapelCalculate() {
             sedeId: selectedSede ? Number(selectedSede) : undefined,
             yearFrom,
             yearTo,
-        });
+        }).then(() => {
+            successToast("Calculo realizado con éxito");
+        })
+            .catch((error: any) => {
+                errorToast(error.response.data.message);
+            });
         await consumoPapelCalculos.refetch();
         await consumoPapelCalculosReport.refetch();
     }, [selectedSede, yearFrom, yearTo, consumoPapelCalculos, consumoPapelCalculosReport]);
@@ -124,23 +129,13 @@ export default function ConsumoPapelCalculate() {
 
     return (
         <div className="w-full max-w-screen-xl h-full">
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
-                <div className="flex gap-4 items-center">
-                    <ButtonBack onClick={handleConsumoPapel}/>
-                    <div className="font-Manrope">
-                        <h1 className="text-base text-foreground font-bold">
-                            Emisiones de Consumo de Papel
-                        </h1>
-                        <h2 className="text-xs sm:text-sm text-muted-foreground">
-                            Huella de carbono
-                        </h2>
-                    </div>
-                </div>
-                <div className="flex flex-col items-end gap-2">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-start mb-6">
+                <div className="flex flex-col items-end w-full gap-2">
                     <div
-                        className="grid grid-cols-2 grid-rows-1 w-full sm:flex sm:flex-col sm:justify-end sm:items-end gap-1 justify-center">
+                        className="grid grid-cols-2 grid-rows-1 w-full gap-2 sm:flex sm:justify-between justify-center">
                         <div
-                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-end sm:items-center">
+                            className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
+                            <ButtonBack onClick={handleConsumoPapel}/>
                             <SelectFilter
                                 list={sedes.data!}
                                 itemSelected={selectedSede}
@@ -208,22 +203,22 @@ export default function ConsumoPapelCalculate() {
                                 TIPO PAPEL
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                GRAMAJE
+                                GRAMAJE <span className="text-[10px]">[g/m2]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 CANTIDAD
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CONSUMO
+                                CONSUMO <span className="text-[10px]">[kg]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                RECICLADO[%]
+                                RECICLADO <span className="text-[10px]">[%]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                VIRGEN[%]
+                                VIRGEN <span className="text-[10px]">[%]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                EMISIONES GEI
+                                EMISIONES GEI <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                         </TableRow>
                     </TableHeader>

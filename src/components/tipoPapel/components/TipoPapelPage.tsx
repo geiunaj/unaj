@@ -137,19 +137,13 @@ export default function TipoPapelPage() {
                                 NOMBRE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                GRAMAJE [g/m²]
+                                GRAMAJE <span className="text-[10px]">[g/m²]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                UNIDAD
+                                AREA <span className="text-[10px]">[m²]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                % RECICLADO
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                % VIRGEN
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                NOMBRE CERTIFICADO
+                                CANTIDAD HOJAS
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 ACCIONES
@@ -167,18 +161,9 @@ export default function TipoPapelPage() {
                                 <TableCell
                                     className="text-xs sm:text-sm">{item.gramaje}</TableCell>
                                 <TableCell
-                                    className="text-xs sm:text-sm">
-                                    <Badge variant="default">{item.unidad_paquete}</Badge>
-                                </TableCell>
+                                    className="text-xs sm:text-sm">{item.area}</TableCell>
                                 <TableCell
-                                    className="text-xs sm:text-sm">
-                                    {item.porcentaje_reciclado}
-                                </TableCell>
-                                <TableCell
-                                    className="text-xs sm:text-sm">
-                                    {item.porcentaje_virgen}
-                                </TableCell>
-                                <TableCell className="text-xs sm:text-sm">{item.nombre_certificado}</TableCell>
+                                    className="text-xs sm:text-sm">{item.hojas}</TableCell>
                                 <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">
                                         {/*UPDATE*/}

@@ -40,36 +40,20 @@ const requiredMessage = (field: string) => `Ingrese un ${field}`;
 
 const TipoPapel = z
     .object({
-        nombre: z.string().min(1, requiredMessage("nombre")),
+        nombre: z.string().min(1, requiredMessage("Nombre")),
         gramaje: z.preprocess(
             parseNumber,
-            z.number().min(1, requiredMessage("gramaje mayor a 1"))
+            z.number().min(0, requiredMessage("Gramaje mayor a 0"))
         ),
-        unidad_paquete: z.string().min(1, requiredMessage("unidad")),
-        is_certificado: z.boolean().optional(),
-        is_reciclable: z.boolean().optional(),
-        porcentaje_reciclado: z
-            .preprocess(
-                parseNumber,
-                z.number().min(1, requiredMessage("valor mayor a 1"))
-            )
-            .optional(),
-        nombre_certificado: z.string().optional(),
-    })
-    .refine(
-        (data) => !data.is_reciclable || data.porcentaje_reciclado !== undefined,
-        {
-            message: "Ingrese un porcentaje de reciclado",
-            path: ["porcentaje_reciclado"],
-        }
-    )
-    .refine(
-        (data) => !data.is_certificado || data.nombre_certificado?.trim() !== "",
-        {
-            message: "Ingrese un certificado",
-            path: ["nombre_certificado"],
-        }
-    );
+        area: z.preprocess(
+            parseNumber,
+            z.number().min(0, requiredMessage("Área mayor a 0"))
+        ),
+        hojas: z.preprocess(
+            parseNumber,
+            z.number().min(0, requiredMessage("Hojas mayor a 0"))
+        ),
+    });
 
 export function CreateFormTipoPapel({onClose}: CreateTipoPapelProps) {
     const form = useForm<z.infer<typeof TipoPapel>>({
@@ -77,23 +61,17 @@ export function CreateFormTipoPapel({onClose}: CreateTipoPapelProps) {
         defaultValues: {
             nombre: "",
             gramaje: 0,
-            unidad_paquete: "",
-            is_certificado: false,
-            is_reciclable: false,
-            porcentaje_reciclado: 0,
-            nombre_certificado: "",
+            area: 0,
+            hojas: 0,
         },
     });
 
     const onSubmit = async (data: z.infer<typeof TipoPapel>) => {
         const tipoPapelRequest: TipoPapelRequest = {
             nombre: data.nombre,
-            ancho: 1,
-            largo: 1,
             gramaje: data.gramaje,
-            unidad_paquete: data.unidad_paquete ?? "",
-            porcentaje_reciclado: data.porcentaje_reciclado ?? 0,
-            nombre_certificado: data.nombre_certificado ?? "",
+            area: data.area,
+            hojas: data.hojas,
         };
         try {
             const response = await createTipoPapel(tipoPapelRequest);
@@ -132,157 +110,68 @@ export function CreateFormTipoPapel({onClose}: CreateTipoPapelProps) {
                             )}
                         />
 
-                        <div className="flex gap-5">
-                            {/*GRAMAJE*/}
-                            <FormField
-                                control={form.control}
-                                name="gramaje"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Gramaje</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                type="number"
-                                                step={STEP_NUMBER}
-                                                min={0}
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
+                        {/*GRAMAJE*/}
+                        <FormField
+                            control={form.control}
+                            name="gramaje"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Gramaje<span className="text-[10px]">[g/m²]</span></FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            type="number"
+                                            step={STEP_NUMBER}
+                                            min={0}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
-                            {/*UNIDAD PAQUETE*/}
-                            <FormField
-                                control={form.control}
-                                name="unidad_paquete"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Unidad</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="text"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="Unidad de paquete"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
+                        {/*AREA*/}
+                        <FormField
+                            control={form.control}
+                            name="area"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Área<span className="text-[10px]">[m²]</span></FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            type="number"
+                                            step={STEP_NUMBER}
+                                            min={0}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
-                        <div className="flex gap-5">
-                            {/*IS CERTIFICADO*/}
-                            <FormField
-                                control={form.control}
-                                name="is_certificado"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2 flex flex-row items-center justify-between">
-                                        <FormLabel className="mt-2 w-full">Certificado</FormLabel>
-                                        <FormControl>
-                                            <Switch
-                                                className="mx-4"
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/*IS RECICLABLE*/}
-                            <FormField
-                                control={form.control}
-                                name="is_reciclable"
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2 flex flex-row items-center justify-between">
-                                        <FormLabel className="mt-2 w-full">Reciclable</FormLabel>
-                                        <FormControl>
-                                            <Switch
-                                                className="mx-4"
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        <div className="flex gap-5">
-                            {/*NOMBRE CERTIFICADO*/}
-                            <FormField
-                                control={form.control}
-                                name="nombre_certificado"
-                                disabled={!form.getValues().is_certificado}
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Nombre Certificado</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="text"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* <FormField
-                name="porcentaje_reciclado"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Clase</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl className="w-full">
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleciona la clase" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <FormMessage />
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem></SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              /> */}
-
-                            {/*PORCENTAJE RECICLADO*/}
-                            <FormField
-                                control={form.control}
-                                name="porcentaje_reciclado"
-                                disabled={!form.getValues().is_reciclable}
-                                render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Porcentaje Reciclado</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                min={0}
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
+                        {/*HOJAS*/}
+                        <FormField
+                            control={form.control}
+                            name="hojas"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Cantidad de Hojas</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            type="number"
+                                            step={STEP_NUMBER}
+                                            min={0}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-primary">

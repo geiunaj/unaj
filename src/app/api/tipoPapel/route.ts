@@ -35,14 +35,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const tipoPapel = await prisma.tipoPapel.create({
             data: {
                 nombre: body.nombre,
-                ancho: body.ancho,
-                largo: body.largo,
-                area: body.ancho * body.largo,
+                area: body.area,
                 gramaje: body.gramaje,
-                unidad_paquete: body.unidad_paquete,
-                porcentaje_reciclado: body.porcentaje_reciclado,
-                porcentaje_virgen: 100 - body.porcentaje_reciclado,
-                nombre_certificado: body.nombre_certificado,
+                hojas: body.hojas,
                 created_at: new Date(),
                 updated_at: new Date(),
             },

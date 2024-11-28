@@ -332,12 +332,6 @@ export default function PapelPage() {
                                 GRAMAJE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CERTIFICADO
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                % RECICLADO
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
@@ -356,21 +350,10 @@ export default function PapelPage() {
                                         {item.nombre}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        {item.unidad_paquete}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="default">{item.cantidad_paquete}</Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.gramaje}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {item.nombre_certificado}
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {item.porcentaje_reciclado !== 0
-                                            ? item.porcentaje_reciclado
-                                            : ""}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.anio}

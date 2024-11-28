@@ -221,13 +221,13 @@ export default function TransporteTerrestreCalculate() {
                                 SEDE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CONSUMO
+                                CONSUMO <span className="text-[10px]">[km]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FACTOR DE EMISIÓN
+                                FACTOR DE <br/> EMISIÓN <span className="text-[10px]">[kgCO2/km]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                TOTAL EMISIONES GEI
+                                TOTAL EMISIONES <br/> GEI <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                         </TableRow>
                     </TableHeader>

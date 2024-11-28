@@ -18,23 +18,26 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const direction = searchParams.get("direction") ?? "desc";
         const tipoPapelId = searchParams.get("tipoPapelId") ?? undefined;
         const anio = searchParams.get("anio") ?? undefined;
+        const mesId = searchParams.get("mesId") ?? undefined;
+        const all = searchParams.get("all") === "true";
 
         const page = parseInt(searchParams.get("page") ?? "1");
         const perPage = parseInt(searchParams.get("perPage") ?? "10");
 
-        const all = searchParams.get("all") === "true";
-        const yearFrom = searchParams.get("yearFrom") ?? undefined;
-        const yearTo = searchParams.get("yearTo") ?? undefined;
+        const dateFrom = searchParams.get("from") ?? undefined;
+        const dateTo = searchParams.get("to") ?? undefined;
 
-        let yearFromId: number | undefined;
-        let yearToId: number | undefined;
+        let yearFrom, yearTo, monthFrom, monthTo;
+        let yearFromId, yearToId, mesFromId, mesToId;
 
+        if (dateFrom) [yearFrom, monthFrom] = dateFrom.split("-");
+        if (dateTo) [yearTo, monthTo] = dateTo.split("-");
         if (yearFrom) yearFromId = await getAnioId(yearFrom);
         if (yearTo) yearToId = await getAnioId(yearTo);
-
+        if (monthFrom) mesFromId = parseInt(monthFrom);
+        if (monthTo) mesToId = parseInt(monthTo);
 
         const whereOptions = {
-
             sede_id: sedeId ? parseInt(sedeId) : undefined,
             tipoPapel_id: tipoPapelId ? parseInt(tipoPapelId) : undefined,
             anio: {
@@ -43,8 +46,28 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                             yearFromId ? {gte: yearFrom} : yearToId ? {lte: yearTo} : undefined
                     ),
                 }
-            }
-        };
+            },
+            mes_id: mesId ? parseInt(mesId) : undefined,
+        } as {
+            sede_id?: number;
+            tipoPapel_id?: number;
+            mes_id?: number;
+            anio_mes?: {
+                gte?: number;
+                lte?: number;
+            };
+        }
+
+        const from = yearFromId && mesFromId ? Number(yearFrom) * 100 + mesFromId : undefined;
+        const to = yearToId && mesToId ? Number(yearTo) * 100 + mesToId : undefined;
+
+        if (from && to) {
+            whereOptions.anio_mes = {gte: from, lte: to,};
+        } else if (from) {
+            whereOptions.anio_mes = {gte: from,};
+        } else if (to) {
+            whereOptions.anio_mes = {lte: to,};
+        }
 
         const totalRecords = await prisma.consumoPapel.count({where: whereOptions});
         const totalPages = Math.ceil(totalRecords / perPage);
@@ -95,26 +118,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         const body: ConsumoPapelRequest = await req.json();
-
-        // Validar campos 
-        if (
-            typeof body.tipoPapel_id !== "number" ||
-            typeof body.anio_id !== "number" ||
-            typeof body.sede_id !== "number" ||
-            typeof body.cantidad_paquete !== "number"
-        ) {
-            return new NextResponse("Campos requeridos faltantes", {
-                status: 400,
-            });
-        }
-
+        const tipoPapel = await prisma.tipoPapel.findUnique({
+            where: {id: body.tipoPapel_id},
+        });
         const consumopapel = await prisma.consumoPapel.create({
             data: {
                 tipoPapel_id: body.tipoPapel_id,
-                anio_id: body.anio_id,
-                sede_id: body.sede_id,
                 cantidad_paquete: body.cantidad_paquete,
+                peso: (tipoPapel?.area ?? 0) * (tipoPapel?.hojas ?? 0) * (tipoPapel?.gramaje ?? 0) * body.cantidad_paquete,
                 comentario: body.comentario,
+                anio_id: body.anio_id,
+                mes_id: body.mes_id,
+                sede_id: body.sede_id,
 
                 created_at: new Date(),
                 updated_at: new Date(),

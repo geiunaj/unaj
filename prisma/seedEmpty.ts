@@ -24,7 +24,7 @@ async function typeUsers() {
     }
     console.log("Type User created");
 
-    for (let i = 1; i <= 40; i++) {
+    for (let i = 1; i <= 41; i++) {
         await prisma.access.create({
             data: {
                 menu: i,
@@ -400,135 +400,31 @@ async function fertilizantes() {
 
 // 1
 async function tipoPapel() {
-    const tipoPapel = [
-        // A3
-        {
-            nombre: "A3",
-            ancho: 29.7,
-            largo: 42.1,
-            area: 0.125037,
-            gramaje: 80.0,
-            unidad_paquete: "500 hojas",
-            porcentaje_reciclado: 80,
-            porcentaje_virgen: 20,
-            nombre_certificado: null,
-        },
-        {
-            nombre: "A3",
-            ancho: 29.7,
-            largo: 42.1,
-            area: 0.125037,
-            gramaje: 90.0,
-            unidad_paquete: "millar",
-            porcentaje_reciclado: 80,
-            porcentaje_virgen: 20,
-            nombre_certificado: "FSC",
-        },
-        {
-            nombre: "A4",
-            ancho: 21,
-            largo: 29.7,
+    await prisma.tipoPapel.create({
+        data: {
+            nombre: "Papel DIN A4",
+            gramaje: 75,
             area: 0.06237,
-            gramaje: 70.0,
-            unidad_paquete: "millar",
-            porcentaje_reciclado: 80,
-            porcentaje_virgen: 20,
-            nombre_certificado: null,
+            hojas: 500,
+            created_at: new Date(),
+            updated_at: new Date(),
         },
-        {
-            nombre: "A4",
-            ancho: 21,
-            largo: 29.7,
-            area: 0.06237,
-            gramaje: 80.0,
-            unidad_paquete: "millar",
-            porcentaje_reciclado: 80,
-            porcentaje_virgen: 20,
-            nombre_certificado: "FSC",
-        },
-        {
-            nombre: "Letter",
-            ancho: 21.59,
-            largo: 27.94,
-            area: 0.06032246,
-            gramaje: 70.0,
-            unidad_paquete: "500 hojas",
-            porcentaje_reciclado: 80,
-            porcentaje_virgen: 20,
-            nombre_certificado: null,
-        },
-        {
-            nombre: "Letter",
-            ancho: 21.59,
-            largo: 27.94,
-            area: 0.06032246,
-            gramaje: 75.0,
-            unidad_paquete: "500 hojas",
-            porcentaje_reciclado: 80,
-            porcentaje_virgen: 20,
-            nombre_certificado: "FSC",
-        },
-        {
-            nombre: "Legal",
-            ancho: 21.59,
-            largo: 35.56,
-            area: 0.07677404,
-            gramaje: 80.0,
-            unidad_paquete: "500 hojas",
-            porcentaje_reciclado: 80,
-            porcentaje_virgen: 20,
-            nombre_certificado: "FSC",
-        },
-        {
-            nombre: "Legal",
-            ancho: 21.59,
-            largo: 35.56,
-            area: 0.07677404,
-            gramaje: 90.0,
-            unidad_paquete: "500 hojas",
-            porcentaje_reciclado: 80,
-            porcentaje_virgen: 20,
-            nombre_certificado: null,
-        },
-    ];
-
-    for (const tipo of tipoPapel) {
-        await prisma.tipoPapel.create({
-            data: {
-                nombre: tipo.nombre,
-                largo: tipo.largo,
-                ancho: tipo.ancho,
-                area: tipo.area,
-                gramaje: tipo.gramaje,
-                unidad_paquete: tipo.unidad_paquete,
-                porcentaje_reciclado: tipo.porcentaje_reciclado,
-                porcentaje_virgen: tipo.porcentaje_virgen,
-                nombre_certificado: tipo.nombre_certificado,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
-    }
+    });
     console.log("Paper types created");
 }
 
 // 1
 async function factorTipoPapel() {
-    const allTiposPapel = await prisma.tipoPapel.findMany();
-
-    for (const tipoPapel of allTiposPapel) {
-        for (const anio of AllYears) {
-            await prisma.factorTipoPapel.create({
-                data: {
-                    tipoPapelId: tipoPapel.id,
-                    reciclado: 100,
-                    virgen: 0,
-                    anioId: anio.id,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                },
-            });
-        }
+    for (const anio of AllYears) {
+        await prisma.factorTipoPapel.create({
+            data: {
+                factor: 0.9557,
+                tipoPapelId: 1,
+                anioId: anio.id,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
     }
     console.log("Paper factors created");
 }
@@ -2105,6 +2001,28 @@ async function activos() {
             updated_at: new Date(),
         },
     });
+}
+
+async function consumoPapel() {
+    const tipoPapel = await prisma.tipoPapel.findFirst({
+        where: {
+            id: 1,
+        },
+    });
+    const consumos = [2240, 707, 632]
+    for (const consumo of consumos) {
+        await prisma.consumoPapel.create({
+            data: {
+                tipoPapel_id: 1,
+                cantidad_paquete: consumo,
+                peso: tipoPapel.area * tipoPapel.hojas * tipoPapel.gramaje * consumo,
+                comentario: "-",
+                anio_id: 1,
+                mes_id: 1,
+                sede_id: 1,
+            }
+        });
+    }
 }
 
 

@@ -214,10 +214,10 @@ export default function ElectricidadCalculate() {
                                 AREA
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CONSUMO
+                                CONSUMO <span className="text-[10px]">[kWh]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                EMISIONES DE CO2
+                                EMISIONES <br/> DE CO2 <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                             {/*<TableHead className="text-xs sm:text-sm font-bold text-center">*/}
                             {/*    EMISIONES DE CH4*/}
@@ -226,7 +226,7 @@ export default function ElectricidadCalculate() {
                             {/*    EMISIONES DE N2O*/}
                             {/*</TableHead>*/}
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                TOTAL EMISIONES GEI
+                                TOTAL EMISIONES <br/>GEI <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                         </TableRow>
                     </TableHeader>

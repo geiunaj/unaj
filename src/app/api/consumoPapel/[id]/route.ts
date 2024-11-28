@@ -12,7 +12,7 @@ export async function GET(
     try {
         const id = parseInt(params.id, 10);
         if (isNaN(id)) {
-            return new NextResponse("Invalid ID", {status: 404});
+            return NextResponse.json({message: "Invalid ID"}, {status: 404});
         }
 
         const consumoPapel = await prisma.consumoPapel.findUnique({
@@ -27,13 +27,13 @@ export async function GET(
         });
 
         if (!consumoPapel) {
-            return new NextResponse("ConsumoPapel not found", {status: 404});
+            return NextResponse.json({message: "ConsumoPapel not found"}, {status: 404});
         }
 
         return NextResponse.json(consumoPapel);
     } catch (error) {
         console.error("Error finding combustible", error);
-        return new NextResponse("Error finding combustible", {status: 500});
+        return NextResponse.json({message: "Error finding combustible"}, {status: 500});
     }
 }
 
@@ -44,26 +44,28 @@ export async function PUT(
 ): Promise<NextResponse> {
     try {
         const id = parseInt(params.id, 10);
-        if (isNaN(id)) {
-            return new NextResponse("Invalid ID", {status: 400});
-        }
+        if (isNaN(id)) return NextResponse.json({message: "Invalid ID"}, {status: 400});
 
-
-        const {cantidad_paquete, tipoPapel_id, anio_id, sede_id, comentario}: ConsumoPapelRequest = await req.json();
-        if (!cantidad_paquete || !tipoPapel_id || !anio_id || !sede_id) {
-            return new NextResponse("Faltan campos requeridos", {status: 400});
-        }
+        const body: ConsumoPapelRequest = await req.json();
+        const tipoPapel = await prisma.tipoPapel.findUnique({
+            where: {id: body.tipoPapel_id},
+        });
 
         const updatedConsumoPapel = await prisma.consumoPapel.update({
             where: {
                 id: id,
             },
             data: {
-                cantidad_paquete,
-                tipoPapel_id,
-                anio_id,
-                sede_id,
-                comentario,
+                tipoPapel_id: body.tipoPapel_id,
+                cantidad_paquete: body.cantidad_paquete,
+                peso: (tipoPapel?.area ?? 0) * (tipoPapel?.hojas ?? 0) * (tipoPapel?.gramaje ?? 0) * body.cantidad_paquete,
+                comentario: body.comentario,
+                anio_id: body.anio_id,
+                mes_id: body.mes_id,
+                sede_id: body.sede_id,
+
+                created_at: new Date(),
+                updated_at: new Date(),
             },
             include: {
                 tipoPapel: true,
@@ -80,14 +82,14 @@ export async function PUT(
 
     } catch (error) {
         console.error("Error updating consumo papel", error);
-        return new NextResponse("Error updating consumo papel", {status: 500});
+        return NextResponse.json({message: "Error updating consumo papel"}, {status: 500});
     }
 }
 
 export async function DELETE(req: NextRequest, {params}: { params: { id: string } }): Promise<NextResponse> {
     try {
         const id = parseInt(params.id, 10);
-        if (isNaN(id)) return new NextResponse("ID inválido", {status: 400});
+        if (isNaN(id)) return NextResponse.json({message: "ID inválido"}, {status: 400});
 
         await prisma.consumoPapel.delete({
             where: {id},
@@ -98,6 +100,6 @@ export async function DELETE(req: NextRequest, {params}: { params: { id: string 
         });
     } catch (error: any) {
         console.error("Error eliminando Consumo de papel", error);
-        return new NextResponse("Error eliminando Consumo de papel", {status: 500});
+        return NextResponse.json({message: "Error eliminando Consumo de papel"}, {status: 500});
     }
 }
