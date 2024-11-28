@@ -100,19 +100,16 @@ export default function ActivosCalculate() {
 
     const handleClickExcelReport = useCallback(async (period: ReportRequest) => {
         const columns = [
-            {header: "N°", key: "id", width: 10},
-            {header: "ACTIVO", key: "tipoActivo", width: 80},
-            {header: "CATEGORIA", key: "categoria", width: 25},
-            {header: "UNIDAD", key: "unidad", width: 10},
-            // {header: "GRUPO", key: "grupo", width: 25},
-            // {header: "PROCESO", key: "proceso", width: 90},
-            {header: "PESO TOTAL", key: "pesoTotal", width: 20},
+            {header: "N°", key: "rn", width: 10},
+            {header: "GRUPO DE ACTIVO", key: "grupoActivo", width: 30},
+            {header: "SEDE", key: "sede", width: 20},
+            {header: "FACTORES", key: "factoresEmisionString", width: 20},
             {header: "TOTAL GEI", key: "totalGEI", width: 20},
         ];
         await setFrom(period.from ?? "");
         await setTo(period.to ?? "");
         const data = await activoCalculosReport.refetch();
-        await GenerateReport(data.data!.data, columns, formatPeriod(period), "REPORTE DE EMISIONES DE ACTIVOS", "Activos");
+        await GenerateReport(data.data!.data, columns, formatPeriod(period, true), "REPORTE DE EMISIONES DE ACTIVOS", "Activos");
     }, [activoCalculosReport]);
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
@@ -181,17 +178,14 @@ export default function ActivosCalculate() {
                                 data={activoCalculosReport.data!.data}
                                 fileName={`REPORTE CALCULOS DE ACTIVOS_${formatPeriod({from, to}, true)}`}
                                 columns={[
-                                    {header: "N°", key: "id", width: 10},
-                                    {header: "ACTIVO", key: "tipoActivo", width: 100},
-                                    {header: "CATEGORIA", key: "categoria", width: 20},
-                                    {header: "UNIDAD", key: "unidad", width: 15},
-                                    // {header: "GRUPO", key: "grupo", width: 15},
-                                    // {header: "PROCESO", key: "proceso", width: 20},
-                                    {header: "PESO TOTAL", key: "pesoTotal", width: 20},
+                                    {header: "N°", key: "rn", width: 10},
+                                    {header: "GRUPO DE ACTIVO", key: "grupoActivo", width: 30},
+                                    {header: "SEDE", key: "sede", width: 20},
+                                    {header: "FACTORES", key: "factoresEmisionString", width: 20},
                                     {header: "TOTAL GEI", key: "totalGEI", width: 20},
                                 ]}
                                 title="REPORTE DE CALCULOS DE ACTIVOS"
-                                period={formatPeriod({from, to})}
+                                period={formatPeriod({from, to}, true)}
                             />
 
                             <ButtonCalculate

@@ -2067,50 +2067,50 @@ async function consumoFertilizantes() {
 
 async function main() {
     // ------- 0
-    // await typeUsers();
-    // await meses();
-    // await years();
-    // await gwp();
-    // await sedes();
+    await typeUsers();
+    await meses();
+    await years();
+    await gwp();
+    await sedes();
     AllYears = await prisma.anio.findMany();
     AllSedes = await prisma.sede.findMany();
-    // await areas();
+    await areas();
     // ------- 6
-    // await tipoCombustible();
-    // await fertilizantes();
-    // // ------- 6
-    // await tipoPapel();
-    // await factorTipoPapel();
-    // await factorSEIN();
-    // await factorAgua();
-    // await factorTaxi();
-    // await factorAereo();
-    // // ------- 6
-    // await transporteAereo();
-    // await factorTerrestre();
-    // await transporteTerrestre();
-    // // ------- 3
-    // await grupoConsumible();
-    // await categoriaConsumible();
-    // await procesoConsumible();
-    // // ------- 3
-    // await descripcionConsumible();
-    // await tipoConsumible();
-    // // ------- 3
-    // await grupoActivo();
-    // // ------- 3
-    // await taxiConsumo();
-    // // ------- 1
-    // await casaTrabajoConsumo();
-    // // ------- 3
-    // await extintor();
-    // // ------- 1
-    // await consumoEnergia();
-    // await consumibles();
-    // await activos();
-    // await consumoPapel();
-    // await consumoAgua();
-    // await consumoFertilizantes();
+    await tipoCombustible();
+    await fertilizantes();
+    // ------- 6
+    await tipoPapel();
+    await factorTipoPapel();
+    await factorSEIN();
+    await factorAgua();
+    await factorTaxi();
+    await factorAereo();
+    // ------- 6
+    await transporteAereo();
+    await factorTerrestre();
+    await transporteTerrestre();
+    // ------- 3
+    await grupoConsumible();
+    await categoriaConsumible();
+    await procesoConsumible();
+    // ------- 3
+    await descripcionConsumible();
+    await tipoConsumible();
+    // ------- 3
+    await grupoActivo();
+    // ------- 3
+    await taxiConsumo();
+    // ------- 1
+    await casaTrabajoConsumo();
+    // ------- 3
+    await extintor();
+    // ------- 1
+    await consumoEnergia();
+    await consumibles();
+    await activos();
+    await consumoPapel();
+    await consumoAgua();
+    await consumoFertilizantes();
     // ------- 4
 
 
