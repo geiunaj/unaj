@@ -139,15 +139,6 @@ export default function AnioPage() {
                                             <Pen className="h-3.5 text-primary"/>
                                         </Button>
 
-                                        {/*DELETE*/}
-                                        <Button
-                                            className="h-7 w-7"
-                                            size="icon"
-                                            variant="outline"
-                                            onClick={() => handleCLickDelete(item.id)}
-                                        >
-                                            <Trash2 className="h-3.5 text-gray-500"/>
-                                        </Button>
                                     </div>
                                 </TableCell>
                             </TableRow>
