@@ -32,7 +32,7 @@ import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {createElectricidad} from "../services/electricidad.actions";
 import {getArea} from "@/components/area/services/area.actions";
-import { STEP_NUMBER } from "@/lib/constants/menu";
+import {STEP_NUMBER} from "@/lib/constants/menu";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -109,11 +109,11 @@ export function FormElectricidad({onClose}: CreateElectricidadProps) {
         form.setValue("area", "");
     }, [areas, form]);
 
-    if (sedes.isLoading || anios.isLoading || meses.isLoading) {
+    if (sedes.isLoading || anios.isLoading || meses.isLoading || areas.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (sedes.isError || anios.isError || meses.isError) {
+    if (sedes.isError || anios.isError || meses.isError || areas.isError) {
         return <div>Error</div>;
     }
 
