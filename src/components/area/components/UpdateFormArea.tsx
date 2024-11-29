@@ -64,7 +64,7 @@ export function UpdateFormArea({ id, onClose }: UpdateAreaProps) {
 
   const loadForm = useCallback(async () => {
     if (area.data) {
-      const areaData = area.data;
+      const areaData = await area.data;
       form.reset({
         nombre: areaData.nombre,
         sede: areaData.sede_id.toString(),
