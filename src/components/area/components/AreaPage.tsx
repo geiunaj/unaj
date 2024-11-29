@@ -161,7 +161,7 @@ export default function AreaPage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro de Tipo de Papel</DialogTitle>
+                        <DialogTitle>Actualizar Registro de Area</DialogTitle>
                         <DialogDescription></DialogDescription>
                     </DialogHeader>
                     <UpdateFormArea onClose={handleCloseUpdate} id={idForUpdate}/>

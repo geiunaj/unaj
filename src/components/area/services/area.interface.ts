@@ -5,6 +5,7 @@ export interface Area {
 
 export interface AreaRequest {
     nombre: string;
+    sedeId: number;
 }
 
 export interface CreateAreaProps {
