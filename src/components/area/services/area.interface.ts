@@ -2,6 +2,7 @@ export interface Area {
   id: number;
   nombre: string;
   sede: string;
+  sede_id: number;
 }
 
 export interface AreaRequest {
