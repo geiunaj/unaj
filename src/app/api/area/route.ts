@@ -38,6 +38,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         created_at: new Date(),
         updated_at: new Date(),
       },
+      include: {
+        sede: true,
+      },
     });
 
     return NextResponse.json({

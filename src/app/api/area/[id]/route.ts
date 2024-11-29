@@ -46,6 +46,9 @@ export async function PUT(
         sede_id: areaData.sedeId,
         updated_at: new Date(),
       },
+      include: {
+        sede: true,
+      },
     });
 
     return NextResponse.json({
