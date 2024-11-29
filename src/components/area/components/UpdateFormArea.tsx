@@ -67,6 +67,7 @@ export function UpdateFormArea({ id, onClose }: UpdateAreaProps) {
       const areaData = area.data;
       form.reset({
         nombre: areaData.nombre,
+        sede: areaData.sede.id.toString(),
       });
     }
   }, [area.data, id]);
