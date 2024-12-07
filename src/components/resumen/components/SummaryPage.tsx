@@ -103,25 +103,25 @@ export default function SummaryPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
+                            <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
                                 FUENTE DE EMISIÓN
                             </TableHead>
-                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
-                                CO2 <span className="text-[8px]">[tCO2eq]</span>
+                            <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
+                                EMISIÓN <br/> CO2 <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
-                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
-                                CH4 <span className="text-[8px]">[tCO2eq]</span>
+                            <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
+                                EMISIÓN <br/> CH4 <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
-                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
-                                N2O <span className="text-[8px]">[tCO2eq]</span>
+                            <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
+                                EMISIÓN <br/> N2O <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
-                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
-                                HFC <span className="text-[8px]">[tCO2eq]</span>
+                            <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
+                                EMISIÓN <br/> HFC <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
-                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
-                                TOTAL <span className="text-[8px]">[tCO2eq]</span>
+                            <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
+                                TOTAL <br/> EMISIONES <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
-                            <TableHead className="font-Manrope text-xs font-bold text-center py-1">
+                            <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
                                 CONTRIBUCIONES <span className="text-[8px]">[%]</span>
                             </TableHead>
                         </TableRow>
@@ -133,26 +133,26 @@ export default function SummaryPage() {
                                           className={`text-center ${item.category ? "bg-primary-foreground" : ""}`}
                                 >
                                     <TableCell
-                                        className={`text-xs text-start p-1 ${item.category ? "font-bold" : ""}`}>
+                                        className={`text-[13px] text-start p-1 ${item.category ? "font-bold" : ""}`}>
                                         {item.emissionSource}
                                     </TableCell>
-                                    <TableCell className="text-xs p-1">
-                                        {item.co2Emissions}
+                                    <TableCell className="text-[13px] text-end p-1 pe-6">
+                                        {item.co2Emissions.toFixed(2)}
                                     </TableCell>
-                                    <TableCell className="text-xs p-1">
-                                        {item.ch4Emissions}
+                                    <TableCell className="text-[13px] text-end p-1 pe-6">
+                                        {item.ch4Emissions.toFixed(2)}
                                     </TableCell>
-                                    <TableCell className="text-xs p-1">
-                                        {item.N2OEmissions}
+                                    <TableCell className="text-[13px] text-end p-1 pe-6">
+                                        {item.N2OEmissions.toFixed(2)}
                                     </TableCell>
-                                    <TableCell className="text-xs p-1">
-                                        {item.hfcEmissions}
+                                    <TableCell className="text-[13px] text-end p-1 pe-6">
+                                        {item.hfcEmissions.toFixed(2)}
                                     </TableCell>
-                                    <TableCell className="text-xs p-1">
-                                        <Badge variant="default">{item.totalEmissions}</Badge>
+                                    <TableCell className="text-[13px] text-end p-1 font-bold pe-6">
+                                       {item.totalEmissions.toFixed(2)}
                                     </TableCell>
-                                    <TableCell className="text-xs p-1">
-                                        <Badge variant="secondary">{item.generalContributions}</Badge>
+                                    <TableCell className="text-[13px] text-end p-1 pe-6">
+                                        {item.generalContributions.toFixed(2)}
                                     </TableCell>
                                 </TableRow>
                             )
