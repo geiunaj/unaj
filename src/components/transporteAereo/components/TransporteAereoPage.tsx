@@ -170,7 +170,7 @@ export default function TransporteAereoPage() {
     const handleClickReport = async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "rn", width: 10},
-            {header: "PASAJEROS", key: "numeroPasajeros", width: 25},
+            {header: "ORDEN SERVICIO", key: "numeroPasajeros", width: 25},
             {header: "LUGAR SALIDA", key: "origen", width: 25},
             {header: "LUGAR DESTINO", key: "destino", width: 25},
             {header: "FECHA SALIDA", key: "fechaSalida", width: 20},
@@ -270,7 +270,7 @@ export default function TransporteAereoPage() {
                                 }, true)}`}
                                 columns={[
                                     {header: "N°", key: "rn", width: 10},
-                                    {header: "PASAJEROS", key: "numeroPasajeros", width: 10},
+                                    {header: "ORDEN SERVICIO", key: "numeroPasajeros", width: 10},
                                     {header: "LUGAR SALIDA", key: "origen", width: 25},
                                     {header: "LUGAR DESTINO", key: "destino", width: 25},
                                     {header: "FECHA SALIDA", key: "fechaSalida", width: 20},
@@ -318,7 +318,7 @@ export default function TransporteAereoPage() {
                                 N°
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                PASAJEROS
+                                ORDEN DE<br/> SERVICIO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 LUGAR DE<br/> SALIDA

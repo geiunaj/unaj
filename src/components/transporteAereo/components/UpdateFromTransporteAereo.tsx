@@ -195,13 +195,13 @@ export function UpdateFormTransporteAereo({id, onClose}: UpdateTransporteAereoPr
                         />
                         <div className="flex gap-5">
 
-                            {/* NUMERO PASAJEROSS */}
+                            {/* ORDEN DE SERVICIO */}
                             <FormField
                                 control={form.control}
                                 name="numeroPasajeros"
                                 render={({field}) => (
                                     <FormItem className="w-1/2">
-                                        <FormLabel> Número de Pasajeros </FormLabel>
+                                        <FormLabel> Orden de Servicio </FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
