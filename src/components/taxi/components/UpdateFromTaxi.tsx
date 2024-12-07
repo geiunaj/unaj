@@ -227,7 +227,7 @@ export function UpdateFormTaxi({id, onClose}: UpdateTaxiProps) {
                             control={form.control}
                             name="unidadContratante"
                             render={({field}) => (
-                                <FormItem className="pt-2 w-1/2">
+                                <FormItem className="pt-2 w-full">
                                     <FormLabel>Unidad Contratante</FormLabel>
                                     <FormControl>
                                         <Input
@@ -288,7 +288,7 @@ export function UpdateFormTaxi({id, onClose}: UpdateTaxiProps) {
                                 name="montoGastado"
                                 render={({field}) => (
                                     <FormItem className="w-1/2">
-                                        <FormLabel>Monto</FormLabel>
+                                        <FormLabel>Monto <span className="text-[10px]">[S/]</span></FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"

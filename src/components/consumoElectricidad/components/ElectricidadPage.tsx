@@ -19,7 +19,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 
 import SelectFilter from "@/components/SelectFilter";
 import ButtonCalculate from "@/components/ButtonCalculate";
@@ -370,7 +370,7 @@ export default function ElectricidadPage() {
                                 N° SUMINISTRO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CONSUMO
+                                CONSUMO <span className="text-[10px]">[kWh]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 MES

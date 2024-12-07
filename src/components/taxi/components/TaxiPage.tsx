@@ -347,7 +347,7 @@ export default function TaxiPage() {
                                 LUGAR DE<br/> DESTINO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                MONTO<br/>GASTADO
+                                MONTO<br/>GASTADO <span className="text-[10px]">[S/]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 KM <br/>RECORRIDO

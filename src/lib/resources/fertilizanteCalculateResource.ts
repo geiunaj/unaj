@@ -1,33 +1,32 @@
 export interface Main {
-    id:                     number;
-    tipofertilizanteId:     number;
-    consumoTotal:           number;
-    cantidadAporte:         number;
-    emisionDirecta:         number;
+    id: number;
+    tipofertilizanteId: number;
+    consumoTotal: number;
+    cantidadAporte: number;
+    emisionDirecta: number;
     totalEmisionesDirectas: number;
-    emisionGEI:             number;
-    anioId:                 number;
-    sedeId:                 number;
-    created_at:             Date;
-    updated_at:             Date;
-    TipoFertilizante:       TipoFertilizante;
+    emisionGEI: number;
+    anioId: number;
+    sedeId: number;
+    created_at: Date;
+    updated_at: Date;
+    TipoFertilizante: TipoFertilizante;
 }
 
 export interface TipoFertilizante {
-    id:                  number;
-    clase:               Clase;
-    nombre:              string;
+    id: number;
+    clase: Clase;
+    nombre: string;
     porcentajeNitrogeno: number;
-    unidad:              string;
-    created_at:          Date;
-    updated_at:          Date;
+    unidad: string;
+    created_at: Date;
+    updated_at: Date;
 }
 
 export enum Clase {
     Orgánico = "Orgánico",
     Sintético = "Sintético",
 }
-
 
 
 export function formatFertilizanteCalculo(fertilizanteCalculo: any) {
@@ -42,7 +41,7 @@ export function formatFertilizanteCalculo(fertilizanteCalculo: any) {
         sedeId,
         sede,
         TipoFertilizante: TipoFertilizante,
-        
+
         ...rest
     } = fertilizanteCalculo;
 
@@ -56,11 +55,11 @@ export function formatFertilizanteCalculo(fertilizanteCalculo: any) {
         cantidadAporte: Number(cantidadAporte.toFixed(5)),
         emisionDirecta: Number(emisionDirecta.toFixed(5)),
         totalEmisionesDirectas: Number(totalEmisionesDirectas.toFixed(5)),
-        emisionGEI: Number(emisionGEI.toFixed(5)),
+        emisionGEI: Number(emisionGEI.toFixed(2)),
         sede: sede.name,
         created_at: undefined,
         updated_at: undefined,
         anio: undefined,
     };
-    
+
 }

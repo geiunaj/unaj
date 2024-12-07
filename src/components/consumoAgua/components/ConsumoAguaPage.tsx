@@ -355,7 +355,7 @@ export default function ConsumoAguaPage() {
                                 FUENTE DE AGUA
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CONSUMO
+                                CONSUMO <span className="text-[10px]">[m³]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 MES

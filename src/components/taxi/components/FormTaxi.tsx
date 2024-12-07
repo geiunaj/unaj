@@ -285,7 +285,7 @@ export function FormTaxi({onClose}: CreateTaxiProps) {
                                 name="monto"
                                 render={({field}) => (
                                     <FormItem className="w-1/2">
-                                        <FormLabel>Monto</FormLabel>
+                                        <FormLabel>Monto <span className="text-[10px]">[S/]</span></FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"

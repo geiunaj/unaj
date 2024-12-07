@@ -400,9 +400,6 @@ export default function FertilizantePage() {
                                 % DE NITROGENO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FICHA TECNICA
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
@@ -426,13 +423,11 @@ export default function FertilizantePage() {
                                         {item.tipoFertilizante}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default">{item.cantidad}</Badge>
+                                        <Badge variant="default">{item.cantidad}<span
+                                            className="text-[10px] text-muted">{item.unidad}</span></Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.porcentajeNit} %
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {item.is_ficha}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.anio}

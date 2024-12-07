@@ -34,7 +34,9 @@ import {updateFertilizante} from "@/components/fertilizantes/services/fertilizan
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {useAnio, useFertilizanteId, useSede} from "@/components/fertilizantes/lib/fertilizante.hook";
 import {successToast} from "@/lib/utils/core.function";
-import { STEP_NUMBER } from "@/lib/constants/menu";
+import {STEP_NUMBER} from "@/lib/constants/menu";
+import {TipoFertilizanteCollection} from "@/components/tipoFertilizante/services/tipoFertilizante.interface";
+import {formaFertilizante} from "@/lib/resources/fertilizanteResource";
 
 const Fertilizante = z.object({
     clase: z.string().min(1, "Seleccione una clase de fertilizante"),
@@ -52,6 +54,7 @@ export function UpdateFormFertilizantes({
                                         }: UpdateFertilizanteProps) {
     const [isFicha, setIsFicha] = useState(false);
 
+    const [tipoFertilizanteSelected, setTipoFertilizanteSelected] = useState<TipoFertilizanteCollection | null>(null);
     const form = useForm<z.infer<typeof Fertilizante>>({
         resolver: zodResolver(Fertilizante),
         defaultValues: {
@@ -91,6 +94,8 @@ export function UpdateFormFertilizantes({
                 sede: fertilizanteData.sede.id.toString(),
                 anio: fertilizanteData.anio.id.toString(),
             });
+            const formatedFertilizante = formaFertilizante(fertilizanteData);
+            setTipoFertilizanteSelected(formatedFertilizante);
         }
     }, [fertilizante.data, id]);
 
@@ -205,9 +210,12 @@ export function UpdateFormFertilizantes({
                                     <FormLabel>Nombre de Fertilizante</FormLabel>
                                     <Select
                                         disabled={tiposFertilizante.data!.length === 0}
-                                        onValueChange={field.onChange}
+                                        onValueChange={(value) => {
+                                            const selectedFertilizante = tiposFertilizante.data!.find((tipo) => tipo.id.toString() === value);
+                                            setTipoFertilizanteSelected(selectedFertilizante || null);
+                                            field.onChange(value);
+                                        }}
                                         value={field.value}
-                                        defaultValue={field.value}
                                     >
                                         <FormControl className="w-full">
                                             <SelectTrigger>
@@ -235,7 +243,10 @@ export function UpdateFormFertilizantes({
                                 name="cantidad"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Cantidad de fertilizante</FormLabel>
+                                        <FormLabel>
+                                            Cantidad de
+                                            fertilizante {tipoFertilizanteSelected ? `[${tipoFertilizanteSelected.unidad}]` : ''}
+                                        </FormLabel>
                                         <FormControl>
                                             <Input
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"

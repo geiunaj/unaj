@@ -35,7 +35,8 @@ import {
 } from "@/components/tipoFertilizante/services/tipoFertilizante.actions";
 import {createFertilizante} from "@/components/fertilizantes/services/fertilizante.actions";
 import SkeletonForm from "@/components/Layout/skeletonForm";
-import { STEP_NUMBER } from "@/lib/constants/menu";
+import {STEP_NUMBER} from "@/lib/constants/menu";
+import {TipoFertilizanteCollection} from "@/components/tipoFertilizante/services/tipoFertilizante.interface";
 
 const Fertilizante = z.object({
     clase: z.string().min(1, "Seleccione una clase de fertilizante"),
@@ -50,6 +51,7 @@ const Fertilizante = z.object({
 
 export function FormFertilizantes({onClose}: CreateFertilizanteProps) {
     const [isFicha, setIsFicha] = useState(false);
+    const [tipoFertilizanteSelected, setTipoFertilizanteSelected] = useState<TipoFertilizanteCollection | null>(null);
 
     const form = useForm<z.infer<typeof Fertilizante>>({
         resolver: zodResolver(Fertilizante),
@@ -194,7 +196,11 @@ export function FormFertilizantes({onClose}: CreateFertilizanteProps) {
                             render={({field}) => (
                                 <FormItem className="pt-2">
                                     <FormLabel>Nombre de Fertilizante</FormLabel>
-                                    <Select onValueChange={field.onChange}>
+                                    <Select onValueChange={(value) => {
+                                        const selectedFertilizante = tiposFertilizante.data!.find((tipo) => tipo.id.toString() === value);
+                                        setTipoFertilizanteSelected(selectedFertilizante || null);
+                                        field.onChange(value);
+                                    }}>
                                         <FormControl className="w-full">
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Nombre de Fertilizante"/>
@@ -221,7 +227,8 @@ export function FormFertilizantes({onClose}: CreateFertilizanteProps) {
                                 name="cantidad"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Cantidad de fertilizante</FormLabel>
+                                        <FormLabel>Cantidad de
+                                            fertilizante {tipoFertilizanteSelected ? `[${tipoFertilizanteSelected.unidad}]` : ''}</FormLabel>
                                         <FormControl>
                                             <Input
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"

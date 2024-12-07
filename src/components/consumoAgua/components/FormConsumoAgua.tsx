@@ -235,7 +235,7 @@ export function FormConsumoAgua({onClose}: CreateconsumoAguaProps) {
                             name="consumo"
                             render={({field}) => (
                                 <FormItem className="pt-2 w-full">
-                                    <FormLabel>Consumo</FormLabel>
+                                    <FormLabel>Consumo <span className="text-[10px]">[m³]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"

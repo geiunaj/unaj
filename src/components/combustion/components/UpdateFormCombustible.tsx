@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -33,6 +33,8 @@ import {getMes} from "@/components/mes/services/mes.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {STEP_NUMBER} from "@/lib/constants/menu";
+import {TipoCombustibleCollection} from "@/components/tipoCombustible/services/tipoCombustible.interface";
+import {formatCombustible} from "@/lib/resources/combustionResource";
 
 const Combustion = z.object({
     sede: z.string().min(1, "Selecciona la sede"),
@@ -62,6 +64,8 @@ export function UpdateFormCombustible({
             consumo: 0,
         },
     });
+
+    const [tipoCombustibleSelected, setTipoCombustibleSelected] = useState<TipoCombustibleCollection | null>(null);
 
     const combustible = useQuery({
         queryKey: ['combustibleById', id],
@@ -103,6 +107,8 @@ export function UpdateFormCombustible({
                 anio: combustibleData.anio_id.toString(),
                 consumo: combustibleData.consumo,
             });
+            const formatedTipoCombustible = formatCombustible(combustibleData);
+            setTipoCombustibleSelected(formatedTipoCombustible);
         }
     }, [combustible.data, id]);
 
@@ -278,7 +284,10 @@ export function UpdateFormCombustible({
                             name="consumo"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Consumo mensual</FormLabel>
+                                    <FormLabel>
+                                        Consumo
+                                        mensual {tipoCombustibleSelected ? `[${tipoCombustibleSelected.unidad}]` : ''}
+                                    </FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"

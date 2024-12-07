@@ -243,7 +243,7 @@ export function UpdateFormElectricidad({id, onClose}: UpdateElectricidadProps) {
                                 name="cantidad"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Consumo</FormLabel>
+                                        <FormLabel>Consumo <span className="text-[10px]">[kWh]</span> </FormLabel>
                                         <FormControl>
                                             <Input
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"

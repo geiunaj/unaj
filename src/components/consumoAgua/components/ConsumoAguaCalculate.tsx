@@ -241,10 +241,10 @@ export default function ConsumoAguaCalculate() {
                                 AREA
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CONSUMO <span className="text-[10px]">[m3]</span>
+                                CONSUMO <span className="text-[10px]">[m³]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FACTOR DE <br/> EMISIÓN <span className="text-[10px]">[kgCO2/m3]</span>
+                                FACTOR DE <br/> EMISIÓN <span className="text-[10px]">[kgCO2/m³]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 TOTAL EMISIONES <br/> GEI <span className="text-[10px]">[tCO2eq]</span>

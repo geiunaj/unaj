@@ -34,7 +34,7 @@ import {
 } from "../services/consumoAgua.actions";
 import {UpdateElectricidadProps} from "@/components/consumoElectricidad/services/electricidad.interface";
 import {consumoAguaRequest} from "../services/consumoAgua.interface";
-import { STEP_NUMBER } from "@/lib/constants/menu";
+import {STEP_NUMBER} from "@/lib/constants/menu";
 
 const parseNumber = (val: unknown) => parseFloat(val as string);
 const requiredMessage = (field: string) => `Ingrese un ${field}`;
@@ -280,8 +280,8 @@ export function UpdateFormConsumoAgua({
                             control={form.control}
                             name="consumo"
                             render={({field}) => (
-                                <FormItem className="pt-2 w-1/2">
-                                    <FormLabel>Consumo</FormLabel>
+                                <FormItem className="pt-2">
+                                    <FormLabel>Consumo <span className="text-[10px]">[m³]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"

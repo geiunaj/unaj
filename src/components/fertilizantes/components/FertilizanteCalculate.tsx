@@ -207,9 +207,6 @@ export default function FertilizanteCalculate() {
                                 CONSUMO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                UNIDAD
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 % NITROGENO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
@@ -243,11 +240,9 @@ export default function FertilizanteCalculate() {
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">
-                                            {FertilizanteCalculate.consumo}
+                                            {FertilizanteCalculate.consumo} <span
+                                            className="text-[10px] text-muted-foreground">{FertilizanteCalculate.unidad}</span>
                                         </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {FertilizanteCalculate.unidad}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {FertilizanteCalculate.porcentajeNitrogeno}

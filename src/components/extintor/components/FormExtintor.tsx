@@ -247,7 +247,7 @@ export function FormExtintor({onClose}: CreateExtintorProps) {
                             name="consumo"
                             render={({field}) => (
                                 <FormItem className="w-full">
-                                    <FormLabel> Consumo </FormLabel>
+                                    <FormLabel> Consumo <span className="text-[10px]">[Kg]</span> </FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"

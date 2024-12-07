@@ -356,9 +356,6 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
                                 CONSUMO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm  font-bold text-center">
-                                UNIDAD
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm  font-bold text-center">
                                 MES
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm  font-bold text-center">
@@ -383,10 +380,8 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
                                     {item.tipoCombustible}
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">
-                                    <Badge variant="default">{item.consumo}</Badge>
-                                </TableCell>
-                                <TableCell className="text-xs sm:text-sm">
-                                    {item.unidad}
+                                    <Badge variant="default">{item.consumo} <span
+                                        className="text-[10px] text-muted">{item.unidad}</span></Badge>
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.mes}</TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.anio}</TableCell>

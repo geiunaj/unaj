@@ -21,6 +21,7 @@ export interface Meta {
 }
 
 export interface fertilizanteCollectionItem {
+    rn: number;
     id: number;
     cantidad: number;
     is_ficha: string;
@@ -30,7 +31,7 @@ export interface fertilizanteCollectionItem {
     clase: string;
     tipoFertilizante: string;
     porcentajeNit: number;
-    rn: number;
+    unidad: string;
 }
 
 //PARA EL SHOW
