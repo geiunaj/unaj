@@ -69,10 +69,10 @@ export default function SummaryPage() {
             {header: "TOTAL DE EMISIONES", key: "totalEmissions", width: 30,},
             {header: "CONTRIBUCIONES", key: "generalContributions", width: 30,},
         ];
-        await setSelectedYearFrom(period.from ?? "");
-        await setSelectedYearTo(period.to ?? "");
+        await setSelectedYearFrom(period.yearFrom ?? "");
+        await setSelectedYearTo(period.yearTo ?? "");
         const data = await resumen.refetch();
-        await GenerateReport(data.data!, columns, formatPeriod(period, false), `RESUMEN ${formatPeriod(period, false)}`);
+        await GenerateReport(data.data!, columns, formatPeriod(period, false), `RESUMEN DE EMISIONES`, `RESUMEN ${period.yearFrom}-${period.yearTo}`);
     }
 
     const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
@@ -134,9 +134,9 @@ export default function SummaryPage() {
                             <ExportPdfReport
                                 data={resumenReport.data!}
                                 fileName={`RESUMEN ${formatPeriod({
-                                    selectedYearFrom,
-                                    selectedYearTo
-                                }, false)}`}
+                                    yearFrom: selectedYearFrom,
+                                    yearTo: selectedYearTo
+                                } as ReportRequest, false)}.pdf`}
                                 columns={[
                                     {header: "FUENTE DE EMISIÓN", key: "emissionSource", width: 30,},
                                     {header: "EMISIONES DE  CO2 [tCO2eq]", key: "co2Emissions", width: 10,},
@@ -148,7 +148,10 @@ export default function SummaryPage() {
                                 ]}
                                 rows={25}
                                 title={`RESUMEN DE EMISIONES`}
-                                period={formatPeriod({selectedYearFrom, selectedYearTo}, false)}
+                                period={formatPeriod({
+                                    yearFrom: selectedYearFrom,
+                                    yearTo: selectedYearTo
+                                } as ReportRequest, false)}
                             />
 
 
