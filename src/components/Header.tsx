@@ -33,9 +33,10 @@ import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/co
 import usePageTitle from "@/lib/stores/titleStore.store";
 import TitleUpdater from "@/components/TitleUpdater";
 import {useMenuStore} from "@/lib/stores/menuStore.store";
+import Image from "next/image";
 
 export default function Header() {
-    const logo = "/img/logoUNAJ.png";
+    const logo = "/img/GIEGEI.png";
     const router = useRouter();
     const pathname = usePathname();
     const [itemActive, setItemActive] = useState<string>("");
@@ -111,15 +112,23 @@ export default function Header() {
                                 className="w-full flex justify-evenly items-center gap-2 pt-4"
                             >
                                 {/* <Calculator className="h-5" /> */}
-                                <div className="flex items-center justify-around gap-3">
-                                    <p className="text-primary text-3xl font-black">UNAJ</p>
-                                    <Separator orientation="vertical" className="h-8"/>
-                                    <div
-                                        className="flex flex-col text-muted-foreground text-center text-xs font-medium">
-                                        <p>Calculadora de</p>
-                                        <p>Huella Ecológica</p>
-                                    </div>
-                                </div>
+                                {/*<div className="flex items-center justify-around gap-3">*/}
+                                {/*    <p className="text-primary text-3xl font-black">UNAJ</p>*/}
+                                {/*    <Separator orientation="vertical" className="h-8"/>*/}
+                                {/*    <div*/}
+                                {/*        className="flex flex-col text-muted-foreground text-center text-xs font-medium">*/}
+                                {/*        <p>Calculadora de</p>*/}
+                                {/*        <p>Huella Ecológica</p>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
+                                <Image
+                                    src={logo}
+                                    alt="Logo UNAJ"
+                                    className="h-12 md:h-9"
+                                    width={64}
+                                    height={64}
+                                />
+
                             </Link>
                         </SheetTitle>
                         <SheetDescription/>

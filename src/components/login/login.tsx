@@ -21,7 +21,7 @@ import {errorToast} from "@/lib/utils/core.function";
 export default function LoginPage() {
     // CONSTANTES DE IMAGNES DE FONDO Y LOGO
     const fondo = "/img/fondoLogin.png";
-    const logo = "/img/logoUNAJ.png";
+    const logo = "/img/GIEGEI.png";
     const navigation = useRouter();
 
     // SCHEMA DE VALIDACIÓN DE FORMULAR

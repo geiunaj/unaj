@@ -11,14 +11,30 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import {useMenuStore} from "@/lib/stores/menuStore.store";
+import Image from "next/image";
+import * as React from "react";
+import {useTheme} from "next-themes";
 
 export default function Sidebar() {
+    const {theme, setTheme} = useTheme();
+    const [resolvedTheme, setResolvedTheme] = useState(theme);
     const router = useRouter();
     const pathname = usePathname();
     const [itemActive, setItemActive] = useState<string>("");
     const [openAccordion, setOpenAccordion] = useState<string | null>(null);
 
     const {menuFiltered} = useMenuStore();
+
+    useEffect(() => {
+        if (theme === "system") {
+            const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            setResolvedTheme(darkMode ? "dark" : "light");
+        } else {
+            setResolvedTheme(theme);
+        }
+    }, [theme]);
+
+    const logo = resolvedTheme === "dark" ? "/img/GIEGEI1.png" : "/img/GIEGEI.png";
 
     useEffect(() => {
         const path = "/" + pathname.split("/")[1];
@@ -66,15 +82,22 @@ export default function Sidebar() {
                     href="/"
                     className="w-full flex justify-evenly items-center gap-2"
                 >
-                    <div className="flex items-center justify-around gap-3">
-                        <p className="text-primary text-3xl font-black">UNAJ</p>
-                        <Separator orientation="vertical" className="h-8"/>
-                        <div
-                            className="flex flex-col text-muted-foreground text-center text-[10px] xl:text-xs font-medium">
-                            <p>Calculadora de</p>
-                            <p>Huella Ecológica</p>
-                        </div>
-                    </div>
+                    {/*<div className="flex items-center justify-around gap-3">*/}
+                    {/*    <p className="text-primary text-3xl font-black">UNAJ</p>*/}
+                    {/*    <Separator orientation="vertical" className="h-8"/>*/}
+                    {/*    <div*/}
+                    {/*        className="flex flex-col text-muted-foreground text-center text-[10px] xl:text-xs font-medium">*/}
+                    {/*        <p>Calculadora de</p>*/}
+                    {/*        <p>Huella Ecológica</p>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
+                    <Image
+                        src={logo}
+                        alt="Logo UNAJ"
+                        className="h-12 w-auto md:h-9"
+                        width={1000}
+                        height={1000}
+                    />
                 </Link>
             </div>
             <div className="flex-1">

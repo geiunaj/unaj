@@ -107,22 +107,22 @@ export default function SummaryPage() {
                                 FUENTE DE EMISIÓN
                             </TableHead>
                             <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
-                                EMISIÓN <br/> CO2 <span className="text-[8px]">[tCO2eq]</span>
+                                EMISIONES DE <br/> CO2 <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
-                                EMISIÓN <br/> CH4 <span className="text-[8px]">[tCO2eq]</span>
+                                EMISIONES DE <br/> CH4 <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
-                                EMISIÓN <br/> N2O <span className="text-[8px]">[tCO2eq]</span>
+                                EMISIONES DE <br/> N2O <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
-                                EMISIÓN <br/> HFC <span className="text-[8px]">[tCO2eq]</span>
+                                EMISIONES DE <br/> HFC <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
-                                TOTAL <br/> EMISIONES <span className="text-[8px]">[tCO2eq]</span>
+                                TOTAL DE <br/> EMISIONES <span className="text-[8px]">[tCO2eq]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-[13px] font-bold text-center py-1">
-                                CONTRIBUCIONES <span className="text-[8px]">[%]</span>
+                                CONTRIBUCIONES <br/> <span className="text-[8px]">[%]</span>
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -130,7 +130,7 @@ export default function SummaryPage() {
                         {resumen.data!.map(
                             (item: SummaryItem, index: number) => (
                                 <TableRow key={item.emissionSource + index.toString()}
-                                          className={`text-center ${item.category ? "bg-primary-foreground" : ""}`}
+                                          className={`text-center ${item.category ? "bg-accent" : ""}`}
                                 >
                                     <TableCell
                                         className={`text-[13px] text-start p-1 ${item.category ? "font-bold" : ""}`}>
@@ -149,7 +149,7 @@ export default function SummaryPage() {
                                         {item.hfcEmissions.toFixed(2)}
                                     </TableCell>
                                     <TableCell className="text-[13px] text-end p-1 font-bold pe-6">
-                                       {item.totalEmissions.toFixed(2)}
+                                        {item.totalEmissions.toFixed(2)}
                                     </TableCell>
                                     <TableCell className="text-[13px] text-end p-1 pe-6">
                                         {item.generalContributions.toFixed(2)}
