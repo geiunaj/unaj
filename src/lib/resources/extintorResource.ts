@@ -10,6 +10,7 @@ export function formatExtintor(taxi: any): any {
         anio,
         mes,
         sede,
+        tipoExtintor,
         consumo,
         ...rest
     } = taxi;
@@ -23,6 +24,7 @@ export function formatExtintor(taxi: any): any {
         mes: mes?.nombre ?? "",
         anio: anio?.nombre ?? "",
         sede: sede?.name ?? "",
+        tipoExtintor: tipoExtintor?.nombre ?? "",
         ...rest,
         anio_id,
         sede_id,

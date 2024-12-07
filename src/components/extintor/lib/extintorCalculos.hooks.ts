@@ -5,28 +5,29 @@ import {
 } from "@/components/extintor/service/extintorCalculos.actions";
 
 interface getExtintorCalculoInterface {
+    sedeId?: number;
     from?: string;
     to?: string;
     page?: number;
 }
 
 export const useExtintorCalculos =
-    ({from, to, page}: getExtintorCalculoInterface) => {
+    ({sedeId, from, to, page}: getExtintorCalculoInterface) => {
         return useQuery({
             queryKey: ['extintorCalculos'],
             queryFn: () => getExtintorCalculos({
-                from, to, page
+                sedeId, from, to, page
             }),
             refetchOnWindowFocus: false,
         });
     }
 
 export const useExtintorCalculosReport =
-    ({from, to}: getExtintorCalculoInterface) => {
+    ({sedeId, from, to}: getExtintorCalculoInterface) => {
         return useQuery({
             queryKey: ['extintorCalculosReport'],
             queryFn: () => getExtintorCalculosReport({
-                from, to
+                sedeId, from, to
             }),
             refetchOnWindowFocus: false,
         });

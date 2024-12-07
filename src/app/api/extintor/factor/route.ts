@@ -15,7 +15,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const whereOptions = anioId ? {anio_id: parseInt(anioId)} : {};
         const factoresTransporte = await prisma.factorEmisionExtintor.findMany({
             where: whereOptions,
-            include: {anio: true},
+            include: {anio: true, tipo: true},
             ...(perPage > 0 ? {skip: (page - 1) * perPage, take: perPage} : {}),
         });
 
@@ -41,6 +41,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const factorExistente = await prisma.factorEmisionExtintor.findFirst({
             where: {
                 anio_id: body.anioId,
+                tipoExtintorId: body.tipoExtintorId,
             },
         });
         if (factorExistente) {
@@ -50,6 +51,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             data: {
                 factor: body.factor,
                 anio_id: body.anioId,
+                tipoExtintorId: body.tipoExtintorId,
                 created_at: new Date(),
                 updated_at: new Date(),
             },
@@ -61,7 +63,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         });
 
     } catch (error) {
-        console.error("Error creando el Factor de Extintor SEIN", error);
-        return NextResponse.json({message: "Error creando el Factor de Extintor SEIN"}, {status: 500});
+        console.error("Error creando el Factor de Extintor", error);
+        return NextResponse.json({message: "Error creando el Factor de Extintor"}, {status: 500});
     }
 }

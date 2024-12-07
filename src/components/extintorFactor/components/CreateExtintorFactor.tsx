@@ -22,7 +22,7 @@ import {Input} from "@/components/ui/input";
 import {Button} from "../../ui/button";
 
 import {useQuery} from "@tanstack/react-query";
-import {getAnio} from "@/components/anio/services/anio.actions";
+import {getAnio, getTipoExtintor} from "@/components/anio/services/anio.actions";
 import {errorToast, successToast} from "@/lib/utils/core.function";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {
@@ -32,10 +32,11 @@ import {
     CreateExtintorFactorProps,
     ExtintorFactorRequest
 } from "@/components/extintorFactor/services/extintorFactor.interface";
-import { STEP_NUMBER } from "@/lib/constants/menu";
+import {STEP_NUMBER} from "@/lib/constants/menu";
 
 const ExtintorFactor = z.object({
     anio: z.string().min(1, "Seleciona el año"),
+    tipoExtintorId: z.string().min(1, "Seleciona el tipo de extintor"),
     factor: z.preprocess((val) => parseFloat(val as string), z.number({message: "Ingresa un valor numerico"}).min(0, "Ingresa un valor mayor a 0")),
 });
 
@@ -44,6 +45,7 @@ export function FormExtintorFactor({onClose}: CreateExtintorFactorProps) {
         resolver: zodResolver(ExtintorFactor),
         defaultValues: {
             anio: "",
+            tipoExtintorId: "",
             factor: 0,
         },
     });
@@ -54,10 +56,17 @@ export function FormExtintorFactor({onClose}: CreateExtintorFactorProps) {
         refetchOnWindowFocus: false,
     });
 
+    const tiposExtintor = useQuery({
+        queryKey: ["tiposExtintorPage"],
+        queryFn: () => getTipoExtintor(),
+        refetchOnWindowFocus: false,
+    });
+
     const onSubmit = async (data: z.infer<typeof ExtintorFactor>) => {
         const ExtintorFactorRequest: ExtintorFactorRequest = {
             anioId: parseInt(data.anio),
             factor: data.factor,
+            tipoExtintorId: parseInt(data.tipoExtintorId),
         };
 
         try {
@@ -69,11 +78,11 @@ export function FormExtintorFactor({onClose}: CreateExtintorFactorProps) {
         }
     };
 
-    if (anios.isLoading) {
+    if (anios.isLoading || tiposExtintor.isLoading) {
         return <SkeletonForm/>;
     }
 
-    if (anios.isError) {
+    if (anios.isError || tiposExtintor.isError) {
         return <div>Error</div>;
     }
 
@@ -85,6 +94,36 @@ export function FormExtintorFactor({onClose}: CreateExtintorFactorProps) {
                         className="w-full flex flex-col gap-2"
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
+                        <FormField
+                            name="tipoExtintorId"
+                            control={form.control}
+                            render={({field}) => (
+                                <FormItem className="pt-2">
+                                    <FormLabel>Tipo de Extintor</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Seleciona el tipo"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {tiposExtintor.data!.map((tipoExtintor) => (
+                                                    <SelectItem key={tipoExtintor.id}
+                                                                value={tipoExtintor.id.toString()}>
+                                                        {tipoExtintor.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormItem>
+                            )}
+                        />
+
                         <FormField
                             name="anio"
                             control={form.control}

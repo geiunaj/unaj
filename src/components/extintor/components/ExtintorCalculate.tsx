@@ -35,6 +35,8 @@ import {ReportRequest} from "@/lib/interfaces/globals";
 import {useQuery} from "@tanstack/react-query";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {ChangeTitle} from "@/components/TitleUpdater";
+import {getSedes} from "@/components/sedes/services/sedes.actions";
+import SelectFilter from "@/components/SelectFilter";
 
 export default function ExtintorCalculate() {
     ChangeTitle("Cálculo de Extintores");
@@ -44,29 +46,33 @@ export default function ExtintorCalculate() {
 
     // SELECTS - FILTERS
     const [page, setPage] = useState<number>(1);
+    const [selectedSede, setSelectedSede] = useState<string>("1");
     const [from, setFrom] = useState<string>(new Date().getFullYear() + "-01");
     const [to, setTo] = useState<string>(new Date().getFullYear() + "-12");
 
     // HOOKS
     const extintorCalculos = useExtintorCalculos({
+        sedeId: selectedSede ? parseInt(selectedSede) : undefined,
         from: from ? from : undefined,
         to: to ? to : undefined,
         page: page,
     });
 
     const extintorCalculosReport = useExtintorCalculosReport({
+        sedeId: selectedSede ? parseInt(selectedSede) : undefined,
         from,
         to,
     });
 
-    const conusmoAguaCalculosReport = useExtintorCalculosReport({
-        from,
-        to,
-        page,
-    });
     const anios = useQuery({
         queryKey: ["aniosTAC"],
         queryFn: () => getAnio(),
+        refetchOnWindowFocus: false,
+    })
+
+    const sedes = useQuery({
+        queryKey: ["sedesTAC"],
+        queryFn: () => getSedes(),
         refetchOnWindowFocus: false,
     })
 
@@ -75,6 +81,7 @@ export default function ExtintorCalculate() {
 
     const handleCalculate = useCallback(async () => {
         await createCalculosExtintor({
+            sedeId: selectedSede ? parseInt(selectedSede) : undefined,
             from,
             to,
         }).then(() => {
@@ -84,11 +91,18 @@ export default function ExtintorCalculate() {
         });
         extintorCalculos.refetch();
         extintorCalculosReport.refetch();
-    }, [from, to, extintorCalculos, conusmoAguaCalculosReport]);
+    }, [from, to, extintorCalculos, extintorCalculosReport]);
 
     const handleExtintor = () => {
         push("/extintor");
     };
+
+    const handleSedeChange = useCallback(async (value: string) => {
+        await setPage(1);
+        await setSelectedSede(value);
+        await extintorCalculos.refetch();
+        await extintorCalculosReport.refetch();
+    }, [extintorCalculos, extintorCalculosReport]);
 
     const handleFromChange = useCallback(
         async (value: string) => {
@@ -97,7 +111,7 @@ export default function ExtintorCalculate() {
             await extintorCalculos.refetch();
             await extintorCalculosReport.refetch();
         },
-        [extintorCalculos, conusmoAguaCalculosReport]
+        [extintorCalculos, extintorCalculosReport]
     );
 
     const handleToChange = useCallback(
@@ -107,7 +121,7 @@ export default function ExtintorCalculate() {
             await extintorCalculos.refetch();
             await extintorCalculosReport.refetch();
         },
-        [extintorCalculos, conusmoAguaCalculosReport]
+        [extintorCalculos, extintorCalculosReport]
     );
 
     const handlePageChange = useCallback(
@@ -120,9 +134,10 @@ export default function ExtintorCalculate() {
 
     const handleClickExcelReport = async (period: ReportRequest) => {
         const columns = [
-            {header: "N°", key: "id", width: 10},
-            {header: "SEDE", key: "sede", width: 20},
-            {header: "CONSUMO TOTAL", key: "consumo", width: 25},
+            {header: "N°", key: "rn", width: 10},
+            {header: "SEDE", key: "sede", width: 15},
+            {header: "TIPO DE EXTINTOR", key: "tipoExtintor", width: 20},
+            {header: "CONSUMO TOTAL", key: "consumoTotal", width: 25},
             {header: "FACTOR DE EMISIÓN", key: "factoresEmisionString", width: 25},
             {header: "TOTAL GEI", key: "totalGEI", width: 20},
         ];
@@ -147,8 +162,9 @@ export default function ExtintorCalculate() {
     if (
         extintorCalculos.isLoading ||
         anios.isLoading ||
+        sedes.isLoading ||
         extintorCalculos.isLoading ||
-        conusmoAguaCalculosReport.isLoading ||
+        extintorCalculosReport.isLoading ||
         extintorCalculosReport.isLoading
     ) {
         return <SkeletonTable/>;
@@ -157,8 +173,9 @@ export default function ExtintorCalculate() {
     if (
         extintorCalculos.isError ||
         anios.isError ||
+        sedes.isError ||
         extintorCalculos.isError ||
-        conusmoAguaCalculosReport.isError ||
+        extintorCalculosReport.isError ||
         extintorCalculosReport.isError
     ) {
         return <div>Error</div>;
@@ -173,6 +190,17 @@ export default function ExtintorCalculate() {
                         <div
                             className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
                             <ButtonBack onClick={handleExtintor}/>
+
+                            <SelectFilter
+                                list={sedes.data!}
+                                itemSelected={selectedSede}
+                                handleItemSelect={handleSedeChange}
+                                value={"id"}
+                                nombre={"name"}
+                                id={"id"}
+                                icon={<Building className="h-3 w-3"/>}
+                            />
+
                             <ReportComponent
                                 onSubmit={handleClickExcelReport}
                                 ref={submitFormRef}
@@ -198,10 +226,11 @@ export default function ExtintorCalculate() {
                                 data={extintorCalculosReport.data!.data}
                                 fileName={`REPORTE CALCULOS DE EXTINTOR_${formatPeriod({from, to}, true)}`}
                                 columns={[
-                                    {header: "N°", key: "id", width: 5},
-                                    {header: "SEDE", key: "sede", width: 25},
-                                    {header: "CONSUMO TOTAL", key: "consumo", width: 15},
-                                    {header: "FACTOR DE EMISIÓN", key: "factoresEmisionString", width: 35},
+                                    {header: "N°", key: "rn", width: 5},
+                                    {header: "SEDE", key: "sede", width: 10},
+                                    {header: "TIPO DE EXTINTOR", key: "tipoExtintor", width: 25},
+                                    {header: "CONSUMO TOTAL", key: "consumoTotal", width: 15},
+                                    {header: "FACTOR DE EMISIÓN", key: "factoresEmisionString", width: 25},
                                     {header: "TOTAL GEI", key: "totalGEI", width: 20},
                                 ]}
                                 title="REPORTE DE CALCULOS DE EXTINTOR"
@@ -224,7 +253,7 @@ export default function ExtintorCalculate() {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                SEDE
+                                TIPO DE EXTINTOR
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 CONSUMO <span className="text-[10px]">[kg]</span>
@@ -250,10 +279,10 @@ export default function ExtintorCalculate() {
                             (extintorCalculosItem: ExtintorCalculosCollectionItem) => (
                                 <TableRow
                                     className="text-center"
-                                    key={extintorCalculosItem.id}
+                                    key={extintorCalculosItem.rn}
                                 >
                                     <TableCell className="text-xs sm:text-sm">
-                                        {extintorCalculosItem.sede}
+                                        {extintorCalculosItem.tipoExtintor}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="outline">

@@ -17,6 +17,7 @@ export async function GET(
             },
             include: {
                 anio: true,
+                tipo: true,
             },
         });
 
@@ -45,6 +46,7 @@ export async function PUT(
         const ExtintorFactorRequest = {
             factor: body.factor,
             anio_id: body.anioId,
+            tipoExtintorId: body.tipoExtintorId,
         };
 
         const ExtintorFactor = await prisma.factorEmisionExtintor.update({
@@ -54,6 +56,7 @@ export async function PUT(
             data: ExtintorFactorRequest,
             include: {
                 anio: true,
+                tipo: true,
             },
         });
 

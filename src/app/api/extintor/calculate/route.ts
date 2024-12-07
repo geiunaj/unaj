@@ -17,6 +17,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const dateTo = searchParams.get("to") ?? undefined;
         const all = searchParams.get("all") === "true";
 
+        const tipoExtintor = searchParams.get("tipoExtintor") ?? undefined;
+        const sedeId = searchParams.get("sedeId") ?? undefined;
+
         let yearFrom, yearTo, monthFrom, monthTo;
         let yearFromId, yearToId, mesFromId, mesToId;
 
@@ -57,6 +60,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const whereOptions = {
             periodoCalculoId: period?.id,
+            tipoExtintorId: tipoExtintor ? Number(tipoExtintor) : undefined,
+            sedeId: sedeId ? Number(sedeId) : undefined
         };
 
         const totalRecords = await prisma.extintorCalculos.count({
@@ -69,6 +74,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             where: whereOptions,
             include: {
                 sede: true,
+                tipoExtintor: true,
                 ExtintorCalculosDetail: {
                     include: {
                         factorEmisionExtintor: {
@@ -157,14 +163,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             });
         }
 
-        console.log(period);
-
-        const sedes = await prisma.sede.findMany();
+        const tiposExtintor = await prisma.tipoExtintor.findMany();
 
         const whereOptionsExtintor = {
             sede_id: sedeId ? Number(sedeId) : undefined,
         } as {
             sede_id?: number;
+            tipoExtintorId?: number;
             anio_mes?: { gte?: number; lte?: number };
         };
 
@@ -311,7 +316,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             }
         }
 
-        for (const sede of sedes) {
+        for (const tipoExtintor of tiposExtintor) {
             let consumo = 0;
             let totalGEI = 0;
 
@@ -319,7 +324,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 data: {
                     consumoTotal: 0,
                     totalGEI: 0,
-                    sedeId: sede.id,
+                    sedeId: sedeId,
+                    tipoExtintorId: tipoExtintor.id,
                     periodoCalculoId: period.id,
                     created_at: new Date(),
                     updated_at: new Date(),
@@ -329,7 +335,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             for (const period of allPeriodsBetweenYears) {
                 const anioId = await getAnioId(period.anio!.toString());
                 const factorEmision = await prisma.factorEmisionExtintor.findFirst({
-                    where: {anio_id: anioId},
+                    where: {anio_id: anioId, tipoExtintorId: tipoExtintor.id},
                 });
 
                 if (!factorEmision)
@@ -341,7 +347,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                     );
 
                 let whereOptionDetails = whereOptionsExtintor;
-                whereOptionDetails.sede_id = sede.id;
+                whereOptionDetails.sede_id = sedeId;
+                whereOptionDetails.tipoExtintorId = tipoExtintor.id;
                 whereOptionDetails.anio_mes = {gte: period.from, lte: period.to};
 
                 const extintor = await prisma.extintor.findMany({
@@ -359,7 +366,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                         consumoTotal: totalConsumo,
                         factorEmisionExtintorId: factorEmision.id,
                         totalGEI: totalEmisiones,
-                        sedeId: sede.id,
+                        sedeId: sedeId,
+                        tipoExtintorId: tipoExtintor.id,
                         extintorCalculosId: extintorCalculos.id,
                         created_at: new Date(),
                         updated_at: new Date(),

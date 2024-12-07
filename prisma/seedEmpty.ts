@@ -24,7 +24,7 @@ async function typeUsers() {
     }
     console.log("Type User created");
 
-    for (let i = 1; i <= 42; i++) {
+    for (let i = 1; i <= 43; i++) {
         await prisma.access.create({
             data: {
                 menu: i,
@@ -1885,20 +1885,32 @@ async function casaTrabajoConsumo() {
 }
 
 async function extintor() {
-    await prisma.factorEmisionExtintor.create({
+    await prisma.tipoExtintor.create({
         data: {
-            factor: 1,
-            anio_id: 1,
+            nombre: "Extintor 1",
             created_at: new Date(),
             updated_at: new Date(),
         },
     });
+
+    for (const year of AllYears) {
+        await prisma.factorEmisionExtintor.create({
+            data: {
+                factor: 1,
+                tipoExtintorId: 1,
+                anio_id: year.id,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
+    }
 
     console.log("Extintor data created");
 
     await prisma.extintor.create({
         data: {
             consumo: 173,
+            tipoExtintorId: 1,
             mes_id: 1,
             anio_id: 1,
             sede_id: 1,

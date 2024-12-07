@@ -7,6 +7,7 @@ export interface ExtintorFactor {
 
 export interface ExtintorFactorRequest {
     factor: number;
+    tipoExtintorId: number;
     anioId: number;
 }
 
@@ -25,8 +26,10 @@ export interface ExtintorFactorCollectionPaginate {
 export interface ExtintorFactorCollection {
     id: number;
     factor: number;
+    tipoExtintorId: number;
     anio_id: number;
     anio: string;
+    tipoExtintor: string;
 }
 
 export interface CreateExtintorFactorProps {

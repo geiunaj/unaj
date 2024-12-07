@@ -1,6 +1,7 @@
 import api from "../../../../config/api";
 import {Anio, AnioCollection, AnioRequest} from "@/components/anio/services/anio.interface";
 import {AxiosResponse} from "axios";
+import {TipoExtintor} from "@/components/tipoExtintor/services/tipoExtintor.interface";
 
 export async function getAnio(): Promise<Anio[]> {
     try {
@@ -10,6 +11,11 @@ export async function getAnio(): Promise<Anio[]> {
         console.error(error);
         throw new Error("Error al obtener los años");
     }
+}
+
+export async function getTipoExtintor(): Promise<TipoExtintor[]> {
+    const {data} = await api.get<TipoExtintor[]>("/api/tipoExtintor");
+    return data;
 }
 
 export async function getAnioPaginate(page: number, perPage: number): Promise<AnioCollection> {

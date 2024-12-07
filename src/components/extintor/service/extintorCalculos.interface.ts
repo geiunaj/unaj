@@ -20,11 +20,13 @@ export interface ExtintorCalculosCollection {
 export interface ExtintorCalculosCollectionItem {
     rn: number;
     id: number;
+    tipoExtintorId: number;
     sedeId: number;
     periodoCalculoId: number;
     consumoTotal: number;
     totalGEI: number;
     sede: string;
+    tipoExtintor: string;
     factoresEmision: FactoresEmision[];
     factoresEmisionString: string;
 }

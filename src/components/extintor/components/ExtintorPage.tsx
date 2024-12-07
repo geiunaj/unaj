@@ -161,6 +161,7 @@ export default function ExtintorPage() {
     const handleClickReport = async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "rn", width: 10},
+            {header: "TIPO DE EXTINTOR", key: "tipoExtintor", width: 20},
             {header: "CONSUMO", key: "consumo", width: 30},
             {header: "AÑO", key: "anio", width: 20},
             {header: "SEDE", key: "sede", width: 20},
@@ -254,7 +255,8 @@ export default function ExtintorPage() {
                                 }, true)}`}
                                 columns={[
                                     {header: "N°", key: "rn", width: 10},
-                                    {header: "CONSUMO", key: "consumo", width: 30},
+                                    {header: "TIPO DE EXTINTOR", key: "tipoExtintor", width: 20},
+                                    {header: "CONSUMO", key: "consumo", width: 10},
                                     {header: "AÑO", key: "anio", width: 20},
                                     {header: "SEDE", key: "sede", width: 20},
                                     {header: "MES", key: "mes", width: 20},
@@ -296,7 +298,10 @@ export default function ExtintorPage() {
                                 N°
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                CONSUMO
+                                TIPO DE EXTINTOR
+                            </TableHead>
+                            <TableHead className="font-Manrope text-sm font-bold text-center">
+                                CONSUMO <span className="text-[10px]">[Kg]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 MES
@@ -315,6 +320,9 @@ export default function ExtintorPage() {
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{item.rn}</Badge>
+                                    </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {item.tipoExtintor}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="default">{item.consumo}</Badge>

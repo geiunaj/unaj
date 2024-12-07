@@ -1,13 +1,13 @@
-// datasource db {
-//   provider = "mysql"
-//   url      = env("DATABASE_URL")
-// }
-
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
+
+// datasource db {
+//   provider  = "postgresql"
+//   url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+//   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+// }
 
 generator client {
   provider = "prisma-client-js"
@@ -1249,44 +1249,63 @@ model ActivoCalculosDetail {
 }
 
 // EXTINTOR
+model TipoExtintor {
+  id         Int      @id @default(autoincrement())
+  nombre     String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  FactorEmisionExtintor  FactorEmisionExtintor[]
+  Extintor               Extintor[]
+  ExtintorCalculos       ExtintorCalculos[]
+  ExtintorCalculosDetail ExtintorCalculosDetail[]
+
+  @@map("tipoextintor")
+}
+
 model FactorEmisionExtintor {
-  id      Int   @id @default(autoincrement())
-  factor  Float
-  anio_id Int
+  id             Int   @id @default(autoincrement())
+  factor         Float
+  tipoExtintorId Int
+  anio_id        Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
   ExtintorCalculosDetail ExtintorCalculosDetail[]
 
-  anio Anio @relation(fields: [anio_id], references: [id])
+  anio Anio?         @relation(fields: [anio_id], references: [id])
+  tipo TipoExtintor? @relation(fields: [tipoExtintorId], references: [id])
 
   @@map("factoremisionextintor")
 }
 
 model Extintor {
-  id       Int   @id @default(autoincrement())
-  consumo  Float
-  sede_id  Int
-  anio_id  Int
-  mes_id   Int
-  anio_mes Int
+  id             Int   @id @default(autoincrement())
+  tipoExtintorId Int
+  consumo        Float
+  sede_id        Int
+  anio_id        Int
+  mes_id         Int
+  anio_mes       Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  sede Sede? @relation(fields: [sede_id], references: [id])
-  anio Anio? @relation(fields: [anio_id], references: [id])
-  mes  Mes?  @relation(fields: [mes_id], references: [id])
+  sede         Sede?         @relation(fields: [sede_id], references: [id])
+  anio         Anio?         @relation(fields: [anio_id], references: [id])
+  mes          Mes?          @relation(fields: [mes_id], references: [id])
+  tipoExtintor TipoExtintor? @relation(fields: [tipoExtintorId], references: [id])
 
   @@map("extintor")
 }
 
 model ExtintorCalculos {
   id               Int   @id @default(autoincrement())
+  tipoExtintorId   Int
   consumoTotal     Float
   totalGEI         Float
-  sedeId           Int
+  sedeId           Int?
   periodoCalculoId Int
 
   created_at DateTime @default(now())
@@ -1294,6 +1313,7 @@ model ExtintorCalculos {
 
   sede                   Sede?                    @relation(fields: [sedeId], references: [id])
   PeriodoCalculo         PeriodoCalculo?          @relation(fields: [periodoCalculoId], references: [id])
+  tipoExtintor           TipoExtintor?            @relation(fields: [tipoExtintorId], references: [id])
   ExtintorCalculosDetail ExtintorCalculosDetail[]
 
   @@map("extintorcalculos")
@@ -1303,8 +1323,9 @@ model ExtintorCalculosDetail {
   id                      Int   @id @default(autoincrement())
   consumoTotal            Float
   totalGEI                Float
-  sedeId                  Int
+  sedeId                  Int?
   factorEmisionExtintorId Int
+  tipoExtintorId          Int
   extintorCalculosId      Int
 
   created_at DateTime @default(now())
@@ -1312,7 +1333,8 @@ model ExtintorCalculosDetail {
 
   sede                  Sede?                  @relation(fields: [sedeId], references: [id])
   factorEmisionExtintor FactorEmisionExtintor? @relation(fields: [factorEmisionExtintorId], references: [id])
-  extintorCalculos      ExtintorCalculos       @relation(fields: [extintorCalculosId], references: [id])
+  extintorCalculos      ExtintorCalculos?      @relation(fields: [extintorCalculosId], references: [id])
+  tipoExtintor          TipoExtintor?          @relation(fields: [tipoExtintorId], references: [id])
 
   @@map("extintorcalculosdetail")
 }

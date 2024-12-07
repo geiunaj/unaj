@@ -10,6 +10,7 @@ interface Response {
 }
 
 interface GetExtintorProps {
+    sedeId?: number;
     from?: string;
     to?: string;
     page?: number;
@@ -17,17 +18,20 @@ interface GetExtintorProps {
 }
 
 interface CreateCalculosExtintorProps {
+    sedeId?: number;
     from?: string;
     to?: string;
 }
 
 export async function getExtintorCalculos({
+                                              sedeId,
                                               from,
                                               to,
                                               page,
                                           }: GetExtintorProps): Promise<ExtintorCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
+            sedeId,
             from,
             to,
             page,
@@ -41,12 +45,14 @@ export async function getExtintorCalculos({
 }
 
 export async function getExtintorCalculosReport({
+                                                    sedeId,
                                                     from,
                                                     to,
                                                     all = true,
                                                 }: GetExtintorProps): Promise<ExtintorCalculosCollection> {
     const config: AxiosRequestConfig = {
         params: {
+            sedeId,
             from,
             to,
             all,
@@ -60,10 +66,12 @@ export async function getExtintorCalculosReport({
 }
 
 export async function createCalculosExtintor({
+                                                 sedeId,
                                                  from,
                                                  to,
                                              }: CreateCalculosExtintorProps): Promise<AxiosResponse<Response>> {
     const body = {
+        sedeId,
         from,
         to,
     };

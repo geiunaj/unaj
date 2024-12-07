@@ -28,7 +28,7 @@ import {
     UpdateExtintorFactorProps,
     ExtintorFactorRequest
 } from "../services/extintorFactor.interface";
-import {getAnio} from "@/components/anio/services/anio.actions";
+import {getAnio, getTipoExtintor} from "@/components/anio/services/anio.actions";
 import {
     showExtintorFactor,
     updateExtintorFactor
@@ -36,6 +36,7 @@ import {
 
 const UpdateExtintorFactor = z.object({
     anio: z.string().min(1, "Selecciona un año"),
+    tipoExtintorId: z.string().min(1, "Seleciona el tipo de extintor"),
     factor: z.preprocess((val) => parseFloat(val as string), z.number().min(0, "Ingresa un valor mayor a 0")),
 });
 
@@ -44,13 +45,20 @@ export function UpdateFormExtintorFactor({id, onClose}: UpdateExtintorFactorProp
         resolver: zodResolver(UpdateExtintorFactor),
         defaultValues: {
             anio: "",
+            tipoExtintorId: "",
             factor: 0,
         },
     });
 
     const anios = useQuery({
-        queryKey: ["anio"],
+        queryKey: ["anioUEFX"],
         queryFn: () => getAnio(),
+        refetchOnWindowFocus: false,
+    });
+
+    const tiposExtintor = useQuery({
+        queryKey: ["tiposExtintorPageU"],
+        queryFn: () => getTipoExtintor(),
         refetchOnWindowFocus: false,
     });
 
@@ -65,6 +73,7 @@ export function UpdateFormExtintorFactor({id, onClose}: UpdateExtintorFactorProp
             const factorData = await extintorFactor.data;
             form.reset({
                 anio: factorData.anio_id.toString(),
+                tipoExtintorId: factorData.tipoExtintorId.toString(),
                 factor: factorData.factor,
             });
         }
@@ -77,6 +86,7 @@ export function UpdateFormExtintorFactor({id, onClose}: UpdateExtintorFactorProp
     const onSubmit = async (data: z.infer<typeof UpdateExtintorFactor>) => {
         const extintorFactorRequest: ExtintorFactorRequest = {
             anioId: parseInt(data.anio),
+            tipoExtintorId: parseInt(data.tipoExtintorId),
             factor: data.factor,
         };
 
@@ -89,8 +99,12 @@ export function UpdateFormExtintorFactor({id, onClose}: UpdateExtintorFactorProp
         }
     };
 
-    if (extintorFactor.isLoading || anios.isLoading) {
+    if (extintorFactor.isLoading || anios.isLoading || tiposExtintor.isLoading) {
         return <SkeletonForm/>;
+    }
+
+    if (extintorFactor.isError || anios.isError || tiposExtintor.isError) {
+        return <div>Error</div>;
     }
 
     return (
@@ -98,6 +112,36 @@ export function UpdateFormExtintorFactor({id, onClose}: UpdateExtintorFactorProp
             <div className="flex flex-col items-center justify-center w-full">
                 <Form {...form}>
                     <form className="w-full flex flex-col gap-3 pt-2" onSubmit={form.handleSubmit(onSubmit)}>
+                        <FormField
+                            name="tipoExtintorId"
+                            control={form.control}
+                            render={({field}) => (
+                                <FormItem className="pt-2">
+                                    <FormLabel>Tipo de Extintor</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <FormControl className="w-full">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Seleciona el tipo"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {tiposExtintor.data!.map((tipoExtintor) => (
+                                                    <SelectItem key={tipoExtintor.id}
+                                                                value={tipoExtintor.id.toString()}>
+                                                        {tipoExtintor.nombre}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormItem>
+                            )}
+                        />
+
                         {/* Año */}
                         <FormField
                             control={form.control}

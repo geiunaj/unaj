@@ -22,6 +22,7 @@ export async function GET(
                 anio: true,
                 sede: true,
                 mes: true,
+                tipoExtintor: true,
             },
         });
 
@@ -46,7 +47,9 @@ export async function PUT(
         if (isNaN(id)) return NextResponse.json({message: "Invalid ID"}, {status: 400});
         const body: ExtintorRequest = await req.json();
         const anio = await prisma.anio.findFirst({where: {id: body.anio_id},});
+        const tipoExtintor = await prisma.tipoExtintor.findFirst({where: {id: body.tipoExtintorId},});
         if (!anio) return NextResponse.json({message: "Año no encontrado"}, {status: 404});
+        if (!tipoExtintor) return NextResponse.json({message: "Tipo de Extintor no encontrado"}, {status: 404});
 
         const extintor = await prisma.extintor.update({
             where: {
@@ -57,6 +60,7 @@ export async function PUT(
                 mes_id: body.mes_id,
                 anio_id: body.anio_id,
                 sede_id: body.sede_id,
+                tipoExtintorId: body.tipoExtintorId,
                 anio_mes: Number(anio.nombre) * 100 + Number(body.mes_id),
                 created_at: new Date(),
                 updated_at: new Date(),
@@ -65,16 +69,17 @@ export async function PUT(
                 anio: true,
                 sede: true,
                 mes: true,
+                tipoExtintor: true,
             },
         });
 
         return NextResponse.json({
-            message: "Registro de Transporte Aereo actualizado",
+            message: "Registro de Extintor actualizado",
             extintor: formatExtintor(extintor),
         });
     } catch (error) {
-        console.error("Error updating Transporte Aereo", error);
-        return NextResponse.json({message: "Error updating Transporte Aereo"}, {status: 500});
+        console.error("Error updating Extintor", error);
+        return NextResponse.json({message: "Error updating Extintor"}, {status: 500});
     }
 }
 
@@ -87,9 +92,9 @@ export async function DELETE(
         const id = parseInt(params.id, 10);
         if (isNaN(id)) return NextResponse.json({message: "Invalid ID"}, {status: 400});
         await prisma.extintor.delete({where: {id: id,},});
-        return NextResponse.json({message: "Registro de Transporte Aereo eliminado",});
+        return NextResponse.json({message: "Registro de Extintor eliminado",});
     } catch (error) {
-        console.error("Error deleting Transporte Aereo", error);
-        return NextResponse.json({message: "Error deleting Transporte Aereo"}, {status: 500});
+        console.error("Error deleting Extintor", error);
+        return NextResponse.json({message: "Error deleting Extintor"}, {status: 500});
     }
 }

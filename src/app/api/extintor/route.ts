@@ -12,6 +12,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const sedeId = searchParams.get("sedeId") ?? undefined;
         const anio = searchParams.get("anioId") ?? undefined;
         const mesId = searchParams.get("mesId") ?? undefined;
+        const tipoExtintorId = searchParams.get("tipoExtintorId") ?? undefined;
 
         const sort = searchParams.get("sort");
         const direction = searchParams.get("direction") ?? "desc";
@@ -41,10 +42,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             sede_id: sedeId ? parseInt(sedeId) : undefined,
             anio_id: anioId,
             mes_id: mesId ? parseInt(mesId) : undefined,
+            tipoExtintorId: tipoExtintorId ? parseInt(tipoExtintorId) : undefined,
         } as {
             sede_id?: number;
             anio_id: number | undefined;
             mes_id?: number;
+            tipoExtintorId?: number;
             anio_mes?: {
                 gte?: number;
                 lte?: number;
@@ -71,6 +74,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 mes: true,
                 anio: true,
                 sede: true,
+                tipoExtintor: true,
             },
             orderBy: all
                 ? [{anio_mes: 'asc'}]
@@ -117,6 +121,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 mes_id: body.mes_id,
                 anio_id: body.anio_id,
                 sede_id: body.sede_id,
+                tipoExtintorId: body.tipoExtintorId,
                 anio_mes: Number(anio.nombre) * 100 + Number(body.mes_id),
                 created_at: new Date(),
                 updated_at: new Date(),
@@ -125,17 +130,18 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 mes: true,
                 anio: true,
                 sede: true,
+                tipoExtintor: true,
             }
         });
 
         const formattedExtintor = formatExtintor(extintor);
 
         return NextResponse.json({
-            message: "Transporte Terrestre registrado",
+            message: "Extintor registrado",
             fertilizante: formattedExtintor,
         });
     } catch (error) {
-        console.error("Error registrando Transporte Terrestre", error);
-        return NextResponse.json({message: "Error creando Transporte Terrestre"}, {status: 500});
+        console.error("Error registrando Extintor", error);
+        return NextResponse.json({message: "Error creando Extintor"}, {status: 500});
     }
 }

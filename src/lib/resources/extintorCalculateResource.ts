@@ -1,5 +1,6 @@
 export function formatExtintorCalculo(extintorCalculo: any) {
     const {
+        tipoExtintor,
         ExtintorCalculosDetail,
         consumoTotal,
         totalGEI,
@@ -29,6 +30,7 @@ export function formatExtintorCalculo(extintorCalculo: any) {
         consumoTotal: Number(consumoTotal.toFixed(2)),
         totalGEI: Number(totalGEI.toFixed(2)),
         sede: sede.name,
+        tipoExtintor: tipoExtintor.nombre,
         factoresEmision,
         factoresEmisionString,
     };

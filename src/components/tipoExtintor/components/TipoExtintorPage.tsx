@@ -1,6 +1,6 @@
 "use client";
 import React, {useCallback, useState} from "react";
-import {Flame, Pen, Plus, Trash2} from "lucide-react";
+import {Pen, Plus, Trash2, Bolt, Link2} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -32,77 +32,75 @@ import {
 } from "@/components/ui/alert-dialog";
 import {Badge} from "@/components/ui/badge";
 import SkeletonTable from "@/components/Layout/skeletonTable";
-import CustomPagination from "@/components/Pagination";
-
-import SelectFilter from "@/components/SelectFilter";
-import {useExtintorFactorPaginate} from "../lib/extintorFactor.hook";
-import {useAnio} from "@/components/combustion/lib/combustion.hook";
-import {ExtintorFactorCollection} from "../services/extintorFactor.interface";
-import {
-    FormExtintorFactor
-} from "@/components/extintorFactor/components/CreateExtintorFactor";
-import {
-    UpdateFormExtintorFactor
-} from "@/components/extintorFactor/components/UpdateExtintorFactor";
+import {CreateFormTipoExtintor} from "./CreateFormTipoExtintor";
 import {errorToast, successToast} from "@/lib/utils/core.function";
+import {UpdateFormTipoExtintor} from "@/components/tipoExtintor/components/UpdateFormTipoExtintor";
+import {deleteTipoExtintor} from "@/components/tipoExtintor/services/tipoExtintor.actions";
 import {
-    deleteExtintorFactor
-} from "@/components/extintorFactor/services/extintorFactor.actions";
+    TipoExtintorCollectionItem,
+} from "@/components/tipoExtintor/services/tipoExtintor.interface";
+import {useTipoExtintor} from "@/components/tipoExtintor/lib/tipoExtintor.hook";
+import CustomPagination from "@/components/Pagination";
+import Link from "next/link";
+import {Input} from "@/components/ui/input";
 import {ChangeTitle} from "@/components/TitleUpdater";
 
-export default function ExtintorFactorPage() {
-    ChangeTitle("Factor de Emisión de Extintor");
+export default function TipoExtintorPage() {
+    ChangeTitle("Tipos de Extintores");
     //DIALOGS
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+    //IDS
     const [idForUpdate, setIdForUpdate] = useState<number>(0);
     const [idForDelete, setIdForDelete] = useState<number>(0);
 
-    const [selectAnio, setSelectAnio] = useState<string>("");
-    const [page, setPage] = useState<number>(1);
+    const [name, setName] = useState("");
+    const [page, setPage] = useState(1);
+
+    const COLUMS = [
+        "N°",
+        "NOMBRE",
+        "ACCIONES",
+    ];
 
     //USE QUERIES
-    const extintorFactorQuery = useExtintorFactorPaginate({
-        anioId: selectAnio,
-        page,
-        perPage: 10,
-    });
-
-    const aniosQuery = useAnio();
+    const tipoExtintorQuery = useTipoExtintor(name, page);
 
     // HANDLES
-    const handleAnio = useCallback(
-        async (value: string) => {
-            await setPage(1);
-            await setSelectAnio(value);
-            await extintorFactorQuery.refetch();
+    const handleNameChange = useCallback(
+        (value: string) => {
+            setName(value);
+            setPage(1);
+            tipoExtintorQuery.refetch();
         },
-        [extintorFactorQuery]
+        [tipoExtintorQuery]
     );
 
     const handleClose = useCallback(() => {
         setIsDialogOpen(false);
-        extintorFactorQuery.refetch();
-    }, [extintorFactorQuery]);
+        tipoExtintorQuery.refetch();
+    }, [tipoExtintorQuery]);
 
     const handleCloseUpdate = useCallback(() => {
         setIsUpdateDialogOpen(false);
-        extintorFactorQuery.refetch();
-    }, [extintorFactorQuery]);
+        tipoExtintorQuery.refetch();
+    }, [tipoExtintorQuery]);
 
     const handleDelete = useCallback(async () => {
         try {
-            const response = await deleteExtintorFactor(idForDelete);
+            const response = await deleteTipoExtintor(idForDelete);
             setIsDeleteDialogOpen(false);
             successToast(response.data.message);
         } catch (error: any) {
-            errorToast(error.response.data || error.response.data.message);
+            errorToast(
+                error.response?.data?.message || "Error al eliminar el tipo de extintor"
+            );
         } finally {
-            await extintorFactorQuery.refetch();
+            await tipoExtintorQuery.refetch();
         }
-    }, [extintorFactorQuery]);
-
+    }, [tipoExtintorQuery]);
     const handleClickUpdate = (id: number) => {
         setIdForUpdate(id);
         setIsUpdateDialogOpen(true);
@@ -113,12 +111,12 @@ export default function ExtintorFactorPage() {
         setIsDeleteDialogOpen(true);
     };
 
-    const handlePageChange = async (page: number) => {
+    const handlePageChage = async (page: number) => {
         await setPage(page);
-        await extintorFactorQuery.refetch();
+        await tipoExtintorQuery.refetch();
     };
 
-    if (extintorFactorQuery.isLoading || aniosQuery.isLoading) {
+    if (tipoExtintorQuery.isLoading) {
         return <SkeletonTable/>;
     }
 
@@ -127,16 +125,13 @@ export default function ExtintorFactorPage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-center mb-6">
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
-                        <SelectFilter
-                            list={aniosQuery.data!}
-                            itemSelected={selectAnio}
-                            handleItemSelect={handleAnio}
-                            value={"id"}
-                            nombre={"nombre"}
-                            id={"id"}
-                            all={true}
-                            icon={<Flame className="h-3 w-3"/>}
+                        <Input
+                            className="w-44 h-7 text-xs"
+                            type="text"
+                            placeholder="Buscar"
+                            onChange={(e) => handleNameChange(e.target.value)}
                         />
+
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button size="sm" className="h-7 gap-1">
@@ -146,13 +141,11 @@ export default function ExtintorFactorPage() {
                             </DialogTrigger>
                             <DialogContent className="max-w-lg border-2">
                                 <DialogHeader>
-                                    <DialogTitle>Factor de Extintor</DialogTitle>
-                                    <DialogDescription>
-                                        Agregar Factor de Emisión de Extintor
-                                    </DialogDescription>
+                                    <DialogTitle> TIPOS DE VEHICULOS</DialogTitle>
+                                    <DialogDescription>Agregar Tipo de Extintor</DialogDescription>
                                     <DialogClose/>
                                 </DialogHeader>
-                                <FormExtintorFactor onClose={handleClose}/>
+                                <CreateFormTipoExtintor onClose={handleClose}/>
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -163,40 +156,33 @@ export default function ExtintorFactorPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                N°
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                TIPO DE EXTINTOR
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FACTOR
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                AÑO
-                            </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                ACCIONES
-                            </TableHead>
+                            {COLUMS.map((item) => (
+                                <TableHead
+                                    key={item}
+                                    className="text-xs sm:text-sm font-bold text-center"
+                                >
+                                    {item.split("|").map((part, index) => (
+                                        <span key={index}>
+                                            {part} {index < item.split("|").length - 1 && <br/>}
+                                        </span>
+                                    ))}
+                                </TableHead>
+                            ))}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {extintorFactorQuery.data!.data.map(
-                            (item: ExtintorFactorCollection, index: number) => (
+                        {tipoExtintorQuery.data!.data.map(
+                            (item: TipoExtintorCollectionItem) => (
                                 <TableRow key={item.id} className="text-center">
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary">{index + 1}</Badge>
+                                        <Badge variant="secondary">{item.rn}</Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        {item.tipoExtintor}
+                                    <TableCell
+                                        className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
+                                        {item.nombre}
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default"> {item.factor}</Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary"> {item.anio}</Badge>
-                                    </TableCell>
-                                    <TableCell className="text-xs sm:text-sm p-1">
+
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis p-1">
                                         <div className="flex justify-center gap-4">
                                             {/*UPDATE*/}
                                             <Button
@@ -224,10 +210,10 @@ export default function ExtintorFactorPage() {
                         )}
                     </TableBody>
                 </Table>
-                {extintorFactorQuery.data!.meta.totalPages > 1 && (
+                {tipoExtintorQuery.data!.meta.totalPages > 1 && (
                     <CustomPagination
-                        meta={extintorFactorQuery.data!.meta}
-                        onPageChange={handlePageChange}
+                        meta={tipoExtintorQuery.data!.meta}
+                        onPageChange={handlePageChage}
                     />
                 )}
             </div>
@@ -237,14 +223,10 @@ export default function ExtintorFactorPage() {
                 <DialogTrigger asChild></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Actualizar Registro</DialogTitle>
-                        <DialogDescription>Actualizar Factor de Emisión de Extintor</DialogDescription>
+                        <DialogTitle>Actualizar Registro de Extintor</DialogTitle>
+                        <DialogDescription></DialogDescription>
                     </DialogHeader>
-
-                    <UpdateFormExtintorFactor
-                        onClose={handleCloseUpdate}
-                        id={idForUpdate}
-                    />
+                    <UpdateFormTipoExtintor onClose={handleCloseUpdate} id={idForUpdate}/>
                 </DialogContent>
             </Dialog>
 
