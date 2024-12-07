@@ -16,7 +16,7 @@ import * as React from "react";
 import {useTheme} from "next-themes";
 
 export default function Sidebar() {
-    const {theme, setTheme} = useTheme();
+    const {theme} = useTheme();
     const [resolvedTheme, setResolvedTheme] = useState(theme);
     const router = useRouter();
     const pathname = usePathname();

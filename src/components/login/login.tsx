@@ -17,11 +17,23 @@ import {signIn} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import Image from 'next/image';
 import {errorToast} from "@/lib/utils/core.function";
+import {useTheme} from "next-themes";
+import {useEffect, useState} from "react";
 
 export default function LoginPage() {
+    const {theme} = useTheme();
+    const [resolvedTheme, setResolvedTheme] = useState(theme);
+    useEffect(() => {
+        if (theme === "system") {
+            const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            setResolvedTheme(darkMode ? "dark" : "light");
+        } else {
+            setResolvedTheme(theme);
+        }
+    }, [theme]);
     // CONSTANTES DE IMAGNES DE FONDO Y LOGO
     const fondo = "/img/fondoLogin.png";
-    const logo = "/img/GIEGEI.png";
+    const logo = resolvedTheme === "dark" ? "/img/GIEGEI1.png" : "/img/GIEGEI.png";
     const navigation = useRouter();
 
     // SCHEMA DE VALIDACIÓN DE FORMULAR
