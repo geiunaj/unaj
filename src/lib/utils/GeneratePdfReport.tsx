@@ -139,7 +139,7 @@ const ReportDocument: React.FC<ReportDocumentProps> = ({data, columns, title, pe
                         <View style={{...styles.tableCol, width: `${column.width}%`}} key={index}>
                             <Text style={styles.tableCell}>
                                 {
-                                    column.header.split(" ").map((word, index) => (
+                                    column.header.split("  ").map((word, index) => (
                                         <Text key={index}>
                                             {word}
                                             <Text>{"\n"}</Text>

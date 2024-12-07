@@ -2,16 +2,22 @@
 import {useSedes, useSummary, useYears} from "@/components/resumen/lib/resumen.hook";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {Badge} from "@/components/ui/badge";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {SummaryItem} from "@/components/resumen/service/resumen.interface";
 import SkeletonTable from "@/components/Layout/skeletonTable";
 import SelectFilter from "@/components/SelectFilter";
-import {ArrowLeftFromLine, ArrowRightFromLine, Building, Calendar} from "lucide-react";
+import {ArrowLeftFromLine, ArrowRightFromLine, Building, Calendar, FileSpreadsheet} from "lucide-react";
 import usePageTitle from "@/lib/stores/titleStore.store";
 import {LineChart} from "@/components/resumen/components/LineChart";
 import {PieChartComponent} from "@/components/resumen/components/PieChart";
 import {VerticalBarChart} from "@/components/resumen/components/VerticalBarChart";
 import {ChangeTitle} from "@/components/TitleUpdater";
+import {Button} from "@/components/ui/button";
+import ExportPdfReport from "@/lib/utils/ExportPdfReport";
+import {formatPeriod} from "@/lib/utils/core.function";
+import {ReportRequest} from "@/lib/interfaces/globals";
+import GenerateReport from "@/lib/utils/generateReport";
+import ReportComponent from "@/components/ReportComponent";
 
 
 export default function SummaryPage() {
@@ -22,6 +28,12 @@ export default function SummaryPage() {
     const [selectedYearTo, setSelectedYearTo] = useState<string>((new Date().getFullYear()).toString());
 
     const resumen = useSummary({
+        sedeId: selectedSede ? parseInt(selectedSede) : undefined,
+        from: selectedYearFrom,
+        to: selectedYearTo
+    });
+
+    const resumenReport = useSummary({
         sedeId: selectedSede ? parseInt(selectedSede) : undefined,
         from: selectedYearFrom,
         to: selectedYearTo
@@ -37,12 +49,39 @@ export default function SummaryPage() {
     const handleSelectedYearFrom = useCallback(async (value: string) => {
         await setSelectedYearFrom(value);
         await resumen.refetch();
+        await resumenReport.refetch();
     }, [resumen, setSelectedYearFrom]);
 
     const handleSelectedYearTo = useCallback(async (value: string) => {
         await setSelectedYearTo(value);
         await resumen.refetch();
+        await resumenReport.refetch();
     }, [resumen, setSelectedYearTo]);
+
+    const handleClickExcelReport = async (period: ReportRequest) => {
+        const columns = [
+            {header: "N°", key: "id", width: 10,},
+            {header: "FUENTE DE EMISIÓN", key: "emissionSource", width: 30,},
+            {header: "EMISIONES DE CO2 [tCO2eq]", key: "co2Emissions", width: 30,},
+            {header: "EMISIONES DE CH4 [tCO2eq]", key: "ch4Emissions", width: 30,},
+            {header: "EMISIONES DE N2O [tCO2eq]", key: "N2OEmissions", width: 30,},
+            {header: "EMISIONES DE HFC [tCO2eq]", key: "hfcEmissions", width: 30,},
+            {header: "TOTAL DE EMISIONES", key: "totalEmissions", width: 30,},
+            {header: "CONTRIBUCIONES", key: "generalContributions", width: 30,},
+        ];
+        await setSelectedYearFrom(period.from ?? "");
+        await setSelectedYearTo(period.to ?? "");
+        const data = await resumen.refetch();
+        await GenerateReport(data.data!, columns, formatPeriod(period, false), `RESUMEN ${formatPeriod(period, false)}`);
+    }
+
+    const submitFormRef = useRef<{ submitForm: () => void } | null>(null);
+
+    const handleClick = () => {
+        if (submitFormRef.current) {
+            submitFormRef.current.submitForm();
+        }
+    };
 
     if (resumen.isLoading || sedes.isLoading || years.isLoading) {
         return <SkeletonTable/>;
@@ -71,29 +110,47 @@ export default function SummaryPage() {
                                 all={true}
                             />
 
-                            <SelectFilter
-                                list={years.data!}
-                                itemSelected={selectedYearFrom}
-                                handleItemSelect={handleSelectedYearFrom}
-                                value={"nombre"}
-                                nombre={"nombre"}
-                                id={"id"}
-                                icon={<ArrowLeftFromLine className="h-3 w-3"/>}
-                                all={true}
-                            />
-
-                            <SelectFilter
-                                list={years.data!}
-                                itemSelected={selectedYearTo}
-                                handleItemSelect={handleSelectedYearTo}
-                                value={"nombre"}
-                                nombre={"nombre"}
-                                id={"id"}
-                                icon={<ArrowRightFromLine className="h-3 w-3"/>}
-                                all={true}
+                            <ReportComponent
+                                onSubmit={handleClickExcelReport}
+                                ref={submitFormRef}
+                                withMonth={false}
+                                yearFrom={selectedYearTo}
+                                yearTo={selectedYearTo}
+                                handleYearFromChange={handleSelectedYearFrom}
+                                handleYearToChange={handleSelectedYearTo}
                             />
                         </div>
                         <div className="flex flex-col-reverse justify-end gap-1 w-full sm:flex-row sm:gap-2">
+                            <Button
+                                onClick={handleClick}
+                                size="sm"
+                                variant="outline"
+                                className="flex items-center gap-2 h-7"
+                            >
+                                <FileSpreadsheet className="h-3.5 w-3.5"/>
+                                Excel
+                            </Button>
+
+                            <ExportPdfReport
+                                data={resumenReport.data!}
+                                fileName={`RESUMEN ${formatPeriod({
+                                    selectedYearFrom,
+                                    selectedYearTo
+                                }, false)}`}
+                                columns={[
+                                    {header: "FUENTE DE EMISIÓN", key: "emissionSource", width: 30,},
+                                    {header: "EMISIONES DE  CO2 [tCO2eq]", key: "co2Emissions", width: 10,},
+                                    {header: "EMISIONES DE  CH4 [tCO2eq]", key: "ch4Emissions", width: 10,},
+                                    {header: "EMISIONES DE  N2O [tCO2eq]", key: "N2OEmissions", width: 10,},
+                                    {header: "EMISIONES DE  HFC [tCO2eq]", key: "hfcEmissions", width: 10,},
+                                    {header: "TOTAL DE  EMISIONES", key: "totalEmissions", width: 20,},
+                                    {header: "CONTRIBUCIONES", key: "generalContributions", width: 10,},
+                                ]}
+                                rows={25}
+                                title={`RESUMEN DE EMISIONES`}
+                                period={formatPeriod({selectedYearFrom, selectedYearTo}, false)}
+                            />
+
 
                         </div>
                     </div>
