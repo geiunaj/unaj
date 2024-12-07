@@ -26,6 +26,7 @@ import {
     Calendar,
     LampDesk,
     PersonStanding,
+    Building,
 } from "lucide-react";
 
 export interface MenuItem {
@@ -64,6 +65,7 @@ export const iconComponents: Record<string, any> = {
     Calendar,
     LampDesk,
     PersonStanding,
+    Building,
 };
 
 export const STEP_NUMBER = 0.00000000000000001;
@@ -324,6 +326,12 @@ export const menuItems: MenuItem[] = [
                 title: "Roles",
                 icon: "PersonStanding",
                 href: "/roles",
+            },
+            {
+                id: 42,
+                title: "Sedes",
+                icon: "Building",
+                href: "/sedes",
             },
         ],
     },

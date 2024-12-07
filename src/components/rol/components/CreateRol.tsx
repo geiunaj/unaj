@@ -18,7 +18,6 @@ import {errorToast, successToast} from "@/lib/utils/core.function";
 import {RolRequest, CreateRolProps} from "@/components/rol/services/rol.interface";
 import {createRol} from "@/components/rol/services/rol.actions";
 import {menuItems} from "@/lib/constants/menu";
-import SkeletonForm from "@/components/Layout/skeletonForm";
 
 interface MenuItem {
     id: number;

@@ -24,7 +24,7 @@ async function typeUsers() {
     }
     console.log("Type User created");
 
-    for (let i = 1; i <= 41; i++) {
+    for (let i = 1; i <= 42; i++) {
         await prisma.access.create({
             data: {
                 menu: i,
