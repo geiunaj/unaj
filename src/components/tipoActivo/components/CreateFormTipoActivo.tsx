@@ -153,7 +153,7 @@ export function CreateFormTipoActivo({onClose}: CreateTipoActivoProps) {
                                 name="peso"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-full">
-                                        <FormLabel>Peso [Kg]</FormLabel>
+                                        <FormLabel>Peso [kg]</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="text"

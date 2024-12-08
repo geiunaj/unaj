@@ -315,7 +315,7 @@ export function FormTaxi({onClose}: CreateTaxiProps) {
                                 render={({field}) => (
                                     <FormItem className="w-1/2">
                                         <FormLabel>
-                                            Km Recorridos
+                                            km Recorridos
                                         </FormLabel>
                                         <FormControl>
                                             <Input

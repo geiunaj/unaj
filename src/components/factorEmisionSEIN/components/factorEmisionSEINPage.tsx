@@ -162,7 +162,7 @@ export default function FactorEmisionSEINPage() {
                                 N°
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                CO2 <span className="text-[9px]">[kCO2e]</span>
+                                FACTOR CO2 <span className="text-[9px]">[kgCO2/kWh]</span>
                             </TableHead>
                             {/*<TableHead className="text-xs sm:text-sm font-bold text-center">*/}
                             {/*    CH4 [tCH4/MWh]*/}

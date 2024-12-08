@@ -40,6 +40,7 @@ export interface TipoCombustibleFactorCollection {
     tipoCombustible_id: number;
     anio: string;
     tipoCombustible: string;
+    unidad: string;
 }
 
 export interface CreateTipoCombustibleFactorProps {

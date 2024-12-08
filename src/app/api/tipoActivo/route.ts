@@ -61,7 +61,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const tipoActivo = await prisma.tipoActivo.create({
             data: {
                 nombre: body.nombre,
-                unidad: "Kg",
+                unidad: "kg",
                 peso: body.peso,
                 fuente: body.fuente,
                 costoUnitario: body.costoUnitario,

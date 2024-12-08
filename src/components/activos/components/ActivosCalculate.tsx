@@ -102,6 +102,7 @@ export default function ActivosCalculate() {
         const columns = [
             {header: "N°", key: "rn", width: 10},
             {header: "GRUPO DE ACTIVO", key: "grupoActivo", width: 30},
+            {header: "CONSUMO", key: "cantidadTotal", width: 20},
             {header: "SEDE", key: "sede", width: 20},
             {header: "FACTORES", key: "factoresEmisionString", width: 20},
             {header: "TOTAL GEI", key: "totalGEI", width: 20},
@@ -179,7 +180,8 @@ export default function ActivosCalculate() {
                                 fileName={`REPORTE CALCULOS DE ACTIVOS_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "rn", width: 10},
-                                    {header: "GRUPO DE ACTIVO", key: "grupoActivo", width: 30},
+                                    {header: "GRUPO DE ACTIVO", key: "grupoActivo", width: 20},
+                                    {header: "CONSUMO", key: "cantidadTotal", width: 10},
                                     {header: "SEDE", key: "sede", width: 20},
                                     {header: "FACTORES", key: "factoresEmisionString", width: 20},
                                     {header: "TOTAL GEI", key: "totalGEI", width: 20},
@@ -203,18 +205,22 @@ export default function ActivosCalculate() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                            <TableHead className="text-xs font-bold text-center">
                                 SEDE
                             </TableHead>
                             <TableHead
                                 className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
                                 GRUPO DE ACTIVO
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FACTOR DE EMISIÓN
+                            <TableHead
+                                className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
+                                CONSUMO <span className="text-[10px]">[kg]</span>
                             </TableHead>
-                            <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                TOTAL EMISIONES GEI
+                            <TableHead className="text-xs font-bold text-center">
+                                FACTOR DE <br/> EMISIÓN <span className="text-[10px]">[kgCO2/kg]</span>
+                            </TableHead>
+                            <TableHead className="text-xs font-bold text-center">
+                                TOTAL EMISIONES <br/>GEI <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -239,6 +245,9 @@ export default function ActivosCalculate() {
                                     <TableCell
                                         className="text-xs max-w-72 whitespace-nowrap overflow-hidden text-ellipsis">
                                         {ActivoCalculate.grupoActivo}
+                                    </TableCell>
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
+                                        {ActivoCalculate.cantidadTotal}
                                     </TableCell>
                                     <TableCell className="text-xs flex gap-2 justify-center sm:text-sm">
                                         {ActivoCalculate.factoresEmision.map((factorEmision: FactoresEmision) => (

@@ -167,13 +167,13 @@ export default function TipoCombustibleFactorPage() {
                                 NOMBRE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FE CO2 <span className="text-[10px]">[kg CO2]</span>
+                                FE CO2 <span className="text-[10px]">[kgCO2/]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FE CH4 <span className="text-[10px]">[kg CO2eq]</span>
+                                FE CH4 <span className="text-[10px]">[kgCO2eq/]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FE N2O <span className="text-[10px]">[kg CO2eq]</span>
+                                FE N2O <span className="text-[10px]">[kgCO2eq/]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO
@@ -198,13 +198,16 @@ export default function TipoCombustibleFactorPage() {
                                         {item.tipoCombustible}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="default"> {item.factorEmisionCO2}</Badge>
+                                        <Badge variant="default"> {item.factorEmisionCO2.toFixed(7)} <span
+                                            className="text-[9px] text-muted/80">{item.unidad}</span></Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary"> {item.factorEmisionCH4}</Badge>
+                                        <Badge variant="secondary"> {item.factorEmisionCH4.toFixed(7)}<span
+                                            className="text-[9px] text-muted-foreground">{item.unidad}</span></Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
-                                        <Badge variant="secondary"> {item.factorEmisionN2O}</Badge>
+                                        <Badge variant="secondary"> {item.factorEmisionN2O.toFixed(7)}<span
+                                            className="text-[9px] text-muted-foreground">{item.unidad}</span></Badge>
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="outline"> {item.anio}</Badge>

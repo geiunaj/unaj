@@ -51,7 +51,7 @@ export async function PUT(
             },
             data: {
                 nombre: body.nombre,
-                unidad: "Kg",
+                unidad: "kg",
                 peso: body.peso,
                 fuente: body.fuente,
                 costoUnitario: body.costoUnitario,

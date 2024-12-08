@@ -249,12 +249,13 @@ export function UpdateFormConsumible({
                             control={form.control}
                             name="pesoTotal"
                             render={({field}) => (
-                                <FormItem className="pt-2 w-1/2">
-                                    <FormLabel>Peso Total de Consumible</FormLabel>
+                                <FormItem className="pt-2 w-full">
+                                    <FormLabel>Peso Total de Consumible <span
+                                        className="text-[10px]">[kg]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Cantidad Kg/año"
+                                            placeholder="Cantidad kg/año"
                                             type="number"
                                             step={STEP_NUMBER}
                                             {...field}

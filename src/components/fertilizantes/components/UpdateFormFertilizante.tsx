@@ -250,7 +250,7 @@ export function UpdateFormFertilizantes({
                                         <FormControl>
                                             <Input
                                                 className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                                placeholder="Cantidad Kg/año"
+                                                placeholder="Cantidad kg/año"
                                                 type="number"
                                                 step={STEP_NUMBER}
                                                 {...field}

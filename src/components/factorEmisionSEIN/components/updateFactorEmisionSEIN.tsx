@@ -27,7 +27,7 @@ import SkeletonForm from "@/components/Layout/skeletonForm";
 import {UpdateFactorEmisionSEINProps, FactorEmisionSEINRequest} from "../services/factorEmisionSEIN.interface";
 import {getAnio} from "@/components/anio/services/anio.actions";
 import {showFactorSEIN, updateFactorSEIN} from "../services/factorEmisionSEIN.actions";
-import { STEP_NUMBER } from "@/lib/constants/menu";
+import {STEP_NUMBER} from "@/lib/constants/menu";
 
 const UpdateFactorConversionSEIN = z.object({
     anio: z.string().min(1, "Selecciona un año"),
@@ -61,7 +61,7 @@ export function UpdateFormFactorSEIN({id, onClose}: UpdateFactorEmisionSEINProps
 
     const loadForm = useCallback(async () => {
         if (factorSEIN.data) {
-            const factorData = factorSEIN.data;
+            const factorData = await factorSEIN.data;
             form.reset({
                 anio: factorData.anioId.toString(),
                 factorCO2: factorData.factorCO2,
@@ -108,7 +108,7 @@ export function UpdateFormFactorSEIN({id, onClose}: UpdateFactorEmisionSEINProps
                             render={({field}) => (
                                 <FormItem className="pt-2 w-full">
                                     <FormLabel>Año</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl className="w-full">
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Selecciona el año"/>
@@ -135,7 +135,8 @@ export function UpdateFormFactorSEIN({id, onClose}: UpdateFactorEmisionSEINProps
                             name="factorCO2"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor de emisión</FormLabel>
+                                    <FormLabel>Factor de emisión <span
+                                        className="text-[9px]">[kgCO2/kWh]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"

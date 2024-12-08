@@ -336,7 +336,7 @@ export default function TransporteAereoPage() {
                                 FECHA DE<br/> REGRESO
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                DISTANCIA<br/> TRAMO <span className="text-xs">[Km]</span>
+                                DISTANCIA<br/> TRAMO <span className="text-xs">[km]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 KM <br/>RECORRIDO

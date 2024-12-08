@@ -75,17 +75,6 @@ export default function VehiculoFactorPage() {
         perPage: 10
     });
 
-    const columns = [
-        "N°",
-        "TIPO VEHICULO",
-        "FACTOR CO2",
-        "FACTOR CH4",
-        "FACTOR N2O",
-        "FACTOR",
-        "FUENTE",
-        "AÑO",
-        "ACCIONES"
-    ];
 
     const handleAnioChange = useCallback(async (value: string) => {
         await setSelectAnio(value);
@@ -192,13 +181,33 @@ export default function VehiculoFactorPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            {
-                                columns.map((column, index) => (
-                                    <TableHead key={index} className="text-xs sm:text-sm font-bold text-center">
-                                        {column}
-                                    </TableHead>
-                                ))
-                            }
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                N°
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                TIPO VEHICULO
+                            </TableHead>
+                            <TableHead className="text-xs font-bold text-center">
+                                FACTOR <br/>CO2 <span className="text-[9px]">[kgCO2/Km]</span>
+                            </TableHead>
+                            <TableHead className="text-xs font-bold text-center">
+                                FACTOR <br/> CH4 <span className="text-[9px]">[kgCO2eq/Km]</span>
+                            </TableHead>
+                            <TableHead className="text-xs font-bold text-center">
+                                FACTOR <br/> N2O <span className="text-[9px]">[kgCO2eq/Km]</span>
+                            </TableHead>
+                            <TableHead className="text-xs font-bold text-center">
+                                FACTOR <br/> <span className="text-[9px]">[kgCO2eq/Km]</span>
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                FUENTE
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                AÑO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                ACCIONES
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

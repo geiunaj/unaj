@@ -274,17 +274,17 @@ export function UpdateFormTransporteCasaTrabajo({
                             />
                         </div>
 
-                        {/* Km Recorrido */}
+                        {/* km Recorrido */}
                         <FormField
                             control={form.control}
                             name="kmRecorrido"
                             render={({field}) => (
                                 <FormItem className="pt-2 w-full">
-                                    <FormLabel>Km Recorrido</FormLabel>
+                                    <FormLabel>km Recorrido</FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Km Recorrido"
+                                            placeholder="km Recorrido"
                                             type="number"
                                             step={STEP_NUMBER}
                                             {...field}

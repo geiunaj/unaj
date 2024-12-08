@@ -16,7 +16,7 @@ import ButtonBack from "@/components/ButtonBack";
 import {useRouter} from "next/navigation";
 import ReportComponent from "@/components/ReportComponent";
 import GenerateReport from "@/lib/utils/generateReport";
-import {errorToast, formatPeriod} from "@/lib/utils/core.function";
+import {errorToast, formatPeriod, successToast} from "@/lib/utils/core.function";
 import {
     useConsumibleCalculos,
     useConsumibleCalculosReport, useSedes
@@ -86,6 +86,8 @@ export default function ConsumiblesCalculate() {
             sedeId: selectedSede ? Number(selectedSede) : undefined,
             from,
             to,
+        }).then(() => {
+            successToast("Calculo realizado exitosamente");
         }).catch((error) => {
             errorToast(error.response.data.message);
         });
@@ -226,11 +228,11 @@ export default function ConsumiblesCalculate() {
                             </TableHead>
                             <TableHead
                                 className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
-                                PESO TOTAL
+                                PESO TOTAL <span className="text-[10px]">[kg]</span>
                             </TableHead>
                             <TableHead
                                 className="text-xs whitespace-nowrap overflow-hidden text-ellipsis font-bold text-center">
-                                EMISIONES GEI
+                                TOTAL EMISIONES <br/> GEI <span className="text-[10px]">[tCO2eq]</span>
                             </TableHead>
                         </TableRow>
                     </TableHeader>

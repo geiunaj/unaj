@@ -64,7 +64,7 @@ export default function TipoActivoPage() {
         "N°",
         "NOMBRE",
         "CATEGORIA",
-        "PESO [Kg]",
+        "PESO [kg]",
         "COSTO | UNITARIO",
         "LINK",
         "ACCIONES",

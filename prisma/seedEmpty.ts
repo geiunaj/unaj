@@ -25,14 +25,16 @@ async function typeUsers() {
     console.log("Type User created");
 
     for (let i = 1; i <= 43; i++) {
-        await prisma.access.create({
-            data: {
-                menu: i,
-                type_user_id: adminType.id,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
+        if (i !== 21 || i !== 39) {
+            await prisma.access.create({
+                data: {
+                    menu: i,
+                    type_user_id: adminType.id,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                },
+            });
+        }
     }
 
     // Crear un usuario con el tipo de usuario creado
@@ -217,7 +219,7 @@ async function tipoCombustible() {
         {
             abreviatura: "C2H2",
             nombre: "Acetileno",
-            unidad: "Kg",
+            unidad: "kg",
             estacionaria: {
                 consumo: 9,
                 factorEmisionCO2: 3.38,
@@ -1988,7 +1990,7 @@ async function activos() {
     const tipoActivo = await prisma.tipoActivo.create({
         data: {
             nombre: "Tipo Activo",
-            unidad: "Kg",
+            unidad: "kg",
             peso: 1,
             fuente: "IDEMAT 2024 V2.3",
             costoUnitario: 4007.421583,

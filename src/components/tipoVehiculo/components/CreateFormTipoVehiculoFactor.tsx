@@ -168,7 +168,7 @@ export function CreateFormTipoVehiculoFactor({
                                 name="factorCO2"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor CO2</FormLabel>
+                                        <FormLabel>Factor CO2 <span className="text-[9px]">[kgCO2/Km]</span></FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -198,7 +198,8 @@ export function CreateFormTipoVehiculoFactor({
                                 name="factorCH4"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor CH4</FormLabel>
+                                        <FormLabel>Factor CH4 <span
+                                            className="text-[9px]">[kgCO2eq/Km]</span></FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -230,7 +231,8 @@ export function CreateFormTipoVehiculoFactor({
                                 name="factorN2O"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor N2O</FormLabel>
+                                        <FormLabel>Factor N2O <span
+                                            className="text-[9px]">[kgCO2eq/Km]</span></FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -260,7 +262,8 @@ export function CreateFormTipoVehiculoFactor({
                                 name="factor"
                                 render={({field}) => (
                                     <FormItem className="pt-2 w-1/2">
-                                        <FormLabel>Factor Equivalente</FormLabel>
+                                        <FormLabel>Factor Equivalente <span
+                                            className="text-[9px]">[kgCO2eq/Km]</span></FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"

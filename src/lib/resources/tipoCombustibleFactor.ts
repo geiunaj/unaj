@@ -10,6 +10,6 @@ export function formatTipoCombustibleFactor(tipoCombustibleFactor: any) {
         created_at: undefined,
         updated_at: undefined,
         tipoCombustible: tipoCombustible.nombre,
-
+        unidad: tipoCombustible.unidad,
     };
 }

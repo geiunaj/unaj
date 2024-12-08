@@ -325,7 +325,7 @@ export default function PapelPage() {
                                 PAQUETES
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                PESO TOTAL <span className="text-[10px]">[Kg]</span>
+                                PESO TOTAL <span className="text-[10px]">[kg]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO

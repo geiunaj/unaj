@@ -301,7 +301,7 @@ export default function ExtintorPage() {
                                 TIPO DE EXTINTOR
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
-                                CONSUMO <span className="text-[10px]">[Kg]</span>
+                                CONSUMO <span className="text-[10px]">[kg]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-sm font-bold text-center">
                                 MES

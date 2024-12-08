@@ -175,7 +175,7 @@ export function UpdateFormExtintorFactor({id, onClose}: UpdateExtintorFactorProp
                             name="factor"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor</FormLabel>
+                                    <FormLabel>Factor <span className="text-[9px]">[kgCO2/kg]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"

@@ -301,7 +301,7 @@ export function FormTransporteAereo({onClose}: CreateTransporteAereoProps) {
                                 name="distanciaTramo"
                                 render={({field}) => (
                                     <FormItem className="w-1/2">
-                                        <FormLabel> Distancia Tramo [Km] </FormLabel>
+                                        <FormLabel> Distancia Tramo [km] </FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -329,7 +329,7 @@ export function FormTransporteAereo({onClose}: CreateTransporteAereoProps) {
                                 render={({field}) => (
                                     <FormItem className="w-1/2">
                                         <FormLabel>
-                                            Km Recorridos
+                                            km Recorridos
                                         </FormLabel>
                                         <FormControl>
                                             <Input

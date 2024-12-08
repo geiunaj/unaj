@@ -167,7 +167,7 @@ export default function TransporteTerrestreFactorPage() {
                                 N°
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                FACTOR <span className="text-[10px]">[kg CO2]</span>
+                                FACTOR <span className="text-[10px]">[kgCO2/km]</span>
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 AÑO

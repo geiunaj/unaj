@@ -77,13 +77,6 @@ export default function ActivoFactorPage() {
         perPage: 10
     });
 
-    const columns = [
-        "N°",
-        "ACTIVO",
-        "FACTOR",
-        "AÑO",
-        "ACCIONES"
-    ];
 
     const handleAnioChange = useCallback(async (value: string) => {
         await setSelectAnio(value);
@@ -192,13 +185,21 @@ export default function ActivoFactorPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            {
-                                columns.map((column, index) => (
-                                    <TableHead key={index} className="text-xs sm:text-sm font-bold text-center">
-                                        {column}
-                                    </TableHead>
-                                ))
-                            }
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                N°
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                ACTIVO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                FACTOR <span className="text-[9px]">[kgCO2/kg]</span>
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                AÑO
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                ACCIONES
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -208,7 +209,7 @@ export default function ActivoFactorPage() {
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="secondary">{index + 1}</Badge>
                                     </TableCell>
-                                    <TableCell className="text-xs sm:text-sm">
+                                    <TableCell className="text-xs sm:text-sm text-start">
                                         {item.tipoActivo}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">

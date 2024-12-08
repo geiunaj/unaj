@@ -119,7 +119,7 @@ export function FormTransporteTerrestreFactor({onClose}: CreateTransporteTerrest
                             name="factor"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor <span className="text-[10px]">[kg CO2]</span></FormLabel>
+                                    <FormLabel>Factor <span className="text-[10px]">[kgCO2/km]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"

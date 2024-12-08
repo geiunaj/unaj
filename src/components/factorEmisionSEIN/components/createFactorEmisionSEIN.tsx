@@ -30,7 +30,7 @@ import {
     FactorEmisionSEINRequest,
 } from "../services/factorEmisionSEIN.interface";
 import {createFactorSEIN} from "../services/factorEmisionSEIN.actions";
-import { STEP_NUMBER } from "@/lib/constants/menu";
+import {STEP_NUMBER} from "@/lib/constants/menu";
 
 const FactorConversionSEIN = z.object({
     anio: z.string().min(1, "Seleciona el anio"),
@@ -132,7 +132,8 @@ export function FormFactorSEIN({onClose}: CreateFactorEmisionSEINProps) {
                             name="factorCO2"
                             render={({field}) => (
                                 <FormItem className="pt-2">
-                                    <FormLabel>Factor de Emisión</FormLabel>
+                                    <FormLabel>Factor de Emisión <span
+                                        className="text-[9px]">[kgCO2/kWh]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"

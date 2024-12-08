@@ -34,7 +34,7 @@ import {
 import {createConsumible} from "@/components/consumibles/services/consumible.actions";
 import SkeletonForm from "@/components/Layout/skeletonForm";
 import {getMes} from "@/components/mes/services/mes.actions";
-import { STEP_NUMBER } from "@/lib/constants/menu";
+import {STEP_NUMBER} from "@/lib/constants/menu";
 
 const Consumible = z.object({
     tipoConsumibleId: z.string().min(1, "Seleccione un tipo de consumible"),
@@ -243,11 +243,12 @@ export function FormConsumibles({onClose}: CreateConsumibleProps) {
                             name="pesoTotal"
                             render={({field}) => (
                                 <FormItem className="pt-2 w-full">
-                                    <FormLabel>Peso Total de Consumible</FormLabel>
+                                    <FormLabel>Peso Total de Consumible <span
+                                        className="text-[10px]">[kg]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
-                                            placeholder="Cantidad Kg/año"
+                                            placeholder="Cantidad kg/año"
                                             type="number"
                                             step={STEP_NUMBER}
                                             {...field}

@@ -160,28 +160,30 @@ export default function Header() {
                                             </div>
                                         </AccordionTrigger>
                                         <AccordionContent>
-                                            {item.items.map((subItem) => {
-                                                const Icon = iconComponents[subItem.icon];
-                                                return (
-                                                    <Button
-                                                        key={subItem.title}
-                                                        variant={itemActive === subItem.href ? "default" : "ghost"}
-                                                        className={
-                                                            itemActive !== subItem.href ? classNameAccordion(
-                                                                "w-full justify-start hover:text-primary",
-                                                                subItem.href
-                                                            ) : classNameAccordion(
-                                                                "w-full justify-start hover:text-white",
-                                                                subItem.href
-                                                            )
-                                                        }
-                                                        onClick={() => handleItemClick(subItem)}
-                                                    >
-                                                        <Icon className="mr-2 h-4 w-4"/>
-                                                        <p className="ml-3 text-xs lg:text-sm">{subItem.title}</p>
-                                                    </Button>
-                                                );
-                                            })}
+                                            {item.items
+                                                .sort((a, b) => a.title.localeCompare(b.title))
+                                                .map((subItem) => {
+                                                    const Icon = iconComponents[subItem.icon];
+                                                    return (
+                                                        <Button
+                                                            key={subItem.title}
+                                                            variant={itemActive === subItem.href ? "default" : "ghost"}
+                                                            className={
+                                                                itemActive !== subItem.href ? classNameAccordion(
+                                                                    "w-full justify-start hover:text-primary",
+                                                                    subItem.href
+                                                                ) : classNameAccordion(
+                                                                    "w-full justify-start hover:text-white",
+                                                                    subItem.href
+                                                                )
+                                                            }
+                                                            onClick={() => handleItemClick(subItem)}
+                                                        >
+                                                            <Icon className="mr-2 h-4 w-4"/>
+                                                            <p className="ml-3 text-xs lg:text-sm">{subItem.title}</p>
+                                                        </Button>
+                                                    );
+                                                })}
                                         </AccordionContent>
                                     </AccordionItem>
                                 </Accordion>

@@ -116,9 +116,9 @@ export default function ActivosPage() {
         "N°",
         "NOMBRE",
         "CATEGORIA",
-        "CANTIDAD | CONSUMIDA $ [Kg]",
-        "CONSUMO | TOTAL $ [Kg]",
-        "CANTIDAD | COMPRADA $ [Kg]",
+        "CANTIDAD | CONSUMIDA $ [kg]",
+        "CONSUMO | TOTAL $ [kg]",
+        "CANTIDAD | COMPRADA $ [kg]",
         "COSTO | TOTAL $ [S/.]",
         "AÑO",
         "MES",
@@ -218,8 +218,8 @@ export default function ActivosPage() {
                 {header: "CATEGORIA", key: "categoria", width: 20},
                 {header: "CANTIDAD COMPRADA [S/.]", key: "cantidadComprada", width: 20},
                 {header: "COSTO TOTAL [S/.]", key: "costoTotal", width: 20},
-                {header: "CANTIDAD CONSUMIDA [Kg]", key: "cantidadConsumida", width: 20},
-                {header: "CONSUMO TOTAL [Kg]", key: "consumoTotal", width: 20},
+                {header: "CANTIDAD CONSUMIDA [kg]", key: "cantidadConsumida", width: 20},
+                {header: "CONSUMO TOTAL [kg]", key: "consumoTotal", width: 20},
                 {header: "AÑO", key: "anio", width: 20},
                 {header: "MES", key: "mes", width: 20},
                 {header: "SEDE", key: "sede", width: 20},
@@ -327,8 +327,8 @@ export default function ActivosPage() {
                                     {header: "CATEGORIA", key: "categoria", width: 8},
                                     {header: "CANTIDAD COMPRADA [S/.]", key: "cantidadComprada", width: 8},
                                     {header: "COSTO TOTAL [S/.]", key: "costoTotal", width: 8},
-                                    {header: "CANTIDAD CONSUMIDA [Kg]", key: "cantidadConsumida", width: 8},
-                                    {header: "CONSUMO TOTAL [Kg]", key: "consumoTotal", width: 8},
+                                    {header: "CANTIDAD CONSUMIDA [kg]", key: "cantidadConsumida", width: 8},
+                                    {header: "CONSUMO TOTAL [kg]", key: "consumoTotal", width: 8},
                                     {header: "AÑO", key: "anio", width: 5},
                                     {header: "MES", key: "mes", width: 5},
                                     {header: "SEDE", key: "sede", width: 10},
@@ -379,10 +379,10 @@ export default function ActivosPage() {
                                 COSTO<br/> TOTAL <span className="text-[9px]">[S/.]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
-                                CANTIDAD <br/> CONSUMIDA <span className="text-[9px]">[Kg]</span>
+                                CANTIDAD <br/> CONSUMIDA <span className="text-[9px]">[kg]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
-                                CONSUMO<br/> TOTAL <span className="text-[9px]">[Kg]</span>
+                                CONSUMO<br/> TOTAL <span className="text-[9px]">[kg]</span>
                             </TableHead>
                             <TableHead className="font-Manrope text-xs font-bold text-center py-1">
                                 AÑO

@@ -195,7 +195,7 @@ export const menuItems: MenuItem[] = [
         items: [
             {
                 id: 20,
-                title: "Factores de Combustibles",
+                title: "Factor de Combustible",
                 icon: "Flame",
                 href: "/tipo-combustible-factor",
             },
@@ -207,19 +207,19 @@ export const menuItems: MenuItem[] = [
             },
             {
                 id: 22,
-                title: "Factor de Emision SEIN",
+                title: "Factor de Emisión SEIN",
                 icon: "PlugZap",
                 href: "/factor-emision-SEIN",
             },
             {
                 id: 23,
-                title: "Factores de Consumibles",
+                title: "Factor de Consumible",
                 icon: "Milk",
                 href: "/tipo-consumible-factor",
             },
             {
                 id: 24,
-                title: "Factores de Activos",
+                title: "Factor de Activo",
                 icon: "LampDesk",
                 href: "/tipo-activo-factor",
             },
@@ -269,7 +269,7 @@ export const menuItems: MenuItem[] = [
             },
             {
                 id: 32,
-                title: "Tipo de Papel",
+                title: "Tipos de Papel",
                 icon: "Scroll",
                 href: "/tipo-papel",
             },

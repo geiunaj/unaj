@@ -263,7 +263,7 @@ export function FormTransporteTerrestre({onClose}: CreateTransporteTerrestreProp
                                 name="distanciaTramo"
                                 render={({field}) => (
                                     <FormItem className="w-1/2">
-                                        <FormLabel> Distancia Tramo [Km]</FormLabel>
+                                        <FormLabel> Distancia Tramo [km]</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -283,7 +283,7 @@ export function FormTransporteTerrestre({onClose}: CreateTransporteTerrestreProp
                                 render={({field}) => (
                                     <FormItem className="w-1/2">
                                         <FormLabel>
-                                            Km Recorridos
+                                            km Recorridos
                                         </FormLabel>
                                         <FormControl>
                                             <Input

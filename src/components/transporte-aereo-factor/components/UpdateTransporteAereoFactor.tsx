@@ -137,7 +137,7 @@ export function UpdateFormTransporteAereoFactor({id, onClose}: UpdateTransporteA
                             render={({field}) => (
                                 <FormItem className="pt-2">
                                     <FormLabel>Factor Menor 1600 <span
-                                        className="text-[10px]">[kg CO2]</span></FormLabel>
+                                        className="text-[10px]">[kgCO2/km]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
@@ -157,7 +157,7 @@ export function UpdateFormTransporteAereoFactor({id, onClose}: UpdateTransporteA
                             render={({field}) => (
                                 <FormItem className="pt-2">
                                     <FormLabel>Factor entre 1600 y 3700 <span
-                                        className="text-[10px]">[kg CO2]</span></FormLabel>
+                                        className="text-[10px]">[kgCO2/km]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
@@ -177,7 +177,7 @@ export function UpdateFormTransporteAereoFactor({id, onClose}: UpdateTransporteA
                             render={({field}) => (
                                 <FormItem className="pt-2">
                                     <FormLabel>Factor Mayor 3700 <span
-                                        className="text-[10px]">[kg CO2]</span></FormLabel>
+                                        className="text-[10px]">[kgCO2/km]</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
