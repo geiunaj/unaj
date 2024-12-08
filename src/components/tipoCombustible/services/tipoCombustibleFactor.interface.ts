@@ -16,6 +16,8 @@ export interface TipoCombustibleFactorRequest {
     factorEmisionCH4: number;
     factorEmisionN2O: number;
     anio_id: number;
+    fuente?: string;
+    link?: string;
 }
 
 interface Meta {
@@ -41,6 +43,8 @@ export interface TipoCombustibleFactorCollection {
     anio: string;
     tipoCombustible: string;
     unidad: string;
+    fuente?: string;
+    link?: string;
 }
 
 export interface CreateTipoCombustibleFactorProps {

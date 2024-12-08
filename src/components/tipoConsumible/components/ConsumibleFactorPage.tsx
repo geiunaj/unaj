@@ -221,12 +221,14 @@ export default function ConsumibleFactorPage() {
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm p-1">
                                         <div className="flex items-center justify-center gap-4">
-                                            <Link href={item.link} target="_blank">
-                                                <Button className="h-7 flex items-center gap-2" size="sm"
-                                                        variant="secondary">
-                                                    <Link2 className="h-3 w-3"/>
-                                                </Button>
-                                            </Link>
+                                            {item.link !== "/" &&
+                                                (<Link href={item.link} target="_blank">
+                                                    <Button className="h-7 flex items-center gap-2" size="sm"
+                                                            variant="secondary">
+                                                        <Link2 className="h-3 w-3"/>
+                                                    </Button>
+                                                </Link>)
+                                            }
                                             {/*UPDATE*/}
                                             <Button
                                                 className="h-7 w-7"

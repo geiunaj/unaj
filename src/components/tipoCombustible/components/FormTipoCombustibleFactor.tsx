@@ -37,6 +37,8 @@ const TipoCombustibleFactor = z.object({
     factorEmisionN2O: z.preprocess((val) => parseFloat(val as string,),
         z.number().min(0, "Ingresa un valor mayor a 0")),
     anio_id: z.string().min(1, "Selecciona un año"),
+    fuente: z.string().min(1, "Ingrese una fuente"),
+    link: z.string().optional(),
 });
 
 export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps) {
@@ -47,6 +49,8 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
             factorEmisionCO2: 0,
             factorEmisionCH4: 0,
             factorEmisionN2O: 0,
+            fuente: "",
+            link: "",
         },
     });
 
@@ -72,6 +76,8 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
             factorEmisionCH4: data.factorEmisionCH4,
             factorEmisionN2O: data.factorEmisionN2O,
             anio_id: parseInt(data.anio_id),
+            fuente: data.fuente,
+            link: data.link,
         };
         try {
             const response = await createTipoCombustibleFactor(tipoCombustibleFactorRequest);
@@ -101,7 +107,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                             name="tipo"
                             control={form.control}
                             render={({field}) => (
-                                <FormItem className="pt-2">
+                                <FormItem className="">
                                     <FormLabel>Tipo de Combustible</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
@@ -127,7 +133,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                             name="tipoConsumibleId"
                             control={form.control}
                             render={({field}) => (
-                                <FormItem className="pt-2">
+                                <FormItem className="">
                                     <FormLabel>Nombre de Consumible</FormLabel>
                                     <Select
                                         onValueChange={(value) => {
@@ -163,7 +169,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 control={form.control}
                                 name="factorEmisionCO2"
                                 render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
+                                    <FormItem className=" w-1/2">
                                         <FormLabel>Factor CO2 <span
                                             className="text-xs">[kg GEI /{tipoCombustibleSelected?.unidad}]</span></FormLabel>
                                         <FormControl>
@@ -183,7 +189,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 control={form.control}
                                 name="factorEmisionCH4"
                                 render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
+                                    <FormItem className=" w-1/2">
                                         <FormLabel>
                                             Factor CH4 <span
                                             className="text-xs">[kg GEI /{tipoCombustibleSelected?.unidad}]</span>
@@ -209,7 +215,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 control={form.control}
                                 name="factorEmisionN2O"
                                 render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
+                                    <FormItem className=" w-1/2">
                                         <FormLabel>Factor N2O <span
                                             className="text-xs">[kg GEI /{tipoCombustibleSelected?.unidad}]</span>
                                         </FormLabel>
@@ -230,7 +236,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 control={form.control}
                                 name="anio_id"
                                 render={({field}) => (
-                                    <FormItem className="pt-2 w-1/2">
+                                    <FormItem className=" w-1/2">
                                         <FormLabel>Año</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
@@ -254,6 +260,46 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 )}
                             />
                         </div>
+
+                        {/*FUENTE*/}
+                        <FormField
+                            control={form.control}
+                            name="fuente"
+                            render={({field}) => (
+                                <FormItem className=" w-full">
+                                    <FormLabel>Fuente</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            placeholder="Fuente"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+
+                        {/*LINK*/}
+                        <FormField
+                            control={form.control}
+                            name="link"
+                            render={({field}) => (
+                                <FormItem className=" w-full">
+                                    <FormLabel>Link</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            placeholder="Link"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-primary">

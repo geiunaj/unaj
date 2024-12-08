@@ -44,6 +44,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 factorEmisionCH4: body.factorEmisionCH4,
                 factorEmisionN2O: body.factorEmisionN2O,
                 anio_id: body.anio_id,
+                fuente: body.fuente,
+                link: body.link,
                 created_at: new Date(),
                 updated_at: new Date(),
             },

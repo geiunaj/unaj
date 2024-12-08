@@ -43,6 +43,8 @@ const TipoCombustibleFactor = z.object({
     factorEmisionN2O: z.preprocess((val) => parseFloat(val as string,),
         z.number().min(0, "Ingresa un valor mayor a 0")),
     anio_id: z.string().min(1, "Selecciona un año"),
+    fuente: z.string().min(1, "Ingrese una fuente"),
+    link: z.string().optional(),
 });
 
 export function UpdateTipoCombustibleFactor({onClose, id}: UpdateTipoCombustibleFactorProps) {
@@ -55,6 +57,8 @@ export function UpdateTipoCombustibleFactor({onClose, id}: UpdateTipoCombustible
             factorEmisionCH4: 0,
             factorEmisionN2O: 0,
             anio_id: "",
+            fuente: "",
+            link: "",
         },
     });
 
@@ -89,6 +93,8 @@ export function UpdateTipoCombustibleFactor({onClose, id}: UpdateTipoCombustible
                 factorEmisionCH4: tipoCombustibleFactorData.factorEmisionCH4,
                 factorEmisionN2O: tipoCombustibleFactorData.factorEmisionN2O,
                 anio_id: tipoCombustibleFactorData.anio_id.toString(),
+                fuente: tipoCombustibleFactorData.fuente,
+                link: tipoCombustibleFactorData.link,
             });
         }
     }, [tipoCombustibleFactor.data, id]);
@@ -105,6 +111,8 @@ export function UpdateTipoCombustibleFactor({onClose, id}: UpdateTipoCombustible
             factorEmisionCH4: data.factorEmisionCH4,
             factorEmisionN2O: data.factorEmisionN2O,
             anio_id: parseInt(data.anio_id),
+            fuente: data.fuente,
+            link: data.link,
         };
         try {
             const response = await updateTipoCombustibleFactor(id, tipoCombustibleFactorRequest);
@@ -288,6 +296,46 @@ export function UpdateTipoCombustibleFactor({onClose, id}: UpdateTipoCombustible
                                 )}
                             />
                         </div>
+
+                        {/*FUENTE*/}
+                        <FormField
+                            control={form.control}
+                            name="fuente"
+                            render={({field}) => (
+                                <FormItem className=" w-full">
+                                    <FormLabel>Fuente</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            placeholder="Fuente"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+
+                        {/*LINK*/}
+                        <FormField
+                            control={form.control}
+                            name="link"
+                            render={({field}) => (
+                                <FormItem className=" w-full">
+                                    <FormLabel>Link</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="text"
+                                            className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
+                                            placeholder="Link"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
 
                         <div className="flex gap-3 w-full pt-4">

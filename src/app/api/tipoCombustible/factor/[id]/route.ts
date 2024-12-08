@@ -50,6 +50,8 @@ export async function PUT(
                 factorEmisionCH4: body.factorEmisionCH4,
                 factorEmisionN2O: body.factorEmisionN2O,
                 anio_id: body.anio_id,
+                fuente: body.fuente,
+                link: body.link,
                 updated_at: new Date(),
             },
             include: {

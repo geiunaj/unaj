@@ -269,7 +269,7 @@ export default function TransporteCasaTrabajoPage() {
         tipoVehiculo.isLoading ||
         sedes.isLoading ||
         anios.isLoading ||
-        transporteCasaTrabajoReport.isLoading
+        transporteCasaTrabajoReport.isLoading || meses.isLoading
     ) {
         return <SkeletonTable/>;
     }
@@ -279,7 +279,7 @@ export default function TransporteCasaTrabajoPage() {
         tipoVehiculo.isError ||
         sedes.isError ||
         anios.isError ||
-        transporteCasaTrabajoReport.isError
+        transporteCasaTrabajoReport.isError || meses.isError
     ) {
         return <div>Error al cargar los datos</div>;
     }

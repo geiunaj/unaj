@@ -1,7 +1,7 @@
 "use client";
 
 import React, {useCallback, useEffect, useState} from "react";
-import {Flame, Pen, Plus, Trash2} from "lucide-react";
+import {Flame, Link2, Pen, Plus, Trash2} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -46,6 +46,7 @@ import {FormTipoCombustibleFactor} from "@/components/tipoCombustible/components
 import {UpdateTipoCombustibleFactor} from "@/components/tipoCombustible/components/UpdateTipoCombustibleFactor";
 import usePageTitle from "@/lib/stores/titleStore.store";
 import {ChangeTitle} from "@/components/TitleUpdater";
+import Link from "next/link";
 
 export default function TipoCombustibleFactorPage() {
     ChangeTitle("Factor de Emisión de Combustible");
@@ -179,6 +180,9 @@ export default function TipoCombustibleFactorPage() {
                                 AÑO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                FUENTE
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 ACCIONES
                             </TableHead>
                         </TableRow>
@@ -212,8 +216,17 @@ export default function TipoCombustibleFactorPage() {
                                     <TableCell className="text-xs sm:text-sm">
                                         <Badge variant="outline"> {item.anio}</Badge>
                                     </TableCell>
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {item.fuente}
+                                    </TableCell>
                                     <TableCell className="text-xs sm:text-sm p-1">
                                         <div className="flex justify-center gap-4">
+                                            {item.link && <Link href={item.link} target="_blank">
+                                                <Button className="h-7 flex items-center gap-2" size="sm"
+                                                        variant="secondary">
+                                                    <Link2 className="h-3 w-3"/>
+                                                </Button>
+                                            </Link>}
                                             {/*UPDATE*/}
                                             <Button
                                                 className="h-7 w-7"

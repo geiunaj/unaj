@@ -97,6 +97,8 @@ model tipoCombustibleFactor {
   factorEmisionN2O          Float
   anio_id                   Int
   tipoCombustible_id        Int
+  fuente                    String?
+  link                      String?
   created_at                DateTime
   updated_at                DateTime
   anio                      Anio                        @relation(fields: [anio_id], references: [id])
