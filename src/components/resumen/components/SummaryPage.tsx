@@ -18,10 +18,13 @@ import {formatPeriod} from "@/lib/utils/core.function";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import GenerateReport from "@/lib/utils/generateReport";
 import ReportComponent from "@/components/ReportComponent";
-
+import {uploadFileAction} from "@/components/uploadFile/services/uploadFile.actions";
+import {UploadFileComponent} from "@/components/uploadFile/components/UploadFile";
 
 export default function SummaryPage() {
     ChangeTitle("Resumen");
+    const logo = "/img/GIEGEI.png";
+    const completePathOfLogo = process.env.NEXAUTH_URL + logo;
 
     const [selectedSede, setSelectedSede] = useState<string>("");
     const [selectedYearFrom, setSelectedYearFrom] = useState<string>(new Date().getFullYear().toString());
@@ -66,7 +69,7 @@ export default function SummaryPage() {
             {header: "EMISIONES DE CH4 [tCO2eq]", key: "ch4Emissions", width: 30,},
             {header: "EMISIONES DE N2O [tCO2eq]", key: "N2OEmissions", width: 30,},
             {header: "EMISIONES DE HFC [tCO2eq]", key: "hfcEmissions", width: 30,},
-            {header: "TOTAL DE EMISIONES", key: "totalEmissions", width: 30,},
+            {header: "TOTAL DE EMISIONES [tCO2eq]", key: "totalEmissions", width: 30,},
             {header: "CONTRIBUCIONES", key: "generalContributions", width: 30,},
         ];
         await setSelectedYearFrom(period.yearFrom ?? "");
@@ -99,6 +102,9 @@ export default function SummaryPage() {
                         className="grid grid-cols-2 grid-rows-1 w-full gap-2 sm:flex sm:justify-between justify-center">
                         <div
                             className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
+
+                            <UploadFileComponent/>
+
                             <SelectFilter
                                 list={sedes.data!}
                                 itemSelected={selectedSede}
@@ -143,7 +149,7 @@ export default function SummaryPage() {
                                     {header: "EMISIONES DE  CH4 [tCO2eq]", key: "ch4Emissions", width: 10,},
                                     {header: "EMISIONES DE  N2O [tCO2eq]", key: "N2OEmissions", width: 10,},
                                     {header: "EMISIONES DE  HFC [tCO2eq]", key: "hfcEmissions", width: 10,},
-                                    {header: "TOTAL DE  EMISIONES", key: "totalEmissions", width: 20,},
+                                    {header: "TOTAL DE  EMISIONES [tCO2eq]", key: "totalEmissions", width: 20,},
                                     {header: "CONTRIBUCIONES", key: "generalContributions", width: 10,},
                                 ]}
                                 rows={25}
@@ -159,6 +165,7 @@ export default function SummaryPage() {
                     </div>
                 </div>
             </div>
+
             <div className="w-full border rounded-lg overflow-hidden text-nowrap sm:text-wrap">
                 <Table>
                     <TableHeader>

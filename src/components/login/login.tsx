@@ -87,7 +87,7 @@ export default function LoginPage() {
                 <div className="flex items-center justify-center h-full max-w-screen-sm">
                     <div className="px-10 sm:p-8">
                         <div className="flex flex-col items-center justify-center">
-                            <Image width={224} height={64} src={logo} priority className="w-56 h-16 mb-14"
+                            <Image width={224} height={64} src={logo} priority className="w-auto h-32 mb-14"
                                    alt="Logo UNAJ"/>
                             <h2 className="text-2xl font-bold mb-2">
                                 Iniciar Sesión

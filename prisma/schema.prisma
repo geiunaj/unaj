@@ -199,6 +199,7 @@ model Combustible {
   mes             Mes?             @relation(fields: [mes_id], references: [id])
   anio            Anio?            @relation(fields: [anio_id], references: [id])
   sede            Sede?            @relation(fields: [sede_id], references: [id])
+  File            File[]
 
   @@map("combustible")
 }
@@ -1339,4 +1340,17 @@ model ExtintorCalculosDetail {
   tipoExtintor          TipoExtintor?          @relation(fields: [tipoExtintorId], references: [id])
 
   @@map("extintorcalculosdetail")
+}
+
+model File {
+  id           Int    @id @default(autoincrement())
+  downloadLink String
+  streamLink   String
+
+  combustibleId Int?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  combustible Combustible? @relation(fields: [combustibleId], references: [id])
 }
