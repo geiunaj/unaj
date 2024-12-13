@@ -15,6 +15,9 @@ import { changeLogo } from "../services/logo.actions";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { ChangeTitle } from "@/components/TitleUpdater";
+import { useQuery } from "@tanstack/react-query";
+import api from "../../../../config/api";
+import SkeletonTable from "@/components/Layout/skeletonTable";
 
 export function LogoPage() {
   ChangeTitle("Logos");
@@ -45,6 +48,38 @@ export function LogoPage() {
       });
     setLoadingLogoFile(false);
   };
+
+  const logo = useQuery({
+    queryKey: ["logoPage"],
+    queryFn: async (): Promise<FileResponse> => {
+      return (await api.get("/api/logo?type=logo")).data;
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const logoDark = useQuery({
+    queryKey: ["logoDarkPage"],
+    queryFn: async (): Promise<FileResponse> => {
+      return (await api.get("/api/logo?type=logoDark")).data;
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const fondo = useQuery({
+    queryKey: ["fondoPage"],
+    queryFn: async (): Promise<FileResponse> => {
+      return (await api.get("/api/logo?type=fondo")).data;
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const fondoDark = useQuery({
+    queryKey: ["fondoDarkPage"],
+    queryFn: async (): Promise<FileResponse> => {
+      return (await api.get("/api/logo?type=fondoDark")).data;
+    },
+    refetchOnWindowFocus: false,
+  });
 
   const handleLogoDark = async () => {
     setLoadingLogoDarkFile(true);
@@ -91,12 +126,21 @@ export function LogoPage() {
     window.location.reload();
   };
 
+  if (
+    logo.isLoading ||
+    logoDark.isLoading ||
+    fondo.isLoading ||
+    fondoDark.isLoading
+  ) {
+    return <SkeletonTable />;
+  }
+
   return (
     <div className="grid grid-cols-2 w-full items-center gap-6 max-w-4xl">
       <Card className="grid w-full items-center gap-4 p-6 bg-muted/50">
         {!logoFile ? (
           <img
-            src="/img/logo.png"
+            src={logo?.data?.file?.streamLink}
             width={500}
             height={500}
             alt="logo"
@@ -146,7 +190,7 @@ export function LogoPage() {
       <Card className="grid w-full items-center gap-4 p-6 bg-muted/50">
         {!logoDarkFile ? (
           <img
-            src="/img/logoDark.png"
+            src={logoDark?.data?.file?.streamLink}
             width={500}
             height={500}
             alt="logo"
@@ -196,7 +240,7 @@ export function LogoPage() {
       <Card className="grid w-full items-center gap-4 p-6 bg-muted/50">
         {!fondoFile ? (
           <img
-            src="/img/fondo.png"
+            src={fondo?.data?.file?.streamLink}
             width={500}
             height={500}
             alt="logo"
@@ -247,7 +291,7 @@ export function LogoPage() {
       <Card className="grid w-full items-center gap-4 p-6 bg-muted/50">
         {!fondoDarkFile ? (
           <img
-            src="/img/fondoDark.png"
+            src={fondoDark?.data?.file?.streamLink}
             width={500}
             height={500}
             alt="logo"

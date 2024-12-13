@@ -1363,11 +1363,12 @@ model ExtintorCalculosDetail {
 }
 
 model File {
-  id           Int    @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   name         String
   downloadLink String
   streamLink   String
   fileId       String
+  type         String?
 
   combustibleId           Int?
   extintorId              Int?
@@ -1397,4 +1398,6 @@ model File {
   consumoAgua           ConsumoAgua?         @relation(fields: [consumoAguaId], references: [id])
   activo                Activo?              @relation(fields: [activoId], references: [id])
   consumible            Consumible?          @relation(fields: [consumibleId], references: [id])
+
+  @@unique([type])
 }

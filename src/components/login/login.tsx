@@ -19,6 +19,9 @@ import Image from "next/image";
 import { errorToast } from "@/lib/utils/core.function";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import api from "../../../config/api";
+import LayoutSkeleton from "../Layout/layoutSkeleton";
 
 export default function LoginPage() {
   const { theme } = useTheme();
@@ -34,10 +37,6 @@ export default function LoginPage() {
     }
   }, [theme]);
   // CONSTANTES DE IMAGNES DE FONDO Y LOGO
-  const fondo =
-    resolvedTheme === "dark" ? "/img/fondo.png" : "/img/fondo.png";
-  const logo =
-    resolvedTheme === "dark" ? "/img/logoDark.png" : "/img/logo.png";
   const navigation = useRouter();
 
   // SCHEMA DE VALIDACIÓN DE FORMULAR
@@ -56,6 +55,47 @@ export default function LoginPage() {
       password: "",
     },
   });
+
+  const logo = useQuery({
+    queryKey: ["logoPage"],
+    queryFn: async (): Promise<FileResponse> => {
+      return (await api.get("/api/logo?type=logo")).data;
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const logoDark = useQuery({
+    queryKey: ["logoDarkPage"],
+    queryFn: async (): Promise<FileResponse> => {
+      return (await api.get("/api/logo?type=logoDark")).data;
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const fondo = useQuery({
+    queryKey: ["fondoPage"],
+    queryFn: async (): Promise<FileResponse> => {
+      return (await api.get("/api/logo?type=fondo")).data;
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const fondoDark = useQuery({
+    queryKey: ["fondoDarkPage"],
+    queryFn: async (): Promise<FileResponse> => {
+      return (await api.get("/api/logo?type=fondoDark")).data;
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const fondoResult =
+    resolvedTheme === "dark"
+      ? fondoDark?.data?.file?.streamLink
+      : fondo?.data?.file?.streamLink;
+  const logoResult =
+    resolvedTheme === "dark"
+      ? logoDark?.data?.file?.streamLink
+      : logo?.data?.file?.streamLink;
 
   // FUNCIÓN DE INICIO DE SESIÓN
   const submit = async (values: z.infer<typeof authSchema>) => {
@@ -76,11 +116,20 @@ export default function LoginPage() {
     }
   };
 
+  if (
+    logo.isLoading ||
+    logoDark.isLoading ||
+    fondo.isLoading ||
+    fondoDark.isLoading
+  ) {
+    return <LayoutSkeleton />;
+  }
+
   return (
     <div className="flex bg-muted dark:bg-transparent">
       <div className="w-0 sm:w-2/3">
         <img
-          src={fondo}
+          src={fondoResult}
           width={2691}
           height={1024}
           className="w-full h-screen object-cover"
@@ -94,7 +143,7 @@ export default function LoginPage() {
               <img
                 width={224}
                 height={64}
-                src={logo}
+                src={logoResult}
                 className="w-auto h-24 mb-14"
                 alt="Logo UNAJ"
               />

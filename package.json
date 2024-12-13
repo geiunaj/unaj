@@ -37,6 +37,7 @@
     "@tanstack/react-query": "^5.51.23",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
+    "@vercel/blob": "^0.27.0",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
