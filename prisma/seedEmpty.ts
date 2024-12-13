@@ -2078,6 +2078,7 @@ async function consumoFertilizantes() {
     console.log("Consumo de fertilizantes creado");
 }
 
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function main() {
     // ------- 0
@@ -2089,41 +2090,58 @@ async function main() {
     AllYears = await prisma.anio.findMany();
     AllSedes = await prisma.sede.findMany();
     await areas();
+    await wait(60000);
     // ------- 6
     await tipoCombustible();
     await fertilizantes();
+    await wait(60000);
     // ------- 6
     await tipoPapel();
     await factorTipoPapel();
     await factorSEIN();
+    await wait(60000);
     await factorAgua();
     await factorTaxi();
     await factorAereo();
+    await wait(60000);
     // ------- 6
     await transporteAereo();
     await factorTerrestre();
+    await wait(60000);
     await transporteTerrestre();
+    await wait(60000);
     // ------- 3
     await grupoConsumible();
+    await wait(60000);
     await categoriaConsumible();
+    await wait(60000);
     await procesoConsumible();
+    await wait(60000);
     // ------- 3
     await descripcionConsumible();
+    await wait(60000);
     await tipoConsumible();
+    await wait(60000);
     // ------- 3
     await grupoActivo();
+    await wait(60000);
     // ------- 3
     await taxiConsumo();
+    await wait(60000);
     // ------- 1
     await casaTrabajoConsumo();
+    await wait(60000);
     // ------- 3
     await extintor();
+    await wait(60000);
     // ------- 1
     await consumoEnergia();
     await consumibles();
+    await wait(60000);
     await activos();
     await consumoPapel();
     await consumoAgua();
+    await wait(60000);
     await consumoFertilizantes();
     // ------- 4
 
