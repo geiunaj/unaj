@@ -102,9 +102,6 @@ export default function SummaryPage() {
                         className="grid grid-cols-2 grid-rows-1 w-full gap-2 sm:flex sm:justify-between justify-center">
                         <div
                             className="flex flex-col gap-1 w-full font-normal sm:flex-row sm:gap-2 sm:justify-start sm:items-center">
-
-                            <UploadFileComponent/>
-
                             <SelectFilter
                                 list={sedes.data!}
                                 itemSelected={selectedSede}

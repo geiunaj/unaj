@@ -1344,8 +1344,10 @@ model ExtintorCalculosDetail {
 
 model File {
   id           Int    @id @default(autoincrement())
+  name         String
   downloadLink String
   streamLink   String
+  fileId       String
 
   combustibleId Int?
 

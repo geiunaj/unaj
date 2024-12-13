@@ -1,12 +1,16 @@
 'use server';
 import {google} from "googleapis";
-import path from "path";
 import fs from "fs";
 import * as fs2 from "node:fs/promises";
 
-export async function uploadFileToDrive(file: File): Promise<string> {
+export interface ResponseUploadFile {
+    webViewLink: string,
+    webContentLink: string,
+    fileId: string,
+}
+
+export async function uploadFileToDrive(file: File): Promise<ResponseUploadFile> {
     try {
-        // Configuración de autenticación de Google Drive
         const oauth2Client = new google.auth.OAuth2(
             process.env.CLIENT_ID,
             process.env.CLIENT_SECRET,
@@ -35,13 +39,51 @@ export async function uploadFileToDrive(file: File): Promise<string> {
             },
         });
 
-        console.log("File uploaded successfully:", response.data);
+        // Generar la URL pública del archivo
+        await drive.permissions.create({
+            fileId: response.data.id ?? undefined,
+            requestBody: {
+                role: 'reader',
+                type: 'anyone',
+            },
+        });
+        const result = await drive.files.get({
+            fileId: response.data.id ?? '',
+            fields: 'webViewLink, webContentLink',
+        });
 
         // Eliminar el archivo temporal
         await fs2.unlink(`./public/tmp/${file.name}`);
-        return `File uploaded successfully: ${response.data.id}`;
+        return {
+            webViewLink: result.data.webViewLink ?? '',
+            webContentLink: result.data.webContentLink ?? '',
+            fileId: response.data.id ?? '',
+        };
     } catch (error) {
         console.error("Error uploading file:", error);
         throw new Error("Error uploading file");
+    }
+}
+
+export async function deleteFileFromDrive(fileId: string) {
+    try {
+        const oauth2Client = new google.auth.OAuth2(
+            process.env.CLIENT_ID,
+            process.env.CLIENT_SECRET,
+            process.env.REDIRECT_URI
+        );
+        oauth2Client.setCredentials({refresh_token: process.env.REFRESH_TOKEN});
+
+        const drive = google.drive({
+            version: "v3",
+            auth: oauth2Client,
+        });
+
+        await drive.files.delete({
+            fileId: fileId,
+        });
+    } catch (error) {
+        console.error("Error deleting file:", error);
+        throw new Error("Error deleting file");
     }
 }

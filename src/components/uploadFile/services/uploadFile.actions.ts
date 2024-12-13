@@ -2,7 +2,9 @@ import api from "../../../../config/api";
 import {AxiosRequestConfig} from "axios";
 
 export interface UploadFileRequest {
-    files?: File[];
+    files?: File[],
+    type: string,
+    id: number,
 }
 
 export async function uploadFileAction(body: UploadFileRequest): Promise<any> {
@@ -12,4 +14,8 @@ export async function uploadFileAction(body: UploadFileRequest): Promise<any> {
         },
     }
     return await api.post("/api/upload", body, config);
+}
+
+export async function deleteFileFromDrive(fileId: string) {
+    return await api.delete(`/api/upload/${fileId}`);
 }

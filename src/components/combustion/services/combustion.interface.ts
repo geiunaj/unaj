@@ -26,6 +26,7 @@ export interface CombustionCollectionItem {
     unidad: string;
     sede: string;
     rn: number;
+    File: any;
 }
 
 export interface Meta {

@@ -55,6 +55,7 @@ import ReportComponent from "@/components/ReportComponent";
 import {ReportRequest} from "@/lib/interfaces/globals";
 import usePageTitle from "@/lib/stores/titleStore.store";
 import {ChangeTitle} from "@/components/TitleUpdater";
+import {UploadFileComponent} from "@/components/uploadFile/components/UploadFile";
 
 export default function CombustiblePage({combustionType}: CombustionProps) {
     const {tipo} = combustionType;
@@ -118,6 +119,10 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
         setIdForDelete(id);
         setIsDeleteDialogOpen(true);
     };
+
+    const handleCloseFile = useCallback(async () => {
+        await combustible.refetch();
+    }, [combustible]);
 
     const handleTipoCombustibleChange = useCallback(async (value: string) => {
         await setPage(1);
@@ -388,6 +393,14 @@ export default function CombustiblePage({combustionType}: CombustionProps) {
 
                                 <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">
+                                        {/*FILES*/}
+                                        <UploadFileComponent
+                                            type={tipo === "estacionaria" ? "combustibleEstacionaria" : "combustibleMovil"}
+                                            id={item.id}
+                                            handleClose={handleCloseFile}
+                                            filesUploaded={item.File}
+                                        />
+
                                         {/*UPDATE*/}
                                         <Button
                                             className="h-7 w-7"
