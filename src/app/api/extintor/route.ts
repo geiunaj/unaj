@@ -75,6 +75,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 anio: true,
                 sede: true,
                 tipoExtintor: true,
+                File: true,
             },
             orderBy: all
                 ? [{anio_mes: 'asc'}]
@@ -131,6 +132,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 anio: true,
                 sede: true,
                 tipoExtintor: true,
+                File: true,
             }
         });
 

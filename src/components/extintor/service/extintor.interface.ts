@@ -21,6 +21,7 @@ export interface ExtintorCollectionItem {
     mes_id: number;
     tipoExtintorId: number;
     tipoExtintor: string;
+    File: any;
 }
 
 export interface ExtintorCollection {

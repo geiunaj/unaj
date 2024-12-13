@@ -59,6 +59,7 @@ import ButtonCalculate from "@/components/ButtonCalculate";
 import ReportComponent from "@/components/ReportComponent";
 import ExportPdfReport from "@/lib/utils/ExportPdfReport";
 import {ChangeTitle} from "@/components/TitleUpdater";
+import {UploadFileComponent} from "@/components/uploadFile/components/UploadFile";
 
 export default function ExtintorPage() {
     ChangeTitle("Extintor");
@@ -101,6 +102,10 @@ export default function ExtintorPage() {
     });
 
     // HANDLES
+    const handleCloseFile = useCallback(async () => {
+        await extintorQuery.refetch();
+    }, [extintorQuery]);
+
     const handleSedeChange = useCallback(
         async (value: string) => {
             await setSelectedSede(value);
@@ -335,6 +340,14 @@ export default function ExtintorPage() {
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm p-1">
                                         <div className="flex justify-center gap-4">
+                                            {/*FILES*/}
+                                            <UploadFileComponent
+                                                type="extintor"
+                                                id={item.id}
+                                                handleClose={handleCloseFile}
+                                                filesUploaded={item.File}
+                                            />
+
                                             {/*UPDATE*/}
                                             <Button
                                                 className="h-7 w-7"

@@ -23,6 +23,7 @@ export async function GET(
                 sede: true,
                 mes: true,
                 tipoExtintor: true,
+                File: true,
             },
         });
 
@@ -70,6 +71,7 @@ export async function PUT(
                 sede: true,
                 mes: true,
                 tipoExtintor: true,
+                File: true,
             },
         });
 

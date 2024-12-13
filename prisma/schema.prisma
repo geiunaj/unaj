@@ -263,6 +263,7 @@ model Fertilizante {
   ficha            Documento?        @relation(fields: [ficha_id], references: [id])
   sede             Sede?             @relation(fields: [sede_id], references: [id])
   anio             Anio?             @relation(fields: [anio_id], references: [id])
+  File             File[]
 
   @@map("fertilizante")
 }
@@ -318,6 +319,7 @@ model ConsumoPapel {
   anio      Anio      @relation(fields: [anio_id], references: [id])
   mes       Mes       @relation(fields: [mes_id], references: [id])
   sede      Sede?     @relation(fields: [sede_id], references: [id])
+  File      File[]
 
   @@map("consumopapel")
 }
@@ -488,9 +490,10 @@ model consumoEnergia {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  mes  Mes?  @relation(fields: [mes_id], references: [id])
-  anio Anio? @relation(fields: [anio_id], references: [id])
-  area area? @relation(fields: [areaId], references: [id])
+  mes  Mes?   @relation(fields: [mes_id], references: [id])
+  anio Anio?  @relation(fields: [anio_id], references: [id])
+  area area?  @relation(fields: [areaId], references: [id])
+  File File[]
 
   @@map("consumoenergia")
 }
@@ -600,9 +603,10 @@ model Taxi {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  mes  Mes?  @relation(fields: [mes_id], references: [id])
-  anio Anio? @relation(fields: [anio_id], references: [id])
-  sede Sede? @relation(fields: [sede_id], references: [id])
+  mes  Mes?   @relation(fields: [mes_id], references: [id])
+  anio Anio?  @relation(fields: [anio_id], references: [id])
+  sede Sede?  @relation(fields: [sede_id], references: [id])
+  File File[]
 
   @@map("taxi")
 }
@@ -655,9 +659,10 @@ model ConsumoAgua {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  anio Anio  @relation(fields: [anio_id], references: [id])
-  mes  Mes   @relation(fields: [mes_id], references: [id])
-  area area? @relation(fields: [area_id], references: [id])
+  anio Anio   @relation(fields: [anio_id], references: [id])
+  mes  Mes    @relation(fields: [mes_id], references: [id])
+  area area?  @relation(fields: [area_id], references: [id])
+  File File[]
 
   @@map("consumoagua")
 }
@@ -831,6 +836,7 @@ model Consumible {
   sede           Sede?           @relation(fields: [sedeId], references: [id])
   mes            Mes?            @relation(fields: [mesId], references: [id])
   anio           Anio?           @relation(fields: [anioId], references: [id])
+  File           File[]
 
   @@map("consumible")
 }
@@ -911,9 +917,10 @@ model TransporteAereo {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  mes  Mes?  @relation(fields: [mes_id], references: [id])
-  anio Anio? @relation(fields: [anio_id], references: [id])
-  sede Sede? @relation(fields: [sede_id], references: [id])
+  mes  Mes?   @relation(fields: [mes_id], references: [id])
+  anio Anio?  @relation(fields: [anio_id], references: [id])
+  sede Sede?  @relation(fields: [sede_id], references: [id])
+  File File[]
 
   @@map("transporteaereo")
 }
@@ -990,9 +997,10 @@ model TransporteTerrestre {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  mes  Mes?  @relation(fields: [mes_id], references: [id])
-  anio Anio? @relation(fields: [anio_id], references: [id])
-  sede Sede? @relation(fields: [sede_id], references: [id])
+  mes  Mes?   @relation(fields: [mes_id], references: [id])
+  anio Anio?  @relation(fields: [anio_id], references: [id])
+  sede Sede?  @relation(fields: [sede_id], references: [id])
+  File File[]
 
   @@map("transporteterrestre")
 }
@@ -1084,6 +1092,7 @@ model CasaTrabajo {
   sede         Sede?         @relation(fields: [sedeId], references: [id])
   anio         Anio?         @relation(fields: [anioId], references: [id])
   mes          Mes?          @relation(fields: [mesId], references: [id])
+  File         File[]
 
   @@map("casatrabajo")
 }
@@ -1208,6 +1217,7 @@ model Activo {
   sede       Sede?       @relation(fields: [sedeId], references: [id])
   mes        Mes?        @relation(fields: [mesId], references: [id])
   anio       Anio?       @relation(fields: [anioId], references: [id])
+  File       File[]
 
   @@map("activo")
 }
@@ -1299,6 +1309,7 @@ model Extintor {
   anio         Anio?         @relation(fields: [anio_id], references: [id])
   mes          Mes?          @relation(fields: [mes_id], references: [id])
   tipoExtintor TipoExtintor? @relation(fields: [tipoExtintorId], references: [id])
+  File         File[]
 
   @@map("extintor")
 }
@@ -1349,10 +1360,32 @@ model File {
   streamLink   String
   fileId       String
 
-  combustibleId Int?
+  combustibleId           Int?
+  extintorId              Int?
+  fertilizanteId          Int?
+  consumoEnergiaId        Int?
+  transporteAereoId       Int?
+  transporteTerrestreId   Int?
+  taxiId                  Int?
+  transporteCasaTrabajoId Int?
+  consumoPapelId          Int?
+  consumoAguaId           Int?
+  activoId                Int?
+  consumibleId            Int?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  combustible Combustible? @relation(fields: [combustibleId], references: [id])
+  combustible           Combustible?         @relation(fields: [combustibleId], references: [id])
+  extintor              Extintor?            @relation(fields: [extintorId], references: [id])
+  fertilizante          Fertilizante?        @relation(fields: [fertilizanteId], references: [id])
+  consumoEnergia        consumoEnergia?      @relation(fields: [consumoEnergiaId], references: [id])
+  transporteAereo       TransporteAereo?     @relation(fields: [transporteAereoId], references: [id])
+  transporteTerrestre   TransporteTerrestre? @relation(fields: [transporteTerrestreId], references: [id])
+  taxi                  Taxi?                @relation(fields: [taxiId], references: [id])
+  transporteCasaTrabajo CasaTrabajo?         @relation(fields: [transporteCasaTrabajoId], references: [id])
+  consumoPapel          ConsumoPapel?        @relation(fields: [consumoPapelId], references: [id])
+  consumoAgua           ConsumoAgua?         @relation(fields: [consumoAguaId], references: [id])
+  activo                Activo?              @relation(fields: [activoId], references: [id])
+  consumible            Consumible?          @relation(fields: [consumibleId], references: [id])
 }

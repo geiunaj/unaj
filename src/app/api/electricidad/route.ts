@@ -84,6 +84,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                         sede: true,
                     },
                 },
+                File: true,
             },
             orderBy: all
                 ? [{area: {sede_id: 'asc'}}, {areaId: 'asc'}, {anio_mes: 'asc'}]
@@ -145,6 +146,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 },
                 mes: true,
                 anio: true,
+                File: true,
             },
         });
 

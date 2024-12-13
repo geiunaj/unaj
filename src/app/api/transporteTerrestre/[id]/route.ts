@@ -22,6 +22,7 @@ export async function GET(
                 anio: true,
                 sede: true,
                 mes: true,
+                File: true,
             },
         });
 
@@ -72,6 +73,7 @@ export async function PUT(
                 anio: true,
                 sede: true,
                 mes: true,
+                File: true,
             },
         });
 

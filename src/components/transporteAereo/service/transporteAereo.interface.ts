@@ -32,6 +32,7 @@ export interface TransporteAereoCollectionItem {
     anio_id: number;
     sede_id: number;
     mes_id: number;
+    File: any;
 }
 
 export interface TransporteAereoCollection {
