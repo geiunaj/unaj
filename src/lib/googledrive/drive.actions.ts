@@ -25,7 +25,7 @@ export async function uploadFileToDrive(file: File): Promise<ResponseUploadFile>
 
         const arrayBuffer = await file.arrayBuffer();
         const buffer = new Uint8Array(arrayBuffer);
-        await fs2.writeFile(`./public/tmp/${file.name}`, buffer);
+        await fs2.writeFile(`./tmp/${file.name}`, buffer);
 
         // Subir el archivo a Google Drive
         const response = await drive.files.create({
@@ -35,7 +35,7 @@ export async function uploadFileToDrive(file: File): Promise<ResponseUploadFile>
             },
             media: {
                 mimeType: file.type,
-                body: fs.createReadStream(`./public/tmp/${file.name}`),
+                body: fs.createReadStream(`./tmp/${file.name}`),
             },
         });
 
@@ -53,7 +53,7 @@ export async function uploadFileToDrive(file: File): Promise<ResponseUploadFile>
         });
 
         // Eliminar el archivo temporal
-        await fs2.unlink(`./public/tmp/${file.name}`);
+        await fs2.unlink(`./tmp/${file.name}`);
         return {
             webViewLink: result.data.webViewLink ?? '',
             webContentLink: result.data.webContentLink ?? '',
