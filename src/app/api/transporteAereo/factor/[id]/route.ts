@@ -47,6 +47,8 @@ export async function PUT(
             factor1600_3700: body.factor1600_3700,
             factor3700: body.factor3700,
             anio_id: body.anioId,
+            fuente: body.fuente,
+            link: body.link,
         };
 
         const TransporteAereoFactor = await prisma.factorEmisionTransporteAereo.update({
