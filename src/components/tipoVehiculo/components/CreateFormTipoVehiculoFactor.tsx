@@ -39,7 +39,7 @@ const TipoVehiculoFactor = z.object({
         z.number().min(0, "Ingresa un valor mayor a 0")),
     tipoVehiculoId: z.string().min(1, "Seleccione un tipo de activo"),
     anioId: z.string().min(1, "Seleccione un año"),
-    fuente: z.string().optional(),
+    fuente: z.string().min(1, "Ingrese una fuente"),
     link: z.string().optional(),
 });
 

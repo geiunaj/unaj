@@ -42,7 +42,7 @@ const TipoActivo = z.object({
     nombre: z.string().min(1, requiredMessage("nombre")),
     categoriaId: z.string().min(1, requiredMessage("categoriaId")),
     peso: z.preprocess(parseNumber, z.number({message: "Ingrese un número"}).min(0, "Ingresa un valor mayor a 0")),
-    fuente: z.string().optional(),
+    fuente: z.string().min(1, "Ingrese una fuente"),
     costoUnitario: z.preprocess(parseNumber, z.number({message: "Ingrese un número"}).min(0, "Ingresa un valor mayor a 0")).optional(),
 });
 

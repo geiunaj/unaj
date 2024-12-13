@@ -234,9 +234,11 @@ model TipoFertilizante {
 }
 
 model FactorEmisionFertilizante {
-  id      Int   @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   valor   Float
   anio_id Int
+  fuente  String?
+  link    String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -286,10 +288,12 @@ model TipoPapel {
 }
 
 model FactorTipoPapel {
-  id          Int   @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   factor      Float
   tipoPapelId Int
   anioId      Int
+  fuente      String?
+  link        String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -426,13 +430,6 @@ model combustibleCalculosDetail {
   @@map("combustiblecalculosdetail")
 }
 
-// // A1_5 - FERTILIZANTES
-// model factorEmision {
-//   id                   Int                    @id @default(autoincrement())
-//   valor                Float          s
-//   fertilizanteCalculos fertilizanteCalculos[]
-// }
-
 model fertilizanteCalculos {
   id                     Int    @id @default(autoincrement())
   tipofertilizanteId     Int
@@ -567,6 +564,8 @@ model factorConversionSEIN {
   factorCO2  Float
   factorCH4  Float
   factorN2O  Float
+  fuente     String?
+  link       String?
   anioId     Int      @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -578,9 +577,11 @@ model factorConversionSEIN {
 }
 
 model FactorEmisionTaxi {
-  id      Int   @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   factor  Float
   anio_id Int
+  fuente  String?
+  link    String?
 
   anio               Anio                 @relation(fields: [anio_id], references: [id])
   TaxiCalculosDetail TaxiCalculosDetail[]
@@ -668,9 +669,11 @@ model ConsumoAgua {
 }
 
 model FactorEmisionAgua {
-  id      Int   @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   factor  Float
   anio_id Int
+  fuente  String?
+  link    String?
 
   anio                      Anio                        @relation(fields: [anio_id], references: [id])
   ConsumoAguaCalculosDetail ConsumoAguaCalculosDetail[]
@@ -882,11 +885,13 @@ model ConsumibleCalculosDetail {
 
 // TRANSPORTE AEREO
 model FactorEmisionTransporteAereo {
-  id              Int   @id @default(autoincrement())
+  id              Int     @id @default(autoincrement())
   factor1600      Float
   factor1600_3700 Float
   factor3700      Float
   anio_id         Int
+  fuente          String?
+  link            String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -964,9 +969,11 @@ model TransporteAereoCalculosDetail {
 
 // TRANSPORTE TERRESTRE
 model FactorEmisionTransporteTerrestre {
-  id      Int   @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   factor  Float
   anio_id Int
+  fuente  String?
+  link    String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -1277,10 +1284,12 @@ model TipoExtintor {
 }
 
 model FactorEmisionExtintor {
-  id             Int   @id @default(autoincrement())
+  id             Int     @id @default(autoincrement())
   factor         Float
   tipoExtintorId Int
   anio_id        Int
+  fuente         String?
+  link           String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
