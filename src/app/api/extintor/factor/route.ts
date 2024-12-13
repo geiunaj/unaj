@@ -52,6 +52,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
                 factor: body.factor,
                 anio_id: body.anioId,
                 tipoExtintorId: body.tipoExtintorId,
+                fuente: body.fuente,
+                link: body.link,
                 created_at: new Date(),
                 updated_at: new Date(),
             },
