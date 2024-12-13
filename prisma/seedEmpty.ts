@@ -24,7 +24,7 @@ async function typeUsers() {
     }
     console.log("Type User created");
 
-    for (let i = 1; i <= 43; i++) {
+    for (let i = 1; i <= 44; i++) {
         if (i !== 21 && i !== 39) {
             await prisma.access.create({
                 data: {

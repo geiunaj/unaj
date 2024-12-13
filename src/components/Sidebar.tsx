@@ -34,7 +34,7 @@ export default function Sidebar() {
         }
     }, [theme]);
 
-    const logo = resolvedTheme === "dark" ? "/img/GIEGEI1.png" : "/img/GIEGEI.png";
+    const logo = resolvedTheme === "dark" ? "/img/logoDark.png" : "/img/logo.png";
 
     useEffect(() => {
         const path = "/" + pathname.split("/")[1];
@@ -91,12 +91,12 @@ export default function Sidebar() {
                     {/*        <p>Huella Ecológica</p>*/}
                     {/*    </div>*/}
                     {/*</div>*/}
-                    <Image
+                    <img
                         src={logo}
                         alt="Logo UNAJ"
                         className="h-12 w-auto md:h-9"
-                        width={1000}
-                        height={1000}
+                        width={500}
+                        height={500}
                     />
                 </Link>
             </div>

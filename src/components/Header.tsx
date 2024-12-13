@@ -121,12 +121,12 @@ export default function Header() {
                                 {/*        <p>Huella Ecológica</p>*/}
                                 {/*    </div>*/}
                                 {/*</div>*/}
-                                <Image
+                                <img
                                     src={logo}
                                     alt="Logo UNAJ"
                                     className="h-12 md:h-9"
-                                    width={64}
-                                    height={64}
+                                    width={500}
+                                    height={500}
                                 />
 
                             </Link>
