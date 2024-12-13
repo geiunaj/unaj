@@ -45,6 +45,8 @@ export async function PUT(
         const TransporteTerrestreFactorRequest = {
             factor: body.factor,
             anio_id: body.anioId,
+            fuente: body.fuente,
+            link: body.link,
         };
 
         const TransporteTerrestreFactor = await prisma.factorEmisionTransporteTerrestre.update({
