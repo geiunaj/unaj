@@ -121,7 +121,7 @@ export default function TipoCombustibleFactorPage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-center mb-6">
                 <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
                     <div
-                        className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
+                        className="flex gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
                         <SelectFilter
                             list={tiposCombustible.data!}
                             itemSelected={selectTipoCombustible}
