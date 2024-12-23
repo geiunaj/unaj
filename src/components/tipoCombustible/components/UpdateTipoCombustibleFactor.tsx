@@ -96,6 +96,8 @@ export function UpdateTipoCombustibleFactor({onClose, id}: UpdateTipoCombustible
                 fuente: tipoCombustibleFactorData.fuente,
                 link: tipoCombustibleFactorData.link,
             });
+
+            setTipoCombustibleSelected(tipoCombustibles.data!.find(tipo => tipo.id === tipoCombustibleFactorData.tipoCombustible_id) || null);
         }
     }, [tipoCombustibleFactor.data, id]);
 

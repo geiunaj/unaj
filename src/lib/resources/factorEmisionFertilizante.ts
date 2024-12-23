@@ -1,6 +1,7 @@
 export function formatFactorEmisionFertilizante(factorEmisionFertilizante: any) {
     const {
         anio,
+        tipoFertilizante,
         ...rest
     } = factorEmisionFertilizante;
     return {
@@ -8,6 +9,7 @@ export function formatFactorEmisionFertilizante(factorEmisionFertilizante: any) 
         anio: anio.nombre,
         created_at: undefined,
         updated_at: undefined,
-
+        tipoFertilizante: tipoFertilizante.nombre,
+        clase: tipoFertilizante.clase,
     };
 }

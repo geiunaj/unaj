@@ -3,6 +3,7 @@ import {getFactorEmisionFertilizantePage} from "@/components/tipoFertilizante/se
 
 
 export interface FactorEmisionFertilizanteIndex {
+    tipoFertilizanteId?: string;
     anioId?: string;
     page?: number;
     perPage?: number;
@@ -10,6 +11,7 @@ export interface FactorEmisionFertilizanteIndex {
 
 export const useFertilizanteFactor = (
     {
+        tipoFertilizanteId,
         anioId,
         page,
         perPage,
@@ -18,6 +20,7 @@ export const useFertilizanteFactor = (
     return useQuery({
         queryKey: ['factorEmisionFertilizante'],
         queryFn: () => getFactorEmisionFertilizantePage({
+            tipoFertilizanteId,
             anioId,
             page,
             perPage,

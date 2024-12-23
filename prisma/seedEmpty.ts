@@ -25,7 +25,7 @@ async function typeUsers() {
     console.log("Type User created");
 
     for (let i = 1; i <= 44; i++) {
-        if (i !== 21 && i !== 39) {
+        if (i !== 39) {
             await prisma.access.create({
                 data: {
                     menu: i,
@@ -372,32 +372,30 @@ async function fertilizantes() {
         },
     ];
 
-    for (const anio of AllYears) {
-        await prisma.factorEmisionFertilizante.create({
-            data: {
-                valor: 0.0125,
-                anio_id: anio.id,
-                created_at: new Date(),
-                updated_at: new Date(),
-            },
-        });
-    }
-    console.log("Fertilizer emission factors created");
-
     for (const tipo of tiposFertilizantes) {
-        await prisma.tipoFertilizante.create({
+        const tipoFertilizante = await prisma.tipoFertilizante.create({
             data: {
                 clase: tipo.clase,
                 nombre: tipo.nombre,
                 porcentajeNitrogeno: tipo.porcentajeNitrogeno,
                 unidad: tipo.unidad,
+                created_at: new Date(),
+                updated_at: new Date(),
+            },
+        });
 
+        await prisma.factorEmisionFertilizante.create({
+            data: {
+                tipoFertilizanteId: tipoFertilizante.id,
+                valor: 0.0125,
+                anio_id: 1,
                 created_at: new Date(),
                 updated_at: new Date(),
             },
         });
     }
     console.log("Fertilizer types created");
+    console.log("Fertilizer emission factors created");
 }
 
 // 1
@@ -2090,58 +2088,58 @@ async function main() {
     AllYears = await prisma.anio.findMany();
     AllSedes = await prisma.sede.findMany();
     await areas();
-    // await wait(60000);
+    await wait(60000);
     // ------- 6
     await tipoCombustible();
     await fertilizantes();
-    // await wait(60000);
+    await wait(60000);
     // ------- 6
     await tipoPapel();
     await factorTipoPapel();
     await factorSEIN();
-    // await wait(60000);
+    await wait(60000);
     await factorAgua();
     await factorTaxi();
     await factorAereo();
-    // await wait(60000);
+    await wait(60000);
     // ------- 6
     await transporteAereo();
     await factorTerrestre();
-    // await wait(60000);
+    await wait(60000);
     await transporteTerrestre();
-    // await wait(60000);
+    await wait(60000);
     // ------- 3
     await grupoConsumible();
-    // await wait(60000);
+    await wait(60000);
     await categoriaConsumible();
-    // await wait(60000);
+    await wait(60000);
     await procesoConsumible();
-    // await wait(60000);
+    await wait(60000);
     // ------- 3
     await descripcionConsumible();
-    // await wait(60000);
+    await wait(60000);
     await tipoConsumible();
-    // await wait(60000);
+    await wait(60000);
     // ------- 3
     await grupoActivo();
-    // await wait(60000);
+    await wait(60000);
     // ------- 3
     await taxiConsumo();
-    // await wait(60000);
+    await wait(60000);
     // ------- 1
     await casaTrabajoConsumo();
-    // await wait(60000);
+    await wait(60000);
     // ------- 3
     await extintor();
-    // await wait(60000);
+    await wait(60000);
     // ------- 1
     await consumoEnergia();
     await consumibles();
-    // await wait(60000);
+    await wait(60000);
     await activos();
     await consumoPapel();
     await consumoAgua();
-    // await wait(60000);
+    await wait(60000);
     await consumoFertilizantes();
     // ------- 4
 

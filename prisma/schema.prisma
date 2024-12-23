@@ -229,20 +229,23 @@ model TipoFertilizante {
   fertilizantes              Fertilizante[]
   fertilizanteCalculos       fertilizanteCalculos[]
   fertilizanteCalculosDetail fertilizanteCalculosDetail[]
+  FactorEmisionFertilizante  FactorEmisionFertilizante[]
 
   @@map("tipofertilizante")
 }
 
 model FactorEmisionFertilizante {
-  id      Int     @id @default(autoincrement())
-  valor   Float
-  anio_id Int
-  fuente  String?
-  link    String?
+  id                 Int     @id @default(autoincrement())
+  valor              Float
+  anio_id            Int
+  fuente             String?
+  link               String?
+  tipoFertilizanteId Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  tipoFertilizante           TipoFertilizante             @relation(fields: [tipoFertilizanteId], references: [id])
   anio                       Anio                         @relation(fields: [anio_id], references: [id])
   fertilizanteCalculosDetail fertilizanteCalculosDetail[]
 

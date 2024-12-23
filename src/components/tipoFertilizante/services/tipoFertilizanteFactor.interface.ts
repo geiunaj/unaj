@@ -7,9 +7,11 @@ export interface FertilizanteFactor {
 }
 
 export interface FertilizanteFactorRequest {
-    nombre: string;
     valor: number;
     anio_id: number;
+    tipoFertilizanteId: number;
+    fuente?: string;
+    link?: string;
 }
 
 interface Meta {
@@ -26,11 +28,15 @@ export interface FertilizanteFactorCollectionPaginate {
 
 export interface FertilizanteFactorCollection {
     id: number;
+    clase: string;
     nombre : string;
     valor: number;
     anio_id: number;
     anio: string;
     unidad: string;
+    link: string;
+    fuente: string;
+    tipoFertilizante: string;
     created_at: Date;
     updated_at: Date;
 }
