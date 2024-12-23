@@ -41,14 +41,28 @@ import {useMenuStore} from "@/lib/stores/menuStore.store";
 import Image from "next/image";
 
 export interface HeaderProps {
-    logo: string;
+    urlLogo: string;
+    urlLogoDark: string;
 }
 
-export default function Header({logo}: HeaderProps) {
+export default function Header({urlLogo, urlLogoDark}: HeaderProps) {
     const router = useRouter();
+    const {theme} = useTheme();
     const pathname = usePathname();
+    const [resolvedTheme, setResolvedTheme] = useState(theme);
     const [itemActive, setItemActive] = useState<string>("");
     const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (theme === "system") {
+            const darkMode = window.matchMedia(
+                "(prefers-color-scheme: dark)"
+            ).matches;
+            setResolvedTheme(darkMode ? "dark" : "light");
+        } else {
+            setResolvedTheme(theme);
+        }
+    }, [theme]);
 
     useEffect(() => {
         const path = "/" + pathname.split("/")[1];
@@ -101,6 +115,8 @@ export default function Header({logo}: HeaderProps) {
 
     const {setTheme} = useTheme();
     const {titleHeader} = usePageTitle();
+    const logo = resolvedTheme === "dark" ? urlLogoDark : urlLogo;
+    const logoAlt = resolvedTheme === "dark" ? "Logo Oscuro" : "Logo Claro";
 
     return (
         <header
@@ -131,7 +147,7 @@ export default function Header({logo}: HeaderProps) {
                                 {/*</div>*/}
                                 <img
                                     src={logo}
-                                    alt="Logo UNAJ"
+                                    alt={logoAlt}
                                     className="h-12 md:h-9 w-auto"
                                     width={500}
                                     height={500}
@@ -141,7 +157,7 @@ export default function Header({logo}: HeaderProps) {
                         <SheetDescription/>
                     </SheetHeader>
 
-                    <nav className="grid items-start px-2 text-sm font-medium overflow-hidden">
+                    <nav className="grid items-start px-2 text-sm font-medium overflow-auto">
                         {menuFiltered.map((item) => {
                             const Icon = iconComponents[item.icon];
                             const isAccordionOpen = openAccordion === item.title;
