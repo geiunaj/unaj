@@ -171,7 +171,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 render={({field}) => (
                                     <FormItem className=" w-1/2">
                                         <FormLabel>Factor CO2 <span
-                                            className="text-xs">[kg CO2 /{tipoCombustibleSelected?.unidad}]</span></FormLabel>
+                                            className="text-[9px]">[kg CO2 /{tipoCombustibleSelected?.unidad}]</span></FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -192,7 +192,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                     <FormItem className=" w-1/2">
                                         <FormLabel>
                                             Factor CH4 <span
-                                            className="text-xs">[kg CO2eq /{tipoCombustibleSelected?.unidad}]</span>
+                                            className="text-[9px]">[kg CO2eq /{tipoCombustibleSelected?.unidad}]</span>
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -217,7 +217,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                 render={({field}) => (
                                     <FormItem className=" w-1/2">
                                         <FormLabel>Factor N2O <span
-                                            className="text-xs">[kg CO2eq /{tipoCombustibleSelected?.unidad}]</span>
+                                            className="text-[9px]">[kg CO2eq /{tipoCombustibleSelected?.unidad}]</span>
                                         </FormLabel>
                                         <FormControl>
                                             <Input
