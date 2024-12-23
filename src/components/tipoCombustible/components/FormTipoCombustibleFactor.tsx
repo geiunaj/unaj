@@ -115,7 +115,7 @@ export function FormTipoCombustibleFactor({onClose}: CreateTipoCombustibleProps)
                                     >
                                         <FormControl className="w-full">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Nombre de Consumible"/>
+                                                <SelectValue placeholder="Tipo del Consumible"/>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
