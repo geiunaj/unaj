@@ -50,7 +50,6 @@ const Fertilizante = z.object({
 });
 
 export function FormFertilizantes({onClose}: CreateFertilizanteProps) {
-    const [isFicha, setIsFicha] = useState(false);
     const [tipoFertilizanteSelected, setTipoFertilizanteSelected] = useState<TipoFertilizanteCollection | null>(null);
 
     const form = useForm<z.infer<typeof Fertilizante>>({
@@ -93,7 +92,7 @@ export function FormFertilizantes({onClose}: CreateFertilizanteProps) {
             tipoFertilizante_id: parseInt(data.tipoFertilizante_id),
             cantidad: data.cantidad,
             sede_id: parseInt(data.sede),
-            is_ficha: data.is_ficha,
+            is_ficha: false,
             anio_id: parseInt(data.anio),
         };
         try {
@@ -273,44 +272,6 @@ export function FormFertilizantes({onClose}: CreateFertilizanteProps) {
                             />
                         </div>
 
-                        {/* is_ficha */}
-                        <FormField
-                            control={form.control}
-                            name="is_ficha"
-                            render={({field}) => (
-                                <FormItem className="pt-2">
-                                    <div className="flex justify-between">
-                                        <FormLabel>Ficha técnica</FormLabel>
-                                        <FormControl>
-                                            <Switch
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                            />
-                                        </FormControl>
-                                    </div>
-                                </FormItem>
-                            )}
-                        />
-
-                        {isFicha && (
-                            <FormField
-                                control={form.control}
-                                name="fichatecnica"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <Input
-                                                className="w-full p-2 rounded mt-1 focus:outline-none focus-visible:ring-offset-0"
-                                                type="file"
-                                                placeholder="Suba la ficha tecnica"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                        )}
                         <div className="flex gap-3 w-full pt-4">
                             <Button type="submit" className="w-full bg-primary">
                                 Guardar
