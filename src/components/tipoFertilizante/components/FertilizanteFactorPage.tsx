@@ -216,6 +216,9 @@ export default function FertilizanteFactorPage() {
                 AÑO
               </TableHead>
               <TableHead className="text-xs sm:text-sm font-bold text-center">
+                FUENTE
+              </TableHead>
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 ACCIONES
               </TableHead>
             </TableRow>
@@ -238,6 +241,9 @@ export default function FertilizanteFactorPage() {
                   </TableCell>
                   <TableCell className="text-xs sm:text-sm">
                     {item.anio}
+                  </TableCell>
+                  <TableCell className="text-xs sm:text-sm">
+                    {item.fuente}
                   </TableCell>
 
                   <TableCell className="text-xs sm:text-sm p-1">
