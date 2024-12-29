@@ -1,6 +1,6 @@
 "use client";
 import React, { useCallback, useState } from "react";
-import { Flame, Link2, Pen, Plus, Trash2 } from "lucide-react";
+import { Calendar, Flame, Link2, Pen, Plus, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -130,7 +130,7 @@ export default function ExtintorFactorPage() {
               nombre={"nombre"}
               id={"id"}
               all={true}
-              icon={<Flame className="h-3 w-3" />}
+              icon={<Calendar className="h-3 w-3" />}
             />
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
