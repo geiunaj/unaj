@@ -176,6 +176,9 @@ export default function FactorEmisionSEINPage() {
                 AÑO
               </TableHead>
               <TableHead className="text-xs sm:text-sm font-bold text-center">
+                FUENTE
+              </TableHead>
+              <TableHead className="text-xs sm:text-sm font-bold text-center">
                 ACCIONES
               </TableHead>
             </TableRow>
@@ -199,6 +202,9 @@ export default function FactorEmisionSEINPage() {
 
                   <TableCell className="text-xs sm:text-sm">
                     <Badge variant="secondary"> {item.anio}</Badge>
+                  </TableCell>
+                  <TableCell className="text-xs sm:text-sm">
+                    {item.fuente}
                   </TableCell>
                   <TableCell className="text-xs sm:text-sm p-1">
                     <div className="flex justify-center gap-4">
