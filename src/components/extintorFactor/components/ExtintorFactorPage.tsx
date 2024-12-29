@@ -132,6 +132,8 @@ export default function ExtintorFactorPage() {
               all={true}
               icon={<Calendar className="h-3 w-3" />}
             />
+          </div>
+          <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" className="h-7 gap-1">
