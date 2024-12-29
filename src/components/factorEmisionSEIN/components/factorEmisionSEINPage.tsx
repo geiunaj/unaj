@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { Flame, Link2, Pen, Plus, Trash2 } from "lucide-react";
+import { Calendar, Flame, Link2, Pen, Plus, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -130,7 +130,7 @@ export default function FactorEmisionSEINPage() {
               nombre={"nombre"}
               id={"id"}
               all={true}
-              icon={<Flame className="h-3 w-3" />}
+              icon={<Calendar className="h-3 w-3" />}
             />
           </div>
           <div className="flex flex-col sm:flex-row gap-1 sm:gap-4 font-normal sm:justify-end sm:items-center sm:w-full w-1/2">
