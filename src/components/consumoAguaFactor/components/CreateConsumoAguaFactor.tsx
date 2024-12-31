@@ -127,7 +127,7 @@ export function FormConsumoAguaFactor({ onClose }: CreateConsumoAguaFactorProps)
               render={({ field }) => (
                 <FormItem className="pt-2">
                   <FormLabel>
-                    Factor <span className="text-[10px]">[kgCO2/km]</span>
+                    Factor <span className="text-[10px]">[kgCO2/m³]</span>
                   </FormLabel>
                   <FormControl>
                     <Input

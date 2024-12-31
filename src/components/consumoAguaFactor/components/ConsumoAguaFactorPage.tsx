@@ -162,7 +162,7 @@ export default function ConsumoAguaFactorPage() {
                 N°
               </TableHead>
               <TableHead className="text-xs sm:text-sm font-bold text-center">
-                FACTOR <span className="text-[10px]">[kgCO2/km]</span>
+                FACTOR <span className="text-[10px]">[kgCO2/m³]</span>
               </TableHead>
               <TableHead className="text-xs sm:text-sm font-bold text-center">
                 AÑO
