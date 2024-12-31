@@ -35,18 +35,18 @@ import SkeletonTable from "@/components/Layout/skeletonTable";
 import CustomPagination from "@/components/Pagination";
 
 import SelectFilter from "@/components/SelectFilter";
-import { useTaxiFactorPaginate } from "../lib/taxiFactor.hook";
+import { useConsumoAguaFactorPaginate } from "../lib/consumoAguaFactor.hook";
 import { useAnio } from "@/components/combustion/lib/combustion.hook";
-import { TaxiFactorCollection } from "../services/TaxiFactor.interface";
-import { FormTaxiFactor } from "@/components/taxiFactor/components/CreateTaxiFactor";
-import { UpdateFormTaxiFactor } from "@/components/taxiFactor/components/UpdateTaxiFactor";
+import { ConsumoAguaFactorCollection } from "../services/ConsumoAguaFactor.interface";
+import { FormConsumoAguaFactor } from "@/components/consumoAguaFactor/components/CreateConsumoAguaFactor";
+import { UpdateFormConsumoAguaFactor } from "@/components/consumoAguaFactor/components/UpdateConsumoAguaFactor";
 import { errorToast, successToast } from "@/lib/utils/core.function";
-import { deleteTaxiFactor } from "@/components/taxiFactor/services/TaxiFactor.actions";
+import { deleteConsumoAguaFactor } from "@/components/consumoAguaFactor/services/ConsumoAguaFactor.actions";
 import { ChangeTitle } from "@/components/TitleUpdater";
 import Link from "next/link";
 
-export default function TaxiFactorPage() {
-  ChangeTitle("Factor de Emisión de Taxi");
+export default function ConsumoAguaFactorPage() {
+  ChangeTitle("Factor de Emisión de Consumo Agua");
   //DIALOGS
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -58,7 +58,7 @@ export default function TaxiFactorPage() {
   const [page, setPage] = useState<number>(1);
 
   //USE QUERIES
-  const TaxiFactorQuery = useTaxiFactorPaginate({
+  const ConsumoAguaFactorQuery = useConsumoAguaFactorPaginate({
     anioId: selectAnio,
     page,
     perPage: 10,
@@ -71,32 +71,32 @@ export default function TaxiFactorPage() {
     async (value: string) => {
       await setPage(1);
       await setSelectAnio(value);
-      await TaxiFactorQuery.refetch();
+      await ConsumoAguaFactorQuery.refetch();
     },
-    [TaxiFactorQuery]
+    [ConsumoAguaFactorQuery]
   );
 
   const handleClose = useCallback(() => {
     setIsDialogOpen(false);
-    TaxiFactorQuery.refetch();
-  }, [TaxiFactorQuery]);
+    ConsumoAguaFactorQuery.refetch();
+  }, [ConsumoAguaFactorQuery]);
 
   const handleCloseUpdate = useCallback(() => {
     setIsUpdateDialogOpen(false);
-    TaxiFactorQuery.refetch();
-  }, [TaxiFactorQuery]);
+    ConsumoAguaFactorQuery.refetch();
+  }, [ConsumoAguaFactorQuery]);
 
   const handleDelete = useCallback(async () => {
     try {
-      const response = await deleteTaxiFactor(idForDelete);
+      const response = await deleteConsumoAguaFactor(idForDelete);
       setIsDeleteDialogOpen(false);
       successToast(response.data.message);
     } catch (error: any) {
       errorToast(error.response.data || error.response.data.message);
     } finally {
-      await TaxiFactorQuery.refetch();
+      await ConsumoAguaFactorQuery.refetch();
     }
-  }, [TaxiFactorQuery]);
+  }, [ConsumoAguaFactorQuery]);
 
   const handleClickUpdate = (id: number) => {
     setIdForUpdate(id);
@@ -110,10 +110,10 @@ export default function TaxiFactorPage() {
 
   const handlePageChange = async (page: number) => {
     await setPage(page);
-    await TaxiFactorQuery.refetch();
+    await ConsumoAguaFactorQuery.refetch();
   };
 
-  if (TaxiFactorQuery.isLoading || aniosQuery.isLoading) {
+  if (ConsumoAguaFactorQuery.isLoading || aniosQuery.isLoading) {
     return <SkeletonTable />;
   }
 
@@ -141,13 +141,13 @@ export default function TaxiFactorPage() {
               </DialogTrigger>
               <DialogContent className="max-w-lg border-2">
                 <DialogHeader>
-                  <DialogTitle>Factor de Taxie</DialogTitle>
+                  <DialogTitle>Factor de Consumo de Agua</DialogTitle>
                   <DialogDescription>
-                    Agregar un nuevo Factor de Emisión para el Taxi
+                    Agregar un nuevo Factor de Emisión para el Consumo de Agua
                   </DialogDescription>
                   <DialogClose />
                 </DialogHeader>
-                <FormTaxiFactor onClose={handleClose} />
+                <FormConsumoAguaFactor onClose={handleClose} />
               </DialogContent>
             </Dialog>
           </div>
@@ -176,8 +176,8 @@ export default function TaxiFactorPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {TaxiFactorQuery.data!.data.map(
-              (item: TaxiFactorCollection, index: number) => (
+            {ConsumoAguaFactorQuery.data!.data.map(
+              (item: ConsumoAguaFactorCollection, index: number) => (
                 <TableRow key={item.id} className="text-center">
                   <TableCell className="text-xs sm:text-sm">
                     <Badge variant="secondary">{index + 1}</Badge>
@@ -232,9 +232,9 @@ export default function TaxiFactorPage() {
             )}
           </TableBody>
         </Table>
-        {TaxiFactorQuery.data!.meta.totalPages > 1 && (
+        {ConsumoAguaFactorQuery.data!.meta.totalPages > 1 && (
           <CustomPagination
-            meta={TaxiFactorQuery.data!.meta}
+            meta={ConsumoAguaFactorQuery.data!.meta}
             onPageChange={handlePageChange}
           />
         )}
@@ -249,7 +249,7 @@ export default function TaxiFactorPage() {
             <DialogDescription></DialogDescription>
           </DialogHeader>
 
-          <UpdateFormTaxiFactor onClose={handleCloseUpdate} id={idForUpdate} />
+          <UpdateFormConsumoAguaFactor onClose={handleCloseUpdate} id={idForUpdate} />
         </DialogContent>
       </Dialog>
 
