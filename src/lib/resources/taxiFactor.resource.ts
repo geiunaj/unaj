@@ -1,4 +1,4 @@
-export function formatTransporteTerrestreFactor(factorTransporteTerrestre: any) {
+export function formatTaxiFactor(factorTransporteTerrestre: any) {
     const {
         anio,
         ...rest

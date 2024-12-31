@@ -255,6 +255,18 @@ export const menuItems: MenuItem[] = [
         icon: "Scroll",
         href: "/tipo-papel-factor",
       },
+      {
+        id: 45,
+        title: "Factor de Consumo de Agua",
+        icon: "Droplets",
+        href: "/consumo-agua-factor",
+      },
+      {
+        id: 46,
+        title: "Factor de Taxi",
+        icon: "CarTaxiFront",
+        href: "/taxi-factor",
+      }
     ],
   },
   {

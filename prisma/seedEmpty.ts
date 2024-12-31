@@ -24,7 +24,7 @@ async function typeUsers() {
     }
     console.log("Type User created");
 
-    for (let i = 1; i <= 44; i++) {
+    for (let i = 1; i <= 46; i++) {
         if (i !== 39) {
             await prisma.access.create({
                 data: {
@@ -2146,7 +2146,18 @@ async function main() {
 
 }
 
-main()
+async function access(){
+    await prisma.access.create({
+        data: {
+            menu: 46,
+            type_user_id: 1,
+            created_at: new Date(),
+            updated_at: new Date(),
+        },
+    });
+}
+
+access()
     .catch((e) => {
         console.error(e);
         process.exit(1);
