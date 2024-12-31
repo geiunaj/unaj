@@ -1,7 +1,7 @@
 "use client";
 
 import {useCallback, useState} from "react";
-import {Pen, Plus, Trash2, Building} from "lucide-react";
+import {Pen, Plus, Trash2, Building, PersonStanding} from "lucide-react";
 import {
     Dialog,
     DialogClose,
@@ -139,7 +139,7 @@ export default function UsuarioPage() {
                             value={"id"}
                             nombre={"type_name"}
                             id={"id"}
-                            icon={<Building className="h-3 w-3"/>}
+                            icon={<PersonStanding className="h-3 w-3"/>}
                             all={true}
                         />
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
