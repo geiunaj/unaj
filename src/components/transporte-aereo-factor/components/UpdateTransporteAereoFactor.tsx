@@ -89,7 +89,7 @@ export function UpdateFormTransporteAereoFactor({
         factor1600_3700: factorData.factor1600_3700,
         factor3700: factorData.factor3700,
         fuente: factorData.fuente,
-        link: factorData.link,
+        link: factorData.link ?? "",
       });
     }
   }, [transporteAereoFactor.data, form]);
