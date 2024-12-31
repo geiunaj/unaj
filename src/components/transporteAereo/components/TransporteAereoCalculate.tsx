@@ -135,7 +135,7 @@ export default function TransporteAereoCalculate() {
     const handleClickExcelReport = async (period: ReportRequest) => {
         const columns = [
             {header: "N°", key: "id", width: 5},
-            {header: "INTÉRVALO", key: "intervalo", width: 30},
+            {header: "INTERVALO", key: "intervalo", width: 30},
             {header: "SEDE", key: "sede", width: 30},
             {header: "CONSUMO TOTAL", key: "consumo", width: 15},
             {header: "FACTOR EMISIÓN", key: "factoresEmisionString", width: 40},
@@ -238,7 +238,7 @@ export default function TransporteAereoCalculate() {
                                 fileName={`REPORTE CALCULOS DE CONSUMO DE ENERGÍA_${formatPeriod({from, to}, true)}`}
                                 columns={[
                                     {header: "N°", key: "id", width: 5},
-                                    {header: "INTÉRVALO", key: "intervalo", width: 20},
+                                    {header: "INTERVALO", key: "intervalo", width: 20},
                                     {header: "SEDE", key: "sede", width: 20},
                                     {header: "CONSUMO TOTAL", key: "consumo", width: 15},
                                     {header: "FACTOR EMISIÓN", key: "factoresEmisionString", width: 20},
@@ -264,7 +264,7 @@ export default function TransporteAereoCalculate() {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
-                                INTÉRVALO
+                                INTERVALO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 SEDE
