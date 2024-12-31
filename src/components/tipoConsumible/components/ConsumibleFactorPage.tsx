@@ -197,6 +197,9 @@ export default function ConsumibleFactorPage() {
                                 AÑO
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                FUENTE
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 ACCIONES
                             </TableHead>
                         </TableRow>
@@ -218,6 +221,10 @@ export default function ConsumibleFactorPage() {
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm">
                                         {item.anio}
+                                    </TableCell>
+                                    
+                                    <TableCell className="text-xs sm:text-sm">
+                                        {item.fuente}
                                     </TableCell>
                                     <TableCell className="text-xs sm:text-sm p-1">
                                         <div className="flex items-center justify-center gap-4">
