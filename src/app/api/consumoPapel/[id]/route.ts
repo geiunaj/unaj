@@ -23,6 +23,7 @@ export async function GET(
                 tipoPapel: true,
                 sede: true,
                 anio: true,
+                mes: true,
             },
         });
 
@@ -71,6 +72,7 @@ export async function PUT(
                 tipoPapel: true,
                 anio: true,
                 sede: true,
+                mes: true,
             },
         });
 

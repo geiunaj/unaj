@@ -60,6 +60,7 @@ export interface ConsumoPapelCollectionItem {
   sede_id: number;
   gramaje: number;
   anio: string;
+  mes: string;
   sede: string;
   tipoPapel_id: number;
   peso: number;

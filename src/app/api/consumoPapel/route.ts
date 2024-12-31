@@ -81,6 +81,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       include: {
         tipoPapel: true,
         anio: true,
+        mes: true,
         sede: true,
         File: true,
       },
@@ -142,6 +143,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       include: {
         tipoPapel: true,
         anio: true,
+        mes: true,
         sede: true,
         File: true,
       },

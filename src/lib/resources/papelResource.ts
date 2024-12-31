@@ -8,6 +8,7 @@ export function formatConsumoPapel(consumoPapel: any): any {
         sede_id,
         tipoPapel,
         anio,
+        mes,
         sede,
         peso,
         ...rest
@@ -24,6 +25,7 @@ export function formatConsumoPapel(consumoPapel: any): any {
         peso: Number(peso.toFixed(2)),
         gramaje: tipoPapel?.gramaje ?? 0,
         anio: anio?.nombre ?? "",
+        mes: mes?.nombre ?? "",
         sede: sede?.name ?? "",
         ...rest,
     };
