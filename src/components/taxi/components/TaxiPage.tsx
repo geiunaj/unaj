@@ -378,6 +378,9 @@ export default function TaxiPage() {
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 MES
               </TableHead>
+              <TableHead className="font-Manrope text-sm font-bold text-center">
+                AÑO
+              </TableHead>
               {/*<TableHead className="font-Manrope text-sm font-bold text-center">AÑO</TableHead>*/}
               <TableHead className="font-Manrope text-sm font-bold text-center">
                 ACCIONES
@@ -408,6 +411,9 @@ export default function TaxiPage() {
                   </TableCell>
                   <TableCell className="text-xs sm:text-sm">
                     {item.mes}
+                  </TableCell>
+                  <TableCell className="text-xs sm:text-sm">
+                    {item.anio}
                   </TableCell>
 
                   <TableCell className="text-xs sm:text-sm p-1">
