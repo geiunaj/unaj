@@ -136,7 +136,7 @@ export function LogoPage() {
   }
 
   return (
-    <div className="grid grid-cols-2 w-full items-center gap-6 max-w-4xl">
+    <div className="grid md:grid-cols-2 w-full items-center gap-6 max-w-4xl">
       <Card className="grid w-full items-center gap-4 p-6 bg-muted/50">
         {!logoFile ? (
           <img
