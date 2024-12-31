@@ -116,6 +116,9 @@ export default function AreaPage() {
                                 NOMBRE
                             </TableHead>
                             <TableHead className="text-xs sm:text-sm font-bold text-center">
+                                SEDE
+                            </TableHead>
+                            <TableHead className="text-xs sm:text-sm font-bold text-center">
                                 ACCIONES
                             </TableHead>
                         </TableRow>
@@ -127,6 +130,7 @@ export default function AreaPage() {
                                     <Badge variant="secondary">{index + 1}</Badge>
                                 </TableCell>
                                 <TableCell className="text-xs sm:text-sm">{item.nombre}</TableCell>
+                                <TableCell className="text-xs sm:text-sm">{item.sede}</TableCell>
                                 <TableCell className="text-xs sm:text-sm p-1">
                                     <div className="flex justify-center gap-4">
                                         {/*UPDATE*/}
