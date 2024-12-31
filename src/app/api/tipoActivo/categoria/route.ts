@@ -14,6 +14,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     const categoriaActivos = await prisma.categoriaActivo.findMany({
       orderBy: { nombre: "asc" },
+      include: {
+        grupoActivo: true,
+      },
       ...(perPage > 0 ? { skip: (page - 1) * perPage, take: perPage } : {}),
     });
     if (perPage > 0) {
@@ -61,6 +64,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         grupoActivoId: body.grupoActivoId,
         created_at: new Date(),
         updated_at: new Date(),
+      },
+      include: {
+        grupoActivo: true,
       },
     });
 

@@ -61,6 +61,7 @@ export default function CategoriaActivoPage() {
     const COLUMS = [
         "N°",
         "NOMBRE",
+        "GRUPO",
         "ACCIONES",
     ];
 
@@ -175,6 +176,9 @@ export default function CategoriaActivoPage() {
                                     </TableCell>
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                                         {item.nombre}
+                                    </TableCell>
+                                    <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis">
+                                        {item.grupo}
                                     </TableCell>
 
                                     <TableCell className="text-xs whitespace-nowrap overflow-hidden text-ellipsis p-1">

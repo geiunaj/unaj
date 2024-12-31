@@ -25,6 +25,7 @@ export interface CategoriaActivoCollectionPaginate {
 export interface CategoriaActivoCollection {
     id: number;
     nombre: string;
+    grupo: string;
     rn: number;
 }
 
