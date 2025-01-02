@@ -263,7 +263,7 @@ async function tipoCombustible() {
                         mes_id: 1,
                         anio_id: 1,
                         sede_id: 1,
-                        anio_mes: Number("2024") * 100 + Number(1),
+                        anio_mes: Number("2025") * 100 + Number(1),
                         created_at: new Date(),
                         updated_at: new Date(),
                     },
@@ -295,7 +295,7 @@ async function tipoCombustible() {
                         mes_id: 1,
                         anio_id: 1,
                         sede_id: 1,
-                        anio_mes: Number("2024") * 100 + Number(1),
+                        anio_mes: Number("2025") * 100 + Number(1),
                         created_at: new Date(),
                         updated_at: new Date(),
                     },
@@ -884,7 +884,7 @@ async function transporteAereo() {
                 mes_id: 1,
                 anio_id: 1,
                 sede_id: 1,
-                anio_mes: Number("2024") * 100 + Number(1),
+                anio_mes: Number("2025") * 100 + Number(1),
                 created_at: new Date(),
                 updated_at: new Date(),
             },
@@ -1157,7 +1157,7 @@ async function transporteTerrestre() {
                 mes_id: 1,
                 anio_id: 1,
                 sede_id: 1,
-                anio_mes: Number("2024") * 100 + Number(1),
+                anio_mes: Number("2025") * 100 + Number(1),
                 created_at: new Date(),
                 updated_at: new Date(),
             },
@@ -1737,7 +1737,7 @@ async function taxiConsumo() {
                 mes_id: 1,
                 anio_id: 1,
                 sede_id: 1,
-                anio_mes: Number("2024") * 100 + Number(1),
+                anio_mes: Number("2025") * 100 + Number(1),
             },
         });
     }
@@ -1875,7 +1875,7 @@ async function casaTrabajoConsumo() {
                 sedeId: 1,
                 anioId: 1,
                 mesId: 1,
-                anio_mes: Number("2024") * 100 + Number(1),
+                anio_mes: Number("2025") * 100 + Number(1),
                 created_at: new Date(),
                 updated_at: new Date(),
             },
@@ -1914,7 +1914,7 @@ async function extintor() {
             mes_id: 1,
             anio_id: 1,
             sede_id: 1,
-            anio_mes: Number("2024") * 100 + Number(1),
+            anio_mes: Number("2025") * 100 + Number(1),
             created_at: new Date(),
             updated_at: new Date(),
         },
@@ -1950,7 +1950,7 @@ async function consumoEnergia() {
                 consumo: sede.consumo,
                 anio_id: 1,
                 mes_id: 1,
-                anio_mes: Number("2024") * 100 + Number(1),
+                anio_mes: Number("2025") * 100 + Number(1),
             }
         });
     }
@@ -1964,7 +1964,7 @@ async function consumibles() {
             sedeId: 1,
             anioId: 1,
             mesId: 1,
-            anio_mes: Number("2024") * 100 + Number(1),
+            anio_mes: Number("2025") * 100 + Number(1),
             pesoTotal: 694.1,
             created_at: new Date(),
             updated_at: new Date(),
@@ -1976,7 +1976,7 @@ async function consumibles() {
             sedeId: 1,
             anioId: 1,
             mesId: 1,
-            anio_mes: Number("2024") * 100 + Number(1),
+            anio_mes: Number("2025") * 100 + Number(1),
             pesoTotal: 4183.5,
             created_at: new Date(),
             updated_at: new Date(),
@@ -1990,7 +1990,7 @@ async function activos() {
             nombre: "Tipo Activo",
             unidad: "kg",
             peso: 1,
-            fuente: "IDEMAT 2024 V2.3",
+            fuente: "IDEMAT 2025 V2.3",
             costoUnitario: 4007.421583,
             categoriaId: 4,
             created_at: new Date(),
@@ -2004,7 +2004,7 @@ async function activos() {
             sedeId: 1,
             anioId: 1,
             mesId: 1,
-            anio_mes: Number("2024") * 100 + Number(1),
+            anio_mes: Number("2025") * 100 + Number(1),
             cantidadComprada: 27,
             cantidadConsumida: 120,
             costoTotal: 120 * (tipoActivo.costoUnitario ?? 0),
@@ -2032,7 +2032,7 @@ async function consumoPapel() {
                 anio_id: 1,
                 mes_id: 1,
                 sede_id: 1,
-                anio_mes: Number("2024") * 100 + Number(1),
+                anio_mes: Number("2025") * 100 + Number(1),
             }
         });
     }
@@ -2048,7 +2048,7 @@ async function consumoAgua() {
             consumo: 6702,
             anio_id: 1,
             mes_id: 1,
-            anio_mes: Number("2024") * 100 + Number(1),
+            anio_mes: Number("2025") * 100 + Number(1),
 
             created_at: new Date(),
             updated_at: new Date(),
@@ -2088,58 +2088,58 @@ async function main() {
     AllYears = await prisma.anio.findMany();
     AllSedes = await prisma.sede.findMany();
     await areas();
-    await wait(60000);
+    // await wait(60000);
     // ------- 6
     await tipoCombustible();
     await fertilizantes();
-    await wait(60000);
+    // await wait(60000);
     // ------- 6
     await tipoPapel();
     await factorTipoPapel();
     await factorSEIN();
-    await wait(60000);
+    // await wait(60000);
     await factorAgua();
     await factorTaxi();
     await factorAereo();
-    await wait(60000);
+    // await wait(60000);
     // ------- 6
     await transporteAereo();
     await factorTerrestre();
-    await wait(60000);
+    // await wait(60000);
     await transporteTerrestre();
-    await wait(60000);
+    // await wait(60000);
     // ------- 3
     await grupoConsumible();
-    await wait(60000);
+    // await wait(60000);
     await categoriaConsumible();
-    await wait(60000);
+    // await wait(60000);
     await procesoConsumible();
-    await wait(60000);
+    // await wait(60000);
     // ------- 3
     await descripcionConsumible();
-    await wait(60000);
+    // await wait(60000);
     await tipoConsumible();
-    await wait(60000);
+    // await wait(60000);
     // ------- 3
     await grupoActivo();
-    await wait(60000);
+    // await wait(60000);
     // ------- 3
     await taxiConsumo();
-    await wait(60000);
+    // await wait(60000);
     // ------- 1
     await casaTrabajoConsumo();
-    await wait(60000);
+    // await wait(60000);
     // ------- 3
     await extintor();
-    await wait(60000);
+    // await wait(60000);
     // ------- 1
     await consumoEnergia();
     await consumibles();
-    await wait(60000);
+    // await wait(60000);
     await activos();
     await consumoPapel();
     await consumoAgua();
-    await wait(60000);
+    // await wait(60000);
     await consumoFertilizantes();
     // ------- 4
 
@@ -2157,7 +2157,7 @@ async function access(){
     });
 }
 
-access()
+main()
     .catch((e) => {
         console.error(e);
         process.exit(1);

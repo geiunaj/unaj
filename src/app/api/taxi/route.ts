@@ -22,6 +22,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const dateFrom = searchParams.get("from") ?? undefined;
     const dateTo = searchParams.get("to") ?? undefined;
 
+    console.log("searchParams", searchParams);
     let anioId;
     if (anio) anioId = await getAnioId(anio);
 
@@ -64,12 +65,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const totalRecords = await prisma.taxi.count({ where: whereOptions });
     const totalPages = Math.ceil(totalRecords / perPage);
 
+    console.log("whereOptions", whereOptions);
+
     const taxi = await prisma.taxi.findMany({
-      where: {
-        sede_id: sedeId ? parseInt(sedeId) : undefined,
-        anio_id: anioId,
-        mes_id: mesId ? parseInt(mesId) : undefined,
-      },
+      where: whereOptions,
       include: {
         anio: true,
         sede: true,
