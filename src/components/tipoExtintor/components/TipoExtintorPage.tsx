@@ -118,7 +118,7 @@ export default function TipoExtintorPage() {
         <div className="flex flex-row sm:justify-start sm:items-center gap-5 justify-center">
           <div className="flex flex-col gap-1 sm:flex-row sm:gap-4 w-1/2">
             <Input
-              className="w-44 h-7 text-xs"
+              className="w-full h-7 text-xs"
               type="text"
               placeholder="Buscar"
               onChange={(e) => handleNameChange(e.target.value)}
