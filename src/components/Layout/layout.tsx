@@ -25,16 +25,13 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   // Ver fuente del sistema: Android, iOS, Windows, MacOS, Linux
   // https://developer.mozilla.org/es/docs/Web/HTTP/Headers/User-Agent
   const userAgent = navigator.userAgent;
+  console.log("User Agent: ", userAgent);
 
   useEffect(() => {
-    if (
-      userAgent.includes("Windows") ||
-      userAgent.includes("Mac OS") ||
-      userAgent.includes("Linux")
-    ) {
-      setIsWeb(true);
+    if (userAgent.includes("Android")) {
+      setIsWeb(false);
     }
-  }, []);
+  }, [userAgent]);
 
   useEffect(() => {
     if (session.status !== "loading") {
@@ -102,7 +99,11 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
       disableTransitionOnChange
     >
       {session.data ? (
-        <div className={`sm:grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[260px_1fr] ${!isWeb ? "mt-16" : ""}`}>
+        <div
+          className={`sm:grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[260px_1fr] ${
+            !isWeb ? "mt-16" : ""
+          }`}
+        >
           <div className="hidden border-r bg-muted/40 md:block">
             <Sidebar
               urlLogoDark={logoDark?.data?.file?.streamLink ?? ""}
