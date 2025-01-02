@@ -25,11 +25,12 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   // Ver fuente del sistema: Android, iOS, Windows, MacOS, Linux
   // https://developer.mozilla.org/es/docs/Web/HTTP/Headers/User-Agent
   const userAgent = navigator.userAgent;
-  console.log("User Agent: ", userAgent);
 
   useEffect(() => {
     if (userAgent.includes("Android")) {
       setIsWeb(false);
+    } else {
+      setIsWeb(true);
     }
   }, [userAgent]);
 
