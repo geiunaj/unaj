@@ -109,7 +109,7 @@ export default function Sidebar({urlLogo, urlLogoDark}: SidebarProps) {
                 </Link>
             </div>
             <div className="flex-1">
-                <nav className="grid items-start px-2 text-xs font-medium overflow-hidden">
+                <nav className="grid items-start px-2 text-xs font-medium overflow-auto">
                     {menuFiltered.map((item) => {
                         const Icon = iconComponents[item.icon];
                         const isAccordionOpen = openAccordion === item.title;
