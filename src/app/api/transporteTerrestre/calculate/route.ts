@@ -55,7 +55,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         if (!period && all)
             return new NextResponse("Periodo no encontrado", {status: 404});
 
-        console.log("Periodo", period);
         const whereOptions = {
             periodoCalculoId: period?.id,
         };

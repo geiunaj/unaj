@@ -64,10 +64,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         File: true,
       },
       orderBy: all
-        ? [{ tipoFertilizante_id: "asc" }, { anio: { nombre: "asc" } }]
+        ? [{ tipoFertilizante_id: "desc" }, { anio: { nombre: "desc" } }]
         : sort
         ? [{ [sort]: direction || "desc" }]
-        : [{ tipoFertilizante_id: "asc" }, { anio: { nombre: "asc" } }],
+        : [{ tipoFertilizante_id: "desc" }, { anio: { nombre: "desc" } }],
       ...(all ? {} : { skip: (page - 1) * perPage, take: perPage }),
     });
 

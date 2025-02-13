@@ -91,8 +91,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         : [
             { area: { sede_id: "desc" } },
             { areaId: "asc" },
-            { anio_id: "desc" },
-            { mes_id: "desc" },
+            { anio_mes: "desc" },
           ],
       ...(all ? {} : { skip: (page - 1) * perPage, take: perPage }),
     });

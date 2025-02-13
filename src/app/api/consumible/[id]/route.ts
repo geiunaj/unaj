@@ -35,7 +35,6 @@ export async function GET(
     }
     return NextResponse.json(formatConsumible(consumible));
   } catch (error) {
-    console.error("Error finding consumible", error);
     return new NextResponse("Error finding consumible", { status: 500 });
   }
 }
@@ -85,7 +84,6 @@ export async function PUT(
       consumible: formatConsumible(consumible),
     });
   } catch (error) {
-    console.error("Error actualizando consumible", error);
     return new NextResponse("Error actualizando consumible", { status: 500 });
   }
 }
@@ -107,7 +105,6 @@ export async function DELETE(
       message: "Consumible eliminado",
     });
   } catch (error) {
-    console.error("Error deleting consumible", error);
     return new NextResponse("Error deleting consumible", { status: 500 });
   }
 }

@@ -14,6 +14,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const factoresConversionSEIN = await prisma.factorConversionSEIN.findMany({
       where: whereOptions,
       include: { anio: true },
+      orderBy: [{ anio: { nombre: "desc" } }],
       ...(perPage > 0 ? { skip: (page - 1) * perPage, take: perPage } : {}),
     });
 

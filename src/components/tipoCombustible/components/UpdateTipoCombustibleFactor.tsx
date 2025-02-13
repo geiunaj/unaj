@@ -85,7 +85,6 @@ export function UpdateTipoCombustibleFactor({onClose, id}: UpdateTipoCombustible
     const loadForm = useCallback(async () => {
         if (tipoCombustibleFactor.data) {
             const tipoCombustibleFactorData = await tipoCombustibleFactor.data;
-            console.log(tipoCombustibleFactorData);
             form.reset({
                 tipo: tipoCombustibleFactorData.tipo,
                 tipoConsumibleId: tipoCombustibleFactorData.tipoCombustible_id.toString(),

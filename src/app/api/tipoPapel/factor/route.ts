@@ -22,8 +22,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const tiposPapelFactor = await prisma.factorTipoPapel.findMany({
       where: whereOptions,
       include: { anio: true, tipoPapel: true },
+      orderBy: [{ tipoPapelId: "desc" }, { anio: { nombre: "desc" } }],
       ...(perPage > 0 ? { skip: (page - 1) * perPage, take: perPage } : {}),
-      orderBy: { tipoPapel: { nombre: "asc" } },
     });
 
     if (perPage > 0) {

@@ -85,7 +85,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             ...(all ? {} : {skip: (page - 1) * perPage, take: perPage}),
         });
 
-        console.log(consumoPapelCalculos);
 
         const formattedConsumoPapelCalculos = consumoPapelCalculos.map(
             (consumoPapelCalculo, index) => {

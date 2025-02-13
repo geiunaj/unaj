@@ -390,7 +390,7 @@ export default function ActivosPage() {
                 N°
               </TableHead>
               <TableHead className="font-Manrope text-xs font-bold text-center py-1">
-                NOMBRE
+                ACTIVO
               </TableHead>
               <TableHead className="font-Manrope text-xs font-bold text-center py-1">
                 CATEGORIA

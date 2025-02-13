@@ -39,7 +39,6 @@ export function LogoPage() {
       logo: logoFile,
     })
       .then((response) => {
-        console.log(response);
         successToast(response.data.message);
         window.location.reload();
       })

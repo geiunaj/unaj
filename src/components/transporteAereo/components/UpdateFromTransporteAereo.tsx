@@ -139,7 +139,6 @@ export function UpdateFormTransporteAereo({id, onClose}: UpdateTransporteAereoPr
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
-            // console.log(error.response.data);
         }
     };
 

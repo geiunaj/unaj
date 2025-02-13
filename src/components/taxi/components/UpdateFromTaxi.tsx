@@ -70,7 +70,6 @@ export function UpdateFormTaxi({id, onClose}: UpdateTaxiProps) {
 
     const loadForm = useCallback(() => {
         if (taxis.data) {
-            // console.log(taxis.data);
             form.reset({
                 unidadContratante: taxis.data.unidadContratante,
                 lugarSalida: taxis.data.lugarSalida,
@@ -106,7 +105,6 @@ export function UpdateFormTaxi({id, onClose}: UpdateTaxiProps) {
             onClose();
             successToast(response.data.message);
         } catch (error: any) {
-            // console.log(error.response.data);
         }
     };
 

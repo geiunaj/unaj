@@ -75,10 +75,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         File: true,
       },
       orderBy: all
-        ? [{ anio_mes: "asc" }]
+        ? [{ anio_mes: "desc" }]
         : sort
         ? [{ [sort]: direction || "desc" }]
-        : [{ anioId: "desc" }, { mesId: "desc" }],
+        : [{ anio_mes: "desc" }],
       ...(all ? {} : { skip: (page - 1) * perPage, take: perPage }),
       // ...(limit ? {take: 100} : all ? {} : {skip: (page - 1) * perPage, take: perPage}),
     });

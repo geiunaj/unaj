@@ -20,6 +20,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       await prisma.factorEmisionFertilizante.findMany({
         where: { anio_id: anioId, tipoFertilizanteId: tipoFertilizanteId },
         include: { anio: true, tipoFertilizante: true },
+        orderBy: [{ anio: { nombre: "desc" } }],
         ...(perPage > 0 ? { skip: (page - 1) * perPage, take: perPage } : {}),
       });
 

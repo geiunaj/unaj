@@ -90,10 +90,6 @@ export default function SummaryPage() {
         return <SkeletonTable/>;
     }
 
-    if (new Date().getDay() === 11) {
-        console.log(new Date().getDay());
-    }
-
     return (
         <div className="w-full max-w-screen-xl h-full">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-end sm:items-start mb-6">

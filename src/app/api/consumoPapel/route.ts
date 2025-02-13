@@ -86,10 +86,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         File: true,
       },
       orderBy: all
-        ? [{ tipoPapel_id: "asc" }, { anio_id: "asc" }, { sede_id: "asc" }]
+        ? [{ sede_id: "asc" }, { tipoPapel_id: "asc" }, { anio_mes: "desc" }]
         : sort
         ? [{ [sort]: direction || "desc" }]
-        : [{ tipoPapel_id: "asc" }, { anio: { nombre: "asc" } }],
+        : [{ sede_id: "asc" }, { tipoPapel_id: "asc" }, { anio_mes: "desc" }],
       ...(all ? {} : { skip: (page - 1) * perPage, take: perPage }),
     });
 
@@ -121,6 +121,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const tipoPapel = await prisma.tipoPapel.findUnique({
       where: { id: body.tipoPapel_id },
     });
+    const anio = await prisma.anio.findFirst({
+      where: { id: body.anio_id },
+    });
+    if (!anio)
+      return NextResponse.json(
+        { message: "Año no encontrado" },
+        { status: 404 }
+      );
     const consumopapel = await prisma.consumoPapel.create({
       data: {
         tipoPapel_id: body.tipoPapel_id,
@@ -135,7 +143,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         anio_id: body.anio_id,
         mes_id: body.mes_id,
         sede_id: body.sede_id,
-        anio_mes: body.anio_id * 100 + body.mes_id,
+        anio_mes: Number(anio.nombre) * 100 + Number(body.mes_id),
 
         created_at: new Date(),
         updated_at: new Date(),

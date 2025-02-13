@@ -15,6 +15,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const factoresTransporte = await prisma.factorEmisionTaxi.findMany({
       where: whereOptions,
       include: { anio: true },
+      orderBy: [{ anio: { nombre: "desc" } }],
       ...(perPage > 0 ? { skip: (page - 1) * perPage, take: perPage } : {}),
     });
 
@@ -47,10 +48,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       },
     });
     if (factorExistente) {
-      return new NextResponse(
-        "Ya existe un factor de Taxi para este año",
-        { status: 400 }
-      );
+      return new NextResponse("Ya existe un factor de Taxi para este año", {
+        status: 400,
+      });
     }
     const factorEmisionTaxi = await prisma.factorEmisionTaxi.create({
       data: {
@@ -66,13 +66,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       factorEmisionTaxi,
     });
   } catch (error) {
-    console.error(
-      "Error creando el Factor de Taxi",
-      error
-    );
-    return new NextResponse(
-      "Error creando el Factor de Taxi",
-      { status: 500 }
-    );
+    console.error("Error creando el Factor de Taxi", error);
+    return new NextResponse("Error creando el Factor de Taxi", { status: 500 });
   }
 }

@@ -71,7 +71,6 @@ export function FormTaxiFactor({ onClose }: CreateTaxiFactorProps) {
       onClose();
       successToast(response.data.message);
     } catch (error: any) {
-      console.log(error);
       errorToast(error.response.data || error.response.data.message);
     }
   };

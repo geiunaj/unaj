@@ -84,7 +84,6 @@ export function FormPapel({onClose}: CreateConsumoPapelProps) {
             mes_id: Number(data.mes),
             comentario: "",
         };
-        // console.log(consumoPapelRequest);
         await createConsumoPapel(consumoPapelRequest);
         onClose();
     };

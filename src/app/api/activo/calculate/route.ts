@@ -339,7 +339,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
                 const totalGEIActivo: number = consumoTotalTipoActivo * factorTipoActivo.factor;
 
-                console.log(grupoActivo, factorTipoActivo, consumoTotalTipoActivo, totalGEIActivo);
                 await prisma.activoCalculosDetail.create({
                     data: {
                         grupoActivoId: grupoActivo.id,
