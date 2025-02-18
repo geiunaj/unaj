@@ -309,9 +309,9 @@ export default function TransporteTerrestrePage() {
                 </DialogTrigger>
                 <DialogContent className="max-w-lg border-2">
                   <DialogHeader>
-                    <DialogTitle>Transporte Aéreo</DialogTitle>
+                    <DialogTitle>Transporte Terrestre</DialogTitle>
                     <DialogDescription>
-                      Registrar el transporte aéreo contratado.
+                      Registrar el transporte terrestre contratado.
                     </DialogDescription>
                     <DialogClose />
                   </DialogHeader>

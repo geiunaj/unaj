@@ -49,19 +49,23 @@ export interface Meta {
 // PARA EL SHOW
 export interface TransporteTerrestreResource {
   id: number;
-  unidadContratante: string;
-  lugarSalida: string;
-  lugarDestino: string;
-  monto: number;
-  kmRecorrido: number;
-  mes_id: number;
+  fechaSalida: string;
+  fechaRegreso: string;
+  distancia: number;
+  mes: string;
+  anio: string;
+  sede: string;
+  numeroPasajeros: number;
+  origen: string;
+  destino: string;
+  isIdaVuelta: boolean;
+  motivo: string;
+  numeroComprobante: string;
+  anio_mes: number;
+  File: any[];
   anio_id: number;
   sede_id: number;
-  created_at: Date;
-  updated_at: Date;
-  mes: Mes;
-  anio: Anio;
-  sede: Sede;
+  mes_id: number;
 }
 
 // PARA EL STORE Y UPDATE

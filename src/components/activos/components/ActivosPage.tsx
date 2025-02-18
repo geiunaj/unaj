@@ -397,7 +397,7 @@ export default function ActivosPage() {
               </TableHead>
               <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
                 CANTIDAD
-                <br /> COMPRADA <span className="text-[9px]">[S/.]</span>
+                <br /> COMPRADA <br /><span className="text-[9px]">[UNIDADES]</span>
               </TableHead>
               <TableHead className="font-Manrope text-[10px] leading-3 font-bold text-center py-1">
                 COSTO

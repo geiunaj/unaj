@@ -323,6 +323,7 @@ export function FormTransporteAereo({ onClose }: CreateTransporteAereoProps) {
                             form.setValue("kmRecorrido", newValue);
                           }
                         }}
+                        step={0.001}
                       />
                     </FormControl>
                     <FormMessage />
@@ -341,6 +342,7 @@ export function FormTransporteAereo({ onClose }: CreateTransporteAereoProps) {
                         type="number"
                         className="w-full p-2 rounded focus:outline-none focus-visible:ring-offset-0"
                         placeholder="Km Recorridos"
+                        step={0.001}
                         {...field}
                       />
                     </FormControl>
